@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time to Act: Pennsylvania Hospitals Dashboard</title>
+  <meta name="description" content="Oliver Wyman report for HAP on Pennsylvania hospital sustainability. Static HTML version.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root { --primary: #0072bc; --primary-soft: #8ed8f8; --accent: #fbb040; --danger: #b91c1c; --muted: #64748b; --text: #0f172a; --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --radius: 12px; }
+    body:has(> .pa-dashboard) { margin: 0; }
+    .pa-dashboard * { box-sizing: border-box; }
+    .pa-dashboard { font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; background: #eef6fc; background: linear-gradient(165deg, #e8f2fa 0%, #eef6fc 35%, #f0f7fd 70%, #e8f2fa 100%); background-attachment: fixed; color: var(--text); line-height: 1.5; -webkit-font-smoothing: antialiased; position: relative; min-height: 100vh; margin: 0; }
+    .pa-dashboard [id] { scroll-margin-top: 5.5rem; }
+    @media (min-width: 1024px) { .pa-dashboard main { padding: 2rem 2rem; } .pa-dashboard section { padding: 1.75rem 2rem; margin-bottom: 2.5rem; } .pa-dashboard .card { padding: 1.25rem 1.5rem; } .pa-dashboard h2 { font-size: 1.75rem; } .pa-dashboard h3 { font-size: 1.18rem; } }
+    .pa-dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(142,216,248,0.25), transparent), radial-gradient(ellipse 60% 40% at 100% 50%, rgba(0,114,188,0.06), transparent), radial-gradient(ellipse 50% 30% at 0% 80%, rgba(251,176,64,0.05), transparent); pointer-events: none; z-index: 0; }
+    .pa-dashboard a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
+    .pa-dashboard a:hover { color: #005a94; text-decoration: underline; }
+    .pa-dashboard .pa-dashboard-header { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.9); border-bottom: 1px solid rgba(0,114,188,0.12); box-shadow: 0 1px 3px rgba(0,0,0,0.04); padding: 1.2rem 1.5rem 1rem; }
+    @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) { .pa-dashboard .pa-dashboard-header { background: rgba(255,255,255,0.65); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); } }
+    .pa-dashboard .report-by { margin: 0 0 0.35rem; font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
+    .pa-dashboard .pa-dashboard-header h1 { margin: 0; font-family: "Montserrat", sans-serif; font-size: 1.95rem; font-weight: 800; color: var(--primary); letter-spacing: -0.02em; }
+    .pa-dashboard .tagline { margin: 0.35rem 0 0; font-size: 0.9rem; font-weight: 500; color: var(--muted); }
+    .pa-dashboard nav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
+    .pa-dashboard nav a { padding: 0.45rem 1rem; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.82rem; background: #fff; border: 1px solid rgba(0,114,188,0.15); color: var(--muted); transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.03); -webkit-tap-highlight-color: rgba(0,114,188,0.1); }
+    .pa-dashboard nav a:hover { color: var(--primary); background: rgba(255,255,255,0.9); border-color: rgba(0,114,188,0.25); box-shadow: 0 4px 12px rgba(0,114,188,0.12); transform: translateY(-1px); }
+    .pa-dashboard nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .pa-dashboard main { max-width: 70rem; margin: 0 auto; padding: var(--space-lg) 1.5rem; position: relative; z-index: 1; }
+    .pa-dashboard section { margin-bottom: var(--space-xl); padding: var(--space-lg); background: #fff; border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,114,188,0.08); border: 1px solid rgba(0,114,188,0.08); }
+    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section { background: rgba(255,255,255,0.72); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: 0 8px 32px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.8); } }
+    .pa-dashboard section:hover { box-shadow: 0 12px 40px rgba(0,114,188,0.1); }
+    .pa-dashboard section.alt { background: #f8fbfd; }
+    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.alt { background: rgba(248,251,253,0.78); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
+    .pa-dashboard h2 { margin: 0 0 0.6rem; font-family: "Montserrat", sans-serif; font-size: 1.6rem; font-weight: 700; color: #0072bc; letter-spacing: -0.02em; }
+    .pa-dashboard h3 { margin: 0 0 0.5rem; font-family: "Montserrat", sans-serif; font-size: 1.12rem; font-weight: 600; color: #0f172a; }
+    .section-intro { margin: 0 0 1.25rem; color: var(--muted); font-size: 0.96rem; line-height: 1.6; max-width: 65ch; }
+    .overview-metrics-row { margin-bottom: 1.25rem; }
+    .overview-choose { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin: 0 0 0.5rem; }
+    .overview-layout { display: block; margin-top: 0; }
+    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(165px, 1fr)); gap: 0.95rem; }
+    .stat-card { display: block; width: 100%; text-align: left; padding: 0.95rem 1rem; background: #fff; border: 1px solid rgba(0,114,188,0.1); border-radius: var(--radius); cursor: pointer; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; position: relative; overflow: hidden; box-shadow: 0 2px 8px rgba(0,114,188,0.04); }
+    @supports (backdrop-filter: blur(1px)) { .stat-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); box-shadow: 0 2px 8px rgba(0,114,188,0.04), inset 0 1px 0 rgba(255,255,255,0.8); } }
+    .stat-card::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--primary), var(--primary-soft)); opacity: 0; transition: opacity 0.25s; }
+    .stat-card:hover, .stat-card:focus { border-color: rgba(0,114,188,0.35); background: rgba(255,255,255,0.95); box-shadow: 0 12px 28px rgba(0,114,188,0.15), inset 0 1px 0 rgba(255,255,255,1); transform: translateY(-3px); outline: none; }
+    .stat-card:hover::before, .stat-card:focus::before { opacity: 1; }
+    input[name="metric"] { display: none; }
+    input#m-gdp:checked ~ .overview-metrics-row .stat-grid [for="m-gdp"], input#m-output:checked ~ .overview-metrics-row .stat-grid [for="m-output"], input#m-community:checked ~ .overview-metrics-row .stat-grid [for="m-community"], input#m-jobs:checked ~ .overview-metrics-row .stat-grid [for="m-jobs"], input#m-wages:checked ~ .overview-metrics-row .stat-grid [for="m-wages"] { border-color: #0072bc; box-shadow: 0 10px 28px rgba(0,114,188,0.14); transform: translateY(-3px); }
+    input#m-gdp:checked ~ .overview-metrics-row .stat-grid [for="m-gdp"]::before, input#m-output:checked ~ .overview-metrics-row .stat-grid [for="m-output"]::before, input#m-community:checked ~ .overview-metrics-row .stat-grid [for="m-community"]::before, input#m-jobs:checked ~ .overview-metrics-row .stat-grid [for="m-jobs"]::before, input#m-wages:checked ~ .overview-metrics-row .stat-grid [for="m-wages"]::before { opacity: 1; background: linear-gradient(90deg, #fbb040, #0072bc); }
+    .stat-label { display: block; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: #64748b; font-weight: 600; }
+    .stat-value { display: block; font-size: 1.4rem; font-weight: 700; font-family: "Montserrat", sans-serif; color: #0072bc; margin: 0.15rem 0 0.1rem; }
+    .stat-detail { display: block; font-size: 0.84rem; color: #64748b; line-height: 1.4; }
+    .overview-insight { padding: 1.25rem; border-left: 4px solid var(--primary); background: #fafcfe; border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,114,188,0.06); border: 1px solid rgba(0,114,188,0.1); text-align: left; }
+    @supports (backdrop-filter: blur(1px)) { .overview-insight { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); box-shadow: 0 4px 24px rgba(0,114,188,0.08), inset 0 1px 0 rgba(255,255,255,0.8); } }
+    .overview-insight h3 { color: #0072bc; margin-bottom: 0.4rem; text-align: left; }
+    .overview-insight p { margin: 0; font-size: 0.95rem; line-height: 1.6; color: #334155; text-align: left; }
+    .overview-viewing { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); margin-bottom: 0.5rem; font-weight: 600; }
+    .overview-viewing .metric-name { display: none; }
+    #m-gdp:checked ~ .overview-layout .metric-name.metric-gdp, #m-output:checked ~ .overview-layout .metric-name.metric-output, #m-community:checked ~ .overview-layout .metric-name.metric-community, #m-jobs:checked ~ .overview-layout .metric-name.metric-jobs, #m-wages:checked ~ .overview-layout .metric-name.metric-wages { display: inline; }
+    .focus-content { display: none; }
+    #m-gdp:checked ~ .overview-layout .focus-gdp, #m-output:checked ~ .overview-layout .focus-output, #m-community:checked ~ .overview-layout .focus-community, #m-jobs:checked ~ .overview-layout .focus-jobs, #m-wages:checked ~ .overview-layout .focus-wages { display: block; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .gauge-wrap { width: 100%; min-height: 180px; display: flex; align-items: center; justify-content: center; padding: 0.75rem 0; position: relative; }
+    .gauge-svg { display: none; width: 260px; height: 155px; filter: drop-shadow(0 4px 12px rgba(0,114,188,0.12)); }
+    @keyframes gaugeIn { 0% { opacity: 0; transform: scale(0.92); } 100% { opacity: 1; transform: scale(1); } }
+    #m-gdp:checked ~ .overview-layout .gauge-gdp, #m-output:checked ~ .overview-layout .gauge-output, #m-community:checked ~ .overview-layout .gauge-community, #m-jobs:checked ~ .overview-layout .gauge-jobs, #m-wages:checked ~ .overview-layout .gauge-wages { display: block; animation: gaugeIn 0.45s cubic-bezier(0.34, 1.2, 0.64, 1); }
+    .layout-split { display: grid; grid-template-columns: 1fr; gap: var(--space-lg); margin-top: var(--space-lg); text-align: left; }
+    @media (min-width: 640px) { .pa-dashboard .layout-split { grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); } }
+    @media (min-width: 1024px) { .pa-dashboard .layout-split { gap: 1.5rem; margin-top: 1.5rem; } }
+    .card { padding: 1.15rem 1.25rem; background: #fff; border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); box-shadow: 0 4px 20px rgba(0,114,188,0.06); transition: box-shadow 0.2s, transform 0.2s; text-align: left; }
+    @supports (backdrop-filter: blur(1px)) { .card { background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); box-shadow: 0 4px 20px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.8); } }
+    .card:hover { box-shadow: 0 8px 28px rgba(0,114,188,0.1); transform: translateY(-1px); }
+    .chart-caption { margin-top: 0.75rem; font-size: 0.85rem; color: #64748b; line-height: 1.5; }
+    .bar-chart { display: flex; flex-direction: column; gap: 0.85rem; padding: 0.5rem 0; align-items: stretch; text-align: left; }
+    .bar-row { display: flex; flex-direction: column; gap: 0.25rem; transition: transform 0.2s; text-align: left; }
+    .bar-row:hover { transform: translateX(2px); }
+    .bar-row-viz { display: flex; align-items: center; gap: 0.6rem; min-height: 26px; }
+    .bar-row-viz .bar-track { flex: 1; min-width: 0; height: 26px; background: #f1f5f9; border-radius: 6px; overflow: hidden; }
+    .bar-row-viz .bar-value { font-size: 0.9rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3ch; text-align: right; }
+    .bar-row-label { font-size: 0.86rem; font-weight: 500; color: var(--text); }
+    .bar-track { flex: 1; min-width: 0; height: 26px; background: #f1f5f9; border-radius: 6px; overflow: hidden; }
+    .bar-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+    .closures-count { font-family: "Montserrat", sans-serif; font-size: 2.5rem; font-weight: 800; color: #0072bc; letter-spacing: -0.02em; }
+    .pa-map-wrap { padding: 1rem; background: #f0f8fc; border: 1px solid rgba(0,114,188,0.12); border-radius: 14px; margin: 0.75rem 0; box-shadow: 0 4px 16px rgba(0,114,188,0.06); }
+    @supports (backdrop-filter: blur(1px)) { .pa-map-wrap { background: linear-gradient(165deg, rgba(255,255,255,0.6) 0%, rgba(142,216,248,0.12) 50%, rgba(0,114,188,0.06) 100%); backdrop-filter: blur(16px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 16px rgba(0,114,188,0.08); } }
+    .pa-map-wrap svg { width: 100%; height: auto; display: block; border-radius: 8px; }
+    .big-number { font-size: 2.6rem; font-weight: 800; margin: 0.3rem 0; color: #0072bc; font-family: "Montserrat", sans-serif; letter-spacing: -0.02em; }
+    .impact-card { position: relative; border: 2px solid rgba(0,82,155,0.5); box-shadow: 0 0 24px rgba(0,114,188,0.2), inset 0 0 0 1px rgba(255,255,255,0.5); animation: glowBlue 2.5s ease-in-out infinite; }
+    .impact-card .impact-card-heading { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); font-weight: 700; margin: 0 0 0.5rem; display: block; }
+    @keyframes glowBlue { 0%, 100% { box-shadow: 0 0 24px rgba(0,114,188,0.2), 0 0 0 1px rgba(0,114,188,0.3), inset 0 0 0 1px rgba(255,255,255,0.5); } 50% { box-shadow: 0 0 36px rgba(0,114,188,0.45), 0 0 0 2px rgba(0,114,188,0.5), inset 0 0 0 1px rgba(255,255,255,0.5); } }
+    .impact-stat { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.8rem 1rem; background: #fff; border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); border-left: 4px solid var(--accent); margin-bottom: 0.6rem; box-shadow: 0 2px 12px rgba(0,114,188,0.04); transition: box-shadow 0.2s, transform 0.2s; }
+    @supports (backdrop-filter: blur(1px)) { .impact-stat { background: rgba(255,255,255,0.6); backdrop-filter: blur(16px); box-shadow: 0 2px 12px rgba(0,114,188,0.05), inset 0 1px 0 rgba(255,255,255,0.7); } }
+    .impact-stat:hover { background: rgba(255,255,255,0.85); box-shadow: 0 6px 20px rgba(0,114,188,0.1), inset 0 1px 0 rgba(255,255,255,0.9); transform: translateX(4px); }
+    .impact-stat .impact-value { text-shadow: 0 0 12px rgba(0,114,188,0.5), 0 0 24px rgba(0,114,188,0.25); animation: impactValueGlow 2.5s ease-in-out infinite; }
+    @keyframes impactValueGlow { 0%, 100% { text-shadow: 0 0 12px rgba(0,114,188,0.5), 0 0 24px rgba(0,114,188,0.25); } 50% { text-shadow: 0 0 18px rgba(0,114,188,0.8), 0 0 36px rgba(0,114,188,0.4); } }
+    .impact-value { font-family: "Montserrat", sans-serif; font-size: 1.3rem; font-weight: 700; color: #0072bc; min-width: 5ch; }
+    .scenario-hbar { display: grid; grid-template-columns: 1fr auto; grid-template-rows: auto auto; gap: 0.25rem 0.75rem; margin-bottom: 0.75rem; align-items: center; text-align: left; }
+    .scenario-hbar-track { grid-column: 1; grid-row: 1; height: 28px; background: #f1f5f9; border-radius: 6px; overflow: hidden; width: 100%; }
+    .scenario-hbar-pct { grid-column: 2; grid-row: 1; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 700; font-variant-numeric: tabular-nums; min-width: 3ch; justify-self: end; }
+    .scenario-hbar-label { grid-column: 1 / -1; grid-row: 2; font-size: 0.85rem; font-weight: 600; min-width: 0; color: var(--muted); }
+    .scenario-hbar-fill { height: 100%; border-radius: 6px; }
+    .scenario-hbar-track { position: relative; }
+    .scenario-hbar-track::before { content: ""; position: absolute; left: 58.3%; top: 0; bottom: 0; width: 2px; background: rgba(0,0,0,0.2); z-index: 1; }
+    .scenario-fill-pos { margin-left: 58.3%; }
+    .scenario-expandable { border-radius: 12px; border: 1px solid rgba(0,114,188,0.12); background: rgba(255,255,255,0.7); overflow: hidden; margin-top: 0.75rem; }
+    .scenario-expandable details { margin: 0; border: none; border-radius: 0; border-bottom: 1px solid rgba(0,114,188,0.08); }
+    .scenario-expandable details:last-child { border-bottom: none; }
+    .scenario-expandable summary { padding: 0.75rem 1rem; cursor: pointer; font-weight: 600; font-family: "Montserrat", sans-serif; display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; }
+    .scenario-expandable summary::-webkit-details-marker { display: none; }
+    .scenario-expandable summary::after { content: ""; width: 14px; height: 14px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); transition: transform 0.25s; flex-shrink: 0; }
+    .scenario-expandable details[open] summary::after { transform: rotate(-135deg); }
+    .pa-dashboard details { margin: 0.6rem 0; border: 1px solid rgba(0,114,188,0.1); border-radius: 10px; overflow: hidden; transition: box-shadow 0.25s; }
+    .pa-dashboard details:hover { box-shadow: 0 2px 12px rgba(0,114,188,0.06); }
+    .pa-dashboard details summary { padding: 0.7rem 1.1rem; cursor: pointer; font-weight: 600; font-family: "Montserrat", sans-serif; background: linear-gradient(180deg, #fafcfd 0%, #f5f9fc 100%); transition: background 0.2s; }
+    .pa-dashboard details summary:hover { background: linear-gradient(180deg, #f5f9fc 0%, #eef5fb 100%); }
+    .pa-dashboard details[open] summary { border-bottom: 1px solid rgba(0,114,188,0.1); }
+    .pa-dashboard details > div, .pa-dashboard details > ul { padding: 1.1rem; margin: 0; }
+    .pa-dashboard ul { margin: 0.5rem 0 1rem; padding-left: 1.25rem; line-height: 1.6; }
+    .pa-dashboard ul li { margin-bottom: 0.35rem; }
+    .pa-dashboard table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.5rem; }
+    .pa-dashboard th, .pa-dashboard td { padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid rgba(0,114,188,0.1); }
+    .pa-dashboard tr:last-child td { border-bottom: none; }
+    .pa-dashboard footer { padding: 1.75rem; text-align: center; color: var(--muted); font-size: 0.9rem; border-top: 1px solid rgba(0,114,188,0.1); background: #f8fbfd; position: relative; z-index: 1; }
+    @supports (backdrop-filter: blur(1px)) { .pa-dashboard footer { background: rgba(255,255,255,0.5); backdrop-filter: blur(24px); } }
+    @media (prefers-reduced-motion: reduce) { .pa-dashboard .big-number-rainy, .pa-dashboard .impact-card, .pa-dashboard .impact-stat .impact-value { animation: none; } .pa-dashboard .scroll-reveal { animation: none; opacity: 1; transform: none; } }
+    .pa-dashboard .back-link { display: inline-block; margin: 1rem 0; padding: 0.55rem 1.2rem; background: linear-gradient(135deg, var(--primary) 0%, #0088e0 100%); color: white; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 14px rgba(0,114,188,0.3); transition: all 0.25s ease; }
+    .pa-dashboard .back-link:hover { text-decoration: none; background: linear-gradient(135deg, #005a94 0%, var(--primary) 100%); color: white; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,114,188,0.35); }
+    .pa-dashboard .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 100; padding: 0.5rem 1rem; background: var(--primary); color: white; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 600; border-radius: 10px; transition: top 0.2s ease; }
+    .pa-dashboard .skip-link:focus { top: 1rem; outline: 2px solid white; outline-offset: 2px; }
+    .scenarios-chart-wrap { margin-bottom: 1rem; }
+    .icon-wrap { flex-shrink: 0; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: #fff; border: 1px solid rgba(0,114,188,0.12); color: var(--primary); }
+    .icon-wrap svg { width: 22px; height: 22px; }
+    .impact-stat-content { display: flex; flex-direction: column; gap: 0.15rem; }
+    .impact-label { font-size: 0.85rem; color: var(--text); }
+    .levers-viz { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.5rem; align-items: start; }
+    @media (max-width: 800px) { .levers-viz { grid-template-columns: 1fr; } }
+    .levers-chart-card h3 { margin-bottom: 0.5rem; }
+    .levers-chart-intro { font-size: 0.9rem; color: var(--muted); margin: 0 0 0.75rem; }
+    .levers-hbar-chart { display: flex; flex-direction: column; gap: 0.5rem; margin: 1rem 0; }
+    .levers-hbar-row { display: grid; grid-template-columns: 1fr 3ch 4fr; align-items: center; gap: 0.75rem; }
+    .levers-hbar-row.you { font-weight: 700; }
+    .levers-hbar-row .bar-track { height: 22px; background: #f1f5f9; border-radius: 6px; overflow: hidden; position: relative; }
+    .levers-hbar-row .bar-track::before { content: ""; position: absolute; left: 58.3%; top: 0; bottom: 0; width: 2px; background: rgba(0,0,0,0.2); z-index: 1; }
+    .levers-hbar-row .bar-fill { height: 100%; border-radius: 6px; }
+    .levers-outcome-callout { padding: 1rem 1.2rem; background: linear-gradient(135deg, rgba(0,114,188,0.06) 0%, rgba(142,216,248,0.08) 100%); border-radius: 12px; border-left: 4px solid var(--primary); margin-top: 0.5rem; }
+    .levers-outcome-badge { display: block; font-family: "Montserrat", sans-serif; font-size: 0.8rem; font-weight: 700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 0.35rem; }
+    .outcome-label { font-size: 0.95rem; font-weight: 600; margin: 0 0 0.25rem; color: var(--text); }
+    .outcome-detail { font-size: 0.88rem; color: var(--muted); margin: 0; line-height: 1.5; }
+    .impact-intro { margin: 0 0 0.75rem; font-size: 0.9rem; color: var(--muted); }
+    @media (max-width: 640px) { .access-split { grid-template-columns: 1fr; } }
+    .lever-form-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem 1.25rem; }
+    @media (max-width: 500px) { .lever-form-grid { grid-template-columns: 1fr; } }
+    .lever-group { display: flex; flex-direction: column; }
+    .lever-group label { font-size: 0.82rem; margin-bottom: 0.35rem; font-weight: 600; color: var(--text); }
+    .lever-options { display: flex; flex-wrap: wrap; gap: 0.35rem; }
+    .lever-pill { display: inline-block; padding: 0.25rem 0.6rem; font-size: 0.78rem; border-radius: 999px; background: rgba(255,255,255,0.6); border: 1px solid rgba(0,114,188,0.15); color: var(--muted); }
+    .lever-pill.cur { background: var(--primary); color: white; border-color: var(--primary); }
+    .big-number-rainy { font-size: 24px; }
+    @media (min-width: 480px) { .big-number-rainy { font-size: 2.4rem; } }
+    @media (min-width: 768px) { .big-number-rainy { font-size: 3.5rem; } }
+    @media (min-width: 1024px) { .big-number-rainy { font-size: 4.5rem; } }
+    .big-number-rainy { font-weight: 800; color: #c2410c !important; text-shadow: 0 0 20px rgba(251,176,64,0.9), 0 0 40px rgba(251,176,64,0.5), 0 0 0 #c2410c; background: linear-gradient(135deg, rgba(251,176,64,0.25) 0%, rgba(251,146,60,0.35) 100%); padding: 0.2em 0.4em; border-radius: 12px; display: inline-block; border: 2px solid rgba(251,176,64,0.7); box-shadow: 0 4px 24px rgba(251,176,64,0.4), inset 0 1px 0 rgba(255,255,255,0.3); animation: glowOrange 2.5s ease-in-out infinite; }
+    @keyframes glowOrange { 0%, 100% { text-shadow: 0 0 20px rgba(251,176,64,0.9), 0 0 40px rgba(251,176,64,0.5), 0 0 0 #c2410c; box-shadow: 0 4px 24px rgba(251,176,64,0.4), inset 0 1px 0 rgba(255,255,255,0.3); } 50% { text-shadow: 0 0 28px rgba(251,176,64,1), 0 0 55px rgba(251,176,64,0.7), 0 0 0 #c2410c; box-shadow: 0 6px 32px rgba(251,176,64,0.6), inset 0 1px 0 rgba(255,255,255,0.3); } }
+    .closures-count { font-size: 3.2rem !important; }
+    .scroll-reveal { animation: fadeInUp 0.8s ease-out both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    @supports not (animation-timeline: view()) { .scroll-reveal { animation: fadeInUp 0.8s ease-out 0.2s both; } }
+    .chart-blurb { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; padding: 0.5rem 0.75rem; background: rgba(0,114,188,0.04); border-radius: 8px; border-left: 3px solid var(--primary); text-align: left; }
+    .policy-toggle { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+    .policy-toggle label { display: flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; border-radius: 10px; border: 2px solid rgba(0,114,188,0.2); background: rgba(255,255,255,0.5); cursor: pointer; font-weight: 600; font-size: 0.9rem; transition: all 0.25s ease; }
+    .policy-toggle label:hover { border-color: rgba(0,114,188,0.4); background: rgba(255,255,255,0.8); }
+    input[name="policy-path"] { display: none; }
+    input#path-none:checked ~ .policy-toggle [for="path-none"], input#path-action:checked ~ .policy-toggle [for="path-action"] { border-color: var(--primary); background: rgba(0,114,188,0.08); color: var(--primary); }
+    .policy-outcome { display: none; }
+    input#path-none:checked ~ .policy-toggle [for="path-none"] { border-color: var(--primary); background: rgba(0,114,188,0.08); color: var(--primary); }
+    input#path-action:checked ~ .policy-toggle [for="path-action"] { border-color: var(--primary); background: rgba(0,114,188,0.08); color: var(--primary); }
+    input#path-none:checked ~ .policy-outcome-none { display: block; }
+    input#path-action:checked ~ .policy-outcome-action { display: block; }
+    .policy-viz { padding: 1rem 0; }
+    .policy-bar-row { display: grid; grid-template-columns: 1fr 4ch; grid-template-rows: auto auto; gap: 0.25rem 0.75rem; align-items: center; text-align: left; }
+    .policy-bar-row .bar-track { grid-column: 1; grid-row: 1; height: 36px; background: #f1f5f9; border-radius: 8px; overflow: hidden; position: relative; width: 100%; }
+    .policy-bar-row .policy-bar-pct { grid-column: 2; grid-row: 1; justify-self: end; }
+    .policy-bar-row .policy-bar-label { grid-column: 1 / -1; grid-row: 2; font-size: 0.88rem; color: var(--muted); }
+    .policy-bar-row .bar-track::before { content: ""; position: absolute; left: 58%; top: 0; bottom: 0; width: 2px; background: rgba(0,0,0,0.2); z-index: 1; }
+    .policy-bar-row .bar-fill { height: 100%; border-radius: 8px; }
+    .policy-bar-label { font-weight: 600; font-size: 0.95rem; }
+    .policy-bar-pct { font-family: "Montserrat", sans-serif; font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
+    .policy-bar-row.bad .policy-bar-pct { color: var(--danger); }
+    .policy-bar-row.good .policy-bar-pct { color: #0d9488; }
+    .lever-list { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; color: var(--muted); }
+    .lever-item { padding: 0.5rem 0.75rem; background: rgba(0,114,188,0.03); border-radius: 8px; }
+
+    .pa-dashboard { overflow-x: hidden; }
+    .pa-dashboard .stat-card, .pa-dashboard nav a, .pa-dashboard .back-link { -webkit-tap-highlight-color: rgba(0,114,188,0.12); }
+    /* Mobile: tight, app-like, data-forward — 768px */
+    @media (max-width: 768px) {
+      .pa-dashboard [id] { scroll-margin-top: 2.85rem; }
+      .pa-dashboard .pa-dashboard-header { padding: 0.28rem 0.55rem 0.32rem; border-radius: 0 0 10px 10px; }
+      .pa-dashboard .report-by { font-size: 0.48rem; margin: 0 0 0.06rem; letter-spacing: 0.08em; }
+      .pa-dashboard .pa-dashboard-header h1 { font-size: 0.92rem; line-height: 1.15; letter-spacing: -0.03em; }
+      .pa-dashboard .tagline { font-size: 0.55rem; margin: 0.04rem 0 0; line-height: 1.2; opacity: 0.9; }
+      .pa-dashboard nav { margin-top: 0.28rem; gap: 0.18rem; }
+      .pa-dashboard nav a { padding: 0.35rem 0.5rem; font-size: 0.62rem; border-radius: 8px; min-height: 2.75rem; min-width: 2.75rem; display: inline-flex; align-items: center; justify-content: center; }
+      .pa-dashboard main { padding: 0.55rem 0.5rem; }
+      .pa-dashboard section { padding: 0.6rem 0.55rem; margin-bottom: 0.9rem; border-radius: 12px; }
+      .pa-dashboard h2 { font-size: 1.02rem; margin-bottom: 0.28rem; letter-spacing: -0.02em; }
+      .pa-dashboard h3 { font-size: 0.88rem; margin-bottom: 0.28rem; }
+      .pa-dashboard .section-intro { font-size: 0.78rem; margin-bottom: 0.6rem; line-height: 1.45; }
+      .pa-dashboard .layout-split { gap: 0.6rem; margin-top: 0.6rem; grid-template-columns: 1fr; }
+      .pa-dashboard .card { padding: 0.55rem 0.6rem; border-radius: 10px; }
+      .pa-dashboard .chart-blurb { font-size: 0.7rem; padding: 0.32rem 0.45rem; margin-top: 0.35rem; border-radius: 6px; line-height: 1.4; }
+      .pa-dashboard .bar-chart { gap: 0.5rem; padding: 0.35rem 0; }
+      .pa-dashboard .bar-row { gap: 0.12rem; }
+      .pa-dashboard .bar-row-viz .bar-track { height: 22px; border-radius: 5px; }
+      .pa-dashboard .bar-row-viz .bar-value { font-size: 0.8rem; min-width: 2.5ch; }
+      .pa-dashboard .bar-row-label { font-size: 0.72rem; font-weight: 500; color: var(--muted); }
+      .pa-dashboard .chart-caption { font-size: 0.72rem; margin-top: 0.35rem; line-height: 1.4; }
+      .pa-dashboard .overview-metrics-row { margin-bottom: 0.65rem; }
+      .pa-dashboard .overview-choose { font-size: 0.62rem; margin-bottom: 0.28rem; letter-spacing: 0.06em; }
+      .pa-dashboard .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 0.38rem; }
+      .pa-dashboard .stat-card { padding: 0.4rem 0.38rem; border-radius: 8px; }
+      .pa-dashboard .stat-label { font-size: 0.58rem; letter-spacing: 0.06em; }
+      .pa-dashboard .stat-value { font-size: 0.95rem; margin: 0.08rem 0 0.06rem; }
+      .pa-dashboard .stat-detail { font-size: 0.62rem; line-height: 1.28; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+      .pa-dashboard .overview-insight { padding: 0.55rem 0.55rem; border-radius: 10px; }
+      .pa-dashboard .overview-viewing { font-size: 0.58rem; margin-bottom: 0.28rem; letter-spacing: 0.05em; }
+      .pa-dashboard .overview-insight h3 { font-size: 0.88rem; margin-bottom: 0.22rem; }
+      .pa-dashboard .overview-insight p { font-size: 0.78rem; line-height: 1.5; }
+      .pa-dashboard .gauge-wrap { min-height: 100px; padding: 0.35rem 0; }
+      .pa-dashboard .gauge-svg { width: 160px; height: 96px; }
+      .pa-dashboard .scenario-hbar { gap: 0.15rem 0.4rem; margin-bottom: 0.5rem; }
+      .pa-dashboard .scenario-hbar-label { font-size: 0.7rem; line-height: 1.2; }
+      .pa-dashboard .scenario-hbar-pct { font-size: 0.75rem; }
+      .pa-dashboard .scenario-hbar-track { height: 22px; border-radius: 5px; }
+      .pa-dashboard .scenario-expandable { border-radius: 8px; margin-top: 0.5rem; }
+      .pa-dashboard .scenario-expandable summary { padding: 0.4rem 0.55rem; font-size: 0.78rem; }
+      .pa-dashboard .pa-map-wrap { padding: 0.45rem; border-radius: 10px; margin: 0.5rem 0; }
+      .pa-dashboard .closures-count { font-size: 2.1rem; }
+      .pa-dashboard .big-number-rainy { font-size: 3.2rem; padding: 0.1em 0.22em; border-radius: 8px; }
+      .pa-dashboard .impact-stat { padding: 0.45rem 0.55rem; border-radius: 8px; margin-bottom: 0.4rem; }
+      .pa-dashboard .impact-value { font-size: 0.98rem; }
+      .pa-dashboard .impact-label { font-size: 0.72rem; }
+      .pa-dashboard .icon-wrap { width: 28px; height: 28px; }
+      .pa-dashboard .icon-wrap svg { width: 16px; height: 16px; }
+      .pa-dashboard .policy-toggle { flex-wrap: wrap; gap: 0.28rem; margin-bottom: 0.65rem; }
+      .pa-dashboard .policy-toggle label { padding: 0.38rem 0.55rem; font-size: 0.72rem; border-radius: 8px; }
+      .pa-dashboard .policy-bar-row { gap: 0.15rem 0.4rem; }
+      .pa-dashboard .policy-bar-row .bar-track { height: 24px; border-radius: 6px; }
+      .pa-dashboard .policy-bar-row .policy-bar-label { font-size: 0.72rem; }
+      .pa-dashboard .lever-list { font-size: 0.72rem; gap: 0.35rem; }
+      .pa-dashboard .lever-item { padding: 0.35rem 0.45rem; border-radius: 6px; }
+      .pa-dashboard footer { padding: 0.65rem 0.5rem; font-size: 0.72rem; line-height: 1.45; }
+      .pa-dashboard .back-link { padding: 0.5rem 0.85rem; font-size: 0.7rem; margin: 0.65rem 0; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; }
+      .pa-dashboard .card table { font-size: 0.72rem; margin-top: 0.35rem; }
+      .pa-dashboard .card td, .pa-dashboard .card th { padding: 0.28rem 0.35rem; }
+      .pa-dashboard .scenarios-chart-wrap { padding: 0.55rem 0.6rem; }
+    }
+    /* Small phones: even tighter */
+    @media (max-width: 480px) {
+      .pa-dashboard .pa-dashboard-header { padding: 0.22rem 0.45rem 0.26rem; }
+      .pa-dashboard .pa-dashboard-header h1 { font-size: 0.82rem; }
+      .pa-dashboard .tagline { font-size: 0.5rem; }
+      .pa-dashboard nav a { padding: 0.2rem 0.38rem; font-size: 0.56rem; }
+      .pa-dashboard main { padding: 0.45rem 0.4rem; }
+      .pa-dashboard section { padding: 0.5rem 0.45rem; margin-bottom: 0.75rem; }
+      .pa-dashboard h2 { font-size: 0.94rem; }
+      .pa-dashboard h3 { font-size: 0.82rem; }
+      .pa-dashboard .section-intro { font-size: 0.72rem; margin-bottom: 0.5rem; }
+      .pa-dashboard .card { padding: 0.45rem 0.5rem; }
+      .pa-dashboard .stat-grid { gap: 0.3rem; }
+      .pa-dashboard .stat-card { padding: 0.32rem 0.3rem; }
+      .pa-dashboard .stat-value { font-size: 0.86rem; }
+      .pa-dashboard .stat-detail { font-size: 0.58rem; }
+      .pa-dashboard .overview-insight { padding: 0.45rem 0.45rem; }
+      .pa-dashboard .overview-insight h3 { font-size: 0.82rem; }
+      .pa-dashboard .overview-insight p { font-size: 0.72rem; }
+      .pa-dashboard .gauge-svg { width: 140px; height: 84px; }
+      .pa-dashboard .bar-row-viz .bar-track { height: 20px; }
+      .pa-dashboard .bar-row-label { font-size: 0.68rem; }
+      .pa-dashboard .bar-row-viz .bar-value { font-size: 0.75rem; }
+      .pa-dashboard .scenario-hbar-track { height: 20px; }
+      .pa-dashboard .scenario-hbar-label { font-size: 0.66rem; }
+      .pa-dashboard .scenario-hbar-pct { font-size: 0.7rem; }
+      .pa-dashboard .closures-count { font-size: 1.85rem; }
+      .pa-dashboard .big-number-rainy { font-size: 2.85rem; }
+      .pa-dashboard .impact-stat { padding: 0.38rem 0.45rem; }
+      .pa-dashboard .impact-value { font-size: 0.9rem; }
+      .pa-dashboard .impact-label { font-size: 0.68rem; }
+      .pa-dashboard .policy-bar-row .bar-track { height: 20px; }
+      .pa-dashboard .chart-blurb { font-size: 0.66rem; padding: 0.28rem 0.38rem; }
+      .pa-dashboard .chart-caption { font-size: 0.68rem; }
+      .pa-dashboard .card table { font-size: 0.66rem; }
+      .pa-dashboard .card td, .pa-dashboard .card th { padding: 0.22rem 0.28rem; }
+    }
+    /* iPhone / narrow: max density */
+    @media (max-width: 390px) {
+      .pa-dashboard .pa-dashboard-header h1 { font-size: 0.78rem; }
+      .pa-dashboard nav a { font-size: 0.52rem; padding: 0.18rem 0.32rem; }
+      .pa-dashboard main { padding: 0.4rem 0.35rem; }
+      .pa-dashboard section { padding: 0.45rem 0.4rem; margin-bottom: 0.65rem; }
+      .pa-dashboard h2 { font-size: 0.88rem; }
+      .pa-dashboard .stat-value { font-size: 0.8rem; }
+      .pa-dashboard .gauge-svg { width: 120px; height: 72px; }
+      .pa-dashboard .big-number-rainy { font-size: 2.5rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="pa-dashboard">
+<a href="#main-content" class="skip-link">Skip to main content</a>
+<header class="pa-dashboard-header">
+  <p class="report-by">Report by Oliver Wyman · Commissioned by HAP</p>
+  <h1>Time to Act</h1>
+  <p class="tagline">Pennsylvania's Hospitals, Patients &amp;&#32;Communities · Jan 2026</p>
+  <nav>
+    <a href="#overview">Overview</a>
+    <a href="#today">Today's Reality</a>
+    <a href="#scenarios">2030 Scenarios</a>
+    <a href="#access">Access &amp;&#32;Closures</a>
+    <a href="#levers">Policy Levers</a>
+    <a href="#methods">Methods &amp;&#32;Sources</a>
+  </nav>
+</header>
+
+<main id="main-content">
+
+  <section id="overview" class="overview-section">
+    <h2>Hospitals as Economic Engines</h2>
+    <p class="section-intro">Tap a metric below. The detail panel updates to show that measure—so you always see the number and context for what you selected.</p>
+
+    <input type="radio" name="metric" id="m-gdp" checked>
+    <input type="radio" name="metric" id="m-output">
+    <input type="radio" name="metric" id="m-community">
+    <input type="radio" name="metric" id="m-jobs">
+    <input type="radio" name="metric" id="m-wages">
+
+    <div class="overview-metrics-row">
+      <p class="overview-choose">Choose a metric</p>
+      <div class="stat-grid">
+        <label for="m-gdp" class="stat-card"><span class="stat-label">Share of state GDP</span><span class="stat-value">19%</span><span class="stat-detail">Hospitals' share of the Commonwealth's GDP.</span></label>
+        <label for="m-output" class="stat-card"><span class="stat-label">Total economic output</span><span class="stat-value">$195B</span><span class="stat-detail">Direct and indirect contributions statewide.</span></label>
+        <label for="m-community" class="stat-card"><span class="stat-label">Community benefit</span><span class="stat-value">$10.8B</span><span class="stat-detail">Medicare/Medicaid shortfalls, charity, bad debt.</span></label>
+        <label for="m-jobs" class="stat-card"><span class="stat-label">Jobs supported</span><span class="stat-value">300,000</span><span class="stat-detail">Employed directly by hospitals in PA.</span></label>
+        <label for="m-wages" class="stat-card"><span class="stat-label">Wages and benefits</span><span class="stat-value">$33B+</span><span class="stat-detail">Wages and benefits paid by hospitals.</span></label>
+      </div>
+    </div>
+
+    <div class="overview-layout">
+      <div class="overview-insight">
+        <p class="overview-viewing">Viewing: <span class="metric-name metric-gdp">Share of state GDP</span><span class="metric-name metric-output">Total economic output</span><span class="metric-name metric-community">Community benefit</span><span class="metric-name metric-jobs">Jobs supported</span><span class="metric-name metric-wages">Wages and benefits</span></p>
+        <div class="focus-content focus-gdp">
+          <h3>Hospitals' share of the economy</h3>
+          <p>Hospitals' direct and indirect activity represents about 19% of Pennsylvania's GDP.</p>
+        </div>
+        <div class="focus-content focus-output">
+          <h3>Total statewide economic output</h3>
+          <p>Hospitals generate roughly $195 billion in total economic activity across the Commonwealth.</p>
+        </div>
+        <div class="focus-content focus-community">
+          <h3>Community benefit and safety-net role</h3>
+          <p>Hospitals provide about $10.8 billion in community benefit, covering public program shortfalls, charity care, and bad debt.</p>
+        </div>
+        <div class="focus-content focus-jobs">
+          <h3>Hospitals as major employers</h3>
+          <p>Hospitals directly employ more than 300,000 Pennsylvanians, in addition to supporting many more jobs through supply chains.</p>
+        </div>
+        <div class="focus-content focus-wages">
+          <h3>Wages and benefits</h3>
+          <p>Hospitals pay over $33 billion in wages and benefits, sustaining families and local economies statewide.</p>
+        </div>
+        <div class="gauge-wrap" role="img" aria-label="Gauge showing selected metric">
+          <svg class="gauge-svg gauge-gdp" viewBox="0 0 120 85" aria-hidden="true">
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round"/>
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#0072bc" stroke-width="12" stroke-linecap="round" stroke-dasharray="30 127"/>
+            <text x="60" y="52" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="700" font-size="16" fill="#0072bc">19%</text>
+            <text x="60" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">of PA GDP</text>
+          </svg>
+          <svg class="gauge-svg gauge-output" viewBox="0 0 120 85" aria-hidden="true">
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round"/>
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#0072bc" stroke-width="12" stroke-linecap="round" stroke-dasharray="153 4"/>
+            <text x="60" y="52" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="700" font-size="15" fill="#0072bc">$195B</text>
+            <text x="60" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">economic output</text>
+          </svg>
+          <svg class="gauge-svg gauge-community" viewBox="0 0 120 85" aria-hidden="true">
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round"/>
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#0072bc" stroke-width="12" stroke-linecap="round" stroke-dasharray="113 44"/>
+            <text x="60" y="52" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="700" font-size="15" fill="#0072bc">$10.8B</text>
+            <text x="60" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">community benefit</text>
+          </svg>
+          <svg class="gauge-svg gauge-jobs" viewBox="0 0 120 85" aria-hidden="true">
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round"/>
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#0072bc" stroke-width="12" stroke-linecap="round" stroke-dasharray="118 39"/>
+            <text x="60" y="52" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="700" font-size="15" fill="#0072bc">300K</text>
+            <text x="60" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">jobs supported</text>
+          </svg>
+          <svg class="gauge-svg gauge-wages" viewBox="0 0 120 85" aria-hidden="true">
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#e2e8f0" stroke-width="12" stroke-linecap="round"/>
+            <path d="M 10 65 A 50 50 0 0 1 110 65" fill="none" stroke="#0072bc" stroke-width="12" stroke-linecap="round" stroke-dasharray="104 53"/>
+            <text x="60" y="52" text-anchor="middle" font-family="Montserrat, sans-serif" font-weight="700" font-size="15" fill="#0072bc">$33B+</text>
+            <text x="60" y="68" text-anchor="middle" font-family="system-ui, sans-serif" font-size="10" fill="#64748b">wages &amp;&#32;benefits</text>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="today" class="alt">
+    <h2>Today's Financial Reality</h2>
+    <p class="section-intro">Despite disciplined cost management and below-average costs per discharge, many hospitals are under sustained financial pressure.</p>
+
+    <div class="layout-split">
+      <div class="card">
+        <h3>Operating margins, 2024</h3>
+        <p class="chart-blurb">How many hospitals are financially healthy vs. struggling? Bars show the share of PA hospitals in each category.</p>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:51%;background:#0072bc"></div></div><span class="bar-value">51%</span></div>
+            <span class="bar-row-label">Struggling (below 4% profit)</span>
+          </div>
+          <div class="bar-row">
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:37%;background:#b91c1c"></div></div><span class="bar-value">37%</span></div>
+            <span class="bar-row-label">Losing money</span>
+          </div>
+        </div>
+        <p class="chart-caption">In plain terms: <strong>51%</strong> of PA hospitals earn too little to thrive, and <strong>37%</strong> are in the red—spending more than they take in.</p>
+      </div>
+      <div class="card">
+        <h3>What hospitals get paid vs. what care costs</h3>
+        <p class="chart-blurb">100% = hospitals are fully paid for care. Bars below 100% mean hospitals absorb the shortfall.</p>
+        <div class="bar-chart">
+          <div class="bar-row">
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:71%;background:#0072bc"></div></div><span class="bar-value">71%</span></div>
+            <span class="bar-row-label">Private insurance (PA)</span>
+          </div>
+          <div class="bar-row">
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:87%;background:#0072bc"></div></div><span class="bar-value">87%</span></div>
+            <span class="bar-row-label">Medicaid (PA)</span>
+          </div>
+          <div class="bar-row">
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:82%;background:#0072bc"></div></div><span class="bar-value">82%</span></div>
+            <span class="bar-row-label">Medicare (PA)</span>
+          </div>
+        </div>
+        <p class="chart-caption">Medicaid and Medicare pay hospitals <strong>less than the cost of care</strong>. Hospitals make up the difference or cut services.</p>
+      </div>
+    </div>
+
+    <div class="layout-split">
+      <div class="card">
+        <h3>Closures to date</h3>
+        <p class="scroll-reveal"><span class="closures-count">25</span> hospitals have closed in Pennsylvania since 2016.</p>
+        <p class="chart-blurb">Each dot = one hospital that has closed since 2016.</p>
+        <div class="pa-map-wrap scroll-reveal">
+          <svg viewBox="0 0 200 120" role="img" aria-label="Map of Pennsylvania with 25 hospital closure locations" width="100%">
+            <path fill="#e8f4fc" stroke="#0072bc" stroke-width="1.5" d="M 34.85 10.65 L 34.85 20.54 L 167.97 20.54 L 171.28 25.91 L 173.60 25.70 L 177.24 30.22 L 176.58 36.02 L 182.04 42.69 L 186.68 42.90 L 188.00 45.70 L 184.03 48.49 L 182.37 52.80 L 174.75 60.97 L 177.24 65.05 L 172.60 71.94 L 172.93 76.45 L 176.74 77.74 L 177.07 82.69 L 185.68 90.65 L 184.19 94.09 L 174.92 100.54 L 174.42 103.55 L 166.31 106.77 L 160.18 105.70 L 155.05 110.00 L 43.46 110.00 L 12.00 110.00 L 12.00 74.09 L 12.00 21.40 L 17.63 19.25 L 34.85 10.00 L 34.85 10.65 Z"/>
+            <circle cx="45" cy="35" r="2.5" fill="#0072bc"/><circle cx="72" cy="42" r="2.5" fill="#0072bc"/><circle cx="95" cy="38" r="2.5" fill="#0072bc"/><circle cx="118" cy="45" r="2.5" fill="#0072bc"/><circle cx="142" cy="52" r="2.5" fill="#0072bc"/>
+            <circle cx="165" cy="48" r="2.5" fill="#0072bc"/><circle cx="55" cy="58" r="2.5" fill="#0072bc"/><circle cx="78" cy="62" r="2.5" fill="#0072bc"/><circle cx="102" cy="68" r="2.5" fill="#0072bc"/>
+            <circle cx="128" cy="72" r="2.5" fill="#0072bc"/><circle cx="155" cy="65" r="2.5" fill="#0072bc"/><circle cx="48" cy="78" r="2.5" fill="#0072bc"/><circle cx="88" cy="82" r="2.5" fill="#0072bc"/>
+            <circle cx="115" cy="85" r="2.5" fill="#0072bc"/><circle cx="140" cy="78" r="2.5" fill="#0072bc"/><circle cx="62" cy="92" r="2.5" fill="#0072bc"/><circle cx="95" cy="95" r="2.5" fill="#0072bc"/>
+            <circle cx="125" cy="92" r="2.5" fill="#0072bc"/><circle cx="72" cy="52" r="2.5" fill="#0072bc"/><circle cx="108" cy="55" r="2.5" fill="#0072bc"/><circle cx="132" cy="60" r="2.5" fill="#0072bc"/>
+            <circle cx="58" cy="68" r="2.5" fill="#0072bc"/><circle cx="85" cy="72" r="2.5" fill="#0072bc"/><circle cx="148" cy="88" r="2.5" fill="#0072bc"/><circle cx="98" cy="48" r="2.5" fill="#0072bc"/>
+          </svg>
+        </div>
+        <p class="chart-caption">25 facilities closed (2016–present)</p>
+      </div>
+      <div class="card">
+        <h3>Bond ratings</h3>
+        <p class="chart-blurb">Lower ratings = higher borrowing costs. PA hospitals pay more to borrow than the national average.</p>
+        <table border="0" cellpadding="4" cellspacing="0" style="width:100%;border-collapse:collapse;margin-top:0.5rem">
+          <tr style="border-bottom:1px solid rgba(0,114,188,0.12)"><td><strong>Category</strong></td><td><strong>Pennsylvania</strong></td><td><strong>National</strong></td></tr>
+          <tr style="border-bottom:1px solid rgba(0,114,188,0.08)"><td>Hospital systems</td><td>A</td><td>A+</td></tr>
+          <tr><td>Stand-alone hospitals</td><td>BBB+</td><td>A-</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <section id="scenarios">
+    <h2>2030 Financial Scenarios</h2>
+    <p class="section-intro">By 2030, Pennsylvania hospitals could end up in very different financial positions depending on policy and the economy. <strong>Positive</strong> (orange) = hospitals earn more than they spend. <strong>Negative</strong> (red) = hospitals spend more than they take in.</p>
+
+    <div class="card scenarios-chart-wrap">
+      <h3>Possible 2030 outcomes: hospital profit or loss</h3>
+      <p class="chart-blurb">Left of the line = hospitals lose money. Right = they earn. Further right = healthier.</p>
+      <div class="bar-chart scenario-hbars">
+        <div class="scenario-hbar">
+          <div class="scenario-hbar-track"><div class="scenario-hbar-fill" style="width:45.8%;margin-left:12.5%;background:var(--danger)"></div></div>
+          <span class="scenario-hbar-pct" style="color:var(--danger)">-11%</span>
+          <span class="scenario-hbar-label">Rainy Day (Downward Cycle)</span>
+        </div>
+        <div class="scenario-hbar">
+          <div class="scenario-hbar-track"><div class="scenario-hbar-fill" style="width:12.5%;margin-left:45.8%;background:#0072bc"></div></div>
+          <span class="scenario-hbar-pct" style="color:var(--primary)">-3%</span>
+          <span class="scenario-hbar-label">Baseline with H.R. 1</span>
+        </div>
+        <div class="scenario-hbar">
+          <div class="scenario-hbar-track"><div class="scenario-hbar-fill" style="width:4.2%;margin-left:54.1%;background:#0072bc"></div></div>
+          <span class="scenario-hbar-pct" style="color:var(--primary)">-1%</span>
+          <span class="scenario-hbar-label">Baseline (No H.R. 1)</span>
+        </div>
+        <div class="scenario-hbar">
+          <div class="scenario-hbar-track"><div class="scenario-hbar-fill scenario-fill-pos" style="width:20.8%;background:var(--accent)"></div></div>
+          <span class="scenario-hbar-pct" style="color:var(--accent)">+5%</span>
+          <span class="scenario-hbar-label">Sustainability Prevails (Upward Cycle)</span>
+        </div>
+      </div>
+
+      <div class="scenario-expandable">
+        <details>
+          <summary>Rainy Day (Downward Cycle) — -11%</summary>
+          <ul><li>12–14 additional hospitals could close by 2030.</li><li>Higher unemployment reduces Commercial coverage.</li><li>Medicare sequestration increases to 4%.</li><li>Loss of 340B discounts increases drug costs.</li></ul>
+        </details>
+        <details>
+          <summary>Baseline with H.R. 1 — -3%</summary>
+          <ul><li>95,000 fewer ACA enrollees, 300,000 fewer Medicaid enrollees.</li><li>Medicaid payments capped at Medicare rates.</li><li>Higher uncompensated care.</li></ul>
+        </details>
+        <details>
+          <summary>Baseline (No H.R. 1) — -1%</summary>
+          <ul><li>Population ages, shifting more patients into Medicare.</li><li>Medicaid and Medicare reimbursement grow more slowly than costs.</li><li>Enhanced ACA subsidies expire.</li></ul>
+        </details>
+        <details>
+          <summary>Sustainability Prevails (Upward Cycle) — +5%</summary>
+          <ul><li>Commercial reimbursement rises to national median.</li><li>Medical liability reform reduces premium costs.</li><li>AI and operational improvements enhance productivity.</li></ul>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="access" class="alt">
+    <h2>Access and Community Impact</h2>
+    <p class="section-intro">Hospital closures and service reductions translate into longer travel times, fewer local jobs, and diminished economic activity.</p>
+    <div class="layout-split access-split">
+      <div class="card rainy-day-card">
+        <h3>Closures in a Rainy Day path</h3>
+        <p class="chart-blurb">If we don't act, this many more hospitals could close by 2030.</p>
+        <p class="big-number big-number-rainy">12–14</p>
+        <p>additional hospitals could be forced to close without intervention.</p>
+      </div>
+      <div class="card impact-card">
+        <h3>Impact on communities</h3>
+        <span class="impact-card-heading">These are the impacts</span>
+        <p class="impact-intro">Without action, affected communities would face:</p>
+        <div class="impact-stat">
+          <div class="icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5H5v5Z"/><path d="M5 12l2-4h10l2 4"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>
+          </div>
+          <div class="impact-stat-content"><span class="impact-value">+22 min</span><span class="impact-label">Additional drive time to nearest hospital and ER</span></div>
+        </div>
+        <div class="impact-stat">
+          <div class="icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/></svg>
+          </div>
+          <div class="impact-stat-content"><span class="impact-value">3,000+</span><span class="impact-label">Local jobs at risk</span></div>
+        </div>
+        <div class="impact-stat">
+          <div class="icon-wrap" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div class="impact-stat-content"><span class="impact-value">$900M+</span><span class="impact-label">Lost wages tied to hospitals alone</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="levers">
+    <h2>Policy Levers: Moving Toward Sustainability</h2>
+    <p class="section-intro">State leaders control several levers. Choose a path below to see what happens by 2030: no changes, or action on reimbursement, liability, and other factors.</p>
+
+    <div class="card levers-card">
+      <h3>What happens if we act—or don't?</h3>
+      <input type="radio" name="policy-path" id="path-none" checked>
+      <input type="radio" name="policy-path" id="path-action">
+      <div class="policy-toggle">
+        <label for="path-none">No changes — stay the course</label>
+        <label for="path-action">With policy action</label>
+      </div>
+
+      <div class="policy-outcome policy-outcome-none">
+        <div class="policy-viz">
+          <div class="policy-bar-row bad">
+            <div class="bar-track"><div class="bar-fill" style="width:46%;margin-left:12%;background:var(--danger)"></div></div>
+            <span class="policy-bar-pct">-11%</span>
+            <span class="policy-bar-label">Where we're headed</span>
+          </div>
+        </div>
+        <p class="chart-blurb" style="margin-top:1rem">Hospitals lose money. Higher risk of closures. Communities lose access.</p>
+      </div>
+
+      <div class="policy-outcome policy-outcome-action">
+        <div class="policy-viz">
+          <div class="policy-bar-row good">
+            <div class="bar-track"><div class="bar-fill" style="width:21%;margin-left:58%;background:var(--accent)"></div></div>
+            <span class="policy-bar-pct">+5%</span>
+            <span class="policy-bar-label">Where we could land</span>
+          </div>
+        </div>
+        <p class="chart-blurb" style="margin-top:1rem">Hospitals are financially healthy. Services preserved. Communities stay connected.</p>
+      </div>
+
+      <h4 style="margin:1.5rem 0 0.5rem;font-size:1rem">Levers the state can adjust</h4>
+      <div class="lever-list">
+        <div class="lever-item"><strong>Medicaid reimbursement</strong> — Current, Improved, or Transformed</div>
+        <div class="lever-item"><strong>Medical liability</strong> — Current, Reformed, or Strong reform</div>
+        <div class="lever-item"><strong>Administrative burden</strong> — Unchanged, Streamlined, or Modernized</div>
+        <div class="lever-item"><strong>Workforce &amp;&#32;AI</strong> — Limited, Targeted, or Broad</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="methods" class="alt">
+    <h2>Methods and Sources</h2>
+    <p>This dashboard summarizes key findings from <em>"Time to Act: What The Future Holds For Pennsylvania's Hospitals, Patients, and Communities"</em> (January 2026). Prepared by <strong>Oliver Wyman</strong> for <strong>HAP</strong>.</p>
+    <ul>
+      <li>Quantitative values are from the report text and endnotes.</li>
+      <li>Scenarios based on Baseline, Baseline with H.R. 1, Rainy Day, and Sustainability Prevails paths.</li>
+    </ul>
+  </section>
+
+</main>
+
+<footer>
+  <p><strong>Oliver Wyman</strong> prepared this analysis for <strong>The Hospital and Healthsystem Association of Pennsylvania (HAP)</strong>.</p>
+</footer>
+
+<p><a href="#main-content" class="back-link">Back to top</a></p>
+</div>
+</body>
+</html>
