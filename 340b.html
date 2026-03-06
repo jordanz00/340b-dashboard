@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>340B Drug Pricing Program | HAP</title>
-  <meta name="description" content="HAP supports policies that protect the 340B program and preserve hospitals' ability to use contract pharmacies for patient access to medications.">
+  <meta name="description" content="HAP advocates for the 340B program — protecting Pennsylvania’s safety-net hospitals and the patients they serve. 30+ years of proven results; manufacturers must not undermine it.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
@@ -53,7 +53,14 @@
     .pa-dashboard section.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s var(--ease-out), transform 0.55s var(--ease-out); }
     .pa-dashboard section.reveal.visible { opacity: 1; transform: translateY(0); }
     @media (prefers-reduced-motion: reduce) { .pa-dashboard section.reveal { opacity: 1; transform: none; transition: none; } }
-    .pa-dashboard .section-label { font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.35rem; }
+    .pa-dashboard .section-header { display: flex; align-items: flex-start; gap: 0.65rem; margin-bottom: 0.35rem; }
+.pa-dashboard .section-header + .section-intro,
+.pa-dashboard .section-header ~ .key-message,
+.pa-dashboard .section-header ~ .key-issues { margin-top: 0; }
+.pa-dashboard .section-icon { flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(0,114,188,0.08); color: var(--primary); margin-top: 0.1rem; }
+.pa-dashboard .section-icon svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.pa-dashboard .section-icon svg.icon-fill { stroke: none; fill: currentColor; }
+.pa-dashboard .section-label { font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.35rem; }
     .pa-dashboard h2 { margin: 0 0 0.5rem; font-family: "Montserrat", sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); letter-spacing: -0.02em; line-height: 1.25; }
     .pa-dashboard h3 { margin: 0 0 0.4rem; font-family: "Montserrat", sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text); }
     .pa-dashboard .section-intro { margin: 0 0 1rem; color: var(--muted); font-size: 0.92rem; line-height: 1.55; max-width: 58ch; }
@@ -88,6 +95,10 @@
     .pa-dashboard .us-map-wrap .state.protection:hover { filter: brightness(1.08); }
     .pa-dashboard .us-map-wrap .state.no-protection:hover { fill: #94a3b8; }
     .pa-dashboard .us-map-wrap .state { opacity: 1; }
+.pa-dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-14px); }
+.pa-dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.45s var(--ease-out) forwards; }
+@keyframes dominoIn { to { opacity: 1; transform: translateX(0); } }
+@media (prefers-reduced-motion: reduce) { .pa-dashboard .us-map-wrap .state.state-domino { opacity: 1; transform: none; animation: none; } }
     .pa-dashboard .map-container { position: relative; display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
     @media (min-width: 640px) { .pa-dashboard .map-container { grid-template-columns: 1fr 280px; align-items: start; } }
     @media (max-width: 768px) {
@@ -103,8 +114,8 @@
     @media (min-width: 768px) { .pa-dashboard section.state-laws-featured { padding: 1.5rem 2rem; } .pa-dashboard section.state-laws-featured .us-map-wrap { padding: 1.5rem; } }
     .pa-dashboard section.state-laws-featured h2 { font-size: 1.65rem; margin-bottom: 0.35rem; }
     .pa-dashboard section.state-laws-featured .section-label { color: var(--primary); font-weight: 700; }
-    .pa-dashboard .map-tooltip { position: fixed; z-index: 9999; left: 0; top: 0; padding: 0.5rem 0.85rem; background: var(--text); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; border-radius: 8px; pointer-events: none; opacity: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1); transition: opacity 0.12s ease, transform 0.12s ease; white-space: nowrap; }
-    .pa-dashboard .map-tooltip.visible { opacity: 1; transform: scale(1); }
+.pa-dashboard .map-tooltip { position: fixed; z-index: 2147483647; left: 0; top: 0; padding: 0.5rem 0.85rem; background: var(--text); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; border-radius: 8px; pointer-events: none; opacity: 0; transform: translate(-50%, 0); box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1); transition: opacity 0.12s ease, left 0.05s ease, top 0.05s ease; white-space: nowrap; }
+.pa-dashboard .map-tooltip.visible { opacity: 1; }
     .pa-dashboard .state-detail-panel { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,114,188,0.08); border-radius: var(--radius); padding: 1.1rem; box-shadow: 0 4px 20px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.9); transition: box-shadow 0.3s var(--ease-out), border-color 0.25s; }
     .pa-dashboard .state-detail-panel:not(.empty) { box-shadow: 0 6px 28px rgba(0,114,188,0.1), inset 0 1px 0 rgba(255,255,255,0.95); border-color: rgba(0,114,188,0.12); }
     @supports (backdrop-filter: blur(1px)) { .pa-dashboard .state-detail-panel { background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); } }
@@ -181,6 +192,7 @@
 </head>
 <body>
 <div class="pa-dashboard">
+<div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <header class="pa-dashboard-header">
   <p class="report-by">Hospital &amp;&#32;Healthsystem Association of Pennsylvania</p>
@@ -195,22 +207,25 @@
 <main id="main-content">
 
   <section id="overview" class="issue-hero">
-    <p class="section-label">Why this matters</p>
-    <h2>340B needs attention</h2>
-    <p class="key-message">Patient access is at risk: manufacturer restrictions and uneven oversight threaten a program that costs taxpayers nothing and helps safety-net providers.</p>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span>
+      <div><p class="section-label">Why this matters</p><h2>340B needs attention</h2></div>
+    </div>
+    <p class="key-message">For more than 30 years, the 340B program has helped hospitals serving vulnerable communities manage rising prescription drug costs. Despite HRSA oversight and a proven record, program critics want to scale it back — and several manufacturers have unlawfully stopped discounts for 340B drugs through contract pharmacies.</p>
     <ul class="key-issues">
-      <li>Manufacturers limit contract pharmacy access.</li>
-      <li>Only 21 states have contract pharmacy protection laws.</li>
-      <li>Provider audits far outnumber manufacturer audits.</li>
+      <li><strong>Manufacturers undermining the program:</strong> Several large drug companies have unilaterally stopped providing 340B discounts through community and specialty pharmacies — violating the statute.</li>
+      <li><strong>Oversight imbalance:</strong> HRSA audits 200 covered entities annually, but only five drug manufacturers — we need parity.</li>
+      <li><strong>State protection gap:</strong> Only 21 states have enacted contract pharmacy protection laws; Pennsylvania is in progress.</li>
     </ul>
-    <p class="hap-position"><strong>HAP</strong> supports 340B integrity and contract pharmacy access for Pennsylvania hospitals and the patients they serve.</p>
+    <p class="hap-position"><strong>HAP</strong> advocates to protect 340B for all Pennsylvania providers, ensure the program continues to stretch limited resources and serve more patients, and thwart manufacturers’ unlawful changes — including efforts to convert 340B from an upfront discount to a back-end rebate model.</p>
   </section>
 
   <section id="state-laws" class="state-laws-featured alt">
-    <p class="section-label">Our focus · 340B contract pharmacy protection</p>
-    <h2>State laws: contract pharmacy protection</h2>
-    <p class="section-intro">This is what’s in our bill: some states have enacted 340B contract pharmacy protection laws; others are in progress. <strong>Pennsylvania is nearly in progress.</strong> Hover for state name; click for 340B details.</p>
-    <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
+      <div><p class="section-label">Our focus · 340B contract pharmacy protection</p><h2>State laws: contract pharmacy protection</h2></div>
+    </div>
+    <p class="section-intro">HAP supports state laws that protect 340B contract pharmacy access. Some states have enacted protection laws; others are in progress. <strong>Pennsylvania is moving toward 340B contract pharmacy protection legislation.</strong> Hover for state name; click for 340B details.</p>
     <div class="map-container">
       <div class="us-map-wrap">
         <div id="us-map" aria-label="US map showing states with and without 340B contract pharmacy protection laws"></div>
@@ -231,7 +246,7 @@
     <div class="state-list-grid" id="states-without-list">
       <span>Alabama</span><span>Alaska</span><span>Arizona</span><span>California</span><span>Delaware</span><span>Florida</span><span>Georgia</span><span>Idaho</span><span>Illinois</span><span>Indiana</span><span>Iowa</span><span>Kentucky</span><span>Massachusetts</span><span>Michigan</span><span>Montana</span><span>Nevada</span><span>New Hampshire</span><span>New Jersey</span><span>New York</span><span>North Carolina</span><span>Ohio</span><span>Pennsylvania</span><span>South Carolina</span><span>Texas</span><span>Virginia</span><span>Washington</span><span>Wisconsin</span><span>Wyoming</span>
     </div>
-    <p class="section-intro" style="margin-top:1rem;font-size:0.8rem;">Sources: ASHP, America's Essential Hospitals, MultiState.</p>
+    <p class="section-intro" style="margin-top:1rem;font-size:0.8rem;">Sources: American Hospital Association (AHA), ASHP, America's Essential Hospitals, MultiState.</p>
     <h3>Legal &amp;&#32;trends</h3>
     <div class="trends-card">
       <h4>Courts</h4>
@@ -248,47 +263,57 @@
   </section>
 
   <section id="what-is-340b" class="alt reveal">
-    <p class="section-label">Overview</p>
-    <h2>What is 340B?</h2>
-    <p class="section-intro">Discount outpatient drug program for eligible providers. Taxpayer-neutral; stretches resources for vulnerable patients.</p>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 6h8v12H8z"/><path d="M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/><path d="M14 18v2a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2v-2"/><ellipse cx="12" cy="12" rx="4" ry="2"/></svg></span>
+      <div><p class="section-label">Overview</p><h2>What is 340B?</h2></div>
+    </div>
+    <p class="section-intro">Section 340B of the Public Health Service Act requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted prices to eligible providers caring for uninsured and low-income patients. <strong>It is an upfront discount, not a rebate</strong> — and it costs taxpayers nothing. 340B allows hospitals to stretch limited federal resources and expand health services to patients and communities.</p>
     <div class="stat-grid">
       <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="7" data-suffix="%">0%</span>
-        <span class="stat-label">of the total U.S. drug market — drugs purchased through 340B</span>
+        <span class="stat-value count-up" data-count-up="3" data-suffix="%">0%</span>
+        <span class="stat-label">of drug companies’ global revenues — 340B discounts (2022, AHA)</span>
       </div>
     </div>
   </section>
 
   <section id="eligibility" class="reveal">
-    <p class="section-label">Program</p>
-    <h2>Who qualifies</h2>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 9h6v6H9z"/></svg></span>
+      <div><p class="section-label">Program</p><h2>Who qualifies</h2></div>
+    </div>
     <ul>
+      <li>Federal grantee organizations</li>
+      <li>Critical Access Hospitals (CAHs), Sole Community Hospitals (SCHs), Rural Referral Centers (RRCs)</li>
+      <li>Public and nonprofit Disproportionate Share Hospitals (DSH) serving low-income populations</li>
       <li>Children’s and cancer hospitals</li>
-      <li>Critical Access Hospitals (CAHs) and Disproportionate Share Hospitals (DSHs)</li>
       <li>Federally Qualified Health Centers (FQHCs)</li>
     </ul>
   </section>
 
   <section id="oversight" class="alt reveal issue-callout">
-    <p class="section-label">Accountability</p>
-    <h2>Oversight gap</h2>
-    <p class="section-intro">In 2024: <strong>200+ hospitals</strong> audited vs. <strong>6% of manufacturers</strong>. The gap matters for accountability.</p>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
+      <div><p class="section-label">Accountability</p><h2>Oversight gap</h2></div>
+    </div>
+    <p class="section-intro">340B hospitals must recertify annually, participate in HRSA and manufacturer audits, and maintain auditable records. Yet oversight is uneven: <strong>HRSA audits 200 covered entities every year</strong>, while <strong>only five drug companies are audited annually</strong>. HAP and AHA support parity in oversight so drug companies are held to the same accountability as providers.</p>
     <div class="stat-grid">
       <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="200" data-suffix="+">0</span>
-        <span class="stat-label">hospitals audited in 2024</span>
+        <span class="stat-value count-up" data-count-up="200" data-suffix="">0</span>
+        <span class="stat-label">covered entities audited annually (HRSA)</span>
       </div>
       <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="6" data-suffix="%">0%</span>
-        <span class="stat-label">of manufacturers audited (same period)</span>
+        <span class="stat-value count-up" data-count-up="5" data-suffix="">0</span>
+        <span class="stat-label">drug manufacturers audited annually</span>
       </div>
     </div>
   </section>
 
   <section id="pa-impact" class="reveal">
-    <p class="section-label">Pennsylvania</p>
-    <h2>340B in PA</h2>
-    <p class="section-intro"><strong><span class="count-up" data-count-up="72">0</span> PA hospitals (<span class="count-up" data-count-up="30" data-suffix="%">0</span>)</strong> participate in 340B:</p>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/><path d="M9 11h6v6H9z"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></span>
+      <div><p class="section-label">Pennsylvania</p><h2>340B in PA</h2></div>
+    </div>
+    <p class="section-intro">340B-eligible Pennsylvania hospitals are the safety net for their communities. <strong><span class="count-up" data-count-up="72">0</span> PA hospitals (<span class="count-up" data-count-up="30" data-suffix="%">0</span>)</strong> participate in 340B — many care for children, cancer patients, and rural residents.</p>
     <div class="stat-grid">
       <div class="stat-card">
         <span class="stat-value count-up" data-count-up="49" data-suffix="%">0%</span>
@@ -306,29 +331,37 @@
   </section>
 
   <section id="community-benefit" class="alt reveal">
-    <p class="section-label">Impact</p>
-    <h2>Community benefit</h2>
-    <p class="section-intro"><strong><span class="count-up" data-count-up="23" data-suffix="%">0</span></strong> average drug savings; free/reduced Rx; mobile mammography, screening, dental.</p>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg class="icon-fill" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
+      <div><p class="section-label">Impact</p><h2>Community benefit</h2></div>
+    </div>
+    <p class="section-intro">340B savings help hospitals provide free care for uninsured patients, free vaccines, mental health services, medication management, mobile mammography, screening, dental care, and more. Without this support, communities could lose access to lifesaving care.</p>
     <div class="highlight-box">
-      <p class="big-stat">$<span class="count-up" data-count-up="7.95" data-decimals="2">0</span>B</p>
-      <p style="margin:0;font-size:0.88rem;color:var(--muted);">Community benefits from 340B hospitals, 2024 (<strong><span class="count-up" data-count-up="9" data-suffix="%">0</span> vs. 2023</strong>).</p>
+      <p class="big-stat">$<span class="count-up" data-count-up="100" data-decimals="0">0</span>B</p>
+      <p style="margin:0;font-size:0.88rem;color:var(--muted);">Community benefits from 340B hospitals in 2022 — <strong>47% increase</strong> from 2019 (AHA).</p>
     </div>
   </section>
 
   <section id="access" class="reveal issue-callout">
-    <p class="section-label">The problem</p>
-    <h2>Access at risk</h2>
-    <p class="section-intro"><strong>Some manufacturers limit hospitals to one contract pharmacy.</strong> Rural and underserved patients depend on contract and specialty pharmacies for high-cost drugs.</p>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2 10 18H2L12 2z"/><path d="M12 9v4M12 15h.01"/></svg></span>
+      <div><p class="section-label">The problem</p><h2>Access at risk</h2></div>
+    </div>
+    <p class="section-intro"><strong>Manufacturers are unlawfully limiting 340B access.</strong> Several large drug companies have unilaterally stopped providing discounts for 340B drugs dispensed through community and specialty pharmacies — violating the 340B statute. Others are pushing to convert the program from an <strong>upfront discount to a back-end rebate</strong>, which would require cash-strapped providers to finance drugs upfront, complicate patient access, and usurp HRSA’s oversight. Rural and underserved patients depend on contract pharmacies for high-cost drugs.</p>
   </section>
 
   <section id="pa-safeguards" class="reveal">
-    <p class="section-label">Pennsylvania</p>
-    <h2>PA safeguards: no duplicate discounts</h2>
+    <div class="section-header">
+      <span class="section-icon" aria-hidden="true"><svg class="icon-fill" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+      <div><p class="section-label">Pennsylvania</p><h2>PA safeguards: no duplicate discounts</h2></div>
+    </div>
+    <p class="section-intro">HAP supports program integrity and compliance. Pennsylvania’s safeguards include:</p>
     <ul>
-      <li>Manufacturers need not give both a 340B discount and a Medicaid rebate on the same drug.</li>
+      <li>Manufacturers need not give both a 340B discount and a Medicaid rebate on the same drug (no duplicate discounts).</li>
       <li>DHS maintains the <strong>340B Drug Exclusion List</strong> and invoices manufacturers; covered entities may not dispense 340B-priced drugs on the list.</li>
       <li>Contract pharmacies use non-340B drugs for MA beneficiaries; DHS invoices manufacturers for those rebates.</li>
     </ul>
+    <p class="hap-position" style="margin-top:0.75rem;">HAP opposes efforts to scale back 340B, impose excessive reporting burdens, or expand regulatory burden — and supports expanding the program to reach more vulnerable communities.</p>
   </section>
 
 </main>
@@ -377,10 +410,20 @@
       var projection = d3.geoAlbersUsa().fitSize([width, height], states);
       var path = d3.geoPath(projection);
       var g = svg.append("g");
-      var paths = g.selectAll("path").data(states.features).join("path").attr("class", function(d) {
+      var indexed = states.features.map(function(d, i) { return { d: d, i: i }; });
+      indexed.sort(function(a, b) { var ca = path.centroid(a.d), cb = path.centroid(b.d); return ca[0] - cb[0]; });
+      indexed.forEach(function(item, order) { item.order = order; });
+      var orderMap = {};
+      indexed.forEach(function(item) { orderMap[item.i] = item.order; });
+      var paths = g.selectAll("path").data(states.features).join("path").attr("class", function(d, i) {
         var abbr = getStateAbbr(d);
-        return "state " + (abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "protection" : "no-protection");
+        var base = "state " + (abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "protection" : "no-protection");
+        return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? base : base + " state-domino";
       }).attr("d", path).attr("data-state", function(d) { return getStateAbbr(d) || (d.id != null ? d.id : ""); }).attr("opacity", 1);
+      paths.each(function(_, i) {
+        var order = orderMap[i] != null ? orderMap[i] : 0;
+        this.style.animationDelay = (order * 38) + "ms";
+      });
       bindMapInteractions(paths);
       scheduleMapFadeIn();
     }).catch(function() {
@@ -411,10 +454,9 @@
     if (!tooltip || !panel) return;
     function placeTooltip(ev) {
       var x = ev.clientX, y = ev.clientY;
-      var offset = 12;
-      var l = x + offset, t = y + offset;
-      tooltip.style.left = l + "px";
-      tooltip.style.top = t + "px";
+      var offset = 10;
+      tooltip.style.left = x + "px";
+      tooltip.style.top = (y + offset) + "px";
     }
     paths.on("mouseenter", function(ev, d) {
       var abbr = getStateAbbr(d);
