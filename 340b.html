@@ -45,11 +45,13 @@
     .pa-dashboard nav a:hover { color: var(--primary); border-color: rgba(0,114,188,0.28); box-shadow: 0 6px 20px rgba(0,114,188,0.1); transform: translateY(-2px); }
     .pa-dashboard nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
     .pa-dashboard main { max-width: 70rem; margin: 0 auto; padding: var(--space-lg) 1.5rem; position: relative; z-index: 1; }
-    .pa-dashboard section { margin-bottom: var(--space-xl); padding: var(--space-lg); background: var(--glass-bg); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); border: 1px solid rgba(0,114,188,0.06); transition: box-shadow 0.35s var(--ease-out), border-color 0.25s var(--ease-out); }
+    .pa-dashboard section { margin-bottom: var(--space-xl); padding: var(--space-lg); background: var(--glass-bg); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); border: 1px solid rgba(0,114,188,0.06); border-left-width: 4px; border-left-color: transparent; transition: box-shadow 0.35s var(--ease-out), border-color 0.25s var(--ease-out); }
     @supports (backdrop-filter: blur(1px)) { .pa-dashboard section { background: rgba(255,255,255,0.6); backdrop-filter: blur(24px) saturate(140%); -webkit-backdrop-filter: blur(24px) saturate(140%); box-shadow: 0 8px 32px rgba(0,114,188,0.05), inset 0 1px 0 var(--glass-border); } }
     .pa-dashboard section:hover { box-shadow: 0 12px 40px rgba(0,114,188,0.08), inset 0 1px 0 var(--glass-border); border-color: rgba(0,114,188,0.1); }
-    .pa-dashboard section.alt { background: rgba(248,251,253,0.7); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.alt { background: rgba(248,251,253,0.5); backdrop-filter: blur(28px) saturate(140%); -webkit-backdrop-filter: blur(28px) saturate(140%); } }
+    .pa-dashboard section.alt { background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(248,252,255,0.9) 100%); border-left-color: rgba(0,114,188,0.15); }
+    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.alt { background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(248,252,255,0.6) 100%); backdrop-filter: blur(28px) saturate(140%); -webkit-backdrop-filter: blur(28px) saturate(140%); } }
+    .pa-dashboard section.section-primary { background: linear-gradient(135deg, rgba(0,114,188,0.04) 0%, rgba(255,255,255,0.92) 50%); border-left-color: var(--primary); }
+    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.section-primary { background: linear-gradient(135deg, rgba(0,114,188,0.06) 0%, rgba(255,255,255,0.7) 50%); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
     .pa-dashboard section.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s var(--ease-out), transform 0.55s var(--ease-out); }
     .pa-dashboard section.reveal.visible { opacity: 1; transform: translateY(0); }
     @media (prefers-reduced-motion: reduce) { .pa-dashboard section.reveal { opacity: 1; transform: none; transition: none; } }
@@ -67,7 +69,7 @@
     .pa-dashboard ul { margin: 0.5rem 0 1rem; padding-left: 1.25rem; line-height: 1.6; }
     .pa-dashboard ul li { margin-bottom: 0.35rem; }
     .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin: 0.85rem 0; }
-    .stat-card { display: block; padding: 0.9rem 1rem; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,114,188,0.1); border-radius: var(--radius); border-left: 4px solid var(--primary); box-shadow: 0 2px 8px rgba(0,114,188,0.04); text-align: left; transition: box-shadow 0.3s var(--ease-out), transform 0.28s var(--ease-out), border-color 0.25s; }
+    .pa-dashboard .stat-card, .stat-card { display: block; padding: 0.9rem 1rem; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,114,188,0.12); border-radius: var(--radius); border-left: 4px solid var(--primary); box-shadow: 0 2px 12px rgba(0,114,188,0.06); text-align: left; transition: box-shadow 0.3s var(--ease-out), transform 0.28s var(--ease-out), border-color 0.25s; }
     .pa-dashboard .stat-card:hover { box-shadow: 0 8px 24px rgba(0,114,188,0.12); transform: translateY(-2px); border-color: rgba(0,114,188,0.2); }
     @supports (backdrop-filter: blur(1px)) { .stat-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); } }
     .stat-card .stat-value { display: block; font-size: 1.45rem; font-weight: 800; font-family: "Montserrat", sans-serif; color: var(--primary); margin: 0 0 0.15rem; letter-spacing: -0.02em; }
@@ -81,7 +83,7 @@
     .pa-dashboard .back-link:hover { text-decoration: none; background: linear-gradient(135deg, #005a94 0%, var(--primary) 100%); color: white; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,114,188,0.4); }
     .pa-dashboard .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 100; padding: 0.5rem 1rem; background: var(--primary); color: white; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 600; border-radius: 10px; transition: top 0.2s ease; }
     .pa-dashboard .skip-link:focus { top: 1rem; outline: 2px solid white; outline-offset: 2px; }
-    .pa-dashboard .highlight-box { padding: 1rem 1.25rem; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 var(--radius) var(--radius) 0; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,114,188,0.04); transition: box-shadow 0.35s var(--ease-out), border-left-color 0.25s; }
+    .pa-dashboard .highlight-box { padding: 1rem 1.25rem; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 var(--radius) var(--radius) 0; margin: 1rem 0; box-shadow: 0 2px 16px rgba(0,114,188,0.06); transition: box-shadow 0.35s var(--ease-out), border-left-color 0.25s; }
     .pa-dashboard .highlight-box:hover { box-shadow: 0 4px 20px rgba(0,114,188,0.08); }
     .pa-dashboard .big-stat { font-size: 2.2rem; font-weight: 800; font-family: "Montserrat", sans-serif; color: var(--primary); letter-spacing: -0.03em; margin: 0.2rem 0; }
     .pa-dashboard .count-up { display: inline-block; font-variant-numeric: tabular-nums; }
@@ -132,21 +134,45 @@
     .pa-dashboard .map-legend-swatch { width: 1rem; height: 1rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
     .pa-dashboard .map-legend-swatch.protection { background: var(--primary); }
     .pa-dashboard .map-legend-swatch.no-protection { background: #cbd5e1; }
-    .pa-dashboard .state-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.3rem 0.9rem; margin: 0.5rem 0 0.75rem; font-size: 0.88rem; }
-    .pa-dashboard .state-list-grid span { padding: 0.15rem 0; transition: color 0.2s var(--ease-out); }
-    .pa-dashboard .state-list-grid span:hover { color: var(--primary); }
-    .pa-dashboard .trends-card { padding: 0.85rem 1.1rem; background: rgba(255,255,255,0.5); border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); margin-top: 0.75rem; transition: box-shadow 0.3s var(--ease-out), transform 0.25s var(--ease-out), border-color 0.2s; }
-    .pa-dashboard .trends-card:hover { box-shadow: 0 6px 20px rgba(0,114,188,0.08); border-color: rgba(0,114,188,0.12); transform: translateX(2px); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard .trends-card { background: rgba(255,255,255,0.4); backdrop-filter: blur(16px); } }
-    .pa-dashboard .trends-card h4 { margin: 0 0 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--primary); }
-    .pa-dashboard .trends-card p { margin: 0; font-size: 0.86rem; color: var(--muted); line-height: 1.5; }
-    .pa-dashboard .key-message { padding: 0.75rem 1rem; background: linear-gradient(135deg, rgba(0,114,188,0.06) 0%, rgba(142,216,248,0.08) 100%); border-radius: var(--radius); border-left: 4px solid var(--primary); font-size: 0.9rem; font-weight: 500; color: var(--text); margin: 0 0 0.5rem; transition: box-shadow 0.3s var(--ease-out); }
+.pa-dashboard .state-lists-wrap { margin-top: 1.25rem; }
+.pa-dashboard .state-list-block { border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; transition: box-shadow 0.3s var(--ease-out); }
+.pa-dashboard .state-list-block:last-child { margin-bottom: 0; }
+.pa-dashboard .state-list-block.protection { background: linear-gradient(135deg, rgba(0,114,188,0.1) 0%, rgba(0,114,188,0.04) 100%); border: 1px solid rgba(0,114,188,0.18); }
+.pa-dashboard .state-list-block.protection h3 { color: var(--primary); font-size: 0.9rem; margin-bottom: 0.5rem; }
+.pa-dashboard .state-list-block.no-protection { background: linear-gradient(135deg, rgba(203,213,225,0.35) 0%, rgba(241,245,249,0.8) 100%); border: 1px solid rgba(148,163,184,0.35); }
+.pa-dashboard .state-list-block.no-protection h3 { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
+.pa-dashboard .state-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 0.25rem 0.75rem; font-size: 0.7rem; line-height: 1.5; }
+.pa-dashboard .state-list-grid .state-chip { display: inline-block; padding: 0.2rem 0.4rem; border-radius: 4px; cursor: help; transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out); position: relative; }
+.pa-dashboard .state-list-block.protection .state-chip { color: var(--primary-deep); }
+.pa-dashboard .state-list-block.protection .state-chip:hover { background: rgba(0,114,188,0.15); color: var(--primary); }
+.pa-dashboard .state-list-block.no-protection .state-chip { color: var(--text); }
+.pa-dashboard .state-list-block.no-protection .state-chip:hover { background: rgba(148,163,184,0.2); color: var(--muted); }
+.pa-dashboard .state-list-tooltip { position: fixed; z-index: 2147483646; left: 0; top: 0; max-width: 280px; padding: 0.65rem 0.95rem; background: var(--text); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.72rem; font-weight: 500; line-height: 1.5; border-radius: 10px; pointer-events: none; opacity: 0; transform: translate(-50%, -100%); margin-top: -10px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); transition: opacity 0.15s ease; white-space: normal; }
+.pa-dashboard .state-list-tooltip.visible { opacity: 1; }
+.pa-dashboard .state-list-tooltip strong { font-size: 0.78rem; display: block; margin-bottom: 0.25rem; }
+.pa-dashboard .state-list-tooltip .badge { display: inline-block; padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.65rem; margin-right: 0.25rem; margin-top: 0.15rem; }
+.pa-dashboard .state-list-tooltip .badge.yes { background: rgba(255,255,255,0.25); color: #fff; }
+.pa-dashboard .state-list-tooltip .badge.no { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+.pa-dashboard .trends-grid { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+@media (min-width: 640px) { .pa-dashboard .trends-grid { grid-template-columns: repeat(3, 1fr); } }
+.pa-dashboard .trends-card { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem 1.2rem; background: rgba(255,255,255,0.6); border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); transition: box-shadow 0.3s var(--ease-out), transform 0.25s var(--ease-out), border-color 0.2s; }
+.pa-dashboard .trends-card:hover { box-shadow: 0 6px 24px rgba(0,114,188,0.1); border-color: rgba(0,114,188,0.15); transform: translateY(-2px); }
+@supports (backdrop-filter: blur(1px)) { .pa-dashboard .trends-card { background: rgba(255,255,255,0.5); backdrop-filter: blur(16px); } }
+.pa-dashboard .trends-card-icon { flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(0,114,188,0.08); color: var(--primary); }
+.pa-dashboard .trends-card-icon svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+.pa-dashboard .trends-card-content { flex: 1; min-width: 0; }
+.pa-dashboard .trends-card h4 { margin: 0 0 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--primary); }
+.pa-dashboard .trends-card p { margin: 0; font-size: 0.86rem; color: var(--muted); line-height: 1.5; }
+    .pa-dashboard .key-message { padding: 0.85rem 1.15rem; background: linear-gradient(135deg, rgba(0,114,188,0.06) 0%, rgba(142,216,248,0.1) 100%); border-radius: var(--radius); border-left: 4px solid var(--primary); font-size: 0.9rem; font-weight: 500; color: var(--text); margin: 0 0 0.5rem; transition: box-shadow 0.3s var(--ease-out); }
     .pa-dashboard .key-message:hover { box-shadow: 0 2px 12px rgba(0,114,188,0.06); }
     .pa-dashboard .hap-position { font-size: 0.88rem; color: var(--muted); margin: 0.75rem 0 0; }
     .pa-dashboard .key-issues { margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: 0.88rem; line-height: 1.5; color: var(--text); }
     .pa-dashboard .key-issues li { margin-bottom: 0.25rem; }
-    .pa-dashboard section.issue-hero { border-left: 4px solid var(--accent); }
-    .pa-dashboard section.issue-callout { border-left: 3px solid rgba(251,176,64,0.6); }
+    .pa-dashboard section.issue-hero { border-left-color: var(--accent); background: linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(255,255,255,0.92) 40%); }
+    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.issue-hero { background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, rgba(255,255,255,0.75) 40%); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
+    .pa-dashboard section.issue-callout { border-left-color: #eab308; background: linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(255,255,255,0.9) 50%); }
+    .pa-dashboard section:not(.issue-hero):not(.alt):not(.issue-callout):not(.section-primary) { border-left-color: rgba(0,114,188,0.12); }
+    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.issue-callout { background: linear-gradient(135deg, rgba(234,179,8,0.06) 0%, rgba(255,255,255,0.7) 50%); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
     @media (min-width: 1024px) { .pa-dashboard main { padding: 2rem 2.25rem; } .pa-dashboard section { padding: 1.5rem 2rem; margin-bottom: 2rem; } .pa-dashboard h2 { font-size: 1.6rem; } .pa-dashboard h3 { font-size: 1.1rem; } .pa-dashboard .section-intro { font-size: 0.94rem; } }
     @media (max-width: 768px) {
       .pa-dashboard [id] { scroll-margin-top: 2.85rem; }
@@ -170,7 +196,11 @@
       .pa-dashboard section.state-laws-featured h2 { font-size: 1.2rem; }
       .pa-dashboard .us-map-wrap { padding: 0.75rem; margin: 0.75rem 0; }
       .pa-dashboard .map-legend { gap: 0.6rem; margin-top: 0.75rem; font-size: 0.8rem; }
-      .pa-dashboard .state-list-grid { grid-template-columns: repeat(2, 1fr); gap: 0.25rem 0.75rem; font-size: 0.82rem; }
+      .pa-dashboard .state-list-grid { grid-template-columns: repeat(2, 1fr); gap: 0.2rem 0.5rem; font-size: 0.65rem; }
+      .pa-dashboard .state-list-block { padding: 0.75rem 1rem; }
+      .pa-dashboard .state-list-block h3 { font-size: 0.82rem; }
+      .pa-dashboard .trends-grid { grid-template-columns: 1fr; }
+      .pa-dashboard .trends-card { padding: 0.85rem 1rem; }
       .pa-dashboard .trends-card { padding: 0.75rem 1rem; margin-top: 0.75rem; }
       .pa-dashboard .stat-card .stat-label { font-size: 0.72rem; }
       .pa-dashboard .card { padding: 0.55rem 0.6rem; margin-top: 0.75rem; }
@@ -193,6 +223,7 @@
 <body>
 <div class="pa-dashboard">
 <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
+<div id="state-list-tooltip" class="state-list-tooltip" aria-hidden="true"></div>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <header class="pa-dashboard-header">
   <p class="report-by">Hospital &amp;&#32;Healthsystem Association of Pennsylvania</p>
@@ -220,7 +251,7 @@
     <p class="hap-position"><strong>HAP</strong> advocates to protect 340B for all Pennsylvania providers, ensure the program continues to stretch limited resources and serve more patients, and thwart manufacturers’ unlawful changes — including efforts to convert 340B from an upfront discount to a back-end rebate model.</p>
   </section>
 
-  <section id="state-laws" class="state-laws-featured alt">
+  <section id="state-laws" class="state-laws-featured section-primary">
     <div class="section-header">
       <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
       <div><p class="section-label">Our focus · 340B contract pharmacy protection</p><h2>State laws: contract pharmacy protection</h2></div>
@@ -238,27 +269,35 @@
         <p>Select a state on the map to view 340B status.</p>
       </div>
     </div>
-    <h3>States with protection (21)</h3>
-    <div class="state-list-grid" id="states-with-list">
-      <span>Arkansas</span><span>Colorado</span><span>Hawaii</span><span>Kansas</span><span>Louisiana</span><span>Maine</span><span>Maryland</span><span>Minnesota</span><span>Mississippi</span><span>Missouri</span><span>Nebraska</span><span>New Mexico</span><span>North Dakota</span><span>Oklahoma</span><span>Oregon</span><span>Rhode Island</span><span>South Dakota</span><span>Tennessee</span><span>Utah</span><span>Vermont</span><span>West Virginia</span>
-    </div>
-    <h3>No law yet / in progress (28)</h3>
-    <div class="state-list-grid" id="states-without-list">
-      <span>Alabama</span><span>Alaska</span><span>Arizona</span><span>California</span><span>Delaware</span><span>Florida</span><span>Georgia</span><span>Idaho</span><span>Illinois</span><span>Indiana</span><span>Iowa</span><span>Kentucky</span><span>Massachusetts</span><span>Michigan</span><span>Montana</span><span>Nevada</span><span>New Hampshire</span><span>New Jersey</span><span>New York</span><span>North Carolina</span><span>Ohio</span><span>Pennsylvania</span><span>South Carolina</span><span>Texas</span><span>Virginia</span><span>Washington</span><span>Wisconsin</span><span>Wyoming</span>
+    <div class="state-lists-wrap">
+      <div class="state-list-block protection">
+        <h3>States with protection (21)</h3>
+        <div class="state-list-grid" id="states-with-list">
+          <span class="state-chip" data-state="AR">Arkansas</span><span class="state-chip" data-state="CO">Colorado</span><span class="state-chip" data-state="HI">Hawaii</span><span class="state-chip" data-state="KS">Kansas</span><span class="state-chip" data-state="LA">Louisiana</span><span class="state-chip" data-state="ME">Maine</span><span class="state-chip" data-state="MD">Maryland</span><span class="state-chip" data-state="MN">Minnesota</span><span class="state-chip" data-state="MS">Mississippi</span><span class="state-chip" data-state="MO">Missouri</span><span class="state-chip" data-state="NE">Nebraska</span><span class="state-chip" data-state="NM">New Mexico</span><span class="state-chip" data-state="ND">North Dakota</span><span class="state-chip" data-state="OK">Oklahoma</span><span class="state-chip" data-state="OR">Oregon</span><span class="state-chip" data-state="RI">Rhode Island</span><span class="state-chip" data-state="SD">South Dakota</span><span class="state-chip" data-state="TN">Tennessee</span><span class="state-chip" data-state="UT">Utah</span><span class="state-chip" data-state="VT">Vermont</span><span class="state-chip" data-state="WV">West Virginia</span>
+        </div>
+      </div>
+      <div class="state-list-block no-protection">
+        <h3>No law yet / in progress (28)</h3>
+        <div class="state-list-grid" id="states-without-list">
+          <span class="state-chip" data-state="AL">Alabama</span><span class="state-chip" data-state="AK">Alaska</span><span class="state-chip" data-state="AZ">Arizona</span><span class="state-chip" data-state="CA">California</span><span class="state-chip" data-state="DE">Delaware</span><span class="state-chip" data-state="FL">Florida</span><span class="state-chip" data-state="GA">Georgia</span><span class="state-chip" data-state="ID">Idaho</span><span class="state-chip" data-state="IL">Illinois</span><span class="state-chip" data-state="IN">Indiana</span><span class="state-chip" data-state="IA">Iowa</span><span class="state-chip" data-state="KY">Kentucky</span><span class="state-chip" data-state="MA">Massachusetts</span><span class="state-chip" data-state="MI">Michigan</span><span class="state-chip" data-state="MT">Montana</span><span class="state-chip" data-state="NV">Nevada</span><span class="state-chip" data-state="NH">New Hampshire</span><span class="state-chip" data-state="NJ">New Jersey</span><span class="state-chip" data-state="NY">New York</span><span class="state-chip" data-state="NC">North Carolina</span><span class="state-chip" data-state="OH">Ohio</span><span class="state-chip" data-state="PA">Pennsylvania</span><span class="state-chip" data-state="SC">South Carolina</span><span class="state-chip" data-state="TX">Texas</span><span class="state-chip" data-state="VA">Virginia</span><span class="state-chip" data-state="WA">Washington</span><span class="state-chip" data-state="WI">Wisconsin</span><span class="state-chip" data-state="WY">Wyoming</span>
+        </div>
+      </div>
     </div>
     <p class="section-intro" style="margin-top:1rem;font-size:0.8rem;">Sources: American Hospital Association (AHA), ASHP, America's Essential Hospitals, MultiState.</p>
     <h3>Legal &amp;&#32;trends</h3>
-    <div class="trends-card">
-      <h4>Courts</h4>
-      <p>Courts have sided with states (e.g., AR, LA, MO, MN, TN, RI) when PhRMA challenged laws.</p>
-    </div>
-    <div class="trends-card">
-      <h4>2025 hybrid bills</h4>
-      <p>CO, ME, OH, RI, VT combined contract pharmacy protections with new 340B reporting.</p>
-    </div>
-    <div class="trends-card">
-      <h4>Vetoes</h4>
-      <p>Some governors have vetoed 340B protection (e.g., Virginia).</p>
+    <div class="trends-grid">
+      <div class="trends-card">
+        <span class="trends-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M5 21h14"/><path d="M8 13l4-8 4 8"/><path d="M4 13h4"/><path d="M16 13h4"/></svg></span>
+        <div class="trends-card-content"><h4>Courts</h4><p>Courts have sided with states (e.g., AR, LA, MO, MN, TN, RI) when PhRMA challenged laws.</p></div>
+      </div>
+      <div class="trends-card">
+        <span class="trends-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
+        <div class="trends-card-content"><h4>2025 hybrid bills</h4><p>CO, ME, OH, RI, VT combined contract pharmacy protections with new 340B reporting.</p></div>
+      </div>
+      <div class="trends-card">
+        <span class="trends-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
+        <div class="trends-card-content"><h4>Vetoes</h4><p>Some governors have vetoed 340B protection (e.g., Virginia).</p></div>
+      </div>
     </div>
   </section>
 
@@ -535,6 +574,45 @@
     els.forEach(function(el) { observer.observe(el); });
   }
 
+  function initStateListHover() {
+    var tooltip = document.getElementById("state-list-tooltip");
+    if (!tooltip) return;
+    document.querySelectorAll(".pa-dashboard .state-chip").forEach(function(chip) {
+      var abbr = chip.getAttribute("data-state");
+      var data = abbr ? STATE_340B[abbr] : null;
+      var title = (STATE_NAMES[abbr] || abbr) + ": " + (data && data.notes ? data.notes : (data ? "CP " + (data.cp ? "Yes" : "No") + ", PBM " + (data.pbm ? "Yes" : "No") : "No data"));
+      chip.setAttribute("title", title);
+      chip.addEventListener("mouseenter", function(ev) {
+        var abbr = chip.getAttribute("data-state");
+        var name = STATE_NAMES[abbr] || abbr;
+        var data = abbr ? STATE_340B[abbr] : null;
+        var html = "<strong>" + name + "</strong>";
+        if (data) {
+          html += "<span class=\"badge " + (data.cp ? "yes" : "no") + "\">Contract pharmacy: " + (data.cp ? "Yes" : "No") + "</span> ";
+          html += "<span class=\"badge " + (data.pbm ? "yes" : "no") + "\">PBM: " + (data.pbm ? "Yes" : "No") + "</span>";
+          if (data.y) html += "<br>Law year: " + data.y;
+          if (data.notes) html += "<br>" + data.notes;
+        } else {
+          html += "<br>No 340B state law data in this snapshot.";
+        }
+        tooltip.innerHTML = html;
+        placeStateTooltip(ev);
+        tooltip.classList.add("visible");
+        tooltip.setAttribute("aria-hidden", "false");
+      });
+      chip.addEventListener("mousemove", placeStateTooltip);
+      chip.addEventListener("mouseleave", function() {
+        tooltip.classList.remove("visible");
+        tooltip.setAttribute("aria-hidden", "true");
+      });
+    });
+    function placeStateTooltip(ev) {
+      var x = ev.clientX, y = ev.clientY;
+      tooltip.style.left = x + "px";
+      tooltip.style.top = (y - 12) + "px";
+    }
+  }
+
   function initReveal() {
     if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       document.querySelectorAll(".pa-dashboard section.reveal").forEach(function(s) { s.classList.add("visible"); });
@@ -567,6 +645,7 @@ var lastMapWidth = 0;
       if (c) lastMapWidth = c.offsetWidth;
       initCountUp();
       initReveal();
+      initStateListHover();
       if (!isTouch) {
         var resizeT;
         window.addEventListener("resize", function() {
@@ -581,6 +660,7 @@ var lastMapWidth = 0;
     if (c) lastMapWidth = c.offsetWidth;
     initCountUp();
     initReveal();
+    initStateListHover();
     if (!isTouch) {
       var resizeT;
       window.addEventListener("resize", function() {
