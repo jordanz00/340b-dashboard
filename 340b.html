@@ -82,10 +82,15 @@
     .pa-dashboard .us-map-wrap .state.protection { fill: var(--primary); }
     .pa-dashboard .us-map-wrap .state.protection:hover { filter: brightness(1.1); }
     .pa-dashboard .us-map-wrap .state.no-protection:hover { fill: #94a3b8; }
-    .pa-dashboard .us-map-wrap .state { opacity: 0; }
-    .pa-dashboard .us-map-wrap .state.animated { opacity: 1; }
+    .pa-dashboard .us-map-wrap .state { opacity: 1; }
+    .pa-dashboard .us-map-wrap .state.animate-once { opacity: 0; }
+    .pa-dashboard .us-map-wrap .state.animated { opacity: 1 !important; }
     .pa-dashboard .map-container { position: relative; display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
     @media (min-width: 640px) { .pa-dashboard .map-container { grid-template-columns: 1fr 280px; align-items: start; } }
+    .pa-dashboard section.state-laws-featured { padding: 1.25rem 1.5rem; }
+    @media (min-width: 768px) { .pa-dashboard section.state-laws-featured { padding: 1.5rem 2rem; } .pa-dashboard section.state-laws-featured .us-map-wrap { padding: 1.5rem; } }
+    .pa-dashboard section.state-laws-featured h2 { font-size: 1.65rem; margin-bottom: 0.35rem; }
+    .pa-dashboard section.state-laws-featured .section-label { color: var(--primary); font-weight: 700; }
     .pa-dashboard .map-tooltip { position: fixed; z-index: 50; padding: 0.4rem 0.65rem; background: var(--text); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 6px; pointer-events: none; opacity: 0; transform: translate(-50%, -100%); margin-top: -8px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); transition: opacity 0.15s ease; white-space: nowrap; }
     .pa-dashboard .map-tooltip.visible { opacity: 1; }
     .pa-dashboard .state-detail-panel { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,114,188,0.12); border-radius: var(--radius); padding: 1rem; box-shadow: 0 4px 20px rgba(0,114,188,0.08); }
@@ -134,6 +139,8 @@
       .pa-dashboard .key-message { padding: 0.6rem 0.85rem; font-size: 0.85rem; }
       .pa-dashboard .map-container { grid-template-columns: 1fr; }
       .pa-dashboard .state-detail-panel { min-height: 6rem; }
+      .pa-dashboard section.state-laws-featured { padding: 1rem 0.55rem; }
+      .pa-dashboard section.state-laws-featured h2 { font-size: 1.2rem; }
       .pa-dashboard .us-map-wrap { padding: 0.75rem; margin: 0.75rem 0; }
       .pa-dashboard .map-legend { gap: 0.6rem; margin-top: 0.75rem; font-size: 0.8rem; }
       .pa-dashboard .state-list-grid { grid-template-columns: repeat(2, 1fr); gap: 0.25rem 0.75rem; font-size: 0.82rem; }
@@ -181,6 +188,47 @@
       <li>Provider audits far outnumber manufacturer audits.</li>
     </ul>
     <p class="hap-position"><strong>HAP</strong> supports 340B integrity and contract pharmacy access for Pennsylvania hospitals and the patients they serve.</p>
+  </section>
+
+  <section id="state-laws" class="state-laws-featured alt">
+    <p class="section-label">Our focus · 340B contract pharmacy protection</p>
+    <h2>State laws: contract pharmacy protection</h2>
+    <p class="section-intro">This is what’s in our bill: some states have enacted 340B contract pharmacy protection laws; others are in progress. <strong>Pennsylvania is nearly in progress.</strong> Hover for state name; click for 340B details.</p>
+    <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
+    <div class="map-container">
+      <div class="us-map-wrap">
+        <div id="us-map" aria-label="US map showing states with and without 340B contract pharmacy protection laws"></div>
+        <div class="map-legend">
+          <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Has protection law</span>
+          <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No law yet / in progress</span>
+        </div>
+      </div>
+      <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite">
+        <p>Select a state on the map to view 340B status.</p>
+      </div>
+    </div>
+    <h3>States with protection (21)</h3>
+    <div class="state-list-grid" id="states-with-list">
+      <span>Arkansas</span><span>Colorado</span><span>Hawaii</span><span>Kansas</span><span>Louisiana</span><span>Maine</span><span>Maryland</span><span>Minnesota</span><span>Mississippi</span><span>Missouri</span><span>Nebraska</span><span>New Mexico</span><span>North Dakota</span><span>Oklahoma</span><span>Oregon</span><span>Rhode Island</span><span>South Dakota</span><span>Tennessee</span><span>Utah</span><span>Vermont</span><span>West Virginia</span>
+    </div>
+    <h3>No law yet / in progress (28)</h3>
+    <div class="state-list-grid" id="states-without-list">
+      <span>Alabama</span><span>Alaska</span><span>Arizona</span><span>California</span><span>Delaware</span><span>Florida</span><span>Georgia</span><span>Idaho</span><span>Illinois</span><span>Indiana</span><span>Iowa</span><span>Kentucky</span><span>Massachusetts</span><span>Michigan</span><span>Montana</span><span>Nevada</span><span>New Hampshire</span><span>New Jersey</span><span>New York</span><span>North Carolina</span><span>Ohio</span><span>Pennsylvania</span><span>South Carolina</span><span>Texas</span><span>Virginia</span><span>Washington</span><span>Wisconsin</span><span>Wyoming</span>
+    </div>
+    <p class="section-intro" style="margin-top:1rem;font-size:0.8rem;">Sources: ASHP, America's Essential Hospitals, MultiState.</p>
+    <h3>Legal &amp;&#32;trends</h3>
+    <div class="trends-card">
+      <h4>Courts</h4>
+      <p>Courts have sided with states (e.g., AR, LA, MO, MN, TN, RI) when PhRMA challenged laws.</p>
+    </div>
+    <div class="trends-card">
+      <h4>2025 hybrid bills</h4>
+      <p>CO, ME, OH, RI, VT combined contract pharmacy protections with new 340B reporting.</p>
+    </div>
+    <div class="trends-card">
+      <h4>Vetoes</h4>
+      <p>Some governors have vetoed 340B protection (e.g., Virginia).</p>
+    </div>
   </section>
 
   <section id="what-is-340b" class="alt reveal">
@@ -257,47 +305,6 @@
     <p class="section-intro"><strong>Some manufacturers limit hospitals to one contract pharmacy.</strong> Rural and underserved patients depend on contract and specialty pharmacies for high-cost drugs.</p>
   </section>
 
-  <section id="state-laws" class="alt reveal">
-    <p class="section-label">National snapshot</p>
-    <h2>State Laws: Contract Pharmacy Protection</h2>
-    <p class="section-intro"><strong>21 states</strong> have protection laws; <strong>13</strong> passed in 2024–2025. Hover for state name; click for 340B details.</p>
-    <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
-    <div class="map-container">
-      <div class="us-map-wrap">
-        <div id="us-map" aria-label="US map showing states with and without 340B contract pharmacy protection laws"></div>
-        <div class="map-legend">
-          <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Has protection law</span>
-          <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No explicit law</span>
-        </div>
-      </div>
-      <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite">
-        <p>Select a state on the map to view 340B status.</p>
-      </div>
-    </div>
-    <h3>States with protection (21)</h3>
-    <div class="state-list-grid" id="states-with-list">
-      <span>Arkansas</span><span>Colorado</span><span>Hawaii</span><span>Kansas</span><span>Louisiana</span><span>Maine</span><span>Maryland</span><span>Minnesota</span><span>Mississippi</span><span>Missouri</span><span>Nebraska</span><span>New Mexico</span><span>North Dakota</span><span>Oklahoma</span><span>Oregon</span><span>Rhode Island</span><span>South Dakota</span><span>Tennessee</span><span>Utah</span><span>Vermont</span><span>West Virginia</span>
-    </div>
-    <h3>States without explicit law (28)</h3>
-    <div class="state-list-grid" id="states-without-list">
-      <span>Alabama</span><span>Alaska</span><span>Arizona</span><span>California</span><span>Delaware</span><span>Florida</span><span>Georgia</span><span>Idaho</span><span>Illinois</span><span>Indiana</span><span>Iowa</span><span>Kentucky</span><span>Massachusetts</span><span>Michigan</span><span>Montana</span><span>Nevada</span><span>New Hampshire</span><span>New Jersey</span><span>New York</span><span>North Carolina</span><span>Ohio</span><span>Pennsylvania</span><span>South Carolina</span><span>Texas</span><span>Virginia</span><span>Washington</span><span>Wisconsin</span><span>Wyoming</span>
-    </div>
-    <p class="section-intro" style="margin-top:1rem;font-size:0.8rem;">Sources: ASHP, America's Essential Hospitals, MultiState.</p>
-    <h3>Legal &amp;&#32;trends</h3>
-    <div class="trends-card">
-      <h4>Courts</h4>
-      <p>Courts have sided with states (e.g., AR, LA, MO, MN, TN, RI) when PhRMA challenged laws.</p>
-    </div>
-    <div class="trends-card">
-      <h4>2025 hybrid bills</h4>
-      <p>CO, ME, OH, RI, VT combined contract pharmacy protections with new 340B reporting.</p>
-    </div>
-    <div class="trends-card">
-      <h4>Vetoes</h4>
-      <p>Some governors have vetoed 340B protection (e.g., Virginia).</p>
-    </div>
-  </section>
-
   <section id="pa-safeguards" class="reveal">
     <p class="section-label">Pennsylvania</p>
     <h2>PA safeguards: no duplicate discounts</h2>
@@ -332,7 +339,7 @@
       var name = (abbr && (STATE_NAMES[abbr] || STATE_NAMES[String(abbr).toUpperCase()])) || (d && d.properties && d.properties.name);
       return name && String(name).trim() ? String(name) : (abbr || "State");
     }
-  var STATE_340B = { AL:{y:2021,pbm:true,cp:false,notes:""}, AZ:{y:2022,pbm:true,cp:false,notes:""}, AR:{y:2021,pbm:true,cp:true,notes:"First to enact; upheld in court. Same bill."}, CA:{y:2023,pbm:true,cp:false,notes:""}, CO:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy bill 2025. Reporting in 340B bill."}, CT:{y:2023,pbm:true,cp:false,notes:""}, GA:{y:2020,pbm:true,cp:false,notes:""}, HI:{y:2025,pbm:false,cp:true,notes:"Reporting required."}, IL:{y:2022,pbm:true,cp:false,notes:""}, IN:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill."}, IA:{y:2023,pbm:true,cp:false,notes:""}, KS:{y:2024,pbm:false,cp:true,notes:""}, KY:{y:2020,pbm:true,cp:false,notes:""}, LA:{y:2023,pbm:true,cp:true,notes:"Same bill. Upheld in court."}, ME:{y:2025,pbm:false,cp:true,notes:"Reporting required. Hybrid 2025."}, MD:{y:2024,pbm:false,cp:true,notes:""}, MA:{y:null,pbm:false,cp:false,notes:""}, MI:{y:2022,pbm:true,cp:false,notes:""}, MN:{y:2019,pbm:true,cp:true,notes:"Contract pharmacy 2024. Reporting separate. Upheld in court."}, MS:{y:2024,pbm:true,cp:true,notes:"Same bill."}, MO:{y:2024,pbm:false,cp:true,notes:"Upheld in court."}, MT:{y:2021,pbm:true,cp:false,notes:""}, NE:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, NV:{y:2023,pbm:true,cp:false,notes:""}, NH:{y:2024,pbm:true,cp:false,notes:""}, NJ:{y:null,pbm:false,cp:false,notes:""}, NM:{y:2023,pbm:true,cp:true,notes:"Contract pharmacy applies to CHCs only. Separate bills."}, NY:{y:null,pbm:false,cp:false,notes:""}, NC:{y:2021,pbm:true,cp:false,notes:""}, ND:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, OH:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill. Hybrid 2025."}, OK:{y:2025,pbm:false,cp:true,notes:""}, OR:{y:2025,pbm:true,cp:true,notes:"Contract pharmacy signed June 2025. Multiple bills."}, PA:{y:null,pbm:false,cp:false,notes:"No contract pharmacy protection law yet."}, RI:{y:2025,pbm:true,cp:true,notes:"Same bill, reporting. Signed June 2025. Upheld in court."}, SC:{y:null,pbm:false,cp:false,notes:""}, SD:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2025. PBM 2019, 2024."}, TN:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025; restrictions after 2025. Upheld in court."}, TX:{y:null,pbm:false,cp:false,notes:""}, UT:{y:2020,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, VT:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Hybrid 2025."}, VA:{y:2021,pbm:true,cp:false,notes:"Governor has vetoed 340B protection legislation."}, WA:{y:null,pbm:false,cp:false,notes:"340B reporting required; no protection law."}, WV:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2024. PBM 2019, 2021."}, WI:{y:null,pbm:false,cp:false,notes:""}, WY:{y:null,pbm:false,cp:false,notes:""}, FL:{y:null,pbm:false,cp:false,notes:""}, DE:{y:null,pbm:false,cp:false,notes:""}, ID:{y:null,pbm:false,cp:false,notes:"340B reporting; no protection law."}, DC:{y:null,pbm:false,cp:false,notes:""} };
+  var STATE_340B = { AL:{y:2021,pbm:true,cp:false,notes:""}, AZ:{y:2022,pbm:true,cp:false,notes:""}, AR:{y:2021,pbm:true,cp:true,notes:"First to enact; upheld in court. Same bill."}, CA:{y:2023,pbm:true,cp:false,notes:""}, CO:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy bill 2025. Reporting in 340B bill."}, CT:{y:2023,pbm:true,cp:false,notes:""}, GA:{y:2020,pbm:true,cp:false,notes:""}, HI:{y:2025,pbm:false,cp:true,notes:"Reporting required."}, IL:{y:2022,pbm:true,cp:false,notes:""}, IN:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill."}, IA:{y:2023,pbm:true,cp:false,notes:""}, KS:{y:2024,pbm:false,cp:true,notes:""}, KY:{y:2020,pbm:true,cp:false,notes:""}, LA:{y:2023,pbm:true,cp:true,notes:"Same bill. Upheld in court."}, ME:{y:2025,pbm:false,cp:true,notes:"Reporting required. Hybrid 2025."}, MD:{y:2024,pbm:false,cp:true,notes:""}, MA:{y:null,pbm:false,cp:false,notes:""}, MI:{y:2022,pbm:true,cp:false,notes:""}, MN:{y:2019,pbm:true,cp:true,notes:"Contract pharmacy 2024. Reporting separate. Upheld in court."}, MS:{y:2024,pbm:true,cp:true,notes:"Same bill."}, MO:{y:2024,pbm:false,cp:true,notes:"Upheld in court."}, MT:{y:2021,pbm:true,cp:false,notes:""}, NE:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, NV:{y:2023,pbm:true,cp:false,notes:""}, NH:{y:2024,pbm:true,cp:false,notes:""}, NJ:{y:null,pbm:false,cp:false,notes:""}, NM:{y:2023,pbm:true,cp:true,notes:"Contract pharmacy applies to CHCs only. Separate bills."}, NY:{y:null,pbm:false,cp:false,notes:""}, NC:{y:2021,pbm:true,cp:false,notes:""}, ND:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, OH:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill. Hybrid 2025."}, OK:{y:2025,pbm:false,cp:true,notes:""}, OR:{y:2025,pbm:true,cp:true,notes:"Contract pharmacy signed June 2025. Multiple bills."}, PA:{y:null,pbm:false,cp:false,notes:"In progress — Pennsylvania is moving toward 340B contract pharmacy protection legislation."}, RI:{y:2025,pbm:true,cp:true,notes:"Same bill, reporting. Signed June 2025. Upheld in court."}, SC:{y:null,pbm:false,cp:false,notes:""}, SD:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2025. PBM 2019, 2024."}, TN:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025; restrictions after 2025. Upheld in court."}, TX:{y:null,pbm:false,cp:false,notes:""}, UT:{y:2020,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, VT:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Hybrid 2025."}, VA:{y:2021,pbm:true,cp:false,notes:"Governor has vetoed 340B protection legislation."}, WA:{y:null,pbm:false,cp:false,notes:"340B reporting required; no protection law."}, WV:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2024. PBM 2019, 2021."}, WI:{y:null,pbm:false,cp:false,notes:""}, WY:{y:null,pbm:false,cp:false,notes:""}, FL:{y:null,pbm:false,cp:false,notes:""}, DE:{y:null,pbm:false,cp:false,notes:""}, ID:{y:null,pbm:false,cp:false,notes:"340B reporting; no protection law."}, DC:{y:null,pbm:false,cp:false,notes:""} };
   var STATES_WITH_PROTECTION = ["AR","CO","HI","KS","LA","ME","MD","MN","MS","MO","NE","NM","ND","OK","OR","RI","SD","TN","UT","VT","WV"];
 
   function drawMap() {
@@ -356,7 +363,7 @@
       var g = svg.append("g");
       var paths = g.selectAll("path").data(states.features).join("path").attr("class", function(d) {
         var abbr = getStateAbbr(d);
-        return "state " + (abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "protection" : "no-protection");
+        return "state animate-once " + (abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "protection" : "no-protection");
       }).attr("d", path).attr("data-state", function(d) { return getStateAbbr(d) || (d.id != null ? d.id : ""); });
       bindMapInteractions(paths);
       scheduleMapAnimation(container);
@@ -417,10 +424,10 @@
       ran = true;
       var paths = d3.select("#us-map").selectAll(".state");
       var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      if (reduceMotion) { paths.attr("opacity", 1).classed("animated", true); return; }
+      if (reduceMotion) { paths.attr("opacity", 1).classed("animated", true).classed("animate-once", false); return; }
       paths.each(function(d, i) {
         var el = d3.select(this);
-        el.transition().delay(i * 52).duration(720).ease(d3.easeCubicOut).attr("opacity", 1).on("end", function() { el.classed("animated", true); });
+        el.transition().delay(i * 52).duration(720).ease(d3.easeCubicOut).attr("opacity", 1).on("end", function() { el.classed("animated", true).classed("animate-once", false); });
       });
     }, { rootMargin: "0px 0px -80px 0px", threshold: 0.15 });
     if (container) io.observe(container);
