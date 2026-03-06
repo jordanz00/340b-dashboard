@@ -1,553 +1,303 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>340B Drug Pricing Program | HAP</title>
-  <meta name="description" content="HAP supports policies that protect the 340B program and preserve hospitals' ability to use contract pharmacies for patient access to medications.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
-  <style>
-    :root {
-      --primary: #0072bc;
-      --primary-soft: #8ed8f8;
-      --primary-deep: #005a94;
-      --accent: #f59e0b;
-      --accent-soft: rgba(245,158,11,0.12);
-      --muted: #64748b;
-      --text: #0f172a;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
-      --radius: 10px;
-      --radius-lg: 14px;
-      --glass-bg: rgba(255,255,255,0.72);
-      --glass-border: rgba(255,255,255,0.6);
-      --glass-shadow: 0 4px 24px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
-      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
-    }
-    body:has(> .pa-dashboard) { margin: 0; }
-    .pa-dashboard * { box-sizing: border-box; }
-    .pa-dashboard { font-family: "Montserrat", system-ui, -apple-system, sans-serif; background: #e6f1f9; background: linear-gradient(160deg, #dbeaf5 0%, #e8f2fa 40%, #eef6fc 100%); background-attachment: fixed; color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; position: relative; min-height: 100vh; margin: 0; overflow-x: hidden; }
-    .pa-dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 100% 60% at 50% -10%, rgba(142,216,248,0.28), transparent 50%), radial-gradient(ellipse 80% 50% at 100% 30%, rgba(0,114,188,0.06), transparent), radial-gradient(ellipse 60% 40% at 0% 80%, rgba(245,158,11,0.05), transparent); pointer-events: none; z-index: 0; }
-    .pa-dashboard [id] { scroll-margin-top: 5.5rem; }
-    .pa-dashboard a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
-    .pa-dashboard a:hover { color: #005a94; text-decoration: underline; }
-    .pa-dashboard .pa-dashboard-header { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); border-bottom: 1px solid rgba(0,114,188,0.1); box-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 4px 20px rgba(0,114,188,0.04); padding: 1rem 1.5rem 0.9rem; }
-    @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) { .pa-dashboard .pa-dashboard-header { background: rgba(255,255,255,0.65); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); } }
-    .pa-dashboard .report-by { margin: 0 0 0.35rem; font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-    .pa-dashboard .pa-dashboard-header h1 { margin: 0; font-family: "Montserrat", sans-serif; font-size: 1.95rem; font-weight: 800; color: var(--primary); letter-spacing: -0.02em; }
-    .pa-dashboard .tagline { margin: 0.25rem 0 0; font-size: 0.85rem; font-weight: 500; color: var(--muted); line-height: 1.4; }
-    .pa-dashboard nav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
-    .pa-dashboard nav a { padding: 0.5rem 1.1rem; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.8rem; background: #fff; border: 1px solid rgba(0,114,188,0.12); color: var(--muted); transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out); box-shadow: 0 1px 3px rgba(0,0,0,0.04); -webkit-tap-highlight-color: rgba(0,114,188,0.1); }
-    .pa-dashboard nav a:hover { color: var(--primary); border-color: rgba(0,114,188,0.28); box-shadow: 0 6px 20px rgba(0,114,188,0.1); transform: translateY(-2px); }
-    .pa-dashboard nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-    .pa-dashboard main { max-width: 70rem; margin: 0 auto; padding: var(--space-lg) 1.5rem; position: relative; z-index: 1; }
-    .pa-dashboard section { margin-bottom: var(--space-xl); padding: var(--space-lg); background: var(--glass-bg); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); border: 1px solid rgba(0,114,188,0.06); transition: box-shadow 0.35s var(--ease-out), border-color 0.25s var(--ease-out); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section { background: rgba(255,255,255,0.6); backdrop-filter: blur(24px) saturate(140%); -webkit-backdrop-filter: blur(24px) saturate(140%); box-shadow: 0 8px 32px rgba(0,114,188,0.05), inset 0 1px 0 var(--glass-border); } }
-    .pa-dashboard section:hover { box-shadow: 0 12px 40px rgba(0,114,188,0.08), inset 0 1px 0 var(--glass-border); border-color: rgba(0,114,188,0.1); }
-    .pa-dashboard section.alt { background: rgba(248,251,253,0.7); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.alt { background: rgba(248,251,253,0.5); backdrop-filter: blur(28px) saturate(140%); -webkit-backdrop-filter: blur(28px) saturate(140%); } }
-    .pa-dashboard section.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s var(--ease-out), transform 0.55s var(--ease-out); }
-    .pa-dashboard section.reveal.visible { opacity: 1; transform: translateY(0); }
-    @media (prefers-reduced-motion: reduce) { .pa-dashboard section.reveal { opacity: 1; transform: none; transition: none; } }
-    .pa-dashboard .section-label { font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.35rem; }
-    .pa-dashboard h2 { margin: 0 0 0.5rem; font-family: "Montserrat", sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); letter-spacing: -0.02em; line-height: 1.25; }
-    .pa-dashboard h3 { margin: 0 0 0.4rem; font-family: "Montserrat", sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text); }
-    .pa-dashboard .section-intro { margin: 0 0 1rem; color: var(--muted); font-size: 0.92rem; line-height: 1.55; max-width: 58ch; }
-    .pa-dashboard ul { margin: 0.5rem 0 1rem; padding-left: 1.25rem; line-height: 1.6; }
-    .pa-dashboard ul li { margin-bottom: 0.35rem; }
-    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin: 0.85rem 0; }
-    .stat-card { display: block; padding: 0.9rem 1rem; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,114,188,0.1); border-radius: var(--radius); border-left: 4px solid var(--primary); box-shadow: 0 2px 8px rgba(0,114,188,0.04); text-align: left; transition: box-shadow 0.3s var(--ease-out), transform 0.28s var(--ease-out), border-color 0.25s; }
-    .pa-dashboard .stat-card:hover { box-shadow: 0 8px 24px rgba(0,114,188,0.12); transform: translateY(-2px); border-color: rgba(0,114,188,0.2); }
-    @supports (backdrop-filter: blur(1px)) { .stat-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); } }
-    .stat-card .stat-value { display: block; font-size: 1.45rem; font-weight: 800; font-family: "Montserrat", sans-serif; color: var(--primary); margin: 0 0 0.15rem; letter-spacing: -0.02em; }
-    .stat-card .stat-label { display: block; font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
-    .card { padding: 1.15rem 1.25rem; background: #fff; border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); box-shadow: 0 4px 20px rgba(0,114,188,0.06); margin-top: 1rem; text-align: left; }
-    @supports (backdrop-filter: blur(1px)) { .card { background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); } }
-    .card h3 { margin-top: 0; }
-    .pa-dashboard footer { padding: 1.75rem; text-align: center; color: var(--muted); font-size: 0.9rem; border-top: 1px solid rgba(0,114,188,0.1); background: #f8fbfd; position: relative; z-index: 1; }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard footer { background: rgba(255,255,255,0.5); backdrop-filter: blur(24px); } }
-    .pa-dashboard .back-link { display: inline-block; margin: 1rem 0; padding: 0.55rem 1.2rem; background: linear-gradient(135deg, var(--primary) 0%, #0088e0 100%); color: white; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 14px rgba(0,114,188,0.3); transition: transform 0.28s var(--ease-out), box-shadow 0.3s var(--ease-out), background 0.25s; -webkit-tap-highlight-color: transparent; }
-    .pa-dashboard .back-link:hover { text-decoration: none; background: linear-gradient(135deg, #005a94 0%, var(--primary) 100%); color: white; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,114,188,0.4); }
-    .pa-dashboard .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 100; padding: 0.5rem 1rem; background: var(--primary); color: white; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 600; border-radius: 10px; transition: top 0.2s ease; }
-    .pa-dashboard .skip-link:focus { top: 1rem; outline: 2px solid white; outline-offset: 2px; }
-    .pa-dashboard .highlight-box { padding: 1rem 1.25rem; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 var(--radius) var(--radius) 0; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,114,188,0.04); transition: box-shadow 0.35s var(--ease-out), border-left-color 0.25s; }
-    .pa-dashboard .highlight-box:hover { box-shadow: 0 4px 20px rgba(0,114,188,0.08); }
-    .pa-dashboard .big-stat { font-size: 2.2rem; font-weight: 800; font-family: "Montserrat", sans-serif; color: var(--primary); letter-spacing: -0.03em; margin: 0.2rem 0; }
-    .pa-dashboard .count-up { display: inline-block; font-variant-numeric: tabular-nums; }
-    .us-map-wrap { background: #fff; border-radius: var(--radius-lg); padding: 1.25rem; margin: 1.25rem 0; border: 1px solid rgba(0,114,188,0.08); box-shadow: 0 4px 24px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.9); overflow: visible; opacity: 0; transform: translateY(8px); transition: opacity 0.85s var(--ease-out), transform 0.7s var(--ease-out), box-shadow 0.35s var(--ease-out); }
-    .pa-dashboard .us-map-wrap.map-visible { opacity: 1; transform: translateY(0); box-shadow: 0 8px 32px rgba(0,114,188,0.08), inset 0 1px 0 rgba(255,255,255,0.9); }
-    @media (prefers-reduced-motion: reduce) { .pa-dashboard .us-map-wrap { opacity: 1; transform: none; transition: none; } .pa-dashboard .us-map-wrap.map-visible { transform: none; } }
-    @media (min-width: 769px) { .pa-dashboard .us-map-wrap { background: rgba(255,255,255,0.6); overflow: hidden; } @supports (backdrop-filter: blur(1px)) { .pa-dashboard .us-map-wrap { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); } } }
-    .pa-dashboard .us-map-wrap svg { width: 100%; height: auto; display: block; }
-    .pa-dashboard .us-map-wrap .state { fill: #cbd5e1; stroke: #fff; stroke-width: 1; cursor: pointer; transition: fill 0.2s var(--ease-out), filter 0.2s var(--ease-out); }
-    .pa-dashboard .us-map-wrap .state.protection { fill: var(--primary); }
-    .pa-dashboard .us-map-wrap .state.protection:hover { filter: brightness(1.08); }
-    .pa-dashboard .us-map-wrap .state.no-protection:hover { fill: #94a3b8; }
-    .pa-dashboard .us-map-wrap .state { opacity: 1; }
-    .pa-dashboard .map-container { position: relative; display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; }
-    @media (min-width: 640px) { .pa-dashboard .map-container { grid-template-columns: 1fr 280px; align-items: start; } }
-    @media (max-width: 768px) {
-      .pa-dashboard { background-attachment: scroll !important; }
-      .pa-dashboard::before { display: none !important; }
-      .pa-dashboard #state-laws { background: #f8fbfd !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-      .pa-dashboard #state-laws .map-container { isolation: isolate; }
-      .pa-dashboard #state-laws .us-map-wrap { min-height: 280px; background: #fff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-      .pa-dashboard #state-laws .us-map-wrap svg { min-height: 260px; }
-      .pa-dashboard #state-laws .state-detail-panel { background: #fff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-    }
-    .pa-dashboard section.state-laws-featured { padding: 1.25rem 1.5rem; }
-    @media (min-width: 768px) { .pa-dashboard section.state-laws-featured { padding: 1.5rem 2rem; } .pa-dashboard section.state-laws-featured .us-map-wrap { padding: 1.5rem; } }
-    .pa-dashboard section.state-laws-featured h2 { font-size: 1.65rem; margin-bottom: 0.35rem; }
-    .pa-dashboard section.state-laws-featured .section-label { color: var(--primary); font-weight: 700; }
-    .pa-dashboard .map-tooltip { position: fixed; z-index: 9999; left: 0; top: 0; padding: 0.5rem 0.85rem; background: var(--text); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; border-radius: 8px; pointer-events: none; opacity: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1); transition: opacity 0.12s ease, transform 0.12s ease; white-space: nowrap; }
-    .pa-dashboard .map-tooltip.visible { opacity: 1; transform: scale(1); }
-    .pa-dashboard .state-detail-panel { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,114,188,0.08); border-radius: var(--radius); padding: 1.1rem; box-shadow: 0 4px 20px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.9); transition: box-shadow 0.3s var(--ease-out), border-color 0.25s; }
-    .pa-dashboard .state-detail-panel:not(.empty) { box-shadow: 0 6px 28px rgba(0,114,188,0.1), inset 0 1px 0 rgba(255,255,255,0.95); border-color: rgba(0,114,188,0.12); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard .state-detail-panel { background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); } }
-    .pa-dashboard .state-detail-panel.empty { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 1.5rem; }
-    .pa-dashboard .state-detail-panel h4 { margin: 0 0 0.5rem; font-size: 1.1rem; color: var(--primary); }
-    .pa-dashboard .state-detail-panel .state-stat { font-size: 0.85rem; margin: 0.25rem 0; color: var(--text); }
-    .pa-dashboard .state-detail-panel .state-stat strong { color: var(--primary); }
-    .pa-dashboard .state-detail-panel .state-notes { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.45; }
-    .pa-dashboard .state-detail-panel .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-right: 0.35rem; margin-bottom: 0.35rem; }
-    .pa-dashboard .state-detail-panel .badge.yes { background: rgba(0,114,188,0.12); color: var(--primary); }
-    .pa-dashboard .state-detail-panel .badge.no { background: #f1f5f9; color: var(--muted); }
-    .pa-dashboard .map-legend { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1rem; align-items: center; justify-content: center; }
-    .pa-dashboard .map-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 500; color: var(--muted); letter-spacing: 0.02em; }
-    .pa-dashboard .map-legend-swatch { width: 1rem; height: 1rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
-    .pa-dashboard .map-legend-swatch.protection { background: var(--primary); }
-    .pa-dashboard .map-legend-swatch.no-protection { background: #cbd5e1; }
-    .pa-dashboard .state-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr)); gap: 0.3rem 0.9rem; margin: 0.5rem 0 0.75rem; font-size: 0.88rem; }
-    .pa-dashboard .state-list-grid span { padding: 0.15rem 0; transition: color 0.2s var(--ease-out); }
-    .pa-dashboard .state-list-grid span:hover { color: var(--primary); }
-    .pa-dashboard .trends-card { padding: 0.85rem 1.1rem; background: rgba(255,255,255,0.5); border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); margin-top: 0.75rem; transition: box-shadow 0.3s var(--ease-out), transform 0.25s var(--ease-out), border-color 0.2s; }
-    .pa-dashboard .trends-card:hover { box-shadow: 0 6px 20px rgba(0,114,188,0.08); border-color: rgba(0,114,188,0.12); transform: translateX(2px); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard .trends-card { background: rgba(255,255,255,0.4); backdrop-filter: blur(16px); } }
-    .pa-dashboard .trends-card h4 { margin: 0 0 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--primary); }
-    .pa-dashboard .trends-card p { margin: 0; font-size: 0.86rem; color: var(--muted); line-height: 1.5; }
-    .pa-dashboard .key-message { padding: 0.75rem 1rem; background: linear-gradient(135deg, rgba(0,114,188,0.06) 0%, rgba(142,216,248,0.08) 100%); border-radius: var(--radius); border-left: 4px solid var(--primary); font-size: 0.9rem; font-weight: 500; color: var(--text); margin: 0 0 0.5rem; transition: box-shadow 0.3s var(--ease-out); }
-    .pa-dashboard .key-message:hover { box-shadow: 0 2px 12px rgba(0,114,188,0.06); }
-    .pa-dashboard .hap-position { font-size: 0.88rem; color: var(--muted); margin: 0.75rem 0 0; }
-    .pa-dashboard .key-issues { margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: 0.88rem; line-height: 1.5; color: var(--text); }
-    .pa-dashboard .key-issues li { margin-bottom: 0.25rem; }
-    .pa-dashboard section.issue-hero { border-left: 4px solid var(--accent); }
-    .pa-dashboard section.issue-callout { border-left: 3px solid rgba(251,176,64,0.6); }
-    @media (min-width: 1024px) { .pa-dashboard main { padding: 2rem 2.25rem; } .pa-dashboard section { padding: 1.5rem 2rem; margin-bottom: 2rem; } .pa-dashboard h2 { font-size: 1.6rem; } .pa-dashboard h3 { font-size: 1.1rem; } .pa-dashboard .section-intro { font-size: 0.94rem; } }
-    @media (max-width: 768px) {
-      .pa-dashboard [id] { scroll-margin-top: 2.85rem; }
-      .pa-dashboard .pa-dashboard-header { padding: 0.28rem 0.55rem 0.32rem; }
-      .pa-dashboard .pa-dashboard-header h1 { font-size: 1.1rem; }
-      .pa-dashboard .tagline { font-size: 0.65rem; }
-      .pa-dashboard nav a { padding: 0.35rem 0.5rem; font-size: 0.7rem; min-height: 2.75rem; display: inline-flex; align-items: center; }
-      .pa-dashboard main { padding: 0.55rem 0.5rem; }
-      .pa-dashboard section { padding: 0.6rem 0.55rem; margin-bottom: 0.9rem; }
-      .pa-dashboard h2 { font-size: 1.05rem; }
-      .pa-dashboard h3 { font-size: 0.95rem; }
-      .pa-dashboard .section-intro { font-size: 0.82rem; }
-      .pa-dashboard .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-      .pa-dashboard .stat-card { padding: 0.5rem 0.55rem; }
-      .pa-dashboard .stat-card .stat-value { font-size: 1.2rem; }
-      .pa-dashboard .section-label { font-size: 0.65rem; }
-      .pa-dashboard .key-message { padding: 0.6rem 0.85rem; font-size: 0.85rem; }
-      .pa-dashboard .map-container { grid-template-columns: 1fr; }
-      .pa-dashboard .state-detail-panel { min-height: 6rem; }
-      .pa-dashboard section.state-laws-featured { padding: 1rem 0.55rem; }
-      .pa-dashboard section.state-laws-featured h2 { font-size: 1.2rem; }
-      .pa-dashboard .us-map-wrap { padding: 0.75rem; margin: 0.75rem 0; }
-      .pa-dashboard .map-legend { gap: 0.6rem; margin-top: 0.75rem; font-size: 0.8rem; }
-      .pa-dashboard .state-list-grid { grid-template-columns: repeat(2, 1fr); gap: 0.25rem 0.75rem; font-size: 0.82rem; }
-      .pa-dashboard .trends-card { padding: 0.75rem 1rem; margin-top: 0.75rem; }
-      .pa-dashboard .stat-card .stat-label { font-size: 0.72rem; }
-      .pa-dashboard .card { padding: 0.55rem 0.6rem; margin-top: 0.75rem; }
-      .pa-dashboard .big-stat { font-size: 1.75rem; }
-      .pa-dashboard ul { padding-left: 1rem; font-size: 0.9rem; }
-      .pa-dashboard footer { padding: 0.65rem 0.5rem; font-size: 0.8rem; }
-      .pa-dashboard .back-link { padding: 0.5rem 0.85rem; font-size: 0.78rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; }
-    }
-    @media (max-width: 480px) {
-      .pa-dashboard .pa-dashboard-header h1 { font-size: 0.95rem; }
-      .pa-dashboard main { padding: 0.45rem 0.4rem; }
-      .pa-dashboard section { padding: 0.5rem 0.45rem; margin-bottom: 0.75rem; }
-      .pa-dashboard h2 { font-size: 0.98rem; }
-      .pa-dashboard .stat-grid { gap: 0.4rem; }
-      .pa-dashboard .stat-card .stat-value { font-size: 1.05rem; }
-      .pa-dashboard .big-stat { font-size: 1.5rem; }
-    }
-  </style>
-</head>
-<body>
-<div class="pa-dashboard">
-<a href="#main-content" class="skip-link">Skip to main content</a>
-<header class="pa-dashboard-header">
-  <p class="report-by">Hospital &amp;&#32;Healthsystem Association of Pennsylvania</p>
-  <h1>340B Drug Pricing Program</h1>
-  <p class="tagline">At a glance: policy, impact, and state-by-state protection</p>
-  <nav>
-    <a href="static.html">PA Hospitals Dashboard</a>
-    <a href="#state-laws">State Laws Map</a>
-  </nav>
-</header>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Time to Act: Pennsylvania Hospitals Dashboard</title>
+    <meta
+      name="description"
+      content="Interactive dashboard: Oliver Wyman report for HAP on Pennsylvania hospital sustainability. More hospital closures likely without increased support."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Chart.js CDN for simple, accessible charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  </head>
+  <body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    <header class="site-header">
+      <div class="branding">
+        <p class="report-by">Report by Oliver Wyman · Commissioned by HAP</p>
+        <h1>Time to Act</h1>
+        <p class="tagline">What the Future Holds for Pennsylvania’s Hospitals, Patients, and Communities</p>
+        <p class="subtitle">Interactive dashboard for policymakers · January 2026</p>
+      </div>
+      <nav class="top-nav" aria-label="Main navigation">
+        <a href="#overview">Overview</a>
+        <a href="#today">Today’s Reality</a>
+        <a href="#scenarios">2030 Scenarios</a>
+        <a href="#access">Access &amp; Closures</a>
+        <a href="#levers">Policy Levers</a>
+        <a href="#methods">Methods &amp; Sources</a>
+      </nav>
+    </header>
 
-<main id="main-content">
-
-  <section id="overview" class="issue-hero">
-    <p class="section-label">Why this matters</p>
-    <h2>340B needs attention</h2>
-    <p class="key-message">Patient access is at risk: manufacturer restrictions and uneven oversight threaten a program that costs taxpayers nothing and helps safety-net providers.</p>
-    <ul class="key-issues">
-      <li>Manufacturers limit contract pharmacy access.</li>
-      <li>Only 21 states have contract pharmacy protection laws.</li>
-      <li>Provider audits far outnumber manufacturer audits.</li>
-    </ul>
-    <p class="hap-position"><strong>HAP</strong> supports 340B integrity and contract pharmacy access for Pennsylvania hospitals and the patients they serve.</p>
-  </section>
-
-  <section id="state-laws" class="state-laws-featured alt">
-    <p class="section-label">Our focus · 340B contract pharmacy protection</p>
-    <h2>State laws: contract pharmacy protection</h2>
-    <p class="section-intro">This is what’s in our bill: some states have enacted 340B contract pharmacy protection laws; others are in progress. <strong>Pennsylvania is nearly in progress.</strong> Hover for state name; click for 340B details.</p>
-    <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
-    <div class="map-container">
-      <div class="us-map-wrap">
-        <div id="us-map" aria-label="US map showing states with and without 340B contract pharmacy protection laws"></div>
-        <div class="map-legend">
-          <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Has protection law</span>
-          <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No law yet / in progress</span>
+    <main id="main-content">
+      <section id="overview" class="section" data-overview-section>
+        <h2>Hospitals as Economic Engines</h2>
+        <p class="section-intro">
+          In a few numbers, see how central hospitals are to Pennsylvania’s economy and workforce.
+          Select a metric to update the highlight and chart.
+        </p>
+        <div class="overview-layout">
+          <nav class="overview-stats-nav" aria-label="Economic impact metrics">
+            <ul id="overview-stats-list" class="overview-stats-list">
+              <li><button type="button" class="overview-stat-btn is-active" data-stat="gdp"><span class="overview-stat-label">Share of state GDP</span><span class="overview-stat-value">19%</span><span class="overview-stat-detail">Hospitals and related activity as a share of the Commonwealth’s GDP.</span></button></li>
+              <li><button type="button" class="overview-stat-btn" data-stat="output"><span class="overview-stat-label">Total economic output</span><span class="overview-stat-value">$195B</span><span class="overview-stat-detail">Direct and indirect contributions from hospitals statewide.</span></button></li>
+              <li><button type="button" class="overview-stat-btn" data-stat="community"><span class="overview-stat-label">Community benefit</span><span class="overview-stat-value">$10.8B</span><span class="overview-stat-detail">Includes shortfalls from Medicare/Medicaid, bad debt, and charity care.</span></button></li>
+              <li><button type="button" class="overview-stat-btn" data-stat="jobs"><span class="overview-stat-label">Jobs supported</span><span class="overview-stat-value">300,000</span><span class="overview-stat-detail">Individuals employed directly by hospitals across Pennsylvania.</span></button></li>
+              <li><button type="button" class="overview-stat-btn" data-stat="wages"><span class="overview-stat-label">Wages and benefits</span><span class="overview-stat-value">$33B+</span><span class="overview-stat-detail">Direct wages and benefits paid by hospitals.</span></button></li>
+            </ul>
+          </nav>
+          <div class="card overview-insight" aria-live="polite">
+            <h3 id="kpi-focus-title">Hospitals’ share of the economy</h3>
+            <p id="kpi-focus-text">
+              Hospitals account for about <strong>19% of Pennsylvania’s GDP</strong> and
+              <strong>$195 billion</strong> in total economic activity.
+            </p>
+            <div class="mini-chart-wrapper">
+              <canvas id="economicShareChart" aria-label="Share of state GDP represented by hospitals"></canvas>
+            </div>
+          </div>
         </div>
-      </div>
-      <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite">
-        <p>Select a state on the map to view 340B status.</p>
-      </div>
-    </div>
-    <h3>States with protection (21)</h3>
-    <div class="state-list-grid" id="states-with-list">
-      <span>Arkansas</span><span>Colorado</span><span>Hawaii</span><span>Kansas</span><span>Louisiana</span><span>Maine</span><span>Maryland</span><span>Minnesota</span><span>Mississippi</span><span>Missouri</span><span>Nebraska</span><span>New Mexico</span><span>North Dakota</span><span>Oklahoma</span><span>Oregon</span><span>Rhode Island</span><span>South Dakota</span><span>Tennessee</span><span>Utah</span><span>Vermont</span><span>West Virginia</span>
-    </div>
-    <h3>No law yet / in progress (28)</h3>
-    <div class="state-list-grid" id="states-without-list">
-      <span>Alabama</span><span>Alaska</span><span>Arizona</span><span>California</span><span>Delaware</span><span>Florida</span><span>Georgia</span><span>Idaho</span><span>Illinois</span><span>Indiana</span><span>Iowa</span><span>Kentucky</span><span>Massachusetts</span><span>Michigan</span><span>Montana</span><span>Nevada</span><span>New Hampshire</span><span>New Jersey</span><span>New York</span><span>North Carolina</span><span>Ohio</span><span>Pennsylvania</span><span>South Carolina</span><span>Texas</span><span>Virginia</span><span>Washington</span><span>Wisconsin</span><span>Wyoming</span>
-    </div>
-    <p class="section-intro" style="margin-top:1rem;font-size:0.8rem;">Sources: ASHP, America's Essential Hospitals, MultiState.</p>
-    <h3>Legal &amp;&#32;trends</h3>
-    <div class="trends-card">
-      <h4>Courts</h4>
-      <p>Courts have sided with states (e.g., AR, LA, MO, MN, TN, RI) when PhRMA challenged laws.</p>
-    </div>
-    <div class="trends-card">
-      <h4>2025 hybrid bills</h4>
-      <p>CO, ME, OH, RI, VT combined contract pharmacy protections with new 340B reporting.</p>
-    </div>
-    <div class="trends-card">
-      <h4>Vetoes</h4>
-      <p>Some governors have vetoed 340B protection (e.g., Virginia).</p>
-    </div>
-  </section>
+      </section>
 
-  <section id="what-is-340b" class="alt reveal">
-    <p class="section-label">Overview</p>
-    <h2>What is 340B?</h2>
-    <p class="section-intro">Discount outpatient drug program for eligible providers. Taxpayer-neutral; stretches resources for vulnerable patients.</p>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="7" data-suffix="%">0%</span>
-        <span class="stat-label">of the total U.S. drug market — drugs purchased through 340B</span>
-      </div>
-    </div>
-  </section>
+      <section id="today" class="section alt">
+        <h2>Today’s Financial Reality</h2>
+        <p class="section-intro">
+          Despite disciplined cost management and below‑average costs per discharge, many hospitals
+          are under sustained financial pressure.
+        </p>
 
-  <section id="eligibility" class="reveal">
-    <p class="section-label">Program</p>
-    <h2>Who qualifies</h2>
-    <ul>
-      <li>Children’s and cancer hospitals</li>
-      <li>Critical Access Hospitals (CAHs) and Disproportionate Share Hospitals (DSHs)</li>
-      <li>Federally Qualified Health Centers (FQHCs)</li>
-    </ul>
-  </section>
+        <div class="layout-split">
+          <div class="card">
+            <h3>Operating margins, 2024</h3>
+            <div class="chart-container">
+              <canvas
+                id="marginChart"
+                aria-label="Distribution of hospital operating margins"
+              ></canvas>
+            </div>
+            <p class="chart-caption">
+              In 2024, <strong>51%</strong> of Pennsylvania hospitals had margins below the commonly
+              accepted <strong>4%</strong> sustainability threshold, and
+              <strong>37%</strong> operated at a loss.
+            </p>
+          </div>
+          <div class="card">
+            <h3>Reimbursement shortfalls</h3>
+            <div class="chart-container reimbursement-highlight">
+              <canvas
+                id="reimbursementChart"
+                aria-label="Reimbursement compared with cost of care"
+              ></canvas>
+            </div>
+            <p class="chart-caption">
+              Bars show how each payer category compares with the cost of care. Hover to see how far
+              below cost Pennsylvania hospitals are paid today.
+            </p>
+          </div>
+        </div>
 
-  <section id="oversight" class="alt reveal issue-callout">
-    <p class="section-label">Accountability</p>
-    <h2>Oversight gap</h2>
-    <p class="section-intro">In 2024: <strong>200+ hospitals</strong> audited vs. <strong>6% of manufacturers</strong>. The gap matters for accountability.</p>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="200" data-suffix="+">0</span>
-        <span class="stat-label">hospitals audited in 2024</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="6" data-suffix="%">0%</span>
-        <span class="stat-label">of manufacturers audited (same period)</span>
-      </div>
-    </div>
-  </section>
+        <div class="layout-split">
+          <div class="card closures-card">
+            <h3>Closures to date</h3>
+            <p class="closures-lead"><span class="closures-count" id="closures-count" data-count-to="25" aria-live="polite">0</span> hospitals have closed in Pennsylvania since 2016.</p>
+            <p class="chart-caption closures-caption">
+              Each point on the map marks a closed facility. Closures cluster in communities that often have few alternatives.
+            </p>
+            <div class="pa-map-shell">
+              <svg id="pa-map-svg" class="pa-map-svg" viewBox="0 0 200 120" role="img" aria-label="Map of Pennsylvania showing locations of hospital closures">
+                <!-- Pennsylvania state outline (Census boundary) -->
+                <path id="pa-outline-path" class="pa-outline" d="" />
+                <g id="pa-dots-group"></g>
+              </svg>
+              <span class="pa-map-caption">25 facilities closed (2016–present)</span>
+            </div>
+          </div>
+          <div class="card">
+            <h3>Bond ratings</h3>
+            <div class="chart-container">
+              <canvas
+                id="bondRatingChart"
+                aria-label="Bond ratings for Pennsylvania hospitals compared with national medians"
+              ></canvas>
+            </div>
+            <p class="chart-caption">
+              Lower median bond ratings in Pennsylvania signal higher borrowing costs and less room
+              for long‑term investment than the national average.
+            </p>
+          </div>
+        </div>
+      </section>
 
-  <section id="pa-impact" class="reveal">
-    <p class="section-label">Pennsylvania</p>
-    <h2>340B in PA</h2>
-    <p class="section-intro"><strong><span class="count-up" data-count-up="72">0</span> PA hospitals (<span class="count-up" data-count-up="30" data-suffix="%">0</span>)</strong> participate in 340B:</p>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="49" data-suffix="%">0%</span>
-        <span class="stat-label">are rural providers</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="53" data-suffix="%">0%</span>
-        <span class="stat-label">operate with a negative margin</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="49" data-suffix="%">0%</span>
-        <span class="stat-label">provide labor and delivery services</span>
-      </div>
-    </div>
-  </section>
+      <section id="scenarios" class="section">
+        <h2>2030 Financial Scenarios</h2>
+        <p class="section-intro">
+          By 2030, Pennsylvania hospitals could end up in very different financial positions depending on policy and the economy. The chart below shows <strong>four possible outcomes</strong>: how much money hospitals would make or lose as a share of their spending.
+        </p>
+        <p class="scenarios-legend">
+          <strong>Positive</strong> (orange) = hospitals earn more than they spend. <strong>Negative</strong> (red) = hospitals spend more than they take in.
+        </p>
 
-  <section id="community-benefit" class="alt reveal">
-    <p class="section-label">Impact</p>
-    <h2>Community benefit</h2>
-    <p class="section-intro"><strong><span class="count-up" data-count-up="23" data-suffix="%">0</span></strong> average drug savings; free/reduced Rx; mobile mammography, screening, dental.</p>
-    <div class="highlight-box">
-      <p class="big-stat">$<span class="count-up" data-count-up="7.95" data-decimals="2">0</span>B</p>
-      <p style="margin:0;font-size:0.88rem;color:var(--muted);">Community benefits from 340B hospitals, 2024 (<strong><span class="count-up" data-count-up="9" data-suffix="%">0</span> vs. 2023</strong>).</p>
-    </div>
-  </section>
+        <div class="card scenarios-chart-card">
+          <h3>Possible 2030 outcomes: hospital profit or loss</h3>
+          <div class="chart-container">
+            <canvas id="scenarioMarginChart" aria-label="2030 net margin outcomes by scenario"></canvas>
+          </div>
+          <div class="scenario-cards" id="scenario-cards" aria-label="Scenario details"></div>
+        </div>
+      </section>
 
-  <section id="access" class="reveal issue-callout">
-    <p class="section-label">The problem</p>
-    <h2>Access at risk</h2>
-    <p class="section-intro"><strong>Some manufacturers limit hospitals to one contract pharmacy.</strong> Rural and underserved patients depend on contract and specialty pharmacies for high-cost drugs.</p>
-  </section>
+      <section id="access" class="section alt">
+        <h2>Access and Community Impact</h2>
+        <p class="section-intro">
+          Hospital closures and service reductions translate into longer travel times, fewer local
+          jobs, and diminished economic activity.
+        </p>
 
-  <section id="pa-safeguards" class="reveal">
-    <p class="section-label">Pennsylvania</p>
-    <h2>PA safeguards: no duplicate discounts</h2>
-    <ul>
-      <li>Manufacturers need not give both a 340B discount and a Medicaid rebate on the same drug.</li>
-      <li>DHS maintains the <strong>340B Drug Exclusion List</strong> and invoices manufacturers; covered entities may not dispense 340B-priced drugs on the list.</li>
-      <li>Contract pharmacies use non-340B drugs for MA beneficiaries; DHS invoices manufacturers for those rebates.</li>
-    </ul>
-  </section>
+        <div class="layout-split access-split">
+          <div class="card rainy-day-card">
+            <h3>Closures in a Rainy Day path</h3>
+            <p class="big-number"><span class="closures-range-min" data-count-to="12" aria-live="polite">0</span>–<span class="closures-range-max" data-count-to="14" aria-live="polite">0</span></p>
+            <p>additional hospitals could be forced to close by 2030 without intervention.</p>
+          </div>
+          <div class="card impact-card">
+            <h3>Impact on communities</h3>
+            <p class="impact-intro">Without action, affected communities would face:</p>
+            <div class="impact-stats" id="impact-stats">
+              <div class="impact-stat">
+                <div class="icon-wrap impact-icon-wrap" aria-hidden="true">
+                  <svg class="icon-car" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 17h14v-5H5v5Z"/><path d="M5 12l2-4h10l2 4"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/></svg>
+                </div>
+                <div class="impact-stat-content">
+                  <span class="impact-value" data-count-to="22" data-format="minutes" aria-live="polite">+22 min</span>
+                  <span class="impact-label">Additional drive time to nearest hospital and ER</span>
+                </div>
+              </div>
+              <div class="impact-stat">
+                <div class="icon-wrap impact-icon-wrap" aria-hidden="true">
+                  <svg class="icon-worker" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="3"/><path d="M5 21v-2a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v2"/></svg>
+                </div>
+                <div class="impact-stat-content">
+                  <span class="impact-value" data-count-to="3000" data-format="jobs" aria-live="polite">3,000+</span>
+                  <span class="impact-label">Local jobs at risk</span>
+                </div>
+              </div>
+              <div class="impact-stat">
+                <div class="icon-wrap impact-icon-wrap" aria-hidden="true">
+                  <svg class="icon-money" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div class="impact-stat-content">
+                  <span class="impact-value" data-count-to="900" data-format="wages" aria-live="polite">$900M+</span>
+                  <span class="impact-label">Lost wages tied to hospitals alone</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
-</main>
+      <section id="levers" class="section">
+        <h2>Policy Levers: Moving Toward Sustainability</h2>
+        <p class="section-intro">
+          State leaders can influence several factors. Adjust the settings below to see how different policy choices move Pennsylvania toward—or away from—a sustainable future for hospitals.
+        </p>
 
-<footer>
-  <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
-  <p style="margin:0.75rem 0 0;"><strong>Hospital &amp;&#32;Healthsystem Association of Pennsylvania (HAP)</strong></p>
-</footer>
-</div>
+        <div class="levers-viz" aria-label="Policy levers simulator">
+          <div class="levers-chart-card card">
+            <h3>Where could we land by 2030?</h3>
+            <p class="levers-chart-intro">Each bar is a possible outcome. <strong>Your trajectory</strong> (highlighted) shows where current settings point.</p>
+            <div class="chart-container chart-container-tall">
+              <canvas id="leverScenarioChart" aria-label="Scenario comparison with your trajectory"></canvas>
+            </div>
+            <div class="levers-outcome-callout" id="levers-outcome-callout">
+              <span class="levers-outcome-badge" id="lever-outcome-badge">Rainy Day</span>
+              <p id="lever-outcome-label" class="outcome-label">With current settings, hospitals face persistent financial strain.</p>
+              <p id="lever-outcome-detail" class="outcome-detail">Higher risk of closures and reduced access for communities.</p>
+            </div>
+          </div>
 
-<script>
-(function() {
-  var FIPS_TO_ABBR = { 1:"AL",2:"AK",4:"AZ",5:"AR",6:"CA",8:"CO",9:"CT",10:"DE",11:"DC",12:"FL",13:"GA",15:"HI",16:"ID",17:"IL",18:"IN",19:"IA",20:"KS",21:"KY",22:"LA",23:"ME",24:"MD",25:"MA",26:"MI",27:"MN",28:"MS",29:"MO",30:"MT",31:"NE",32:"NV",33:"NH",34:"NJ",35:"NM",36:"NY",37:"NC",38:"ND",39:"OH",40:"OK",41:"OR",42:"PA",44:"RI",45:"SC",46:"SD",47:"TN",48:"TX",49:"UT",50:"VT",51:"VA",53:"WA",54:"WV",55:"WI",56:"WY" };
-  var STATE_NAMES = { AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",DC:"D.C.",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming" };
-  function getStateAbbr(d) {
-      if (!d) return null;
-      var id = d.id != null ? d.id : (d.properties && (d.properties.FIPS || d.properties.STATE));
-      if (id == null || id === "") return null;
-      var num = parseInt(id, 10);
-      if (!isNaN(num)) id = num;
-      return FIPS_TO_ABBR[id] || FIPS_TO_ABBR[String(id)] || null;
-    }
-  function getStateName(abbr, d) {
-      var name = (abbr && (STATE_NAMES[abbr] || STATE_NAMES[String(abbr).toUpperCase()])) || (d && d.properties && d.properties.name);
-      return name && String(name).trim() ? String(name) : (abbr || "State");
-    }
-  var STATE_340B = { AL:{y:2021,pbm:true,cp:false,notes:""}, AZ:{y:2022,pbm:true,cp:false,notes:""}, AR:{y:2021,pbm:true,cp:true,notes:"First to enact; upheld in court. Same bill."}, CA:{y:2023,pbm:true,cp:false,notes:""}, CO:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy bill 2025. Reporting in 340B bill."}, CT:{y:2023,pbm:true,cp:false,notes:""}, GA:{y:2020,pbm:true,cp:false,notes:""}, HI:{y:2025,pbm:false,cp:true,notes:"Reporting required."}, IL:{y:2022,pbm:true,cp:false,notes:""}, IN:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill."}, IA:{y:2023,pbm:true,cp:false,notes:""}, KS:{y:2024,pbm:false,cp:true,notes:""}, KY:{y:2020,pbm:true,cp:false,notes:""}, LA:{y:2023,pbm:true,cp:true,notes:"Same bill. Upheld in court."}, ME:{y:2025,pbm:false,cp:true,notes:"Reporting required. Hybrid 2025."}, MD:{y:2024,pbm:false,cp:true,notes:""}, MA:{y:null,pbm:false,cp:false,notes:""}, MI:{y:2022,pbm:true,cp:false,notes:""}, MN:{y:2019,pbm:true,cp:true,notes:"Contract pharmacy 2024. Reporting separate. Upheld in court."}, MS:{y:2024,pbm:true,cp:true,notes:"Same bill."}, MO:{y:2024,pbm:false,cp:true,notes:"Upheld in court."}, MT:{y:2021,pbm:true,cp:false,notes:""}, NE:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, NV:{y:2023,pbm:true,cp:false,notes:""}, NH:{y:2024,pbm:true,cp:false,notes:""}, NJ:{y:null,pbm:false,cp:false,notes:""}, NM:{y:2023,pbm:true,cp:true,notes:"Contract pharmacy applies to CHCs only. Separate bills."}, NY:{y:null,pbm:false,cp:false,notes:""}, NC:{y:2021,pbm:true,cp:false,notes:""}, ND:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, OH:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill. Hybrid 2025."}, OK:{y:2025,pbm:false,cp:true,notes:""}, OR:{y:2025,pbm:true,cp:true,notes:"Contract pharmacy signed June 2025. Multiple bills."}, PA:{y:null,pbm:false,cp:false,notes:"In progress — Pennsylvania is moving toward 340B contract pharmacy protection legislation."}, RI:{y:2025,pbm:true,cp:true,notes:"Same bill, reporting. Signed June 2025. Upheld in court."}, SC:{y:null,pbm:false,cp:false,notes:""}, SD:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2025. PBM 2019, 2024."}, TN:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025; restrictions after 2025. Upheld in court."}, TX:{y:null,pbm:false,cp:false,notes:""}, UT:{y:2020,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, VT:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Hybrid 2025."}, VA:{y:2021,pbm:true,cp:false,notes:"Governor has vetoed 340B protection legislation."}, WA:{y:null,pbm:false,cp:false,notes:"340B reporting required; no protection law."}, WV:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2024. PBM 2019, 2021."}, WI:{y:null,pbm:false,cp:false,notes:""}, WY:{y:null,pbm:false,cp:false,notes:""}, FL:{y:null,pbm:false,cp:false,notes:""}, DE:{y:null,pbm:false,cp:false,notes:""}, ID:{y:null,pbm:false,cp:false,notes:"340B reporting; no protection law."}, DC:{y:null,pbm:false,cp:false,notes:""} };
-  var STATES_WITH_PROTECTION = ["AR","CO","HI","KS","LA","ME","MD","MN","MS","MO","NE","NM","ND","OK","OR","RI","SD","TN","UT","VT","WV"];
+          <div class="levers-controls-card card">
+            <h3>Adjust policy levers</h3>
+            <form id="lever-form" class="lever-form-grid">
+              <div class="lever-group" data-lever="medicaid">
+                <label>Medicaid reimbursement</label>
+                <div class="lever-options">
+                  <button type="button" class="lever-option" data-level="current">Current</button>
+                  <button type="button" class="lever-option" data-level="improved">Improved</button>
+                  <button type="button" class="lever-option" data-level="transformed">Transformed</button>
+                </div>
+              </div>
+              <div class="lever-group" data-lever="liability">
+                <label>Medical liability</label>
+                <div class="lever-options">
+                  <button type="button" class="lever-option" data-level="current">Current</button>
+                  <button type="button" class="lever-option" data-level="improved">Reformed</button>
+                  <button type="button" class="lever-option" data-level="transformed">Strong reform</button>
+                </div>
+              </div>
+              <div class="lever-group" data-lever="regs">
+                <label>Administrative burden</label>
+                <div class="lever-options">
+                  <button type="button" class="lever-option" data-level="current">Unchanged</button>
+                  <button type="button" class="lever-option" data-level="improved">Streamlined</button>
+                  <button type="button" class="lever-option" data-level="transformed">Modernized</button>
+                </div>
+              </div>
+              <div class="lever-group" data-lever="ai">
+                <label>Workforce &amp; AI</label>
+                <div class="lever-options">
+                  <button type="button" class="lever-option" data-level="current">Limited</button>
+                  <button type="button" class="lever-option" data-level="improved">Targeted</button>
+                  <button type="button" class="lever-option" data-level="transformed">Broad</button>
+                </div>
+              </div>
+            </form>
+            <p class="form-note">Illustrative only. Based on report scenario drivers, not a forecast.</p>
+          </div>
+        </div>
+      </section>
 
-  function drawMap() {
-    var container = document.getElementById("us-map");
-    if (!container) return;
-    var width = Math.min(container.offsetWidth || 640, 700);
-    var height = Math.round(width * 0.55);
+      <section id="methods" class="section alt">
+        <h2>Methods and Sources</h2>
+        <p>
+          This dashboard summarizes key findings from the report
+          <em>“Time to Act: What The Future Holds For Pennsylvania’s Hospitals, Patients, and Communities”</em>
+          (January 2026). The analysis was prepared by <strong>Oliver Wyman</strong> and commissioned by
+          <strong>The Hospital and Healthsystem Association of Pennsylvania (HAP)</strong>.
+        </p>
+        <ul class="bullet-list">
+          <li>
+            Quantitative values (for example, margins, closures, reimbursement levels, job and wage
+            impacts) are taken directly from the report text and its endnotes.
+          </li>
+          <li>
+            Scenario labels and 2030 net margins are based on the report’s modeling of Baseline, Baseline with H.R. 1, Rainy Day, and Sustainability Prevails paths.
+          </li>
+          <li>
+            The policy lever tool groups scenario drivers from Appendix A into four high‑level levers
+            and provides <strong>illustrative</strong> mappings only. It does not calculate new projections.
+          </li>
+        </ul>
+        <p>
+          For full detail, see the original report and appendix, including methodology, assumptions,
+          and data sources.
+        </p>
+      </section>
+    </main>
 
-    if (typeof d3 === "undefined" || typeof topojson === "undefined") {
-      container.innerHTML = "<p style='text-align:center;color:var(--muted);padding:2rem;'>Map loads with D3. Enable script or view state lists below.</p>";
-      return;
-    }
+    <footer class="site-footer">
+      <p class="footer-attribution">
+        <strong>Oliver Wyman</strong> prepared this analysis for <strong>The Hospital and Healthsystem Association of Pennsylvania (HAP)</strong>. This interactive dashboard is a visual companion to the full report and does not replace it.
+      </p>
+    </footer>
 
-    container.innerHTML = "";
-    var svg = d3.select("#us-map").append("svg").attr("viewBox", [0, 0, width, height]).attr("width", "100%").attr("height", "auto").attr("aria-hidden", "true");
+    <button class="back-to-top" id="back-to-top" type="button">Back to top</button>
 
-    d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(us) {
-      var states = topojson.feature(us, us.objects.states);
-      var projection = d3.geoAlbersUsa().fitSize([width, height], states);
-      var path = d3.geoPath(projection);
-      var g = svg.append("g");
-      var paths = g.selectAll("path").data(states.features).join("path").attr("class", function(d) {
-        var abbr = getStateAbbr(d);
-        return "state " + (abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "protection" : "no-protection");
-      }).attr("d", path).attr("data-state", function(d) { return getStateAbbr(d) || (d.id != null ? d.id : ""); }).attr("opacity", 1);
-      bindMapInteractions(paths);
-      scheduleMapFadeIn();
-    }).catch(function() {
-      container.innerHTML = "<p style='text-align:center;color:var(--muted);padding:2rem;'>Map data unavailable. See state lists below.</p>";
-    });
-  }
+    <script src="main.js?v=6"></script>
+  </body>
+  </html>
 
-  function scheduleMapFadeIn() {
-    var wrap = document.querySelector(".pa-dashboard .us-map-wrap");
-    if (!wrap) return;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      wrap.classList.add("map-visible");
-      return;
-    }
-    var once = false;
-    var io = new IntersectionObserver(function(entries) {
-      if (once) return;
-      if (!entries[0].isIntersecting) return;
-      once = true;
-      wrap.classList.add("map-visible");
-    }, { rootMargin: "0px 0px -40px 0px", threshold: 0.1 });
-    io.observe(wrap);
-  }
-
-  function bindMapInteractions(paths) {
-    var tooltip = document.getElementById("map-tooltip");
-    var panel = document.getElementById("state-detail-panel");
-    if (!tooltip || !panel) return;
-    function placeTooltip(ev) {
-      var x = ev.clientX, y = ev.clientY;
-      var offset = 12;
-      var l = x + offset, t = y + offset;
-      tooltip.style.left = l + "px";
-      tooltip.style.top = t + "px";
-    }
-    paths.on("mouseenter", function(ev, d) {
-      var abbr = getStateAbbr(d);
-      var name = getStateName(abbr, d);
-      tooltip.textContent = name;
-      placeTooltip(ev);
-      tooltip.classList.add("visible");
-      tooltip.setAttribute("aria-hidden", "false");
-    }).on("mousemove", function(ev) {
-      placeTooltip(ev);
-    }).on("mouseleave", function() {
-      tooltip.classList.remove("visible");
-      tooltip.setAttribute("aria-hidden", "true");
-    }).on("click", function(ev, d) {
-      ev.stopPropagation();
-      tooltip.classList.remove("visible");
-      tooltip.setAttribute("aria-hidden", "true");
-      var abbr = getStateAbbr(d);
-      var name = getStateName(abbr, d);
-      var data = abbr ? STATE_340B[abbr] : null;
-      panel.classList.remove("empty");
-      if (!data) {
-        panel.innerHTML = "<h4>" + name + "</h4><p class=\"state-notes\">No 340B state law data in this snapshot. Check state sources for current status.</p>";
-        return;
-      }
-      var html = "<h4>" + name + "</h4>";
-      html += "<p class=\"state-stat\"><span class=\"badge " + (data.cp ? "yes" : "no") + "\">Contract pharmacy protection: " + (data.cp ? "Yes" : "No") + "</span>";
-      html += "<span class=\"badge " + (data.pbm ? "yes" : "no") + "\">PBM protections: " + (data.pbm ? "Yes" : "No") + "</span></p>";
-      if (data.y) html += "<p class=\"state-stat\"><strong>First/notable law year:</strong> " + data.y + "</p>";
-      if (data.notes) html += "<p class=\"state-notes\">" + data.notes + "</p>";
-      panel.innerHTML = html;
-    });
-    document.addEventListener("click", function(ev) {
-      if (!panel.contains(ev.target) && !ev.target.closest(".us-map-wrap path")) {
-        panel.classList.add("empty");
-        panel.innerHTML = "<p>Select a state on the map to view 340B status.</p>";
-      }
-    });
-  }
-
-  function initCountUp() {
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document.querySelectorAll(".pa-dashboard [data-count-up]").forEach(function(el) {
-        var target = parseFloat(el.getAttribute("data-count-up"));
-        var suffix = el.getAttribute("data-suffix") || "";
-        var decimals = parseInt(el.getAttribute("data-decimals"), 10) || 0;
-        el.textContent = (decimals ? target.toFixed(decimals) : Math.round(target).toString()) + suffix;
-      });
-      return;
-    }
-    var els = document.querySelectorAll(".pa-dashboard [data-count-up]");
-    if (!els.length) return;
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        if (el.dataset.countUpDone) return;
-        el.dataset.countUpDone = "1";
-        var target = parseFloat(el.getAttribute("data-count-up"));
-        var suffix = el.getAttribute("data-suffix") || "";
-        var prefix = el.getAttribute("data-prefix") || "";
-        var decimals = parseInt(el.getAttribute("data-decimals"), 10) || 0;
-        var duration = 1400;
-        var start = performance.now();
-        function update(now) {
-          var t = Math.min((now - start) / duration, 1);
-          t = 1 - Math.pow(1 - t, 2);
-          var v = target * t;
-          var text = prefix + (decimals ? v.toFixed(decimals) : Math.round(v).toString()) + suffix;
-          el.textContent = text;
-          if (t < 1) requestAnimationFrame(update);
-        }
-        requestAnimationFrame(update);
-      });
-    }, { rootMargin: "0px 0px -60px 0px", threshold: 0.1 });
-    els.forEach(function(el) { observer.observe(el); });
-  }
-
-  function initReveal() {
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document.querySelectorAll(".pa-dashboard section.reveal").forEach(function(s) { s.classList.add("visible"); });
-      return;
-    }
-    var sections = document.querySelectorAll(".pa-dashboard section.reveal");
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) entry.target.classList.add("visible");
-      });
-    }, { rootMargin: "0px 0px -80px 0px", threshold: 0.05 });
-    sections.forEach(function(s) { observer.observe(s); });
-  }
-
-var lastMapWidth = 0;
-  var isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
-  function onResize() {
-    if (isTouch) return;
-    var container = document.getElementById("us-map");
-    if (!container) return;
-    var w = container.offsetWidth;
-    if (Math.abs(w - lastMapWidth) < 40 && lastMapWidth > 0) return;
-    lastMapWidth = w;
-    drawMap();
-  }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function() {
-      drawMap();
-      var c = document.getElementById("us-map");
-      if (c) lastMapWidth = c.offsetWidth;
-      initCountUp();
-      initReveal();
-      if (!isTouch) {
-        var resizeT;
-        window.addEventListener("resize", function() {
-          clearTimeout(resizeT);
-          resizeT = setTimeout(onResize, 350);
-        });
-      }
-    });
-  } else {
-    drawMap();
-    var c = document.getElementById("us-map");
-    if (c) lastMapWidth = c.offsetWidth;
-    initCountUp();
-    initReveal();
-    if (!isTouch) {
-      var resizeT;
-      window.addEventListener("resize", function() {
-        clearTimeout(resizeT);
-        resizeT = setTimeout(onResize, 350);
-      });
-    }
-  }
-})();
-</script>
-</body>
-</html>
