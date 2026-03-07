@@ -100,6 +100,9 @@
       --ease: cubic-bezier(0.4, 0, 0.2, 1);
       --ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
       --ease-out: cubic-bezier(0, 0, 0.2, 1);
+
+      /* Content alignment — consistent width with map */
+      --content-max: 1100px;
     }
 
     * { box-sizing: border-box; }
@@ -132,6 +135,7 @@
 
     /* KPI Strip */
     .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); padding: var(--space-6) 0; border-bottom: 1px solid var(--border); }
+    .kpi-strip .kpi-card { min-height: 0; }
     @media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .kpi-strip { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-6) 0; } }
     .kpi-card { padding: var(--space-5); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-xs); transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
@@ -143,8 +147,8 @@
     .kpi-card:has(.kpi-value.primary) { border-left: 3px solid var(--primary); }
     .kpi-desc { font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2); line-height: var(--leading-snug); max-width: 14em; }
 
-    /* Main grid */
-    main { padding: var(--space-4) 0; }
+    /* Main grid — aligned content width with map */
+    main { padding: var(--space-4) var(--space-4) var(--space-6); max-width: var(--content-max); margin-left: auto; margin-right: auto; }
     .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-4); align-items: start; }
     .card { border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); padding: var(--space-5); box-shadow: var(--shadow-xs); position: relative; align-self: start; transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
     .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); }
@@ -153,6 +157,7 @@
     .card-title { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--accent); margin: 0 0 var(--space-1); }
     .card h2 { font-size: var(--text-xl); font-weight: 600; color: var(--text); margin: 0 0 var(--space-2); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
     .card p, .card li { font-size: var(--text-base); line-height: var(--leading-relaxed); color: var(--text-secondary); margin: 0 0 var(--space-2); }
+    .card > *:last-child { margin-bottom: 0; }
     .card ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
 
     /* Card icons — left-aligned */
@@ -168,25 +173,27 @@
     .card-icon--scale, .card-icon--heart { background: var(--accent-muted); }
     .card-icon--scale svg, .card-icon--heart svg { stroke: var(--accent); fill: var(--accent); fill-opacity: 0.15; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
-    /* Overview + HAP Position: same row height, aligned */
-    #what-is-340b, #overview { align-self: stretch; }
-    #what-is-340b { display: flex; flex-direction: column; }
-    #what-is-340b .stat-block { margin-top: auto; padding-top: 1rem; }
+    /* Intro section — What is 340B first, HAP Position below, aligned with map width */
+    .intro-section { grid-column: 1 / -1; margin-bottom: var(--space-2); }
+    .intro-section-inner { display: flex; flex-direction: column; gap: var(--space-4); }
+    .intro-section .card { width: 100%; }
     .span-4 { grid-column: span 4; }
     .span-6 { grid-column: span 6; }
+    .span-6.card { align-self: stretch; }
     .span-8 { grid-column: span 8; }
     .span-12 { grid-column: span 12; }
     @media (max-width: 900px) { .span-4, .span-6, .span-8 { grid-column: span 12; } }
 
     /* Map hero — standout centerpiece for CEO/lawmaker presentation */
-    .map-hero-section { margin: var(--space-6) 0; }
-    .map-hero-inner { max-width: 1100px; margin: 0 auto; }
+    .map-hero-section { margin: var(--space-4) 0 var(--space-6); }
+    .map-hero-inner { max-width: var(--content-max); margin: 0 auto; }
     .map-hero-card { padding: var(--space-6); border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow); transition: box-shadow 0.3s var(--ease); }
     .map-hero-card:focus-within { box-shadow: var(--shadow-lg); }
     .map-hero-title { font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--primary); margin: 0 0 var(--space-1); }
     .map-hero-headline { font-size: var(--text-2xl); font-weight: 700; color: var(--text); margin: 0 0 var(--space-2); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
     .map-hero-sub { font-size: var(--text-base); color: var(--text-secondary); margin: 0 0 var(--space-5); line-height: var(--leading-relaxed); }
-    .supporting-cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-6); }
+    .map-hero-title + .map-hero-headline { margin-top: 0; }
+    .supporting-cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-6); align-items: start; }
     @media (max-width: 900px) { .supporting-cards-row { grid-template-columns: 1fr; } }
     /* Compact cards */
     .card--compact { padding: var(--space-4); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-xs); transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
@@ -205,13 +212,14 @@
     .card--compact .stat-desc { font-size: var(--text-xs); }
 
     /* HAP Position — callout */
-    .card-hap { border-color: var(--accent-border); background: linear-gradient(180deg, var(--bg-card) 0%, var(--accent-muted) 15%); }
+    .card-hap { border-color: var(--accent-border); background: linear-gradient(180deg, var(--bg-card) 0%, var(--accent-muted) 18%); }
     .hap-ask { margin-top: var(--space-4); padding: var(--space-4); border-radius: var(--radius); background: var(--accent-muted); border-left: 4px solid var(--accent); font-size: var(--text-base); font-weight: 500; color: var(--text); line-height: var(--leading-relaxed); }
     .hap-ask strong { color: var(--accent-hover); }
 
     /* Stat blocks */
     .stat-block { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: var(--space-4); margin-top: var(--space-4); }
     .stat { text-align: center; padding: var(--space-4); border-radius: var(--radius); background: var(--neutral-50); border: 1px solid var(--border); }
+    .stat-block .stat { min-width: 0; }
     .stat-label { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); margin: 0 0 var(--space-2); }
     .stat-value { font-family: var(--font-mono); font-size: var(--text-3xl); font-weight: 700; color: var(--accent); }
     .stat-value.blue { color: var(--primary); }
@@ -225,6 +233,7 @@
     #community-benefit { border-color: var(--accent-border); background: linear-gradient(180deg, var(--bg-card) 0%, var(--accent-muted) 12%); padding: var(--space-6); }
     #community-benefit:hover { box-shadow: var(--shadow-sm); }
     .benefit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-top: var(--space-4); margin-bottom: var(--space-4); }
+    .benefit-grid .benefit-item { align-self: start; }
     @media (max-width: 900px) { .benefit-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .benefit-grid { grid-template-columns: 1fr; } }
     .benefit-item { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-4); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease); }
@@ -273,7 +282,7 @@
     .state-list-block { padding: var(--space-4); border-radius: var(--radius); }
     .state-list-block.protection { background: var(--primary-muted); border: 1px solid var(--primary-border); }
     .state-list-block.no-protection { background: var(--neutral-50); border: 1px solid var(--border); }
-    .state-list-block h3 { font-size: var(--text-sm); margin: 0 0 var(--space-3); font-weight: 600; }
+    .state-list-block h3 { font-size: var(--text-sm); margin: 0 0 var(--space-3); font-weight: 600; line-height: var(--leading-snug); }
     .state-list-block.protection h3 { color: var(--primary); }
     .state-list-block.no-protection h3 { color: var(--text-muted); }
     .state-list-grid { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); font-size: var(--text-sm); }
@@ -292,7 +301,7 @@
     /* Trends */
     .trends-grid { display: grid; gap: var(--space-3); margin-top: var(--space-4); }
     @media (min-width: 500px) { .trends-grid { grid-template-columns: repeat(3, 1fr); } }
-    .trends-card { padding: var(--space-4); border-radius: var(--radius); background: var(--neutral-50); border: 1px solid var(--border); display: flex; gap: var(--space-4); align-items: flex-start; transition: border-color 0.2s var(--ease), background 0.2s var(--ease); }
+    .trends-card { padding: var(--space-4); border-radius: var(--radius); background: var(--neutral-50); border: 1px solid var(--border); display: flex; gap: var(--space-4); align-items: flex-start; transition: border-color 0.2s var(--ease), background 0.2s var(--ease); min-height: 0; }
     .trends-card:hover { border-color: var(--border-hover); background: var(--neutral-0); }
     .trends-card h4 { margin: 0 0 var(--space-1); font-size: var(--text-base); font-weight: 600; color: var(--primary); }
     .trends-card p { margin: 0; font-size: var(--text-sm); color: var(--text-secondary); line-height: var(--leading-relaxed); }
@@ -300,6 +309,7 @@
     .trends-icon svg { width: 20px; height: 20px; stroke: var(--primary); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
     .section-subhead { font-size: var(--text-sm); font-weight: 600; color: var(--text); margin: var(--space-6) 0 var(--space-3); letter-spacing: var(--tracking-tight); }
+    .section-subhead:first-child { margin-top: 0; }
     .sources { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-4); font-style: italic; }
 
     footer { padding: var(--space-8) var(--space-6); text-align: center; color: var(--text-muted); font-size: var(--text-sm); border-top: 1px solid var(--border); background: var(--bg-card); position: relative; z-index: 1; }
@@ -326,6 +336,7 @@
       .dashboard-header h1 { font-size: var(--text-lg); }
       .dashboard-nav a { font-size: var(--text-xs); padding: var(--space-2) var(--space-3); }
       .dashboard-inner { padding: 0 var(--space-5); }
+      main { padding-left: var(--space-2); padding-right: var(--space-2); }
       .kpi-value { font-size: var(--text-3xl); }
       .kpi-desc { font-size: var(--text-sm); }
       .big-stat-value { font-size: var(--text-4xl); }
@@ -388,39 +399,41 @@
 <main id="main-content" role="main">
   <div class="dashboard-grid">
 
-    <!-- What is 340B -->
-    <article id="what-is-340b" class="card span-4">
-      <div class="card-heading">
-        <div class="card-heading-text">
-          <p class="card-title">Overview</p>
-          <h2>What is 340B?</h2>
-        </div>
-        <div class="card-icon card-icon--pill" aria-hidden="true"><svg viewBox="0 0 48 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="8"/><rect x="26" y="4" width="20" height="16" rx="8"/></svg></div>
+    <!-- Intro: What is 340B first, HAP Position below — aligned with map width -->
+    <div class="intro-section">
+      <div class="intro-section-inner">
+        <article id="what-is-340b" class="card">
+          <div class="card-heading">
+            <div class="card-heading-text">
+              <p class="card-title">Overview</p>
+              <h2>What is 340B?</h2>
+            </div>
+            <div class="card-icon card-icon--pill" aria-hidden="true"><svg viewBox="0 0 48 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="8"/><rect x="26" y="4" width="20" height="16" rx="8"/></svg></div>
+          </div>
+          <p>The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and enables providers to serve vulnerable and underserved populations.</p>
+          <div class="stat-block">
+            <div class="stat">
+              <p class="stat-label">Market share</p>
+              <p class="stat-value count-up" data-count-up="7" data-suffix="%">0</p>
+              <p class="stat-desc">340B purchases</p>
+            </div>
+          </div>
+        </article>
+        <article id="overview" class="card card-hap">
+          <div class="card-heading">
+            <div class="card-heading-text">
+              <p class="card-title">HAP Position</p>
+              <h2>Protect 340B integrity and contract pharmacy access.</h2>
+            </div>
+            <div class="card-icon card-icon--shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          </div>
+          <p>HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies to ensure patient access to affordable medications.</p>
+          <div class="hap-ask">
+            <strong>HAP asks lawmakers:</strong> Protect 340B integrity and preserve contract pharmacy access for patient medications.
+          </div>
+        </article>
       </div>
-      <p>The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and enables providers to serve vulnerable and underserved populations.</p>
-      <div class="stat-block">
-        <div class="stat">
-          <p class="stat-label">Market share</p>
-          <p class="stat-value count-up" data-count-up="7" data-suffix="%">0</p>
-          <p class="stat-desc">340B purchases</p>
-        </div>
-      </div>
-    </article>
-
-    <!-- HAP Position — prominent -->
-    <article id="overview" class="card card-hap span-8">
-      <div class="card-heading">
-        <div class="card-heading-text">
-          <p class="card-title">HAP Position</p>
-          <h2>Protect 340B integrity and contract pharmacy access.</h2>
-        </div>
-        <div class="card-icon card-icon--shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-      </div>
-      <p>HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies to ensure patient access to affordable medications.</p>
-      <div class="hap-ask">
-        <strong>HAP asks lawmakers:</strong> Protect 340B integrity and preserve contract pharmacy access for patient medications.
-      </div>
-    </article>
+    </div>
 
     <!-- Map hero — centerpiece display -->
     <section id="state-laws" class="map-hero-section span-12">
