@@ -6,118 +6,167 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <title>340B Drug Pricing Program | HAP Advocacy Dashboard</title>
-  <meta name="description" content="The Hospital and Healthsystem Association of Pennsylvania supports 340B integrity and contract pharmacy access. 72 PA hospitals participate. $7.95B in community benefits. No cost to taxpayers.">
+  <meta name="description" content="HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection map, $7.95B community benefits, 72 PA hospitals. Executive briefing for lawmakers and hospital CEOs.">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Hospital and Healthsystem Association of Pennsylvania">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
   <style>
+    /* ========== HAP 340B DASHBOARD — Design System ========== */
     :root {
-      --bg: #fafbfc;
-      --bg-elevated: #ffffff;
-      --surface: rgba(0,114,188,0.04);
-      --surface-hover: rgba(0,114,188,0.07);
-      --glass: rgba(255,255,255,0.9);
-      --glass-strong: #ffffff;
-      --border: rgba(0,0,0,0.055);
-      --border-strong: rgba(0,0,0,0.085);
-      --border-focus: rgba(0,114,188,0.4);
-      --primary: #0072bc;
-      --primary-soft: #e8f4fc;
-      --primary-deep: #0369a1;
-      --accent: #f59e0b;
-      --accent-strong: #d97706;
-      --accent-soft: rgba(245,158,11,0.09);
-      --accent-glow: rgba(245,158,11,0.1);
-      --primary-glow: rgba(0,114,188,0.08);
-      --text: #1a1a1c;
-      --text-soft: #3d3d40;
-      --muted: #6b6b70;
-      --radius: 18px;
-      --radius-sm: 14px;
-      --radius-lg: 22px;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.03);
-      --shadow: 0 8px 32px rgba(0,0,0,0.06), 0 2px 8px rgba(0,0,0,0.03);
-      --shadow-lg: 0 16px 56px rgba(0,0,0,0.08);
-      --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      /* Brand — HAP blue, Pennsylvania-focused */
+      --primary: #0066a1;
+      --primary-hover: #005587;
+      --primary-muted: #e6f2f9;
+      --primary-border: rgba(0,102,161,0.2);
+      --accent: #e87500;
+      --accent-hover: #cc6800;
+      --accent-muted: #fff4e6;
+      --accent-border: rgba(232,117,0,0.25);
+
+      /* Neutrals — WCAG AA compliant, professional palette */
+      --neutral-0: #ffffff;
+      --neutral-50: #fafbfc;
+      --neutral-100: #f1f3f5;
+      --neutral-200: #e9ecef;
+      --neutral-300: #dee2e6;
+      --neutral-400: #adb5bd;
+      --neutral-500: #868e96;
+      --neutral-600: #495057;
+      --neutral-700: #343a40;
+      --neutral-800: #212529;
+      --neutral-900: #0d0d0f;
+
+      /* Semantic */
+      --bg: var(--neutral-50);
+      --bg-card: var(--neutral-0);
+      --border: var(--neutral-200);
+      --border-hover: var(--neutral-300);
+      --text: #1a1d21;
+      --text-secondary: #4a5568;
+      --text-muted: #718096;
+
+      /* Typography scale — refined hierarchy */
+      --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, monospace;
+      --text-xs: 0.6875rem;
+      --text-2xs: 0.625rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 2rem;
+      --text-4xl: 2.5rem;
+      --text-5xl: 3rem;
+      --text-hero: clamp(2.5rem, 6vw, 4rem);
+      --leading-tight: 1.25;
+      --leading-snug: 1.375;
+      --leading-normal: 1.5;
+      --leading-relaxed: 1.625;
+      --tracking-tight: -0.025em;
+      --tracking-normal: 0;
+      --tracking-wide: 0.05em;
+      --tracking-wider: 0.1em;
+
+      /* Spacing — 4px base */
+      --space-1: 0.25rem;
+      --space-2: 0.5rem;
+      --space-3: 0.75rem;
+      --space-4: 1rem;
+      --space-5: 1.25rem;
+      --space-6: 1.5rem;
+      --space-8: 2rem;
+      --space-10: 2.5rem;
+      --space-12: 3rem;
+
+      /* Radius */
+      --radius-sm: 8px;
+      --radius: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 20px;
+
+      /* Shadows — layered depth */
+      --shadow-xs: 0 1px 2px rgba(0,0,0,0.04), 0 1px 3px rgba(0,0,0,0.02);
+      --shadow-sm: 0 2px 4px rgba(0,0,0,0.04), 0 4px 12px rgba(0,0,0,0.04);
+      --shadow: 0 4px 6px rgba(0,0,0,0.04), 0 8px 24px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 24px rgba(0,0,0,0.08), 0 24px 48px rgba(0,0,0,0.06);
+      --shadow-xl: 0 24px 48px rgba(0,0,0,0.1);
+
+      /* Motion */
+      --ease: cubic-bezier(0.4, 0, 0.2, 1);
       --ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
-      --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+      --ease-out: cubic-bezier(0, 0, 0.2, 1);
     }
+
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
-    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "Segoe UI", "DM Sans", sans-serif; font-size: 16px; -webkit-font-smoothing: antialiased; font-optical-sizing: auto; background: var(--bg); color: var(--text); line-height: 1.55; }
+    body { margin: 0; font-family: var(--font-sans); font-size: var(--text-base); line-height: var(--leading-normal); color: var(--text); background: var(--bg); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; text-rendering: optimizeLegibility; }
     .dashboard { min-height: 100vh; position: relative; overflow-x: hidden; }
-    .dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 140% 100% at 50% -20%, rgba(0,114,188,0.03), transparent 60%); pointer-events: none; z-index: 0; }
-    .dashboard [id] { scroll-margin-top: 6rem; }
-    .dashboard a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
+    .dashboard::before { content: ""; position: fixed; inset: 0; background: linear-gradient(180deg, var(--neutral-0) 0%, var(--bg) 100%); pointer-events: none; z-index: 0; }
+    .dashboard [id] { scroll-margin-top: 6rem; scroll-margin-bottom: 2rem; }
+    .dashboard a { color: var(--primary); text-decoration: none; }
     .dashboard a:hover { text-decoration: underline; }
-    .dashboard a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+    .dashboard a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
 
-    .dashboard-inner { max-width: 1280px; margin: 0 auto; padding: 0 1.75rem; position: relative; z-index: 1; }
+    .dashboard-inner { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); position: relative; z-index: 1; }
 
     /* Header */
-    .dashboard-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 1.125rem 1.75rem; background: rgba(255,255,255,0.85); border-bottom: 1px solid var(--border); transition: background 0.3s var(--ease-smooth); }
-    @supports (backdrop-filter: saturate(180%) blur(28px)) { .dashboard-header { background: rgba(255,255,255,0.75); backdrop-filter: saturate(180%) blur(28px); -webkit-backdrop-filter: saturate(180%) blur(28px); } }
-    .header-left { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-    .header-logo { width: 48px; height: 48px; object-fit: contain; border-radius: 12px; flex-shrink: 0; }
-    @media (min-width: 600px) { .header-logo { width: 52px; height: 52px; } }
-    .report-by { margin: 0 0 0.1rem; font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
-    .dashboard-header h1 { margin: 0; font-size: 1.375rem; font-weight: 600; color: var(--primary); letter-spacing: -0.025em; }
-    .dashboard-header .badge-live { font-size: 0.7rem; font-weight: 600; padding: 0.35rem 0.65rem; border-radius: 8px; background: var(--primary-soft); color: var(--primary); letter-spacing: 0.04em; }
-    .dashboard-nav { display: flex; gap: 0.25rem; flex-wrap: wrap; }
-    .dashboard-nav a { font-size: 0.9375rem; font-weight: 500; padding: 0.5rem 1rem; border-radius: 10px; color: var(--muted); transition: color 0.25s var(--ease), background 0.25s var(--ease), transform 0.2s var(--ease-out); }
-    .dashboard-nav a:hover { color: var(--primary); background: var(--surface-hover); }
-    .dashboard-nav a.active { color: var(--primary); background: var(--primary-soft); }
+    .dashboard-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: var(--space-3); padding: var(--space-3) var(--space-5); background: rgba(255,255,255,0.98); border-bottom: 1px solid var(--border); box-shadow: 0 1px 0 rgba(0,0,0,0.03); }
+    @supports (backdrop-filter: blur(20px)) { .dashboard-header { background: rgba(255,255,255,0.88); backdrop-filter: blur(20px); } }
+    .header-left { display: flex; align-items: center; gap: var(--space-4); }
+    .header-logo { width: 44px; height: 44px; object-fit: contain; border-radius: var(--radius-sm); flex-shrink: 0; }
+    @media (min-width: 600px) { .header-logo { width: 48px; height: 48px; } }
+    .report-by { margin: 0 0 var(--space-1); font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); }
+    .dashboard-header h1 { margin: 0; font-size: var(--text-xl); font-weight: 700; color: var(--primary); letter-spacing: var(--tracking-tight); }
+    .dashboard-header .badge-live { font-size: var(--text-xs); font-weight: 600; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); background: var(--primary-muted); color: var(--primary); }
+    .dashboard-nav { display: flex; gap: var(--space-1); flex-wrap: wrap; }
+    .dashboard-nav a { font-size: var(--text-sm); font-weight: 500; padding: var(--space-2) var(--space-3); border-radius: var(--radius-sm); color: var(--text-secondary); transition: color 0.2s var(--ease), background 0.2s var(--ease); }
+    .dashboard-nav a:hover { color: var(--primary); background: var(--primary-muted); }
+    .dashboard-nav a.active { color: var(--primary); background: var(--primary-muted); font-weight: 600; }
     .dashboard-nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
     /* KPI Strip */
-    .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.25rem; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+    .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); padding: var(--space-6) 0; border-bottom: 1px solid var(--border); }
     @media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
-    @media (max-width: 480px) { .kpi-strip { grid-template-columns: 1fr; padding: 1.25rem 0; } }
-    .kpi-card { padding: 1.75rem 1.5rem; border-radius: var(--radius); background: var(--bg-elevated); border: 1px solid var(--border); transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), border-color 0.25s; box-shadow: var(--shadow-sm); }
-    .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--border-strong); }
-    @media (prefers-reduced-motion: reduce) { .kpi-card:hover { transform: none; } }
-    .kpi-label { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.5rem; }
-    .kpi-value { font-family: "JetBrains Mono", "SF Mono", ui-monospace, monospace; font-size: 2.75rem; font-weight: 700; line-height: 1; letter-spacing: -0.045em; color: var(--accent); }
-    @media (min-width: 768px) { .kpi-value { font-size: 3.5rem; } }
+    @media (max-width: 480px) { .kpi-strip { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-6) 0; } }
+    .kpi-card { padding: var(--space-5); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-xs); transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
+    .kpi-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); }
+    .kpi-label { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); margin: 0 0 var(--space-2); }
+    .kpi-value { font-family: var(--font-mono); font-size: var(--text-4xl); font-weight: 700; line-height: 1; letter-spacing: var(--tracking-tight); color: var(--accent); }
+    @media (min-width: 768px) { .kpi-value { font-size: var(--text-5xl); } }
     .kpi-value.primary { color: var(--primary); }
-    .kpi-desc { font-size: 0.9375rem; color: var(--text-soft); margin-top: 0.5rem; line-height: 1.45; max-width: 14em; }
+    .kpi-card:has(.kpi-value.primary) { border-left: 3px solid var(--primary); }
+    .kpi-desc { font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2); line-height: var(--leading-snug); max-width: 14em; }
 
     /* Main grid */
-    main { padding: 2rem 0; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; align-items: start; }
-    .card { border-radius: var(--radius); background: var(--bg-elevated); border: 1px solid var(--border); padding: 2rem; transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out), border-color 0.25s; box-shadow: var(--shadow-sm); position: relative; align-self: start; }
-    .card:hover { border-color: var(--border-strong); box-shadow: var(--shadow); transform: translateY(-1px); }
-    @media (prefers-reduced-motion: reduce) { .card { transition: border-color 0.2s, box-shadow 0.2s; } .card:hover { transform: none; } }
-    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .card-heading { display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: row; gap: 0.75rem; margin-bottom: 0.75rem; }
+    main { padding: var(--space-4) 0; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-4); align-items: start; }
+    .card { border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); padding: var(--space-5); box-shadow: var(--shadow-xs); position: relative; align-self: start; transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
+    .card:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); }
+    .card-heading { display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: row; gap: var(--space-4); margin-bottom: var(--space-4); }
     .card-heading-text { flex: 1; min-width: 0; }
-    .card-title { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.15rem; }
-    .card h2 { font-size: 1.25rem; font-weight: 600; color: var(--text); margin: 0 0 0.35rem; letter-spacing: -0.02em; line-height: 1.3; }
-    .card p, .card li { font-size: 1rem; line-height: 1.6; color: var(--text-soft); margin: 0 0 0.35rem; }
-    .card ul { margin: 0.35rem 0 0; padding-left: 1.25rem; }
+    .card-title { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--accent); margin: 0 0 var(--space-1); }
+    .card h2 { font-size: var(--text-xl); font-weight: 600; color: var(--text); margin: 0 0 var(--space-2); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
+    .card p, .card li { font-size: var(--text-base); line-height: var(--leading-relaxed); color: var(--text-secondary); margin: 0 0 var(--space-2); }
+    .card ul { margin: var(--space-2) 0 0; padding-left: var(--space-5); }
 
-    /* Card icon — left-aligned */
-    .card-icon { order: -1; flex-shrink: 0; width: 52px; height: 52px; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
-    .card-icon svg { width: 28px; height: 28px; }
-    .card-icon--pill { background: rgba(0,114,188,0.1); }
-    .card-icon--pill svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .card-icon--shield { background: rgba(245,158,11,0.12); }
-    .card-icon--shield svg { stroke: var(--accent); fill: var(--accent); fill-opacity: 0.25; stroke-width: 1.5; stroke-linejoin: round; }
-    .card-icon--map { background: rgba(0,114,188,0.1); }
-    .card-icon--map svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .card-icon--people { background: rgba(0,114,188,0.1); }
-    .card-icon--people svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .card-icon--scale { background: rgba(245,158,11,0.12); }
-    .card-icon--scale svg { stroke: var(--accent); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .card-icon--heart { background: rgba(245,158,11,0.12); }
-    .card-icon--heart svg { stroke: var(--accent); fill: var(--accent); fill-opacity: 0.2; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .card-icon--rx { background: rgba(0,114,188,0.1); }
-    .card-icon--rx svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
-    .card-icon--check { background: rgba(0,114,188,0.1); }
-    .card-icon--check svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    /* Card icons — left-aligned */
+    .card-icon { order: -1; flex-shrink: 0; width: 48px; height: 48px; border-radius: var(--radius); display: flex; align-items: center; justify-content: center; transition: transform 0.2s var(--ease); }
+    .card:hover .card-icon { transform: scale(1.05); }
+    .card-icon svg { width: 24px; height: 24px; }
+    .card-icon--pill { background: var(--primary-muted); }
+    .card-icon--pill svg { stroke: var(--primary); fill: none; stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; }
+    .card-icon--shield { background: var(--accent-muted); }
+    .card-icon--shield svg { stroke: var(--accent); fill: var(--accent); fill-opacity: 0.2; stroke-width: 1.5; stroke-linejoin: round; }
+    .card-icon--map, .card-icon--people, .card-icon--rx, .card-icon--check { background: var(--primary-muted); }
+    .card-icon--map svg, .card-icon--people svg, .card-icon--rx svg, .card-icon--check svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .card-icon--scale, .card-icon--heart { background: var(--accent-muted); }
+    .card-icon--scale svg, .card-icon--heart svg { stroke: var(--accent); fill: var(--accent); fill-opacity: 0.15; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
     /* Overview + HAP Position: same row height, aligned */
     #what-is-340b, #overview { align-self: stretch; }
@@ -129,169 +178,183 @@
     .span-12 { grid-column: span 12; }
     @media (max-width: 900px) { .span-4, .span-6, .span-8 { grid-column: span 12; } }
 
-    /* Map row: map left, sidebar right (Eligibility, Oversight, Pennsylvania) */
-    .map-with-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; align-items: start; }
-    @media (min-width: 901px) { .map-with-sidebar { grid-template-columns: 2fr 1fr; } }
-    @media (max-width: 900px) { .map-with-sidebar { grid-template-columns: 1fr; } }
-    .map-sidebar { display: flex; flex-direction: column; gap: 1rem; min-width: 0; width: 100%; }
-    .map-sidebar > .card--compact { width: 100%; min-width: 0; flex: 0 0 auto; }
+    /* Map hero — standout centerpiece for CEO/lawmaker presentation */
+    .map-hero-section { margin: var(--space-6) 0; }
+    .map-hero-inner { max-width: 1100px; margin: 0 auto; }
+    .map-hero-card { padding: var(--space-6); border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow); transition: box-shadow 0.3s var(--ease); }
+    .map-hero-card:focus-within { box-shadow: var(--shadow-lg); }
+    .map-hero-title { font-size: var(--text-sm); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--primary); margin: 0 0 var(--space-1); }
+    .map-hero-headline { font-size: var(--text-2xl); font-weight: 700; color: var(--text); margin: 0 0 var(--space-2); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
+    .map-hero-sub { font-size: var(--text-base); color: var(--text-secondary); margin: 0 0 var(--space-5); line-height: var(--leading-relaxed); }
+    .supporting-cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-6); }
+    @media (max-width: 900px) { .supporting-cards-row { grid-template-columns: 1fr; } }
     /* Compact cards */
-    .card--compact {
-      padding: 1.25rem 1.5rem;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      box-shadow: var(--shadow-sm);
-      background: var(--bg-elevated);
-      transition: transform 0.3s var(--ease-out), box-shadow 0.3s, border-color 0.25s;
-    }
-    .card--compact:hover { border-color: var(--border-strong); }
-    .card--compact .card-heading {
-      display: flex;
-      align-items: flex-start;
-      justify-content: flex-start;
-      flex-direction: row;
-      gap: 0.875rem;
-      margin-bottom: 0.625rem;
-    }
-    .card--compact .card-icon { order: -1; flex-shrink: 0; width: 36px; height: 36px; border-radius: 10px; }
-    .card--compact .card-icon svg { width: 18px; height: 18px; }
-    .card--compact .card-heading-text { order: 1; flex: 1; min-width: 0; }
-    .card--compact .card-title { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.1rem; }
-    .card--compact h2 { font-size: 1rem; font-weight: 600; margin: 0 0 0.35rem; letter-spacing: -0.02em; line-height: 1.3; color: var(--text); }
-    .card--compact p, .card--compact li { font-size: 0.875rem; line-height: 1.5; margin: 0 0 0.2rem; color: var(--text-soft); }
-    .card--compact ul { margin: 0.35rem 0 0; padding-left: 1.125rem; }
-    .card--compact .stat-block { margin-top: 0.625rem; gap: 0.5rem; grid-template-columns: 1fr 1fr; display: grid; }
-    .card--compact .stat { padding: 0.75rem 0.6rem; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); }
-    .card--compact .stat-label { font-size: 0.625rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
-    .card--compact .stat-value { font-size: 1.5rem; font-weight: 700; letter-spacing: -0.03em; }
-    .card--compact .stat-desc { font-size: 0.7rem; margin-top: 0.1rem; opacity: 0.9; }
+    .card--compact { padding: var(--space-4); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-xs); transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
+    .card--compact:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); }
+    .card--compact .card-heading { margin-bottom: var(--space-3); gap: var(--space-3); }
+    .card--compact .card-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); }
+    .card--compact .card-icon svg { width: 20px; height: 20px; }
+    .card--compact .card-title { color: var(--text-muted); }
+    .card--compact h2 { font-size: var(--text-lg); margin: 0 0 var(--space-2); }
+    .card--compact p, .card--compact li { font-size: var(--text-sm); margin: 0 0 var(--space-1); }
+    .card--compact ul { margin: var(--space-2) 0 0; padding-left: var(--space-4); }
+    .card--compact .stat-block { margin-top: var(--space-3); gap: var(--space-2); grid-template-columns: 1fr 1fr; display: grid; }
+    .card--compact .stat { padding: var(--space-3); border-radius: var(--radius-sm); background: var(--neutral-50); border: 1px solid var(--border); }
+    .card--compact .stat-label { font-size: 0.625rem; }
+    .card--compact .stat-value { font-size: var(--text-2xl); }
+    .card--compact .stat-desc { font-size: var(--text-xs); }
 
-    /* HAP Position — hero card */
-    .card-hap { border-color: rgba(245,158,11,0.35); box-shadow: var(--shadow-sm), 0 0 0 1px rgba(245,158,11,0.08); }
-    .card-hap:hover { box-shadow: var(--shadow), 0 0 0 1px rgba(245,158,11,0.12); }
-    .hap-ask { margin-top: 0.875rem; padding: 1.125rem 1.375rem; border-radius: var(--radius-sm); background: var(--accent-soft); border-left: 4px solid var(--accent); font-size: 1rem; font-weight: 500; color: var(--text); line-height: 1.5; }
-    .hap-ask strong { color: var(--accent-strong); }
+    /* HAP Position — callout */
+    .card-hap { border-color: var(--accent-border); background: linear-gradient(180deg, var(--bg-card) 0%, var(--accent-muted) 15%); }
+    .hap-ask { margin-top: var(--space-4); padding: var(--space-4); border-radius: var(--radius); background: var(--accent-muted); border-left: 4px solid var(--accent); font-size: var(--text-base); font-weight: 500; color: var(--text); line-height: var(--leading-relaxed); }
+    .hap-ask strong { color: var(--accent-hover); }
 
-    /* Stat blocks — tighter */
-    .stat-block { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.75rem; margin-top: 0.75rem; }
-    .stat { text-align: center; padding: 1.25rem 1rem; border-radius: var(--radius-sm); background: var(--bg); border: 1px solid var(--border); transition: border-color 0.2s; }
-    .stat-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.25rem; }
-    .stat-value { font-family: "JetBrains Mono", monospace; font-size: 2.75rem; font-weight: 700; color: var(--accent); }
+    /* Stat blocks */
+    .stat-block { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: var(--space-4); margin-top: var(--space-4); }
+    .stat { text-align: center; padding: var(--space-4); border-radius: var(--radius); background: var(--neutral-50); border: 1px solid var(--border); }
+    .stat-label { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); margin: 0 0 var(--space-2); }
+    .stat-value { font-family: var(--font-mono); font-size: var(--text-3xl); font-weight: 700; color: var(--accent); }
     .stat-value.blue { color: var(--primary); }
-    .stat-desc { font-size: 0.85rem; color: var(--text-soft); margin-top: 0.25rem; line-height: 1.35; }
-    .big-stat { padding: 1.25rem; border-radius: var(--radius-sm); background: var(--accent-soft); border: 1px solid rgba(245,158,11,0.25); margin-top: 0.75rem; }
-    .big-stat-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.25rem; }
-    .big-stat-value { font-family: "JetBrains Mono", monospace; font-size: 3.75rem; font-weight: 700; color: var(--accent); letter-spacing: -0.03em; }
-    .big-stat-desc { font-size: 0.95rem; color: var(--text-soft); margin-top: 0.35rem; }
+    .stat-desc { font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-1); line-height: var(--leading-snug); }
+    .big-stat { padding: var(--space-5); border-radius: var(--radius); background: var(--accent-muted); border: 1px solid var(--accent-border); margin-top: var(--space-4); }
+    .big-stat-label { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); margin: 0 0 var(--space-2); }
+    .big-stat-value { font-family: var(--font-mono); font-size: var(--text-4xl); font-weight: 700; color: var(--accent); letter-spacing: var(--tracking-tight); }
+    .big-stat-desc { font-size: var(--text-base); color: var(--text-secondary); margin-top: var(--space-2); }
 
     /* Community benefit */
-    #community-benefit { border-color: rgba(245,158,11,0.22); background: linear-gradient(180deg, var(--bg-elevated) 0%, rgba(245,158,11,0.03) 100%); box-shadow: var(--shadow-sm), 0 0 0 1px rgba(245,158,11,0.05); padding: 2.25rem 2rem; }
-    #community-benefit:hover { box-shadow: var(--shadow), 0 0 0 1px rgba(245,158,11,0.1); }
-    .benefit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem; }
+    #community-benefit { border-color: var(--accent-border); background: linear-gradient(180deg, var(--bg-card) 0%, var(--accent-muted) 12%); padding: var(--space-6); }
+    #community-benefit:hover { box-shadow: var(--shadow-sm); }
+    .benefit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-3); margin-top: var(--space-4); margin-bottom: var(--space-4); }
     @media (max-width: 900px) { .benefit-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .benefit-grid { grid-template-columns: 1fr; } }
-    .benefit-item { display: flex; align-items: flex-start; gap: 0.875rem; padding: 1.25rem 1.5rem; border-radius: var(--radius-sm); background: var(--bg-elevated); border: 1px solid var(--border); transition: border-color 0.25s, box-shadow 0.3s var(--ease-out), transform 0.25s var(--ease-out); }
-    .benefit-item:hover { border-color: rgba(245,158,11,0.2); box-shadow: var(--shadow-sm); transform: translateY(-1px); }
-    @media (prefers-reduced-motion: reduce) { .benefit-item:hover { transform: none; } }
-    .benefit-item-icon { flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
+    .benefit-item { display: flex; align-items: flex-start; gap: var(--space-3); padding: var(--space-4); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease), transform 0.2s var(--ease); }
+    .benefit-item:hover { border-color: var(--accent-border); box-shadow: var(--shadow-xs); transform: translateY(-1px); }
+    .benefit-item-icon { flex-shrink: 0; width: 44px; height: 44px; border-radius: var(--radius-sm); background: var(--accent-muted); display: flex; align-items: center; justify-content: center; }
     .benefit-item-icon svg { width: 22px; height: 22px; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-    .benefit-item-icon.fill svg { fill: var(--accent); fill-opacity: 0.25; }
-    .benefit-item-text { font-size: 0.95rem; font-weight: 500; color: var(--text); line-height: 1.4; margin: 0; }
-    .benefit-item-text strong { color: var(--accent-strong); }
-    .community-benefit-hero { text-align: center; padding: 2.5rem 1.75rem; border-radius: var(--radius); background: linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(245,158,11,0.04) 100%); border: 1px solid rgba(245,158,11,0.25); margin-top: 0.75rem; box-shadow: 0 2px 16px rgba(245,158,11,0.06) inset; }
-    .community-benefit-hero .big-stat-label { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
-    .community-benefit-hero .big-stat-value { font-size: clamp(3.5rem, 9vw, 6rem); font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; text-shadow: 0 0 40px rgba(245,158,11,0.15); }
-    .community-benefit-hero .big-stat-desc { font-size: 1rem; margin-top: 0.5rem; color: var(--text-soft); }
+    .benefit-item-text { font-size: var(--text-sm); font-weight: 500; color: var(--text); line-height: var(--leading-snug); margin: 0; }
+    .benefit-item-text strong { color: var(--accent-hover); }
+    .community-benefit-hero { text-align: center; padding: var(--space-8); border-radius: var(--radius); background: linear-gradient(135deg, var(--accent-muted) 0%, rgba(232,117,0,0.06) 100%); border: 1px solid var(--accent-border); margin-top: var(--space-3); transition: box-shadow 0.3s var(--ease); }
+    .community-benefit-hero:hover { box-shadow: var(--shadow-sm); }
+    .community-benefit-hero .big-stat-label { margin-bottom: var(--space-2); }
+    .community-benefit-hero .big-stat-value { font-size: var(--text-hero); font-weight: 800; color: var(--accent); }
+    .community-benefit-hero .big-stat-desc { font-size: var(--text-base); margin-top: var(--space-2); color: var(--text-secondary); }
 
-    /* Map card */
-    .map-wrap { margin: 0; padding: 0; border-radius: var(--radius-sm); overflow: hidden; opacity: 0; transform: translateY(6px); transition: opacity 0.6s var(--ease-smooth), transform 0.5s var(--ease-smooth); }
+    /* Map — restore original animation and SVG-safe colors */
+    .map-wrap { margin: 0; padding: 0; border-radius: var(--radius); overflow: hidden; opacity: 0; transform: translateY(6px); transition: opacity 0.6s var(--ease-smooth), transform 0.5s var(--ease-smooth); min-height: 320px; }
     .map-wrap.visible { opacity: 1; transform: none; }
     .dashboard .us-map-wrap svg { width: 100%; height: auto; display: block; }
-    .dashboard .us-map-wrap .state { fill: #e2e8f0; stroke: rgba(255,255,255,0.9); stroke-width: 1; cursor: pointer; transition: fill 0.2s; }
-    .dashboard .us-map-wrap .state.protection { fill: var(--primary); }
-    .dashboard .us-map-wrap .state.protection:hover { fill: var(--primary-deep); }
+    .dashboard .us-map-wrap .state { fill: #e2e8f0; stroke: rgba(255,255,255,0.9); stroke-width: 1; cursor: pointer; transition: fill 0.2s var(--ease); }
+    .dashboard .us-map-wrap .state.protection { fill: #0066a1; }
+    .dashboard .us-map-wrap .state.protection:hover { fill: #005587; }
     .dashboard .us-map-wrap .state.no-protection:hover { fill: #cbd5e1; }
     .dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-12px); }
     .dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.75s var(--ease-smooth) forwards; }
     @keyframes dominoIn { to { opacity: 1; transform: translateX(0); } }
     @media (prefers-reduced-motion: reduce) { .dashboard .us-map-wrap .state.state-domino { opacity: 1; transform: none; animation: none; } }
-    .map-container { display: grid; gap: 1rem; }
-    @media (min-width: 700px) { .map-container { grid-template-columns: 1fr 220px; } }
-    .map-legend { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; padding: 0.75rem 0; font-size: 0.95rem; color: var(--text-soft); }
-    .map-legend-item { display: flex; align-items: center; gap: 0.4rem; }
-    .map-legend-swatch { width: 10px; height: 10px; border-radius: 4px; }
+    .map-container { display: grid; gap: var(--space-4); }
+    @media (min-width: 700px) { .map-container { grid-template-columns: 1fr 260px; } }
+    .map-hero-section .map-container { min-height: 420px; }
+    .map-legend { display: flex; flex-wrap: wrap; gap: var(--space-4); justify-content: center; padding: var(--space-4) 0; font-size: var(--text-sm); color: var(--text-secondary); }
+    .map-legend-item { display: flex; align-items: center; gap: var(--space-2); }
+    .map-legend-swatch { width: 14px; height: 14px; border-radius: 4px; flex-shrink: 0; }
     .map-legend-swatch.protection { background: var(--primary); }
     .map-legend-swatch.no-protection { background: #cbd5e1; }
-    .state-detail-panel { padding: 1.25rem; border-radius: var(--radius-sm); background: var(--bg); border: 1px solid var(--border); min-height: 4rem; font-size: 0.9375rem; transition: border-color 0.2s; }
-    .state-detail-panel:not(.empty) { border-color: rgba(0,114,188,0.2); }
-    .state-detail-panel.empty { color: var(--muted); text-align: center; display: flex; align-items: center; justify-content: center; }
-    .state-detail-panel h4 { margin: 0 0 0.4rem; color: var(--primary); font-size: 1.1rem; }
-    .state-detail-panel .badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; font-weight: 600; margin-right: 0.25rem; margin-bottom: 0.2rem; }
-    .state-detail-panel .badge.yes { background: var(--primary-soft); color: var(--primary); }
-    .state-detail-panel .badge.no { background: #f1f5f9; color: var(--muted); }
+    .state-detail-panel { padding: var(--space-5); border-radius: var(--radius); background: var(--neutral-50); border: 1px solid var(--border); min-height: 5rem; font-size: var(--text-sm); transition: border-color 0.2s var(--ease), background 0.2s var(--ease); }
+    .state-detail-panel:not(.empty) { border-color: var(--primary-border); }
+    .state-detail-panel.empty { color: var(--text-muted); text-align: center; display: flex; align-items: center; justify-content: center; }
+    .state-detail-panel h4 { margin: 0 0 var(--space-2); color: var(--primary); font-size: var(--text-lg); font-weight: 600; }
+    .state-detail-panel .badge { display: inline-block; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 600; margin-right: var(--space-2); margin-bottom: var(--space-1); }
+    .state-detail-panel .badge.yes { background: var(--primary-muted); color: var(--primary); }
+    .state-detail-panel .badge.no { background: var(--neutral-100); color: var(--text-muted); }
 
     /* State lists */
-    .state-lists-wrap { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
+    .state-lists-wrap { display: grid; gap: var(--space-4); margin-top: var(--space-4); }
     @media (min-width: 500px) { .state-lists-wrap { grid-template-columns: 1fr 1fr; } }
-    .state-list-block { padding: 1rem; border-radius: var(--radius-sm); }
-    .state-list-block.protection { background: var(--primary-soft); border: 1px solid rgba(0,114,188,0.2); }
-    .state-list-block.no-protection { background: #f8fafc; border: 1px solid var(--border); }
-    .state-list-block h3 { font-size: 0.95rem; margin: 0 0 0.5rem; font-weight: 600; }
+    .state-list-block { padding: var(--space-4); border-radius: var(--radius); }
+    .state-list-block.protection { background: var(--primary-muted); border: 1px solid var(--primary-border); }
+    .state-list-block.no-protection { background: var(--neutral-50); border: 1px solid var(--border); }
+    .state-list-block h3 { font-size: var(--text-sm); margin: 0 0 var(--space-3); font-weight: 600; }
     .state-list-block.protection h3 { color: var(--primary); }
-    .state-list-block.no-protection h3 { color: var(--muted); }
-    .state-list-grid { display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; font-size: 0.85rem; }
-    .state-chip { padding: 0.3rem 0.55rem; border-radius: 6px; cursor: help; transition: background 0.2s var(--ease); color: var(--text-soft); }
+    .state-list-block.no-protection h3 { color: var(--text-muted); }
+    .state-list-grid { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-2); font-size: var(--text-sm); }
+    .state-chip { padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); cursor: help; transition: background 0.2s var(--ease), transform 0.15s var(--ease); color: var(--text-secondary); }
+    .state-chip:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
     .state-list-block.protection .state-chip { color: var(--primary); }
-    .state-list-block.protection .state-chip:hover { background: rgba(0,114,188,0.15); }
-    .state-list-block.no-protection .state-chip:hover { background: #e2e8f0; }
+    .state-list-block.protection .state-chip:hover { background: rgba(0,102,161,0.12); }
+    .state-list-block.no-protection .state-chip:hover { background: var(--neutral-200); }
 
-    .map-tooltip { position: fixed; z-index: 99999; padding: 0.5rem 0.875rem; background: var(--text); color: #fff; font-size: 0.875rem; font-weight: 600; border-radius: 10px; pointer-events: none; opacity: 0; white-space: nowrap; box-shadow: var(--shadow-lg); transition: opacity 0.15s var(--ease); }
+    .map-tooltip { position: fixed; z-index: 99999; padding: var(--space-2) var(--space-3); background: #1a1d21; color: #fff; font-size: var(--text-sm); font-weight: 600; border-radius: var(--radius-sm); pointer-events: none; opacity: 0; white-space: nowrap; box-shadow: var(--shadow-lg); transition: opacity 0.15s var(--ease); }
     .map-tooltip.visible { opacity: 1; }
-    .state-list-tooltip { position: fixed; z-index: 99999; padding: 0.625rem 0.875rem; background: var(--text); color: #fff; font-size: 0.875rem; font-weight: 600; border-radius: 10px; pointer-events: none; opacity: 0; box-shadow: var(--shadow-lg); transition: opacity 0.15s var(--ease); max-width: 280px; white-space: normal; }
+    .state-list-tooltip { position: fixed; z-index: 99999; padding: var(--space-3); background: #1a1d21; color: #fff; font-size: var(--text-sm); font-weight: 500; border-radius: var(--radius-sm); pointer-events: none; opacity: 0; box-shadow: var(--shadow-lg); transition: opacity 0.15s var(--ease); max-width: 300px; white-space: normal; }
     .state-list-tooltip.visible { opacity: 1; }
     .state-list-tooltip .badge { padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.7rem; margin: 0.1rem 0.2rem 0.1rem 0; }
 
     /* Trends */
-    .trends-grid { display: grid; gap: 0.5rem; margin-top: 0.75rem; }
+    .trends-grid { display: grid; gap: var(--space-3); margin-top: var(--space-4); }
     @media (min-width: 500px) { .trends-grid { grid-template-columns: repeat(3, 1fr); } }
-    .trends-card { padding: 1.25rem; border-radius: var(--radius-sm); background: var(--bg); border: 1px solid var(--border); display: flex; gap: 0.875rem; align-items: flex-start; transition: border-color 0.2s; }
-    .trends-card:hover { border-color: var(--border-strong); }
-    .trends-card h4 { margin: 0 0 0.25rem; font-size: 1rem; color: var(--primary); }
-    .trends-card p { margin: 0; font-size: 0.95rem; color: var(--text-soft); line-height: 1.5; }
-    .trends-icon { width: 42px; height: 42px; border-radius: 10px; background: var(--primary-soft); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .trends-icon svg { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    .trends-card { padding: var(--space-4); border-radius: var(--radius); background: var(--neutral-50); border: 1px solid var(--border); display: flex; gap: var(--space-4); align-items: flex-start; transition: border-color 0.2s var(--ease), background 0.2s var(--ease); }
+    .trends-card:hover { border-color: var(--border-hover); background: var(--neutral-0); }
+    .trends-card h4 { margin: 0 0 var(--space-1); font-size: var(--text-base); font-weight: 600; color: var(--primary); }
+    .trends-card p { margin: 0; font-size: var(--text-sm); color: var(--text-secondary); line-height: var(--leading-relaxed); }
+    .trends-icon { width: 40px; height: 40px; border-radius: var(--radius-sm); background: var(--primary-muted); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .trends-icon svg { width: 20px; height: 20px; stroke: var(--primary); stroke-width: 1.75; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
-    .sources { font-size: 0.8rem; color: var(--muted); margin-top: 0.75rem; }
+    .section-subhead { font-size: var(--text-sm); font-weight: 600; color: var(--text); margin: var(--space-6) 0 var(--space-3); letter-spacing: var(--tracking-tight); }
+    .sources { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-4); font-style: italic; }
 
-    footer { padding: 2.5rem 1.75rem; text-align: center; color: var(--muted); font-size: 0.9375rem; border-top: 1px solid var(--border); background: var(--bg-elevated); position: relative; z-index: 1; }
-    .footer-logo { display: inline-block; vertical-align: middle; }
-    .back-link { display: inline-block; padding: 0.625rem 1.5rem; background: var(--primary); color: #fff !important; font-weight: 600; font-size: 0.9375rem; border-radius: 999px; transition: background 0.25s var(--ease), transform 0.2s var(--ease-out); }
-    .back-link:hover { background: var(--primary-deep); transform: translateY(-1px); text-decoration: none !important; }
+    footer { padding: var(--space-8) var(--space-6); text-align: center; color: var(--text-muted); font-size: var(--text-sm); border-top: 1px solid var(--border); background: var(--bg-card); position: relative; z-index: 1; }
+    footer a { color: inherit; }
+    footer a:hover { color: var(--primary); }
+    .footer-org { margin: var(--space-4) 0 0; display: flex; align-items: center; justify-content: center; gap: var(--space-3); flex-wrap: wrap; }
+    .footer-design { margin: var(--space-2) 0 0; font-size: var(--text-xs); opacity: 0.85; }
+    .footer-logo { display: inline-block; vertical-align: middle; object-fit: contain; }
+    .back-link { display: inline-block; padding: var(--space-3) var(--space-6); background: var(--primary); color: #fff !important; font-weight: 600; font-size: var(--text-sm); border-radius: 999px; transition: background 0.2s var(--ease), transform 0.2s var(--ease); }
+    .back-link:hover { background: var(--primary-hover); text-decoration: none !important; transform: translateY(-1px); }
     .back-link:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-    .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 101; padding: 0.5rem 1rem; background: var(--primary); color: #fff; font-size: 0.9rem; font-weight: 600; border-radius: 8px; }
-    .skip-link:focus { top: 0.75rem; outline: 2px solid var(--primary); outline-offset: 2px; }
+    .skip-link { position: absolute; top: -3rem; left: var(--space-4); z-index: 101; padding: var(--space-2) var(--space-4); background: var(--primary); color: #fff; font-size: var(--text-sm); font-weight: 600; border-radius: var(--radius-sm); }
+    .skip-link:focus { top: var(--space-4); outline: 2px solid var(--primary); outline-offset: 2px; }
 
     .count-up { font-variant-numeric: tabular-nums; }
+    [data-count-up] { contain: layout style; }
 
+    @media (max-width: 900px) and (min-width: 641px) {
+      .map-hero-headline { font-size: var(--text-xl); }
+      .kpi-strip { gap: var(--space-3); }
+    }
     @media (max-width: 768px) {
-      .dashboard-header { padding: 0.875rem 1.25rem; }
-      .dashboard-header h1 { font-size: 1.25rem; }
-      .dashboard-nav a { font-size: 0.9rem; padding: 0.5rem 0.875rem; }
-      .dashboard-inner { padding: 0 1.25rem; }
-      .kpi-value { font-size: 2.5rem; }
-      .kpi-desc { font-size: 0.9rem; }
-      .big-stat-value { font-size: 3.25rem; }
-      .community-benefit-hero .big-stat-value { font-size: 3rem; }
-      .card { padding: 1.25rem; }
-      .card h2 { font-size: 1.15rem; }
-      .card p, .card li { font-size: 1rem; }
-      .stat-value { font-size: 2.25rem; }
+      .dashboard-header { padding: var(--space-4) var(--space-5); }
+      .dashboard-header h1 { font-size: var(--text-lg); }
+      .dashboard-nav a { font-size: var(--text-xs); padding: var(--space-2) var(--space-3); }
+      .dashboard-inner { padding: 0 var(--space-5); }
+      .kpi-value { font-size: var(--text-3xl); }
+      .kpi-desc { font-size: var(--text-sm); }
+      .big-stat-value { font-size: var(--text-4xl); }
+      .community-benefit-hero .big-stat-value { font-size: var(--text-4xl); }
+      .card { padding: var(--space-5); }
+      .card h2 { font-size: var(--text-lg); }
+      .card p, .card li { font-size: var(--text-sm); }
+      .stat-value { font-size: var(--text-2xl); }
       .map-container { grid-template-columns: 1fr; }
     }
     @media (max-width: 480px) {
-      .kpi-value { font-size: 2.25rem; }
-      .card-icon { width: 48px; height: 48px; }
-      .card-icon svg { width: 26px; height: 26px; }
+      .kpi-value { font-size: var(--text-2xl); }
+      .card-icon { width: 40px; height: 40px; }
+      .card-icon svg { width: 20px; height: 20px; }
+      .kpi-card:hover, .card:hover, .card--compact:hover, .benefit-item:hover { transform: none; }
+      .back-link:hover { transform: none; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .kpi-card:hover, .card:hover, .card--compact:hover, .benefit-item:hover, .back-link:hover { transform: none; }
+      .card:hover .card-icon { transform: none; }
+    }
+    /* Print styles */
+    @media print {
+      .dashboard-header { position: static; background: #fff; }
+      .dashboard::before { display: none; }
+      .skip-link, .back-link { display: none; }
+      .map-wrap { opacity: 1; transform: none; }
+      .card, .kpi-card, .map-hero-card { box-shadow: none; border: 1px solid #ddd; }
+      a { color: #0066a1; }
     }
   </style>
 </head>
@@ -304,12 +367,12 @@
   <div class="header-left">
     <picture>
       <source srcset="hap_logo.avif" type="image/avif">
-      <img src="haplogo_box_blue.jpeg" alt="" class="header-logo" width="56" height="56">
+      <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="header-logo" width="56" height="56" loading="eager">
     </picture>
     <div>
       <p class="report-by">The Hospital and Healthsystem Association of Pennsylvania</p>
       <h1>340B Drug Pricing Program</h1>
-      <span class="badge-live">BRIEFING</span>
+      <span class="badge-live">ADVOCACY BRIEFING</span>
     </div>
   </div>
   <nav class="dashboard-nav" aria-label="Dashboard sections">
@@ -322,31 +385,7 @@
 </header>
 
 <div class="dashboard-inner">
-<!-- KPI Strip -->
-<section class="kpi-strip" aria-label="Key metrics">
-  <div class="kpi-card">
-    <p class="kpi-label">U.S. Drug Market</p>
-    <p class="kpi-value count-up" data-count-up="7" data-suffix="%">0</p>
-    <p class="kpi-desc">340B share of total U.S. drug purchases</p>
-  </div>
-  <div class="kpi-card">
-    <p class="kpi-label">Community Benefit</p>
-    <p class="kpi-value">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">0</span></p>
-    <p class="kpi-desc">Total benefits from 340B hospitals (2024)</p>
-  </div>
-  <div class="kpi-card">
-    <p class="kpi-label">Oversight</p>
-    <p class="kpi-value primary count-up" data-count-up="200" data-suffix="+">0</p>
-    <p class="kpi-desc">Hospitals audited by HRSA in 2024</p>
-  </div>
-  <div class="kpi-card">
-    <p class="kpi-label">Pennsylvania</p>
-    <p class="kpi-value primary">72</p>
-    <p class="kpi-desc">PA hospitals participating in 340B</p>
-  </div>
-</section>
-
-<main id="main-content">
+<main id="main-content" role="main">
   <div class="dashboard-grid">
 
     <!-- What is 340B -->
@@ -358,7 +397,7 @@
         </div>
         <div class="card-icon card-icon--pill" aria-hidden="true"><svg viewBox="0 0 48 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="8"/><rect x="26" y="4" width="20" height="16" rx="8"/></svg></div>
       </div>
-      <p>The 340B program requires pharmaceutical manufacturers that participate in Medicaid to sell outpatient drugs at a discounted rate to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and helps providers serve vulnerable populations.</p>
+      <p>The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and enables providers to serve vulnerable and underserved populations.</p>
       <div class="stat-block">
         <div class="stat">
           <p class="stat-label">Market share</p>
@@ -377,48 +416,44 @@
         </div>
         <div class="card-icon card-icon--shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
       </div>
-      <p>HAP supports policies that protect the integrity of the 340B program and preserve hospitals' ability to use contract pharmacies to ensure patient access to medications.</p>
+      <p>HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies to ensure patient access to affordable medications.</p>
       <div class="hap-ask">
-        <strong>HAP asks lawmakers:</strong> Protect 340B integrity. Preserve contract pharmacy access for patient medications.
+        <strong>HAP asks lawmakers:</strong> Protect 340B integrity and preserve contract pharmacy access for patient medications.
       </div>
     </article>
 
-    <!-- Map (left) + Eligibility, Oversight, Pennsylvania (right sidebar) -->
-    <div class="map-with-sidebar span-12">
-      <article id="state-laws" class="card">
-      <div class="card-heading">
-        <div class="card-heading-text">
-          <p class="card-title">State-by-state</p>
-          <h2>Contract pharmacy protection</h2>
-        </div>
-        <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-      </div>
-      <p>Click a state for details. <strong>Pennsylvania is working toward protection.</strong></p>
+    <!-- Map hero — centerpiece display -->
+    <section id="state-laws" class="map-hero-section span-12">
+      <div class="map-hero-inner">
+        <article class="map-hero-card">
+          <p class="map-hero-title">State-by-state analysis</p>
+          <h2 class="map-hero-headline">340B contract pharmacy protection across the U.S.</h2>
+          <p class="map-hero-sub">Select a state for details. <strong>Pennsylvania is pursuing contract pharmacy protection.</strong></p>
       <div class="map-container">
         <div class="us-map-wrap map-wrap" id="us-map-wrap">
-          <div id="us-map" aria-label="US map: states with and without 340B contract pharmacy protection"></div>
+          <div id="us-map" role="img" aria-label="Interactive US map showing states with and without 340B contract pharmacy protection. Blue states have protection, gray states do not. Click a state for details."></div>
           <div class="map-legend">
-            <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Has protection</span>
-            <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No law yet</span>
+            <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection</span>
+            <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
           </div>
         </div>
         <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite"><p>Select a state</p></div>
       </div>
       <div class="state-lists-wrap">
         <div class="state-list-block protection">
-          <h3>With protection (21)</h3>
+          <h3>States with protection (21)</h3>
           <div class="state-list-grid" id="states-with-list">
             <span class="state-chip" data-state="AR">AR</span><span class="state-chip" data-state="CO">CO</span><span class="state-chip" data-state="HI">HI</span><span class="state-chip" data-state="KS">KS</span><span class="state-chip" data-state="LA">LA</span><span class="state-chip" data-state="ME">ME</span><span class="state-chip" data-state="MD">MD</span><span class="state-chip" data-state="MN">MN</span><span class="state-chip" data-state="MS">MS</span><span class="state-chip" data-state="MO">MO</span><span class="state-chip" data-state="NE">NE</span><span class="state-chip" data-state="NM">NM</span><span class="state-chip" data-state="ND">ND</span><span class="state-chip" data-state="OK">OK</span><span class="state-chip" data-state="OR">OR</span><span class="state-chip" data-state="RI">RI</span><span class="state-chip" data-state="SD">SD</span><span class="state-chip" data-state="TN">TN</span><span class="state-chip" data-state="UT">UT</span><span class="state-chip" data-state="VT">VT</span><span class="state-chip" data-state="WV">WV</span>
           </div>
         </div>
         <div class="state-list-block no-protection">
-          <h3>No law yet (28)</h3>
+          <h3>No protection law (28)</h3>
           <div class="state-list-grid" id="states-without-list">
             <span class="state-chip" data-state="AL">AL</span><span class="state-chip" data-state="AK">AK</span><span class="state-chip" data-state="AZ">AZ</span><span class="state-chip" data-state="CA">CA</span><span class="state-chip" data-state="DE">DE</span><span class="state-chip" data-state="FL">FL</span><span class="state-chip" data-state="GA">GA</span><span class="state-chip" data-state="ID">ID</span><span class="state-chip" data-state="IL">IL</span><span class="state-chip" data-state="IN">IN</span><span class="state-chip" data-state="IA">IA</span><span class="state-chip" data-state="KY">KY</span><span class="state-chip" data-state="MA">MA</span><span class="state-chip" data-state="MI">MI</span><span class="state-chip" data-state="MT">MT</span><span class="state-chip" data-state="NV">NV</span><span class="state-chip" data-state="NH">NH</span><span class="state-chip" data-state="NJ">NJ</span><span class="state-chip" data-state="NY">NY</span><span class="state-chip" data-state="NC">NC</span><span class="state-chip" data-state="OH">OH</span><span class="state-chip" data-state="PA">PA</span><span class="state-chip" data-state="SC">SC</span><span class="state-chip" data-state="TX">TX</span><span class="state-chip" data-state="VA">VA</span><span class="state-chip" data-state="WA">WA</span><span class="state-chip" data-state="WI">WI</span><span class="state-chip" data-state="WY">WY</span>
           </div>
         </div>
       </div>
-      <h3 style="font-size:0.85rem;margin-top:1rem;">Legal trends</h3>
+      <h3 class="section-subhead">Recent legal trends</h3>
       <div class="trends-grid">
         <div class="trends-card">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
@@ -434,72 +469,98 @@
         </div>
       </div>
       <p class="sources">State law data: MultiState, ASHP, America's Essential Hospitals</p>
-    </article>
-
-      <div class="map-sidebar">
-        <article id="eligibility" class="card card--compact">
-          <div class="card-heading">
-            <div class="card-heading-text">
-              <p class="card-title">Eligibility</p>
-              <h2>Who 340B supports</h2>
-            </div>
-            <div class="card-icon card-icon--people" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-          </div>
-          <p>Rural and urban providers, including:</p>
-          <ul>
-            <li>Children's and cancer hospitals</li>
-            <li>CAHs and DSHs</li>
-            <li>FQHCs</li>
-          </ul>
-        </article>
-        <article id="oversight" class="card card--compact">
-          <div class="card-heading">
-            <div class="card-heading-text">
-              <p class="card-title">Oversight</p>
-              <h2>HRSA audits</h2>
-            </div>
-            <div class="card-icon card-icon--scale" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
-          </div>
-          <p>In 2024:</p>
-          <div class="stat-block">
-            <div class="stat">
-              <p class="stat-label">Hospitals</p>
-              <p class="stat-value count-up" data-count-up="200" data-suffix="+">0</p>
-              <p class="stat-desc">Audited</p>
-            </div>
-            <div class="stat">
-              <p class="stat-label">Manufacturers</p>
-              <p class="stat-value count-up" data-count-up="6" data-suffix="%">0</p>
-              <p class="stat-desc">Audited</p>
-            </div>
-          </div>
-          <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight</strong>.</p>
-        </article>
-        <article id="pa-impact" class="card card--compact">
-          <div class="card-heading">
-            <div class="card-heading-text">
-              <p class="card-title">Pennsylvania</p>
-              <h2>340B in your state</h2>
-            </div>
-            <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-          </div>
-          <p><strong>72 hospitals (30%)</strong> participate:</p>
-          <div class="stat-block">
-            <div class="stat">
-              <p class="stat-label">Rural</p>
-              <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
-            </div>
-            <div class="stat">
-              <p class="stat-label">Negative margin</p>
-              <p class="stat-value count-up" data-count-up="53" data-suffix="%">0</p>
-            </div>
-            <div class="stat">
-              <p class="stat-label">L&amp;D</p>
-              <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
-            </div>
-          </div>
         </article>
       </div>
+    </section>
+
+    <!-- Key metrics — below map -->
+    <section class="kpi-strip span-12" aria-label="Key metrics">
+      <div class="kpi-card">
+        <p class="kpi-label">U.S. Drug Market</p>
+        <p class="kpi-value count-up" data-count-up="7" data-suffix="%">0</p>
+        <p class="kpi-desc">Share of total U.S. outpatient drug market</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Community Benefit</p>
+        <p class="kpi-value">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">0</span></p>
+        <p class="kpi-desc">Total community benefits from 340B hospitals (2024)</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Oversight</p>
+        <p class="kpi-value primary count-up" data-count-up="200" data-suffix="+">0</p>
+        <p class="kpi-desc">Covered entities audited by HRSA in 2024</p>
+      </div>
+      <div class="kpi-card">
+        <p class="kpi-label">Pennsylvania</p>
+        <p class="kpi-value primary">72</p>
+        <p class="kpi-desc">Pennsylvania hospitals participating in 340B</p>
+      </div>
+    </section>
+
+    <!-- Supporting context cards -->
+    <div class="supporting-cards-row span-12">
+      <article id="eligibility" class="card card--compact">
+        <div class="card-heading">
+          <div class="card-heading-text">
+            <p class="card-title">Eligibility</p>
+            <h2>Who 340B supports</h2>
+          </div>
+          <div class="card-icon card-icon--people" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+        </div>
+        <p>Rural and urban providers, including:</p>
+        <ul>
+          <li>Children's and cancer hospitals</li>
+          <li>CAHs and DSHs</li>
+          <li>FQHCs</li>
+        </ul>
+      </article>
+      <article id="oversight" class="card card--compact">
+        <div class="card-heading">
+          <div class="card-heading-text">
+            <p class="card-title">Oversight</p>
+            <h2>HRSA audits</h2>
+          </div>
+          <div class="card-icon card-icon--scale" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+        </div>
+        <p>In 2024:</p>
+        <div class="stat-block">
+          <div class="stat">
+            <p class="stat-label">Hospitals</p>
+            <p class="stat-value count-up" data-count-up="200" data-suffix="+">0</p>
+            <p class="stat-desc">Audited</p>
+          </div>
+          <div class="stat">
+            <p class="stat-label">Manufacturers</p>
+            <p class="stat-value count-up" data-count-up="6" data-suffix="%">0</p>
+            <p class="stat-desc">Audited</p>
+          </div>
+        </div>
+        <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight</strong>.</p>
+      </article>
+      <article id="pa-impact" class="card card--compact">
+        <div class="card-heading">
+          <div class="card-heading-text">
+            <p class="card-title">Pennsylvania</p>
+            <h2>340B in your state</h2>
+          </div>
+          <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+        </div>
+        <p><strong>72 hospitals (30%)</strong> participate:</p>
+        <div class="stat-block">
+          <div class="stat">
+            <p class="stat-label">Rural</p>
+            <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+          </div>
+          <div class="stat">
+            <p class="stat-label">Negative margin</p>
+            <p class="stat-value count-up" data-count-up="53" data-suffix="%">0</p>
+          </div>
+          <div class="stat">
+            <p class="stat-label">L&amp;D</p>
+            <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+          </div>
+        </div>
+      </article>
     </div>
 
     <!-- Community benefit — full width under map -->
@@ -532,7 +593,7 @@
       <div class="community-benefit-hero">
         <p class="big-stat-label">Total community benefits (2024)</p>
         <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">0</span>B</p>
-        <p class="big-stat-desc">9% increase over 2023 — benefit to the community</p>
+        <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
       </div>
     </article>
 
@@ -548,7 +609,7 @@
         </div>
         <div class="card-icon card-icon--rx" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 12h14"/><path d="m3 8 3-3 3 3"/><path d="m21 8-3-3-3 3"/><path d="m3 16 3 3 3-3"/><path d="m21 16-3 3-3-3"/></svg></div>
       </div>
-      <p>Federal guidance allows 340B dispensing via in-house or contract pharmacies. Manufacturers have imposed policies that <strong>limit hospitals to one contract pharmacy</strong>. Rural and underserved hospitals rely on contract and specialty pharmacies for high-cost specialty drugs.</p>
+      <p>Federal guidance permits 340B dispensing through in-house or contract pharmacies. Manufacturer-imposed policies <strong>restrict hospitals to a single contract pharmacy</strong>. Rural and underserved hospitals depend on contract and specialty pharmacies for high-cost specialty medications.</p>
     </article>
 
     <!-- PA Safeguards -->
@@ -563,7 +624,7 @@
       <ul>
         <li>Manufacturers are not required to provide both 340B discount and Medicaid rebate for the same drug.</li>
         <li>DHS administers the <strong>340B Drug Exclusion List</strong> and invoices manufacturers for Medicaid rebates; covered entities may not dispense 340B-priced drugs on this list.</li>
-        <li>Contract pharmacies dispense non-340B drugs to MA beneficiaries; DHS invoices manufacturers for rebates.</li>
+        <li>Contract pharmacies dispense non-340B drugs to Medicare Advantage beneficiaries; DHS invoices manufacturers for rebates.</li>
       </ul>
     </article>
 
@@ -572,13 +633,13 @@
 
 </div>
 
-<footer>
+<footer class="site-footer" role="contentinfo">
   <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
-  <p style="margin:0.75rem 0 0;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
-    <img src="haplogo_box_blue.jpeg" alt="" class="footer-logo" width="64" height="64" style="object-fit:contain;">
+  <p class="footer-org">
+    <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64" loading="lazy">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
   </p>
-    <p style="margin:0.35rem 0 0;font-size:0.8rem;opacity:0.8;">Design Mark 2</p>
+  <p class="footer-design">Design Mark 2</p>
 </footer>
 </div>
 
@@ -594,8 +655,8 @@
   function drawMap() {
     var c = document.getElementById("us-map");
     if (!c) return;
-    var w = Math.min(c.offsetWidth||600,680), h = Math.round(w*0.55);
-    if (typeof d3==="undefined"||typeof topojson==="undefined") { c.innerHTML="<p style='padding:2rem;text-align:center;color:#64748b'>Map loads with D3.</p>"; return; }
+    var w = Math.min(c.offsetWidth||800,960), h = Math.round(w*0.55);
+    if (typeof d3==="undefined"||typeof topojson==="undefined") { c.innerHTML="<p style='padding:2rem;text-align:center;color:#718096;font-size:0.9rem'>Loading map…</p>"; return; }
     c.innerHTML="";
     var svg = d3.select("#us-map").append("svg").attr("viewBox",[0,0,w,h]).attr("width","100%").attr("height","auto");
     d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(us){
@@ -611,6 +672,8 @@
       var paths = g.selectAll("path").data(st.features).join("path")
         .attr("class",function(d,i){var ab=getStateAbbr(d); var b="state "+(ab&&STATES_WITH_PROTECTION.indexOf(ab)>=0?"protection":"no-protection"); return reduceMotion?b:b+" state-domino";})
         .attr("d",path).attr("data-state",function(d){return getStateAbbr(d)||"";})
+        .attr("fill",function(d){var ab=getStateAbbr(d); return ab&&STATES_WITH_PROTECTION.indexOf(ab)>=0?"#0066a1":"#e2e8f0";})
+        .attr("stroke","rgba(255,255,255,0.9)").attr("stroke-width",1)
         .each(function(_,i){this.style.animationDelay=(om[i]||0)*55+"ms";});
       bindMap(paths);
       var wrap = document.getElementById("us-map-wrap");
@@ -621,7 +684,7 @@
           io.observe(wrap);
         }
       }
-    }).catch(function(){ c.innerHTML="<p style='padding:2rem;text-align:center;color:#64748b'>Map unavailable.</p>"; });
+    }).catch(function(){ c.innerHTML="<p style='padding:2rem;text-align:center;color:#718096;font-size:0.9rem'>Map data temporarily unavailable. Please refresh.</p>"; });
   }
   function bindMap(paths) {
     var tt = document.getElementById("map-tooltip"), panel = document.getElementById("state-detail-panel");
@@ -652,14 +715,14 @@
     document.querySelectorAll(".state-chip").forEach(function(chip){
       var ab = chip.getAttribute("data-state"), data = ab ? STATE_340B[ab] : null;
       chip.setAttribute("title", (STATE_NAMES[ab]||ab) + (data&&data.notes ? ": "+data.notes : ""));
-      chip.addEventListener("mouseenter",function(ev){
-        var name = STATE_NAMES[ab]||ab;
-        var html = "<strong>"+name+"</strong>";
-        if(data){ html += " <span class='badge "+(data.cp?"yes":"no")+"'>CP: "+(data.cp?"Yes":"No")+"</span> <span class='badge "+(data.pbm?"yes":"no")+"'>PBM: "+(data.pbm?"Yes":"No")+"</span>"; if(data.y) html+="<br>Year: "+data.y; if(data.notes) html+="<br>"+data.notes; }
-        tt.innerHTML = html; tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-12)+"px"; tt.classList.add("visible");
-      });
+      chip.setAttribute("tabindex", "0");
+      chip.setAttribute("role", "button");
+      function showTooltip(ev){ var name=STATE_NAMES[ab]||ab; var html="<strong>"+name+"</strong>"; if(data){ html+=" <span class='badge "+(data.cp?"yes":"no")+"'>CP: "+(data.cp?"Yes":"No")+"</span> <span class='badge "+(data.pbm?"yes":"no")+"'>PBM: "+(data.pbm?"Yes":"No")+"</span>"; if(data.y) html+="<br>Year: "+data.y; if(data.notes) html+="<br>"+data.notes; } tt.innerHTML=html; if(ev&&ev.clientX!=null){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-12)+"px"; } else { var r=chip.getBoundingClientRect(); tt.style.left=(r.left+r.width/2-80)+"px"; tt.style.top=(r.top-8)+"px"; } tt.classList.add("visible"); }
+      chip.addEventListener("mouseenter",function(ev){ showTooltip(ev); });
+      chip.addEventListener("focus",showTooltip);
       chip.addEventListener("mousemove",function(ev){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-12)+"px"; });
       chip.addEventListener("mouseleave",function(){ tt.classList.remove("visible"); });
+      chip.addEventListener("blur",function(){ tt.classList.remove("visible"); });
     });
   }
 
