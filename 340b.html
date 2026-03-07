@@ -28,11 +28,13 @@
       --radius: 16px;
       --radius-sm: 12px;
       --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
     }
     * { box-sizing: border-box; }
     body { margin: 0; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
     .pa-dashboard { min-height: 100vh; background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 25%, #f8fafc 70%); color: var(--text); overflow-x: hidden; }
     .pa-dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14,165,233,0.12), transparent 50%); pointer-events: none; z-index: 0; }
+    .pa-dashboard::after { content: ""; position: fixed; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 8v8M30 44v8M8 30h8M44 30h8M18 18l5.66 5.66M36.34 36.34L42 42M18 42l5.66-5.66M36.34 23.66L42 18' stroke='%230072bc' stroke-opacity='0.04' stroke-width='1' fill='none'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.6; }
     .pa-dashboard [id] { scroll-margin-top: 5rem; }
     .pa-dashboard a { color: var(--primary); text-decoration: none; }
     .pa-dashboard a:hover { text-decoration: underline; }
@@ -49,51 +51,70 @@
 
     main { max-width: 56rem; margin: 0 auto; padding: 2rem 1.5rem; position: relative; z-index: 1; }
 
-    /* Liquid glass sections */
-    .section { margin-bottom: 2rem; padding: 2rem; border-radius: var(--radius); background: var(--glass); border: 1px solid var(--glass-border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    /* Liquid glass sections — base + variants for contrast */
+    .section { margin-bottom: 2.5rem; padding: 2.25rem; border-radius: var(--radius); background: var(--glass); border: 1px solid var(--glass-border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); position: relative; overflow: hidden; }
     @supports (backdrop-filter: blur(20px)) { .section { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); } }
     .section.accent-border { border-left: 4px solid var(--accent); }
+    .section--explainer { background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(224,242,254,0.4) 100%); border-color: rgba(0,114,188,0.12); box-shadow: 0 4px 24px rgba(0,114,188,0.06); }
+    @supports (backdrop-filter: blur(20px)) { .section--explainer { background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(224,242,254,0.25) 100%); backdrop-filter: blur(24px) saturate(160%); } }
+    .section--hero { background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.5) 100%); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
+    @supports (backdrop-filter: blur(20px)) { .section--hero { background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.35) 100%); backdrop-filter: blur(24px) saturate(160%); } }
+    .section--map { background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.85); box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+    @supports (backdrop-filter: blur(20px)) { .section--map { background: rgba(255,255,255,0.4); backdrop-filter: blur(20px) saturate(140%); } }
+    .section--alt { background: linear-gradient(180deg, rgba(248,250,252,0.9) 0%, rgba(241,245,249,0.6) 100%); border-color: rgba(100,116,139,0.1); }
+    @supports (backdrop-filter: blur(20px)) { .section--alt { background: linear-gradient(180deg, rgba(248,250,252,0.65) 0%, rgba(241,245,249,0.4) 100%); backdrop-filter: blur(20px) saturate(130%); } }
+    .section--accent { background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(245,158,11,0.06) 100%); border-color: rgba(245,158,11,0.2); box-shadow: 0 4px 20px rgba(245,158,11,0.05); }
+    @supports (backdrop-filter: blur(20px)) { .section--accent { background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(245,158,11,0.04) 100%); backdrop-filter: blur(22px) saturate(150%); } }
     .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.5rem; }
     .section h2 { margin: 0 0 1rem; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
     .section p, .section li { font-size: 1rem; line-height: 1.65; color: var(--text-soft); }
     .section ul { margin: 0.5rem 0 1rem; padding-left: 1.25rem; }
 
-    /* MEGA NUMBERS - key advocacy figures */
+    /* Section graphics — pharmaceutical accent */
+    .section-graphic { position: absolute; top: 1.5rem; right: 1.5rem; width: 56px; height: 28px; opacity: 0.5; }
+    .section-graphic svg { width: 100%; height: 100%; }
+    .section--explainer .section-graphic--pill { top: 1.25rem; right: 1.25rem; }
+    .section-graphic--hero { width: 48px; height: 48px; top: 1.5rem; right: 1.5rem; }
+    .section-graphic--hero svg { color: var(--accent); stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; opacity: 0.7; }
+
+    /* MEGA NUMBERS - key advocacy figures (pharma-style emphasis) */
     .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 1.5rem 0; }
     @media (min-width: 640px) { .hero-stats { grid-template-columns: repeat(4, 1fr); } }
-    .hero-stat { text-align: center; padding: 1.5rem 1rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); }
-    @supports (backdrop-filter: blur(12px)) { .hero-stat { background: rgba(255,255,255,0.4); backdrop-filter: blur(12px); } }
-    .hero-stat .num { display: block; font-size: 2.5rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.35rem; }
-    @media (min-width: 640px) { .hero-stat .num { font-size: 3.25rem; } }
-    .hero-stat .num.primary { color: var(--primary); }
+    .hero-stat { text-align: center; padding: 1.75rem 1.25rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85); transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+    .hero-stat:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
+    @supports (backdrop-filter: blur(12px)) { .hero-stat { background: rgba(255,255,255,0.45); backdrop-filter: blur(12px); } }
+    .hero-stat .num { display: block; font-size: 3rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.4rem; text-shadow: 0 0 0 currentColor; filter: drop-shadow(0 2px 4px rgba(245,158,11,0.15)); }
+    @media (min-width: 640px) { .hero-stat .num { font-size: 4rem; } }
+    .hero-stat .num.primary { color: var(--primary); filter: drop-shadow(0 2px 4px rgba(0,114,188,0.15)); }
     .hero-stat .label { font-size: 0.85rem; font-weight: 500; color: var(--muted); line-height: 1.3; }
 
-    /* Big number callouts */
-    .big-num { font-size: 3.5rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; display: block; margin: 0.5rem 0; }
-    @media (min-width: 640px) { .big-num { font-size: 4.5rem; } }
+    /* Big number callouts — stronger emphasis */
+    .big-num { font-size: 4rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; display: block; margin: 0.5rem 0; filter: drop-shadow(0 2px 6px rgba(245,158,11,0.2)); }
+    @media (min-width: 640px) { .big-num { font-size: 5rem; } }
     .big-num + .big-num-label { font-size: 1rem; color: var(--muted); margin-top: 0.25rem; }
     .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
-    .stat-tile { padding: 1.25rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); text-align: center; }
+    .stat-tile { padding: 1.5rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.75); text-align: center; transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease); }
+    .stat-tile:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
     @supports (backdrop-filter: blur(10px)) { .stat-tile { background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); } }
-    .stat-tile .val { font-size: 2rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; }
-    .stat-tile .val.blue { color: var(--primary); }
-    .stat-tile .lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+    .stat-tile .val { font-size: 2.5rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; filter: drop-shadow(0 2px 4px rgba(245,158,11,0.12)); }
+    .stat-tile .val.blue { color: var(--primary); filter: drop-shadow(0 2px 4px rgba(0,114,188,0.12)); }
+    .stat-tile .lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.35rem; }
 
     /* Key message - advocacy CTA */
-    .key-msg { padding: 1.5rem; border-radius: var(--radius-sm); background: var(--accent-glass); border-left: 4px solid var(--accent); margin: 1rem 0; font-size: 1.05rem; font-weight: 500; color: var(--text); }
+    .key-msg { padding: 1.5rem 1.75rem; border-radius: var(--radius-sm); background: var(--accent-glass); border-left: 4px solid var(--accent); margin: 1rem 0; font-size: 1.05rem; font-weight: 500; color: var(--text); box-shadow: 0 2px 12px rgba(245,158,11,0.08); }
     .key-msg strong { color: var(--accent-strong); }
 
-    /* Map section */
-    .map-wrap { margin: 1.5rem 0; padding: 1.5rem; border-radius: var(--radius); background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); overflow: visible; opacity: 0; transform: translateY(8px); transition: opacity 0.6s var(--ease), transform 0.5s var(--ease); }
+    /* Map section — slower, smoother domino */
+    .map-wrap { margin: 1.5rem 0; padding: 1.5rem; border-radius: var(--radius); background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); overflow: visible; opacity: 0; transform: translateY(8px); transition: opacity 0.8s var(--ease-smooth), transform 0.6s var(--ease-smooth); }
     @supports (backdrop-filter: blur(16px)) { .map-wrap { background: rgba(255,255,255,0.45); backdrop-filter: blur(16px); } }
     .map-wrap.visible { opacity: 1; transform: none; }
     .pa-dashboard .us-map-wrap svg { width: 100%; height: auto; display: block; }
-    .pa-dashboard .us-map-wrap .state { fill: #cbd5e1; stroke: #fff; stroke-width: 1; cursor: pointer; transition: fill 0.2s; }
+    .pa-dashboard .us-map-wrap .state { fill: #cbd5e1; stroke: #fff; stroke-width: 1; cursor: pointer; transition: fill 0.25s var(--ease); }
     .pa-dashboard .us-map-wrap .state.protection { fill: var(--primary); }
     .pa-dashboard .us-map-wrap .state.protection:hover { fill: var(--primary-deep); }
     .pa-dashboard .us-map-wrap .state.no-protection:hover { fill: #94a3b8; }
-    .pa-dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-12px); }
-    .pa-dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.4s var(--ease) forwards; }
+    .pa-dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-16px); }
+    .pa-dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.85s var(--ease-smooth) forwards; }
     @keyframes dominoIn { to { opacity: 1; transform: translateX(0); } }
     @media (prefers-reduced-motion: reduce) { .pa-dashboard .us-map-wrap .state.state-domino { opacity: 1; transform: none; animation: none; } }
     .map-container { display: grid; gap: 1rem; margin: 1rem 0; }
@@ -141,8 +162,8 @@
     .trends-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(0,114,188,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
     .trends-icon svg { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
-    /* Reveal animation */
-    .section.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease), transform 0.5s var(--ease); }
+    /* Reveal animation — smooth scroll-into-view */
+    .section.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s var(--ease-smooth), transform 0.6s var(--ease-smooth); }
     .section.reveal.visible { opacity: 1; transform: none; }
     @media (prefers-reduced-motion: reduce) { .section.reveal { opacity: 1; transform: none; } }
 
@@ -160,9 +181,11 @@
       .pa-dashboard [id] { scroll-margin-top: 4rem; }
       main { padding: 1rem; }
       .section { padding: 1.25rem; margin-bottom: 1.5rem; }
-      .hero-stat .num { font-size: 2.25rem; }
-      .big-num { font-size: 2.75rem; }
-      .stat-tile .val { font-size: 1.6rem; }
+      .section-graphic { width: 40px; height: 40px; top: 1rem; right: 1rem; opacity: 0.4; }
+      .section-graphic--pill { width: 44px; height: 22px; }
+      .hero-stat .num { font-size: 2.75rem; }
+      .big-num { font-size: 3rem; }
+      .stat-tile .val { font-size: 2rem; }
       .section h2 { font-size: 1.25rem; }
     }
   </style>
@@ -177,6 +200,7 @@
   <h1>340B Drug Pricing Program</h1>
   <p class="tagline">Why it matters · What you can do</p>
   <nav>
+    <a href="#what-is-340b">What is 340B?</a>
     <a href="static.html">PA Hospitals Dashboard</a>
     <a href="#state-laws">State Map</a>
   </nav>
@@ -184,7 +208,25 @@
 
 <main id="main-content">
 
-  <section id="overview" class="section accent-border">
+  <section id="what-is-340b" class="section section--explainer reveal">
+    <div class="section-graphic section-graphic--pill" aria-hidden="true">
+      <svg viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="20" height="16" rx="8" fill="#0072bc" opacity="0.2"/><rect x="26" y="4" width="20" height="16" rx="8" fill="#f59e0b" opacity="0.2"/><rect x="2" y="4" width="20" height="16" rx="8" stroke="#0072bc" stroke-width="1.5" fill="none"/><rect x="26" y="4" width="20" height="16" rx="8" stroke="#f59e0b" stroke-width="1.5" fill="none"/></svg>
+    </div>
+    <p class="section-label">Overview</p>
+    <h2>What is 340B?</h2>
+    <p>The 340B drug pricing program requires pharmaceutical manufacturers that participate in Medicaid to sell outpatient drugs at a discounted rate to eligible health care providers. The program operates at <strong>no cost to taxpayers</strong> and helps providers stretch limited resources to serve vulnerable populations.</p>
+    <div class="stat-row">
+      <div class="stat-tile">
+        <span class="val count-up" data-count-up="7" data-suffix="%">0</span>
+        <span class="lbl">Of total U.S. drug market — 340B purchases</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="overview" class="section section--hero accent-border reveal">
+    <div class="section-graphic section-graphic--hero" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
+    </div>
     <p class="section-label">HAP position</p>
     <h2>Protect 340B and contract pharmacy access.</h2>
     <p>HAP supports policies that protect the integrity of the 340B program and preserve hospitals' ability to use contract pharmacies to ensure patient access to medications.</p>
@@ -211,7 +253,7 @@
     </div>
   </section>
 
-  <section id="state-laws" class="section reveal">
+  <section id="state-laws" class="section section--map reveal">
     <p class="section-label">See where your state stands</p>
     <h2>State-by-state: contract pharmacy protection</h2>
     <p>Hover for state name · Click for details. <strong>Pennsylvania is working toward protection.</strong></p>
@@ -257,19 +299,7 @@
     <p class="sources">State law data: MultiState, ASHP, America's Essential Hospitals</p>
   </section>
 
-  <section id="what-is-340b" class="section reveal">
-    <p class="section-label">Overview</p>
-    <h2>What is 340B?</h2>
-    <p>The 340B drug pricing program requires pharmaceutical manufacturers that participate in Medicaid to sell outpatient drugs at a discounted rate to eligible health care providers. The program operates at <strong>no cost to taxpayers</strong> and helps providers stretch limited resources to serve vulnerable populations.</p>
-    <div class="stat-row">
-      <div class="stat-tile">
-        <span class="val count-up" data-count-up="7" data-suffix="%">0</span>
-        <span class="lbl">Of total U.S. drug market — 340B purchases</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="eligibility" class="section reveal">
+  <section id="eligibility" class="section section--alt reveal">
     <p class="section-label">Eligibility</p>
     <h2>Who 340B supports</h2>
     <p>The 340B program supports rural and urban health care providers, including:</p>
@@ -280,7 +310,7 @@
     </ul>
   </section>
 
-  <section id="oversight" class="section reveal accent-border">
+  <section id="oversight" class="section section--accent reveal accent-border">
     <p class="section-label">Oversight</p>
     <h2>HRSA audits hospitals far more than manufacturers</h2>
     <p>The Health Resources and Services Administration (HRSA) has authority to audit both drug manufacturers and covered entities and to impose penalties for noncompliance. In 2024:</p>
@@ -297,7 +327,7 @@
     <p>HAP supports <strong>parity in oversight</strong> so manufacturers are held to the same accountability as providers.</p>
   </section>
 
-  <section id="pa-impact" class="section reveal">
+  <section id="pa-impact" class="section section--alt reveal">
     <p class="section-label">Pennsylvania impact</p>
     <h2>340B in your state</h2>
     <p>In Pennsylvania, <strong>72 hospitals (30%)</strong> participate in the 340B program. Of the participating hospitals:</p>
@@ -317,7 +347,7 @@
     </div>
   </section>
 
-  <section id="community-benefit" class="section reveal accent-border">
+  <section id="community-benefit" class="section section--accent reveal accent-border">
     <p class="section-label">Community benefit</p>
     <h2>How 340B hospitals reinvest savings</h2>
     <p>340B hospitals reinvest savings to expand access to care:</p>
@@ -332,14 +362,14 @@
     </div>
   </section>
 
-  <section id="access" class="section reveal accent-border">
+  <section id="access" class="section section--alt reveal accent-border">
     <p class="section-label">Access to care</p>
     <h2>Contract pharmacy access is at risk</h2>
     <p>Federal guidance allows covered entities to dispense 340B drugs through in-house or contract pharmacies. However, manufacturers have imposed policies that <strong>limit hospitals to one contract pharmacy</strong>.</p>
     <p>Rural and underserved hospitals rely on contract and specialty pharmacies to provide patients access to high-cost specialty drugs.</p>
   </section>
 
-  <section id="pa-safeguards" class="section reveal">
+  <section id="pa-safeguards" class="section section--alt reveal">
     <p class="section-label">Pennsylvania safeguards</p>
     <h2>PA prevents duplicate discounts</h2>
     <ul>
@@ -386,7 +416,7 @@
       var paths = g.selectAll("path").data(st.features).join("path")
         .attr("class",function(d,i){var ab=getStateAbbr(d); var b="state "+(ab&&STATES_WITH_PROTECTION.indexOf(ab)>=0?"protection":"no-protection"); return reduceMotion?b:b+" state-domino";})
         .attr("d",path).attr("data-state",function(d){return getStateAbbr(d)||"";})
-        .each(function(_,i){this.style.animationDelay=(om[i]||0)*35+"ms";});
+        .each(function(_,i){this.style.animationDelay=(om[i]||0)*58+"ms";});
       bindMap(paths);
       var wrap = document.getElementById("us-map-wrap");
       if (wrap) {
