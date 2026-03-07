@@ -74,21 +74,21 @@
     .kpi-desc { font-size: 0.95rem; color: var(--text-soft); margin-top: 0.5rem; line-height: 1.4; max-width: 14em; }
 
     /* Main grid — 8px rhythm, tight alignment */
-    main { padding: 1.25rem 0; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; }
+    main { padding: 1rem 0; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0.875rem; }
     .card { border-radius: 14px; background: var(--glass); border: 1px solid rgba(0,0,0,0.06); padding: 1.5rem; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); position: relative; align-self: start; }
     .card:hover { border-color: var(--border-focus); }
     @supports (backdrop-filter: blur(16px)) { .card { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); } }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
-    .card-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; margin-bottom: 0.75rem; }
+    .card-heading { display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: row; gap: 0.75rem; margin-bottom: 0.75rem; }
     .card-heading-text { flex: 1; min-width: 0; }
     .card-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.2rem; }
     .card h2 { font-size: 1.25rem; font-weight: 700; color: var(--text); margin: 0 0 0.4rem; letter-spacing: -0.02em; line-height: 1.28; }
     .card p, .card li { font-size: 1rem; line-height: 1.6; color: var(--text-soft); margin: 0 0 0.4rem; }
     .card ul { margin: 0.4rem 0 0; padding-left: 1.25rem; }
 
-    /* Card icon — right-aligned with section titles, larger */
-    .card-icon { flex-shrink: 0; width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    /* Card icon — left-aligned for all sections */
+    .card-icon { order: -1; flex-shrink: 0; width: 56px; height: 56px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
     .card-icon svg { width: 30px; height: 30px; }
     .card-icon--pill { background: rgba(0,114,188,0.1); }
     .card-icon--pill svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
@@ -167,6 +167,24 @@
     .big-stat-value { font-family: "JetBrains Mono", monospace; font-size: 3.75rem; font-weight: 700; color: var(--accent); letter-spacing: -0.03em; }
     .big-stat-desc { font-size: 0.95rem; color: var(--text-soft); margin-top: 0.35rem; }
 
+    /* Community benefit — standout section with icon tiles and hero number */
+    #community-benefit { border-color: rgba(245,158,11,0.2); background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(245,158,11,0.04) 100%); box-shadow: 0 2px 12px rgba(245,158,11,0.08); padding: 1.75rem 1.5rem; }
+    #community-benefit:hover { box-shadow: 0 4px 20px rgba(245,158,11,0.12); }
+    .benefit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem; }
+    @media (max-width: 900px) { .benefit-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .benefit-grid { grid-template-columns: 1fr; } }
+    .benefit-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06); transition: border-color 0.2s, box-shadow 0.2s; }
+    .benefit-item:hover { border-color: rgba(245,158,11,0.25); box-shadow: 0 2px 12px rgba(245,158,11,0.1); }
+    .benefit-item-icon { flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
+    .benefit-item-icon svg { width: 22px; height: 22px; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    .benefit-item-icon.fill svg { fill: var(--accent); fill-opacity: 0.25; }
+    .benefit-item-text { font-size: 0.95rem; font-weight: 500; color: var(--text); line-height: 1.4; margin: 0; }
+    .benefit-item-text strong { color: var(--accent-strong); }
+    .community-benefit-hero { text-align: center; padding: 2rem 1.5rem; border-radius: 14px; background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.06) 100%); border: 1px solid rgba(245,158,11,0.3); margin-top: 0.5rem; }
+    .community-benefit-hero .big-stat-label { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
+    .community-benefit-hero .big-stat-value { font-size: clamp(3.5rem, 9vw, 6rem); font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; text-shadow: 0 0 40px rgba(245,158,11,0.15); }
+    .community-benefit-hero .big-stat-desc { font-size: 1rem; margin-top: 0.5rem; color: var(--text-soft); }
+
     /* Map card */
     .map-wrap { margin: 0; padding: 0; border-radius: var(--radius-sm); overflow: hidden; opacity: 0; transform: translateY(6px); transition: opacity 0.6s var(--ease-smooth), transform 0.5s var(--ease-smooth); }
     .map-wrap.visible { opacity: 1; transform: none; }
@@ -243,6 +261,7 @@
       .kpi-value { font-size: 2.5rem; }
       .kpi-desc { font-size: 0.9rem; }
       .big-stat-value { font-size: 3.25rem; }
+      .community-benefit-hero .big-stat-value { font-size: 3rem; }
       .card { padding: 1.25rem; }
       .card h2 { font-size: 1.15rem; }
       .card p, .card li { font-size: 1rem; }
@@ -472,15 +491,28 @@
         </div>
         <div class="card-icon card-icon--heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
       </div>
-      <ul style="margin-top:0.25rem;">
-        <li><strong>23%</strong> average savings on pharma purchases</li>
-        <li>Free or reduced-price prescriptions</li>
-        <li>Mobile mammography, cancer screening, dental care</li>
-      </ul>
-      <div class="big-stat">
+      <div class="benefit-grid">
+        <div class="benefit-item">
+          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 12h6"/><path d="M12 9v6"/></svg></div>
+          <p class="benefit-item-text"><strong>23%</strong> average savings on pharma purchases</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 12h14"/><path d="m3 8 3-3 3 3"/><path d="m21 8-3-3-3 3"/><path d="m3 16 3 3 3-3"/><path d="m21 16-3 3-3-3"/></svg></div>
+          <p class="benefit-item-text">Free or reduced-price prescriptions</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></div>
+          <p class="benefit-item-text">Mobile mammography &amp; cancer screening</p>
+        </div>
+        <div class="benefit-item">
+          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C9.5 2 7 4 7 7v1c0 1.5.8 2.5 2 3 1.2.5 2 1.5 2 3v6c0 1.5 1 2.5 2.5 2.5h1c1.5 0 2.5-1 2.5-2.5v-6c0-1.5.8-2.5 2-3 1.2-.5 2-1.5 2-3V7c0-3-2.5-5-5-5z"/></svg></div>
+          <p class="benefit-item-text">Dental care &amp; preventive services</p>
+        </div>
+      </div>
+      <div class="community-benefit-hero">
         <p class="big-stat-label">Total community benefits (2024)</p>
         <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">0</span>B</p>
-        <p class="big-stat-desc">9% increase over 2023</p>
+        <p class="big-stat-desc">9% increase over 2023 — benefit to the community</p>
       </div>
     </article>
 
