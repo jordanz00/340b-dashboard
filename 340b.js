@@ -1,6 +1,7 @@
 /**
  * HAP 340B Advocacy Dashboard — Map, state data, and UI interactions
  * Depends on: D3.js, Topojson (loaded before this script)
+ * CDN fallback: if D3/topojson fail, map shows error message
  */
 (function() {
   var FIPS_TO_ABBR = { 1:"AL",2:"AK",4:"AZ",5:"AR",6:"CA",8:"CO",9:"CT",10:"DE",11:"DC",12:"FL",13:"GA",15:"HI",16:"ID",17:"IL",18:"IN",19:"IA",20:"KS",21:"KY",22:"LA",23:"ME",24:"MD",25:"MA",26:"MI",27:"MN",28:"MS",29:"MO",30:"MT",31:"NE",32:"NV",33:"NH",34:"NJ",35:"NM",36:"NY",37:"NC",38:"ND",39:"OH",40:"OK",41:"OR",42:"PA",44:"RI",45:"SC",46:"SD",47:"TN",48:"TX",49:"UT",50:"VT",51:"VA",53:"WA",54:"WV",55:"WI",56:"WY" };
@@ -10,11 +11,23 @@
   var STATE_340B = { AL:{y:2021,pbm:true,cp:false,notes:""}, AZ:{y:2022,pbm:true,cp:false,notes:""}, AR:{y:2021,pbm:true,cp:true,notes:"First to enact; upheld in court."}, CA:{y:2023,pbm:true,cp:false,notes:""}, CO:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy 2025."}, CT:{y:2023,pbm:true,cp:false,notes:""}, GA:{y:2020,pbm:true,cp:false,notes:""}, HI:{y:2025,pbm:false,cp:true,notes:"Reporting required."}, IL:{y:2022,pbm:true,cp:false,notes:""}, IN:{y:2021,pbm:true,cp:false,notes:""}, IA:{y:2023,pbm:true,cp:false,notes:""}, KS:{y:2024,pbm:false,cp:true,notes:""}, KY:{y:2020,pbm:true,cp:false,notes:""}, LA:{y:2023,pbm:true,cp:true,notes:"Upheld in court."}, ME:{y:2025,pbm:false,cp:true,notes:"Hybrid 2025."}, MD:{y:2024,pbm:false,cp:true,notes:""}, MA:{y:null,pbm:false,cp:false,notes:""}, MI:{y:2022,pbm:true,cp:false,notes:""}, MN:{y:2019,pbm:true,cp:true,notes:"Upheld in court."}, MS:{y:2024,pbm:true,cp:true,notes:""}, MO:{y:2024,pbm:false,cp:true,notes:"Upheld in court."}, MT:{y:2021,pbm:true,cp:false,notes:""}, NE:{y:2022,pbm:true,cp:true,notes:""}, NV:{y:2023,pbm:true,cp:false,notes:""}, NH:{y:2024,pbm:true,cp:false,notes:""}, NJ:{y:null,pbm:false,cp:false,notes:""}, NM:{y:2023,pbm:true,cp:true,notes:""}, NY:{y:null,pbm:false,cp:false,notes:""}, NC:{y:2021,pbm:true,cp:false,notes:""}, ND:{y:2021,pbm:true,cp:true,notes:""}, OH:{y:2021,pbm:true,cp:false,notes:"Hybrid 2025."}, OK:{y:2025,pbm:false,cp:true,notes:""}, OR:{y:2025,pbm:true,cp:true,notes:""}, PA:{y:null,pbm:false,cp:false,notes:"In progress."}, RI:{y:2025,pbm:true,cp:true,notes:"Upheld in court."}, SC:{y:null,pbm:false,cp:false,notes:""}, SD:{y:2024,pbm:true,cp:true,notes:""}, TN:{y:2021,pbm:true,cp:true,notes:"Upheld in court."}, TX:{y:null,pbm:false,cp:false,notes:""}, UT:{y:2020,pbm:true,cp:true,notes:""}, VT:{y:2021,pbm:true,cp:true,notes:"Hybrid 2025."}, VA:{y:2021,pbm:true,cp:false,notes:"Governor vetoed protection."}, WA:{y:null,pbm:false,cp:false,notes:""}, WV:{y:2024,pbm:true,cp:true,notes:""}, WI:{y:null,pbm:false,cp:false,notes:""}, WY:{y:null,pbm:false,cp:false,notes:""}, FL:{y:null,pbm:false,cp:false,notes:""}, DE:{y:null,pbm:false,cp:false,notes:""}, ID:{y:null,pbm:false,cp:false,notes:""}, DC:{y:null,pbm:false,cp:false,notes:""} };
   var STATES_WITH_PROTECTION = ["AR","CO","HI","KS","LA","ME","MD","MN","MS","MO","NE","NM","ND","OK","OR","RI","SD","TN","UT","VT","WV"];
 
+  function showMapError(container, msg) {
+    if (!container) return;
+    var skel = document.getElementById("map-loading-skeleton");
+    if (skel) skel.classList.add("hidden");
+    container.innerHTML = "<p style='padding:2rem;text-align:center;color:#718096;font-size:0.9rem'>" + msg + "</p>";
+  }
+
   function drawMap() {
     var c = document.getElementById("us-map");
     if (!c) return;
     var w = Math.min(c.offsetWidth||800,960), h = Math.round(w*0.55);
-    if (typeof d3==="undefined"||typeof topojson==="undefined") { c.innerHTML="<p style='padding:2rem;text-align:center;color:#718096;font-size:0.9rem'>Loading map…</p>"; return; }
+    if (typeof d3==="undefined"||typeof topojson==="undefined") {
+      showMapError(c, "Map libraries could not load. Please check your connection and refresh the page.");
+      var skel = document.getElementById("map-loading-skeleton");
+      if (skel) skel.classList.add("hidden");
+      return;
+    }
     c.innerHTML="";
     var svg = d3.select("#us-map").append("svg").attr("viewBox",[0,0,w,h]).attr("width","100%").attr("height","auto");
     d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(us){
@@ -44,7 +57,7 @@
       }
       var skel = document.getElementById("map-loading-skeleton");
       if (skel) skel.classList.add("hidden");
-    }).catch(function(){ c.innerHTML="<p style='padding:2rem;text-align:center;color:#718096;font-size:0.9rem'>Map data temporarily unavailable. Please refresh.</p>"; var skel = document.getElementById("map-loading-skeleton"); if (skel) skel.classList.add("hidden"); });
+    }).catch(function(err){ showMapError(c, "Map data temporarily unavailable. Please check your connection and refresh the page."); var skel = document.getElementById("map-loading-skeleton"); if (skel) skel.classList.add("hidden"); });
   }
   function bindMap(paths) {
     var tt = document.getElementById("map-tooltip"), panel = document.getElementById("state-detail-panel");
@@ -77,6 +90,7 @@
       chip.setAttribute("title", (STATE_NAMES[ab]||ab) + (data&&data.notes ? ": "+data.notes : ""));
       chip.setAttribute("tabindex", "0");
       chip.setAttribute("role", "button");
+      chip.setAttribute("aria-label", "View " + (STATE_NAMES[ab]||ab) + " details");
       function showTooltip(ev){ var name=STATE_NAMES[ab]||ab; var html="<strong>"+name+"</strong>"; if(data){ html+=" <span class='badge "+(data.cp?"yes":"no")+"'>CP: "+(data.cp?"Yes":"No")+"</span> <span class='badge "+(data.pbm?"yes":"no")+"'>PBM: "+(data.pbm?"Yes":"No")+"</span>"; if(data.y) html+="<br>Year: "+data.y; if(data.notes) html+="<br>"+data.notes; } tt.innerHTML=html; if(ev&&ev.clientX!=null){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-12)+"px"; } else { var r=chip.getBoundingClientRect(); tt.style.left=(r.left+r.width/2-80)+"px"; tt.style.top=(r.top-8)+"px"; } tt.classList.add("visible"); }
       chip.addEventListener("mouseenter",function(ev){ showTooltip(ev); });
       chip.addEventListener("focus",showTooltip);
@@ -121,13 +135,10 @@
   function initPresentation(){ var b=document.getElementById("btn-presentation"), ex=document.getElementById("exit-presentation"), d=document.querySelector(".dashboard"); if(b){ b.addEventListener("click",function(){ d.classList.toggle("presentation-mode"); b.classList.toggle("active",d.classList.contains("presentation-mode")); }); } if(ex) ex.addEventListener("click",function(){ d.classList.remove("presentation-mode"); if(b) b.classList.remove("active"); }); document.addEventListener("keydown",function(e){ if(e.key==="Escape"&&d.classList.contains("presentation-mode")){ d.classList.remove("presentation-mode"); if(b) b.classList.remove("active"); } }); }
   function initDarkMode(){ var b=document.getElementById("btn-dark"), d=document.querySelector(".dashboard"); if(b){ var v=localStorage.getItem("340b-dark")==="1"; if(v) d.classList.add("dark-mode"); b.classList.toggle("active",v); b.addEventListener("click",function(){ d.classList.toggle("dark-mode"); var on=d.classList.contains("dark-mode"); localStorage.setItem("340b-dark",on?"1":"0"); b.classList.toggle("active",on); }); } }
   function initMethodology(){ var t=document.getElementById("methodology-toggle"), c=document.getElementById("methodology-content"); if(t&&c){ t.addEventListener("click",function(){ c.classList.toggle("open"); t.setAttribute("aria-expanded",c.classList.contains("open")); }); } }
-  function initViewToggle(){ var mapBtn=document.getElementById("view-map-btn"), tableBtn=document.getElementById("view-table-btn"), mapC=document.getElementById("map-container"), tableW=document.getElementById("state-table-wrap"), listsW=document.getElementById("state-lists-wrap"); if(!mapBtn||!tableBtn||!mapC||!tableW) return; function showMap(){ mapC.hidden=false; tableW.hidden=true; if(listsW) listsW.hidden=false; mapBtn.setAttribute("aria-pressed","true"); tableBtn.setAttribute("aria-pressed","false"); }
-  function showTable(){ mapC.hidden=true; tableW.hidden=false; if(listsW) listsW.hidden=true; mapBtn.setAttribute("aria-pressed","false"); tableBtn.setAttribute("aria-pressed","true"); }
-  mapBtn.addEventListener("click",showMap); tableBtn.addEventListener("click",showTable); }
-  function initStateTable(){ var tbody=document.getElementById("state-table-body"); if(!tbody) return; var states=["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"]; states.forEach(function(ab){ var d=STATE_340B[ab]||{}; var row="<tr><td>"+(STATE_NAMES[ab]||ab)+"</td><td><span class='badge "+(d.cp?"yes":"no")+"'>"+(d.cp?"Yes":"No")+"</span></td><td><span class='badge "+(d.pbm?"yes":"no")+"'>"+(d.pbm?"Yes":"No")+"</span></td><td>"+(d.y||"—")+"</td><td>"+(d.notes||"—")+"</td></tr>"; tbody.innerHTML+=row; }); }
+  function initNavToggle(){ var btn=document.getElementById("nav-toggle"), nav=document.getElementById("dashboard-nav"); if(!btn||!nav) return; btn.addEventListener("click",function(){ var open=!nav.classList.contains("is-open"); nav.classList.toggle("is-open",open); btn.setAttribute("aria-expanded",open); btn.setAttribute("aria-label",open?"Close menu":"Open menu"); }); nav.querySelectorAll("a").forEach(function(a){ a.addEventListener("click",function(){ nav.classList.remove("is-open"); btn.setAttribute("aria-expanded","false"); btn.setAttribute("aria-label","Open menu"); }); }); }
   var lastW=0, touch = "ontouchstart" in window || navigator.maxTouchPoints>0;
   function resize(){ if(touch) return; var c=document.getElementById("us-map"); if(!c) return; var w=c.offsetWidth; if(Math.abs(w-lastW)<40 && lastW) return; lastW=w; drawMap(); }
-  function go(){ drawMap(); var c=document.getElementById("us-map"); if(c) lastW=c.offsetWidth; initCountUp(); initStateListHover(); initNavHighlight(); initPrint(); initPresentation(); initDarkMode(); initMethodology(); initViewToggle(); initStateTable(); if(!touch) window.addEventListener("resize",function(){ clearTimeout(window._rt); window._rt=setTimeout(resize,300); }); }
+  function go(){ drawMap(); var c=document.getElementById("us-map"); if(c) lastW=c.offsetWidth; initCountUp(); initStateListHover(); initNavHighlight(); initPrint(); initPresentation(); initDarkMode(); initMethodology(); initNavToggle(); if(!touch) window.addEventListener("resize",function(){ clearTimeout(window._rt); window._rt=setTimeout(resize,300); }); }
   if (document.readyState==="loading") document.addEventListener("DOMContentLoaded",go);
   else go();
 })();

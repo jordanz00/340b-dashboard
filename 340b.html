@@ -13,19 +13,23 @@
   <meta property="og:type" content="website">
   <meta property="og:title" content="340B Drug Pricing Program | HAP Advocacy Dashboard">
   <meta property="og:description" content="72 PA hospitals • $7.95B community benefits • No cost to taxpayers. State-by-state contract pharmacy protection map for lawmakers and hospital CEOs.">
-  <meta property="og:image" content="haplogo_box_blue.jpeg">
-  <meta property="og:url" content="">
+  <!-- For custom share image: create 1200×630 graphic with key stats, host it, and set og:image to that URL -->
+  <meta property="og:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
+  <meta property="og:image:width" content="400">
+  <meta property="og:image:height" content="400">
+  <meta property="og:url" content="https://jordanz00.github.io/340b-dashboard/340b.html">
   <meta property="og:site_name" content="HAP 340B Advocacy">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="340B Drug Pricing Program | HAP Advocacy Dashboard">
   <meta name="twitter:description" content="72 PA hospitals • $7.95B community benefits • No cost to taxpayers. State-by-state contract pharmacy protection map.">
+  <meta name="twitter:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="340b.css">
-  <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
-  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
+  <script src="https://cdn.jsdelivr.net/npm/d3@7" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/topojson-client@3" crossorigin="anonymous"></script>
 </head>
 <body>
 <div class="dashboard">
@@ -44,13 +48,18 @@
       <span class="badge-live">ADVOCACY BRIEFING</span>
     </div>
   </div>
-  <nav class="dashboard-nav" aria-label="Dashboard sections">
+  <button type="button" class="nav-toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false" aria-controls="dashboard-nav">
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+    <span class="nav-toggle-bar"></span>
+  </button>
+  <nav class="dashboard-nav" id="dashboard-nav" aria-label="Dashboard sections">
     <a href="#what-is-340b" class="active">Overview</a>
     <a href="#overview">HAP Position</a>
     <a href="#state-laws">State Map</a>
     <a href="#policy">Policy</a>
     <a href="static.html">PA Dashboard</a>
-    <button type="button" id="btn-print" class="nav-action-btn" aria-label="Print briefing">Print</button>
+    <button type="button" id="btn-print" class="nav-action-btn" aria-label="Print or save as PDF">Print / PDF</button>
     <button type="button" id="btn-presentation" class="nav-action-btn" aria-label="Presentation mode">Present</button>
     <button type="button" id="btn-dark" class="nav-action-btn" aria-label="Toggle dark mode">Dark</button>
   </nav>
@@ -111,11 +120,6 @@
           <p class="map-hero-title">State-by-state analysis</p>
           <h2 class="map-hero-headline">340B contract pharmacy protection across the U.S.</h2>
           <p class="map-hero-sub">Select a state for details. <strong>Pennsylvania is pursuing contract pharmacy protection.</strong></p>
-      <div class="view-toggle" role="group" aria-label="View format">
-        <button type="button" id="view-map-btn" aria-pressed="true">Map</button>
-        <span aria-hidden="true"> | </span>
-        <button type="button" id="view-table-btn" aria-pressed="false">Table</button>
-      </div>
       <div class="map-container" id="map-container">
         <div class="us-map-wrap map-wrap" id="us-map-wrap">
           <div class="map-loading-skeleton" id="map-loading-skeleton"><span class="map-loading-text">Loading map…</span></div>
@@ -126,12 +130,6 @@
           </div>
         </div>
         <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite"><p>Select a state</p></div>
-      </div>
-      <div class="state-table-wrap" id="state-table-wrap" hidden>
-        <table class="state-table" aria-label="States with and without 340B contract pharmacy protection">
-          <thead><tr><th>State</th><th>Contract pharmacy</th><th>PBM</th><th>Year</th><th>Notes</th></tr></thead>
-          <tbody id="state-table-body"></tbody>
-        </table>
       </div>
       <div class="state-lists-wrap" id="state-lists-wrap">
         <div class="state-list-block protection">
@@ -166,9 +164,10 @@
       <div class="methodology-wrap">
         <button type="button" class="methodology-toggle" id="methodology-toggle" aria-expanded="false">About this data</button>
         <div class="methodology-content" id="methodology-content">
-          <p><strong>State law data</strong> is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025.</p>
+          <p><strong>State law data</strong> is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.</p>
           <p><strong>Community benefit</strong> figures are from 340B Health and AHA survey data (2024).</p>
           <p><strong>HRSA oversight</strong> figures reflect federal audit activity in 2024.</p>
+          <p><strong>Last updated:</strong> March 2025</p>
           <ul>
             <li><a href="https://www.multistate.us/" target="_blank" rel="noopener">MultiState</a></li>
             <li><a href="https://www.ashp.org/" target="_blank" rel="noopener">ASHP</a></li>
@@ -202,7 +201,7 @@
         <p class="kpi-value primary">72</p>
         <p class="kpi-desc">Pennsylvania hospitals participating in 340B</p>
       </div>
-      <p class="data-freshness">Data as of March 2025</p>
+      <p class="data-freshness">Data as of March 2025 · Last updated March 2025</p>
     </section>
 
     <!-- Supporting context cards -->
@@ -356,6 +355,8 @@
 </footer>
 </div>
 
+<!-- Plausible Analytics (optional: add your domain at plausible.io) -->
+<!-- <script defer data-domain="jordanz00.github.io" src="https://plausible.io/js/script.js"></script> -->
 <script src="340b.js"></script>
 </body>
 </html>

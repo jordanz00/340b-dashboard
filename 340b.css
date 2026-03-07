@@ -119,6 +119,18 @@ body { margin: 0; font-family: var(--font-sans); font-size: var(--text-base); li
 .nav-action-btn:hover { color: var(--primary); background: var(--primary-muted); border-color: var(--primary-border); }
 .nav-action-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 .nav-action-btn.active { background: var(--primary-muted); color: var(--primary); border-color: var(--primary-border); }
+/* Mobile nav toggle (hamburger) */
+.nav-toggle { display: none; flex-direction: column; justify-content: center; gap: 5px; width: 40px; height: 40px; padding: 8px; background: none; border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; }
+.nav-toggle-bar { display: block; width: 100%; height: 2px; background: var(--text); border-radius: 1px; transition: transform 0.2s var(--ease), opacity 0.2s var(--ease); }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(2) { opacity: 0; }
+.nav-toggle[aria-expanded="true"] .nav-toggle-bar:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+@media (max-width: 768px) {
+  .nav-toggle { display: flex; }
+  .dashboard-nav { display: none; position: absolute; top: 100%; left: 0; right: 0; flex-direction: column; background: var(--bg-card); border-bottom: 1px solid var(--border); box-shadow: var(--shadow); padding: var(--space-3); gap: var(--space-1); }
+  .dashboard-nav.is-open { display: flex; }
+  .dashboard-nav .nav-action-btn { display: block; }
+}
 /* Key takeaways / Executive summary */
 .key-takeaways { background: linear-gradient(180deg, var(--primary-muted) 0%, transparent 100%); border-bottom: 1px solid var(--border); padding: var(--space-4) 0; }
 .key-takeaways-inner { max-width: var(--content-max); margin: 0 auto; padding: 0 var(--space-6); }
@@ -244,8 +256,8 @@ main { padding: var(--space-4) var(--space-4) var(--space-6); max-width: var(--c
 
 /* Map — restore original animation and SVG-safe colors */
 .map-wrap { margin: 0; padding: 0; border-radius: var(--radius); overflow: hidden; opacity: 0; transform: translateY(6px); transition: opacity 0.6s var(--ease-smooth), transform 0.5s var(--ease-smooth); min-height: 320px; position: relative; }
-.map-loading-skeleton { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--neutral-50); border-radius: var(--radius); }
-.map-loading-skeleton.hidden { display: none; }
+.map-loading-skeleton { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; background: var(--neutral-50); border-radius: var(--radius); min-height: 320px; z-index: 1; }
+.map-loading-skeleton.hidden { display: none; opacity: 0; pointer-events: none; transition: opacity 0.3s var(--ease); }
 .map-loading-text { font-size: var(--text-sm); color: var(--text-muted); font-weight: 500; }
 .map-wrap.visible { opacity: 1; transform: none; }
 .dashboard .us-map-wrap svg { width: 100%; height: auto; display: block; }
@@ -344,8 +356,14 @@ footer a:hover { color: var(--primary); }
   .stat-value { font-size: var(--text-2xl); }
   .map-container { grid-template-columns: 1fr; }
 }
+@media (min-width: 769px) {
+  .nav-toggle { display: none !important; }
+}
 @media (max-width: 600px) {
   .nav-action-btn { display: none; }
+}
+@media (max-width: 768px) and (min-width: 601px) {
+  .nav-action-btn { display: block; }
 }
 @media (max-width: 480px) {
   .kpi-value { font-size: var(--text-2xl); }
@@ -394,7 +412,7 @@ footer a:hover { color: var(--primary); }
 @media print {
   .dashboard-header { position: static; background: #fff; }
   .dashboard::before { display: none; }
-  .skip-link, .back-link, .nav-action-btn, .exit-presentation, .footer-cta, .view-toggle, .methodology-wrap { display: none !important; }
+  .skip-link, .back-link, .nav-action-btn, .exit-presentation, .footer-cta, .nav-toggle, .methodology-wrap { display: none !important; }
   .map-wrap { opacity: 1; transform: none; }
   .card, .kpi-card, .map-hero-card { box-shadow: none; border: 1px solid #ddd; }
   a { color: #0066a1; }
