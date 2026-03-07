@@ -65,19 +65,19 @@
     .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 1.25rem 0; border-bottom: 1px solid var(--border); }
     @media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .kpi-strip { grid-template-columns: 1fr; padding: 1rem 0; } }
-    .kpi-card { padding: 1.25rem 1rem; border-radius: 14px; background: var(--glass); border: 1px solid rgba(0,0,0,0.06); transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
-    .kpi-card:hover { border-color: var(--border-focus); box-shadow: 0 4px 20px rgba(0,114,188,0.08); }
+    .kpi-card { padding: 1.25rem 1rem; border-radius: 14px; background: var(--glass); border: 1px solid rgba(0,0,0,0.06); transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+    .kpi-card:hover { border-color: var(--border-focus); box-shadow: 0 4px 20px rgba(0,114,188,0.08), 0 2px 8px rgba(0,0,0,0.04); }
     .kpi-label { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.4rem; }
     .kpi-value { font-family: "JetBrains Mono", monospace; font-size: 3rem; font-weight: 700; line-height: 1; letter-spacing: -0.04em; color: var(--accent); }
     @media (min-width: 768px) { .kpi-value { font-size: 4rem; } }
     .kpi-value.primary { color: var(--primary); }
     .kpi-desc { font-size: 0.95rem; color: var(--text-soft); margin-top: 0.5rem; line-height: 1.4; max-width: 14em; }
 
-    /* Main grid — 8px rhythm, tight alignment */
-    main { padding: 1rem 0; }
-    .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 0.875rem; }
-    .card { border-radius: 14px; background: var(--glass); border: 1px solid rgba(0,0,0,0.06); padding: 1.5rem; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 1px 3px rgba(0,0,0,0.04); position: relative; align-self: start; }
-    .card:hover { border-color: var(--border-focus); }
+    /* Main grid — 8px rhythm, clean alignment */
+    main { padding: 1.125rem 0; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1rem; align-items: start; }
+    .card { border-radius: 14px; background: var(--glass); border: 1px solid rgba(0,0,0,0.06); padding: 1.5rem; transition: border-color 0.2s, box-shadow 0.2s; box-shadow: 0 2px 8px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02); position: relative; align-self: start; }
+    .card:hover { border-color: var(--border-focus); box-shadow: 0 4px 16px rgba(0,114,188,0.06), 0 2px 6px rgba(0,0,0,0.04); }
     @supports (backdrop-filter: blur(16px)) { .card { background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); } }
     .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
     .card-heading { display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: row; gap: 0.75rem; margin-bottom: 0.75rem; }
@@ -107,7 +107,10 @@
     .card-icon--check { background: rgba(0,114,188,0.1); }
     .card-icon--check svg { stroke: var(--primary); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
-    /* Span helpers */
+    /* Overview + HAP Position: same row height, aligned */
+    #what-is-340b, #overview { align-self: stretch; }
+    #what-is-340b { display: flex; flex-direction: column; }
+    #what-is-340b .stat-block { margin-top: auto; padding-top: 1rem; }
     .span-4 { grid-column: span 4; }
     .span-6 { grid-column: span 6; }
     .span-8 { grid-column: span 8; }
@@ -168,19 +171,19 @@
     .big-stat-desc { font-size: 0.95rem; color: var(--text-soft); margin-top: 0.35rem; }
 
     /* Community benefit — standout section with icon tiles and hero number */
-    #community-benefit { border-color: rgba(245,158,11,0.2); background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(245,158,11,0.04) 100%); box-shadow: 0 2px 12px rgba(245,158,11,0.08); padding: 1.75rem 1.5rem; }
-    #community-benefit:hover { box-shadow: 0 4px 20px rgba(245,158,11,0.12); }
+    #community-benefit { border-color: rgba(245,158,11,0.25); background: linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(245,158,11,0.05) 100%); box-shadow: 0 4px 20px rgba(245,158,11,0.08), 0 2px 8px rgba(0,0,0,0.04); padding: 1.75rem 1.5rem; }
+    #community-benefit:hover { box-shadow: 0 6px 28px rgba(245,158,11,0.12), 0 2px 10px rgba(0,0,0,0.04); }
     .benefit-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; margin-top: 1rem; margin-bottom: 1.5rem; }
     @media (max-width: 900px) { .benefit-grid { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 480px) { .benefit-grid { grid-template-columns: 1fr; } }
-    .benefit-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem; border-radius: 12px; background: rgba(255,255,255,0.7); border: 1px solid rgba(0,0,0,0.06); transition: border-color 0.2s, box-shadow 0.2s; }
+    .benefit-item { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem 1.125rem; border-radius: 12px; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.05); transition: border-color 0.2s, box-shadow 0.2s; }
     .benefit-item:hover { border-color: rgba(245,158,11,0.25); box-shadow: 0 2px 12px rgba(245,158,11,0.1); }
     .benefit-item-icon { flex-shrink: 0; width: 44px; height: 44px; border-radius: 10px; background: var(--accent-soft); display: flex; align-items: center; justify-content: center; }
     .benefit-item-icon svg { width: 22px; height: 22px; stroke: var(--accent); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; }
     .benefit-item-icon.fill svg { fill: var(--accent); fill-opacity: 0.25; }
     .benefit-item-text { font-size: 0.95rem; font-weight: 500; color: var(--text); line-height: 1.4; margin: 0; }
     .benefit-item-text strong { color: var(--accent-strong); }
-    .community-benefit-hero { text-align: center; padding: 2rem 1.5rem; border-radius: 14px; background: linear-gradient(135deg, rgba(245,158,11,0.12) 0%, rgba(245,158,11,0.06) 100%); border: 1px solid rgba(245,158,11,0.3); margin-top: 0.5rem; }
+    .community-benefit-hero { text-align: center; padding: 2.25rem 1.5rem; border-radius: 14px; background: linear-gradient(135deg, rgba(245,158,11,0.14) 0%, rgba(245,158,11,0.06) 100%); border: 1px solid rgba(245,158,11,0.35); margin-top: 0.5rem; box-shadow: 0 2px 12px rgba(245,158,11,0.08) inset; }
     .community-benefit-hero .big-stat-label { font-size: 0.75rem; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 0.5rem; }
     .community-benefit-hero .big-stat-value { font-size: clamp(3.5rem, 9vw, 6rem); font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; text-shadow: 0 0 40px rgba(245,158,11,0.15); }
     .community-benefit-hero .big-stat-desc { font-size: 1rem; margin-top: 0.5rem; color: var(--text-soft); }
@@ -311,7 +314,7 @@
   </div>
   <div class="kpi-card">
     <p class="kpi-label">Community Benefit</p>
-    <p class="kpi-value count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">0</p>
+    <p class="kpi-value">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">0</span></p>
     <p class="kpi-desc">Total benefits from 340B hospitals (2024)</p>
   </div>
   <div class="kpi-card">
