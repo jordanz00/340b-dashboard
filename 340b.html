@@ -114,6 +114,25 @@
     .span-12 { grid-column: span 12; }
     @media (max-width: 900px) { .span-4, .span-6, .span-8 { grid-column: span 12; } }
 
+    /* Map row: map left, sidebar right (Eligibility, Oversight, Pennsylvania) */
+    .map-with-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; align-items: start; }
+    @media (min-width: 901px) { .map-with-sidebar { grid-template-columns: 2fr 1fr; } }
+    @media (max-width: 900px) { .map-with-sidebar { grid-template-columns: 1fr; } }
+    .map-sidebar { display: flex; flex-direction: column; gap: 0.75rem; min-width: 0; }
+    .card--compact { padding: 0.75rem 1rem; }
+    .card--compact .card-heading { margin-bottom: 0.5rem; gap: 0.5rem; }
+    .card--compact .card-title { font-size: 0.65rem; margin: 0 0 0.15rem; }
+    .card--compact h2 { font-size: 1rem; margin: 0 0 0.3rem; }
+    .card--compact p, .card--compact li { font-size: 0.85rem; margin: 0 0 0.25rem; }
+    .card--compact ul { margin: 0.25rem 0 0; padding-left: 1rem; }
+    .card--compact .card-icon { width: 40px; height: 40px; }
+    .card--compact .card-icon svg { width: 20px; height: 20px; }
+    .card--compact .stat-block { margin-top: 0.5rem; gap: 0.5rem; grid-template-columns: 1fr 1fr; }
+    .card--compact .stat { padding: 0.5rem 0.4rem; }
+    .card--compact .stat-label { font-size: 0.6rem; }
+    .card--compact .stat-value { font-size: 1.75rem; }
+    .card--compact .stat-desc { font-size: 0.75rem; margin-top: 0.15rem; }
+
     /* HAP Position — hero card with highlight */
     .card-hap { border-color: rgba(245,158,11,0.4); box-shadow: 0 2px 12px rgba(245,158,11,0.12); }
     .card-hap:hover { box-shadow: 0 6px 24px rgba(245,158,11,0.18); }
@@ -309,8 +328,9 @@
       </div>
     </article>
 
-    <!-- Map -->
-    <article id="state-laws" class="card span-8">
+    <!-- Map (left) + Eligibility, Oversight, Pennsylvania (right sidebar) -->
+    <div class="map-with-sidebar span-12">
+      <article id="state-laws" class="card">
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">State-by-state</p>
@@ -361,79 +381,74 @@
       <p class="sources">State law data: MultiState, ASHP, America's Essential Hospitals</p>
     </article>
 
-    <!-- Eligibility -->
-    <article id="eligibility" class="card span-4">
-      <div class="card-heading">
-        <div class="card-heading-text">
-          <p class="card-title">Eligibility</p>
-          <h2>Who 340B supports</h2>
-        </div>
-        <div class="card-icon card-icon--people" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+      <div class="map-sidebar">
+        <article id="eligibility" class="card card--compact">
+          <div class="card-heading">
+            <div class="card-heading-text">
+              <p class="card-title">Eligibility</p>
+              <h2>Who 340B supports</h2>
+            </div>
+            <div class="card-icon card-icon--people" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          </div>
+          <p>Rural and urban providers, including:</p>
+          <ul>
+            <li>Children's and cancer hospitals</li>
+            <li>CAHs and DSHs</li>
+            <li>FQHCs</li>
+          </ul>
+        </article>
+        <article id="oversight" class="card card--compact">
+          <div class="card-heading">
+            <div class="card-heading-text">
+              <p class="card-title">Oversight</p>
+              <h2>HRSA audits</h2>
+            </div>
+            <div class="card-icon card-icon--scale" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
+          </div>
+          <p>In 2024:</p>
+          <div class="stat-block">
+            <div class="stat">
+              <p class="stat-label">Hospitals</p>
+              <p class="stat-value count-up" data-count-up="200" data-suffix="+">0</p>
+              <p class="stat-desc">Audited</p>
+            </div>
+            <div class="stat">
+              <p class="stat-label">Manufacturers</p>
+              <p class="stat-value count-up" data-count-up="6" data-suffix="%">0</p>
+              <p class="stat-desc">Audited</p>
+            </div>
+          </div>
+          <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight</strong>.</p>
+        </article>
+        <article id="pa-impact" class="card card--compact">
+          <div class="card-heading">
+            <div class="card-heading-text">
+              <p class="card-title">Pennsylvania</p>
+              <h2>340B in your state</h2>
+            </div>
+            <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          </div>
+          <p><strong>72 hospitals (30%)</strong> participate:</p>
+          <div class="stat-block">
+            <div class="stat">
+              <p class="stat-label">Rural</p>
+              <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+            </div>
+            <div class="stat">
+              <p class="stat-label">Negative margin</p>
+              <p class="stat-value count-up" data-count-up="53" data-suffix="%">0</p>
+            </div>
+            <div class="stat">
+              <p class="stat-label">L&amp;D</p>
+              <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+            </div>
+          </div>
+        </article>
       </div>
-      <p>Rural and urban providers, including:</p>
-      <ul>
-        <li>Children's and cancer hospitals</li>
-        <li>Critical Access Hospitals (CAHs) and DSHs</li>
-        <li>Federally Qualified Health Centers (FQHCs)</li>
-      </ul>
-    </article>
+    </div>
 
-    <!-- Oversight, Pennsylvania, Community benefit — one aligned row -->
-    <article id="oversight" class="card span-4">
-      <div class="card-heading">
-        <div class="card-heading-text">
-          <p class="card-title">Oversight</p>
-          <h2>HRSA audits</h2>
-        </div>
-        <div class="card-icon card-icon--scale" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
-      </div>
-      <p>HRSA audits both manufacturers and covered entities. In 2024:</p>
-      <div class="stat-block">
-        <div class="stat">
-          <p class="stat-label">Hospitals audited</p>
-          <p class="stat-value count-up" data-count-up="200" data-suffix="+">0</p>
-          <p class="stat-desc">Compliance audits</p>
-        </div>
-        <div class="stat">
-          <p class="stat-label">Manufacturers</p>
-          <p class="stat-value count-up" data-count-up="6" data-suffix="%">0</p>
-          <p class="stat-desc">Audited (same period)</p>
-        </div>
-      </div>
-      <p style="margin-top:0.5rem;">HAP supports <strong>parity in oversight</strong> so manufacturers are held to the same accountability as providers.</p>
-    </article>
-
-    <!-- PA Impact -->
-    <article id="pa-impact" class="card span-4">
-      <div class="card-heading">
-        <div class="card-heading-text">
-          <p class="card-title">Pennsylvania</p>
-          <h2>340B in your state</h2>
-        </div>
-        <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-      </div>
-      <p><strong>72 hospitals (30%)</strong> participate. Of participating hospitals:</p>
-      <div class="stat-block">
-        <div class="stat">
-          <p class="stat-label">Rural</p>
-          <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
-          <p class="stat-desc">Rural providers</p>
-        </div>
-        <div class="stat">
-          <p class="stat-label">Margin</p>
-          <p class="stat-value count-up" data-count-up="53" data-suffix="%">0</p>
-          <p class="stat-desc">Negative margin</p>
-        </div>
-        <div class="stat">
-          <p class="stat-label">L&amp;D</p>
-          <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
-          <p class="stat-desc">Labor &amp; delivery</p>
-        </div>
-      </div>
-    </article>
-
-    <!-- Community benefit -->
-    <article id="community-benefit" class="card span-4">
+    <!-- Community benefit — full width under map -->
+    <article id="community-benefit" class="card span-12">
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">Community benefit</p>
@@ -492,10 +507,10 @@
 <footer>
   <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
   <p style="margin:0.75rem 0 0;display:flex;align-items:center;justify-content:center;gap:0.5rem;flex-wrap:wrap;">
-    <img src="hap-logo.svg" alt="" class="footer-logo" width="80" height="32" style="opacity:0.9;">
+    <img src="haplogo_box_blue.jpeg" alt="" class="footer-logo" width="64" height="64" style="object-fit:contain;">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
   </p>
-  <p style="margin:0.35rem 0 0;font-size:0.8rem;opacity:0.8;">Design mark 04</p>
+    <p style="margin:0.35rem 0 0;font-size:0.8rem;opacity:0.8;">Design Mark 2</p>
 </footer>
 </div>
 
