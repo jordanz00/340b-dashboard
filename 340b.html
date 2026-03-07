@@ -3,387 +3,400 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>340B Drug Pricing Program | HAP Advocacy</title>
+  <title>340B Drug Pricing Program | HAP Advocacy Dashboard</title>
   <meta name="description" content="HAP supports 340B integrity and contract pharmacy access. 72 PA hospitals participate. $7.95B in community benefits. No cost to taxpayers.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
   <style>
     :root {
-      --primary: #0072bc;
-      --primary-soft: #e0f2fe;
-      --primary-deep: #0369a1;
-      --accent: #f59e0b;
-      --accent-strong: #d97706;
-      --accent-soft: rgba(245,158,11,0.15);
-      --accent-glass: rgba(245,158,11,0.08);
+      --bg: #0c1222;
+      --bg-elevated: #111827;
+      --surface: rgba(255,255,255,0.05);
+      --surface-hover: rgba(255,255,255,0.08);
+      --glass: rgba(255,255,255,0.06);
+      --glass-strong: rgba(255,255,255,0.1);
+      --border: rgba(255,255,255,0.08);
+      --border-focus: rgba(255,255,255,0.15);
+      --primary: #38bdf8;
+      --primary-dim: rgba(56,189,248,0.5);
+      --accent: #fbbf24;
+      --accent-strong: #f59e0b;
+      --accent-glow: rgba(251,191,36,0.25);
+      --primary-glow: rgba(56,189,248,0.2);
+      --text: #f1f5f9;
+      --text-soft: #94a3b8;
       --muted: #64748b;
-      --text: #0f172a;
-      --text-soft: #334155;
-      --glass: rgba(255,255,255,0.7);
-      --glass-border: rgba(255,255,255,0.9);
-      --glass-strong: rgba(255,255,255,0.85);
-      --radius: 16px;
-      --radius-sm: 12px;
+      --radius: 14px;
+      --radius-sm: 10px;
       --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
       --ease-smooth: cubic-bezier(0.33, 1, 0.68, 1);
     }
     * { box-sizing: border-box; }
-    body { margin: 0; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
-    .pa-dashboard { min-height: 100vh; background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 25%, #f8fafc 70%); color: var(--text); overflow-x: hidden; }
-    .pa-dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14,165,233,0.12), transparent 50%); pointer-events: none; z-index: 0; }
-    .pa-dashboard::after { content: ""; position: fixed; inset: 0; background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M30 8v8M30 44v8M8 30h8M44 30h8M18 18l5.66 5.66M36.34 36.34L42 42M18 42l5.66-5.66M36.34 23.66L42 18' stroke='%230072bc' stroke-opacity='0.04' stroke-width='1' fill='none'/%3E%3C/svg%3E"); pointer-events: none; z-index: 0; opacity: 0.6; }
-    .pa-dashboard [id] { scroll-margin-top: 5rem; }
-    .pa-dashboard a { color: var(--primary); text-decoration: none; }
-    .pa-dashboard a:hover { text-decoration: underline; }
+    body { margin: 0; font-family: "DM Sans", -apple-system, sans-serif; -webkit-font-smoothing: antialiased; background: var(--bg); color: var(--text); }
+    .dashboard { min-height: 100vh; position: relative; overflow-x: hidden; }
+    .dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 100% 80% at 50% -30%, rgba(56,189,248,0.08), transparent 50%); pointer-events: none; z-index: 0; }
+    .dashboard::after { content: ""; position: fixed; inset: 0; background-image: linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px); background-size: 48px 48px; pointer-events: none; z-index: 0; }
+    .dashboard [id] { scroll-margin-top: 6rem; }
+    .dashboard a { color: var(--primary); text-decoration: none; }
+    .dashboard a:hover { text-decoration: underline; }
 
-    /* Liquid glass header */
-    .pa-dashboard-header { position: sticky; top: 0; z-index: 50; padding: 1rem 1.5rem; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.5); }
-    @supports (backdrop-filter: blur(20px)) { .pa-dashboard-header { background: rgba(255,255,255,0.4); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); } }
-    .report-by { margin: 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
-    .pa-dashboard-header h1 { margin: 0.2rem 0 0; font-size: 1.6rem; font-weight: 800; color: var(--primary); letter-spacing: -0.03em; }
-    .tagline { margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--muted); }
-    .pa-dashboard nav { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
-    .pa-dashboard nav a { padding: 0.5rem 1rem; border-radius: 999px; font-weight: 600; font-size: 0.8rem; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.06); color: var(--muted); transition: all 0.25s var(--ease); }
-    .pa-dashboard nav a:hover { color: var(--primary); background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+    /* HUD Header */
+    .dashboard-header { position: sticky; top: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem; padding: 0.875rem 1.5rem; background: rgba(12,18,34,0.85); border-bottom: 1px solid var(--border); }
+    @supports (backdrop-filter: blur(20px)) { .dashboard-header { background: rgba(12,18,34,0.6); backdrop-filter: blur(20px); } }
+    .header-left { display: flex; align-items: baseline; gap: 1.25rem; flex-wrap: wrap; }
+    .report-by { margin: 0; font-size: 0.65rem; font-weight: 600; letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted); }
+    .dashboard-header h1 { margin: 0; font-size: 1.35rem; font-weight: 700; color: var(--text); letter-spacing: -0.03em; }
+    .dashboard-header .badge-live { font-family: "JetBrains Mono", monospace; font-size: 0.7rem; padding: 0.25rem 0.6rem; border-radius: 6px; background: rgba(56,189,248,0.15); color: var(--primary); border: 1px solid rgba(56,189,248,0.3); }
+    .dashboard-nav { display: flex; gap: 0.25rem; }
+    .dashboard-nav a { font-size: 0.8rem; font-weight: 500; padding: 0.5rem 0.9rem; border-radius: var(--radius-sm); color: var(--text-soft); transition: color 0.2s, background 0.2s; }
+    .dashboard-nav a:hover { color: var(--text); background: var(--surface-hover); }
+    .dashboard-nav a.active { color: var(--primary); background: rgba(56,189,248,0.12); }
 
-    main { max-width: 56rem; margin: 0 auto; padding: 2rem 1.5rem; position: relative; z-index: 1; }
+    /* KPI Strip — Jarvis-style key metrics */
+    .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; padding: 1.25rem 1.5rem; position: relative; z-index: 1; border-bottom: 1px solid var(--border); }
+    @media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 480px) { .kpi-strip { grid-template-columns: 1fr; } }
+    .kpi-card { padding: 1.25rem 1.5rem; border-radius: var(--radius); background: var(--glass); border: 1px solid var(--border); transition: border-color 0.2s, box-shadow 0.2s; }
+    .kpi-card:hover { border-color: var(--border-focus); box-shadow: 0 0 0 1px var(--border-focus), 0 8px 32px rgba(0,0,0,0.2); }
+    .kpi-label { font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.35rem; }
+    .kpi-value { font-family: "JetBrains Mono", monospace; font-size: 2.5rem; font-weight: 700; line-height: 1; letter-spacing: -0.04em; color: var(--accent); text-shadow: 0 0 40px var(--accent-glow); }
+    @media (min-width: 768px) { .kpi-value { font-size: 3.25rem; } }
+    .kpi-value.primary { color: var(--primary); text-shadow: 0 0 40px var(--primary-glow); }
+    .kpi-desc { font-size: 0.8rem; color: var(--text-soft); margin-top: 0.5rem; line-height: 1.35; max-width: 12em; }
 
-    /* Liquid glass sections — base + variants for contrast */
-    .section { margin-bottom: 2.5rem; padding: 2.25rem; border-radius: var(--radius); background: var(--glass); border: 1px solid var(--glass-border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); position: relative; overflow: hidden; }
-    @supports (backdrop-filter: blur(20px)) { .section { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); } }
-    .section.accent-border { border-left: 4px solid var(--accent); }
-    .section--explainer { background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(224,242,254,0.4) 100%); border-color: rgba(0,114,188,0.12); box-shadow: 0 4px 24px rgba(0,114,188,0.06); }
-    @supports (backdrop-filter: blur(20px)) { .section--explainer { background: linear-gradient(135deg, rgba(255,255,255,0.6) 0%, rgba(224,242,254,0.25) 100%); backdrop-filter: blur(24px) saturate(160%); } }
-    .section--hero { background: linear-gradient(180deg, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0.5) 100%); box-shadow: 0 8px 32px rgba(0,0,0,0.06); }
-    @supports (backdrop-filter: blur(20px)) { .section--hero { background: linear-gradient(180deg, rgba(255,255,255,0.55) 0%, rgba(255,255,255,0.35) 100%); backdrop-filter: blur(24px) saturate(160%); } }
-    .section--map { background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.85); box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
-    @supports (backdrop-filter: blur(20px)) { .section--map { background: rgba(255,255,255,0.4); backdrop-filter: blur(20px) saturate(140%); } }
-    .section--alt { background: linear-gradient(180deg, rgba(248,250,252,0.9) 0%, rgba(241,245,249,0.6) 100%); border-color: rgba(100,116,139,0.1); }
-    @supports (backdrop-filter: blur(20px)) { .section--alt { background: linear-gradient(180deg, rgba(248,250,252,0.65) 0%, rgba(241,245,249,0.4) 100%); backdrop-filter: blur(20px) saturate(130%); } }
-    .section--accent { background: linear-gradient(135deg, rgba(255,255,255,0.7) 0%, rgba(245,158,11,0.06) 100%); border-color: rgba(245,158,11,0.2); box-shadow: 0 4px 20px rgba(245,158,11,0.05); }
-    @supports (backdrop-filter: blur(20px)) { .section--accent { background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(245,158,11,0.04) 100%); backdrop-filter: blur(22px) saturate(150%); } }
-    .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.5rem; }
-    .section h2 { margin: 0 0 1rem; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
-    .section p, .section li { font-size: 1rem; line-height: 1.65; color: var(--text-soft); }
-    .section ul { margin: 0.5rem 0 1rem; padding-left: 1.25rem; }
+    /* Main grid — dashboard layout */
+    main { max-width: 1400px; margin: 0 auto; padding: 1.5rem; position: relative; z-index: 1; }
+    .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.25rem; }
+    .card { border-radius: var(--radius); background: var(--glass); border: 1px solid var(--border); padding: 1.5rem; transition: border-color 0.2s, box-shadow 0.2s; }
+    .card:hover { border-color: var(--border-focus); }
+    @supports (backdrop-filter: blur(16px)) { .card { background: rgba(255,255,255,0.04); backdrop-filter: blur(16px); } }
+    .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+    .card-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0; }
+    .card h2 { font-size: 1.15rem; font-weight: 700; color: var(--text); margin: 0 0 0.5rem; letter-spacing: -0.02em; line-height: 1.3; }
+    .card p, .card li { font-size: 0.9rem; line-height: 1.6; color: var(--text-soft); margin: 0 0 0.5rem; }
+    .card ul { margin: 0.5rem 0 0; padding-left: 1.25rem; }
 
-    /* Section graphics — pharmaceutical accent */
-    .section-graphic { position: absolute; top: 1.5rem; right: 1.5rem; width: 56px; height: 28px; opacity: 0.5; }
-    .section-graphic svg { width: 100%; height: 100%; }
-    .section--explainer .section-graphic--pill { top: 1.25rem; right: 1.25rem; }
-    .section-graphic--hero { width: 48px; height: 48px; top: 1.5rem; right: 1.5rem; }
-    .section-graphic--hero svg { color: var(--accent); stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; fill: none; opacity: 0.7; }
+    /* Span helpers */
+    .span-4 { grid-column: span 4; }
+    .span-6 { grid-column: span 6; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+    @media (max-width: 900px) { .span-4, .span-6, .span-8 { grid-column: span 12; } }
 
-    /* MEGA NUMBERS - key advocacy figures (pharma-style emphasis) */
-    .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 1.5rem 0; }
-    @media (min-width: 640px) { .hero-stats { grid-template-columns: repeat(4, 1fr); } }
-    .hero-stat { text-align: center; padding: 1.75rem 1.25rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.65); border: 1px solid rgba(255,255,255,0.85); transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
-    .hero-stat:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,0.08); }
-    @supports (backdrop-filter: blur(12px)) { .hero-stat { background: rgba(255,255,255,0.45); backdrop-filter: blur(12px); } }
-    .hero-stat .num { display: block; font-size: 3rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.4rem; text-shadow: 0 0 0 currentColor; filter: drop-shadow(0 2px 4px rgba(245,158,11,0.15)); }
-    @media (min-width: 640px) { .hero-stat .num { font-size: 4rem; } }
-    .hero-stat .num.primary { color: var(--primary); filter: drop-shadow(0 2px 4px rgba(0,114,188,0.15)); }
-    .hero-stat .label { font-size: 0.85rem; font-weight: 500; color: var(--muted); line-height: 1.3; }
+    /* HAP Position — hero card with glow */
+    .card-hap { border-color: rgba(251,191,36,0.25); box-shadow: 0 0 0 1px rgba(251,191,36,0.1), 0 8px 32px rgba(0,0,0,0.15); }
+    .card-hap:hover { box-shadow: 0 0 0 1px rgba(251,191,36,0.2), 0 0 60px var(--accent-glow), 0 12px 40px rgba(0,0,0,0.2); }
+    .hap-ask { margin-top: 1rem; padding: 1.25rem 1.5rem; border-radius: var(--radius-sm); background: rgba(251,191,36,0.08); border-left: 3px solid var(--accent); font-size: 0.95rem; font-weight: 500; color: var(--text); }
+    .hap-ask strong { color: var(--accent); }
 
-    /* Big number callouts — stronger emphasis */
-    .big-num { font-size: 4rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; display: block; margin: 0.5rem 0; filter: drop-shadow(0 2px 6px rgba(245,158,11,0.2)); }
-    @media (min-width: 640px) { .big-num { font-size: 5rem; } }
-    .big-num + .big-num-label { font-size: 1rem; color: var(--muted); margin-top: 0.25rem; }
-    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
-    .stat-tile { padding: 1.5rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.75); text-align: center; transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease); }
-    .stat-tile:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(0,0,0,0.06); }
-    @supports (backdrop-filter: blur(10px)) { .stat-tile { background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); } }
-    .stat-tile .val { font-size: 2.5rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; filter: drop-shadow(0 2px 4px rgba(245,158,11,0.12)); }
-    .stat-tile .val.blue { color: var(--primary); filter: drop-shadow(0 2px 4px rgba(0,114,188,0.12)); }
-    .stat-tile .lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.35rem; }
+    /* Stat blocks in cards */
+    .stat-block { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 1rem; margin-top: 1rem; }
+    .stat { text-align: center; padding: 1rem; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); }
+    .stat-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.25rem; }
+    .stat-value { font-family: "JetBrains Mono", monospace; font-size: 1.75rem; font-weight: 700; color: var(--accent); }
+    .stat-value.blue { color: var(--primary); }
+    .stat-desc { font-size: 0.75rem; color: var(--text-soft); margin-top: 0.25rem; line-height: 1.3; }
+    .big-stat { padding: 1.25rem; border-radius: var(--radius-sm); background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.15); margin-top: 1rem; }
+    .big-stat-label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.25rem; }
+    .big-stat-value { font-family: "JetBrains Mono", monospace; font-size: 2.75rem; font-weight: 700; color: var(--accent); letter-spacing: -0.03em; text-shadow: 0 0 30px var(--accent-glow); }
+    .big-stat-desc { font-size: 0.85rem; color: var(--text-soft); margin-top: 0.35rem; }
 
-    /* Key message - advocacy CTA */
-    .key-msg { padding: 1.5rem 1.75rem; border-radius: var(--radius-sm); background: var(--accent-glass); border-left: 4px solid var(--accent); margin: 1rem 0; font-size: 1.05rem; font-weight: 500; color: var(--text); box-shadow: 0 2px 12px rgba(245,158,11,0.08); }
-    .key-msg strong { color: var(--accent-strong); }
-
-    /* Map section — slower, smoother domino */
-    .map-wrap { margin: 1.5rem 0; padding: 1.5rem; border-radius: var(--radius); background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); overflow: visible; opacity: 0; transform: translateY(8px); transition: opacity 0.8s var(--ease-smooth), transform 0.6s var(--ease-smooth); }
-    @supports (backdrop-filter: blur(16px)) { .map-wrap { background: rgba(255,255,255,0.45); backdrop-filter: blur(16px); } }
+    /* Map card */
+    .map-wrap { margin: 0; padding: 0; border-radius: var(--radius-sm); overflow: hidden; opacity: 0; transform: translateY(6px); transition: opacity 0.6s var(--ease-smooth), transform 0.5s var(--ease-smooth); }
     .map-wrap.visible { opacity: 1; transform: none; }
-    .pa-dashboard .us-map-wrap svg { width: 100%; height: auto; display: block; }
-    .pa-dashboard .us-map-wrap .state { fill: #cbd5e1; stroke: #fff; stroke-width: 1; cursor: pointer; transition: fill 0.25s var(--ease); }
-    .pa-dashboard .us-map-wrap .state.protection { fill: var(--primary); }
-    .pa-dashboard .us-map-wrap .state.protection:hover { fill: var(--primary-deep); }
-    .pa-dashboard .us-map-wrap .state.no-protection:hover { fill: #94a3b8; }
-    .pa-dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-16px); }
-    .pa-dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.85s var(--ease-smooth) forwards; }
+    .dashboard .us-map-wrap svg { width: 100%; height: auto; display: block; }
+    .dashboard .us-map-wrap .state { fill: rgba(148,163,184,0.4); stroke: rgba(255,255,255,0.15); stroke-width: 0.8; cursor: pointer; transition: fill 0.2s; }
+    .dashboard .us-map-wrap .state.protection { fill: var(--primary); }
+    .dashboard .us-map-wrap .state.protection:hover { fill: #7dd3fc; }
+    .dashboard .us-map-wrap .state.no-protection:hover { fill: #64748b; }
+    .dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-12px); }
+    .dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.75s var(--ease-smooth) forwards; }
     @keyframes dominoIn { to { opacity: 1; transform: translateX(0); } }
-    @media (prefers-reduced-motion: reduce) { .pa-dashboard .us-map-wrap .state.state-domino { opacity: 1; transform: none; animation: none; } }
-    .map-container { display: grid; gap: 1rem; margin: 1rem 0; }
-    @media (min-width: 640px) { .map-container { grid-template-columns: 1fr 260px; } }
-    .map-legend { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 1rem; font-size: 0.9rem; color: var(--muted); }
-    .map-legend-item { display: flex; align-items: center; gap: 0.5rem; }
-    .map-legend-swatch { width: 1rem; height: 1rem; border-radius: 6px; }
+    @media (prefers-reduced-motion: reduce) { .dashboard .us-map-wrap .state.state-domino { opacity: 1; transform: none; animation: none; } }
+    .map-container { display: grid; gap: 1rem; }
+    @media (min-width: 700px) { .map-container { grid-template-columns: 1fr 220px; } }
+    .map-legend { display: flex; flex-wrap: wrap; gap: 1rem; justify-content: center; padding: 0.75rem 0; font-size: 0.8rem; color: var(--text-soft); }
+    .map-legend-item { display: flex; align-items: center; gap: 0.4rem; }
+    .map-legend-swatch { width: 10px; height: 10px; border-radius: 4px; }
     .map-legend-swatch.protection { background: var(--primary); }
-    .map-legend-swatch.no-protection { background: #cbd5e1; }
-    .state-detail-panel { padding: 1rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); min-height: 5rem; }
-    .state-detail-panel:not(.empty) { border-color: rgba(0,114,188,0.2); }
-    .state-detail-panel.empty { color: var(--muted); font-size: 0.9rem; text-align: center; display: flex; align-items: center; justify-content: center; }
-    .state-detail-panel h4 { margin: 0 0 0.5rem; color: var(--primary); font-size: 1.1rem; }
-    .state-detail-panel .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; margin-right: 0.3rem; margin-bottom: 0.3rem; }
-    .state-detail-panel .badge.yes { background: rgba(0,114,188,0.15); color: var(--primary); }
-    .state-detail-panel .badge.no { background: #f1f5f9; color: var(--muted); }
+    .map-legend-swatch.no-protection { background: rgba(148,163,184,0.5); }
+    .state-detail-panel { padding: 1rem; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); min-height: 4rem; font-size: 0.85rem; }
+    .state-detail-panel:not(.empty) { border-color: rgba(56,189,248,0.25); }
+    .state-detail-panel.empty { color: var(--muted); text-align: center; display: flex; align-items: center; justify-content: center; }
+    .state-detail-panel h4 { margin: 0 0 0.4rem; color: var(--primary); font-size: 1rem; }
+    .state-detail-panel .badge { display: inline-block; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.65rem; font-weight: 600; margin-right: 0.25rem; margin-bottom: 0.2rem; }
+    .state-detail-panel .badge.yes { background: rgba(56,189,248,0.2); color: var(--primary); }
+    .state-detail-panel .badge.no { background: var(--surface); color: var(--muted); }
 
     /* State lists */
-    .state-lists-wrap { margin-top: 1.5rem; }
-    .state-list-block { padding: 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1rem; }
-    .state-list-block.protection { background: rgba(0,114,188,0.08); border: 1px solid rgba(0,114,188,0.15); }
-    .state-list-block.no-protection { background: rgba(203,213,225,0.3); border: 1px solid rgba(148,163,184,0.3); }
-    .state-list-block h3 { font-size: 0.95rem; margin: 0 0 0.75rem; }
+    .state-lists-wrap { display: grid; gap: 1rem; margin-top: 1rem; }
+    @media (min-width: 500px) { .state-lists-wrap { grid-template-columns: 1fr 1fr; } }
+    .state-list-block { padding: 1rem; border-radius: var(--radius-sm); }
+    .state-list-block.protection { background: rgba(56,189,248,0.06); border: 1px solid rgba(56,189,248,0.15); }
+    .state-list-block.no-protection { background: var(--surface); border: 1px solid var(--border); }
+    .state-list-block h3 { font-size: 0.8rem; margin: 0 0 0.5rem; font-weight: 600; }
     .state-list-block.protection h3 { color: var(--primary); }
     .state-list-block.no-protection h3 { color: var(--muted); }
-    .state-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); gap: 0.25rem 0.75rem; font-size: 0.75rem; }
-    .state-chip { padding: 0.2rem 0.4rem; border-radius: 6px; cursor: help; transition: background 0.2s; }
-    .state-list-block.protection .state-chip { color: var(--primary-deep); }
-    .state-list-block.protection .state-chip:hover { background: rgba(0,114,188,0.15); }
-    .state-list-block.no-protection .state-chip:hover { background: rgba(148,163,184,0.2); }
+    .state-list-grid { display: flex; flex-wrap: wrap; gap: 0.25rem 0.5rem; font-size: 0.7rem; }
+    .state-chip { padding: 0.2rem 0.4rem; border-radius: 4px; cursor: help; transition: background 0.2s; color: var(--text-soft); }
+    .state-list-block.protection .state-chip { color: var(--primary); }
+    .state-list-block.protection .state-chip:hover { background: rgba(56,189,248,0.15); }
+    .state-list-block.no-protection .state-chip:hover { background: var(--surface-hover); }
 
-    .map-tooltip { position: fixed; z-index: 99999; padding: 0.5rem 0.9rem; background: var(--text); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 10px; pointer-events: none; opacity: 0; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: opacity 0.12s; transform: translate(-50%, 0); }
-    .state-list-tooltip { position: fixed; z-index: 99999; padding: 0.5rem 0.9rem; background: var(--text); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 10px; pointer-events: none; opacity: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: opacity 0.12s; }
-    .map-tooltip.visible, .state-list-tooltip.visible { opacity: 1; }
-    .state-list-tooltip { max-width: 260px; white-space: normal; transform: translate(-50%, -100%); }
-    .state-list-tooltip .badge { padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.65rem; margin: 0.1rem 0.2rem 0.1rem 0; }
+    .map-tooltip { position: fixed; z-index: 99999; padding: 0.5rem 0.75rem; background: var(--bg-elevated); color: var(--text); font-size: 0.8rem; font-weight: 600; border-radius: 8px; border: 1px solid var(--border); pointer-events: none; opacity: 0; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transition: opacity 0.12s; }
+    .map-tooltip.visible { opacity: 1; }
+    .state-list-tooltip { position: fixed; z-index: 99999; padding: 0.5rem 0.75rem; background: var(--bg-elevated); color: var(--text); font-size: 0.8rem; font-weight: 600; border-radius: 8px; border: 1px solid var(--border); pointer-events: none; opacity: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.4); transition: opacity 0.12s; max-width: 240px; white-space: normal; }
+    .state-list-tooltip.visible { opacity: 1; }
+    .state-list-tooltip .badge { padding: 0.1rem 0.3rem; border-radius: 4px; font-size: 0.6rem; margin: 0.1rem 0.2rem 0.1rem 0; }
 
     /* Trends */
-    .trends-grid { display: grid; gap: 1rem; margin-top: 1rem; }
-    @media (min-width: 600px) { .trends-grid { grid-template-columns: repeat(3, 1fr); } }
-    .trends-card { padding: 1.25rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.8); display: flex; gap: 1rem; align-items: flex-start; }
-    @supports (backdrop-filter: blur(12px)) { .trends-card { background: rgba(255,255,255,0.4); backdrop-filter: blur(12px); } }
-    .trends-card h4 { margin: 0 0 0.35rem; font-size: 0.95rem; color: var(--primary); }
-    .trends-card p { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
-    .trends-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(0,114,188,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .trends-icon svg { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+    .trends-grid { display: grid; gap: 0.75rem; margin-top: 1rem; }
+    @media (min-width: 500px) { .trends-grid { grid-template-columns: repeat(3, 1fr); } }
+    .trends-card { padding: 1rem; border-radius: var(--radius-sm); background: var(--surface); border: 1px solid var(--border); display: flex; gap: 0.75rem; align-items: flex-start; }
+    .trends-card h4 { margin: 0 0 0.2rem; font-size: 0.85rem; color: var(--primary); }
+    .trends-card p { margin: 0; font-size: 0.8rem; color: var(--text-soft); line-height: 1.45; }
+    .trends-icon { width: 36px; height: 36px; border-radius: 8px; background: rgba(56,189,248,0.12); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .trends-icon svg { width: 18px; height: 18px; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
 
-    /* Reveal animation — smooth scroll-into-view */
-    .section.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.7s var(--ease-smooth), transform 0.6s var(--ease-smooth); }
-    .section.reveal.visible { opacity: 1; transform: none; }
-    @media (prefers-reduced-motion: reduce) { .section.reveal { opacity: 1; transform: none; } }
+    .sources { font-size: 0.7rem; color: var(--muted); margin-top: 1rem; }
 
-    footer { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.9rem; border-top: 1px solid rgba(0,0,0,0.06); }
-    .back-link { display: inline-block; padding: 0.6rem 1.25rem; background: var(--primary); color: white !important; font-weight: 600; border-radius: 999px; transition: background 0.25s, transform 0.2s; }
-    .back-link:hover { background: var(--primary-deep); transform: translateY(-2px); text-decoration: none !important; }
-    .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 100; padding: 0.5rem 1rem; background: var(--primary); color: white; font-size: 0.85rem; font-weight: 600; border-radius: 10px; }
-    .skip-link:focus { top: 1rem; }
+    footer { padding: 1.5rem; text-align: center; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--border); position: relative; z-index: 1; }
+    .back-link { display: inline-block; padding: 0.5rem 1.25rem; background: var(--primary); color: #0c1222 !important; font-weight: 600; border-radius: 999px; transition: background 0.2s, transform 0.2s; }
+    .back-link:hover { background: #7dd3fc; transform: translateY(-1px); text-decoration: none !important; }
+    .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 101; padding: 0.5rem 1rem; background: var(--primary); color: var(--bg); font-size: 0.8rem; font-weight: 600; border-radius: 8px; }
+    .skip-link:focus { top: 0.5rem; }
 
     .count-up { font-variant-numeric: tabular-nums; }
-    .sources { font-size: 0.8rem; color: var(--muted); margin-top: 1.5rem; }
 
     @media (max-width: 768px) {
-      .pa-dashboard-header h1 { font-size: 1.25rem; }
-      .pa-dashboard [id] { scroll-margin-top: 4rem; }
+      .dashboard-header { padding: 0.75rem 1rem; }
+      .dashboard-header h1 { font-size: 1.1rem; }
+      .kpi-value { font-size: 2rem; }
+      .big-stat-value { font-size: 2rem; }
       main { padding: 1rem; }
-      .section { padding: 1.25rem; margin-bottom: 1.5rem; }
-      .section-graphic { width: 40px; height: 40px; top: 1rem; right: 1rem; opacity: 0.4; }
-      .section-graphic--pill { width: 44px; height: 22px; }
-      .hero-stat .num { font-size: 2.75rem; }
-      .big-num { font-size: 3rem; }
-      .stat-tile .val { font-size: 2rem; }
-      .section h2 { font-size: 1.25rem; }
     }
   </style>
 </head>
 <body>
-<div class="pa-dashboard">
+<div class="dashboard">
 <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
 <div id="state-list-tooltip" class="state-list-tooltip" aria-hidden="true"></div>
 <a href="#main-content" class="skip-link">Skip to main content</a>
-<header class="pa-dashboard-header">
-  <p class="report-by">Hospital &amp; Healthsystem Association of Pennsylvania</p>
-  <h1>340B Drug Pricing Program</h1>
-  <p class="tagline">Why it matters · What you can do</p>
-  <nav>
-    <a href="#what-is-340b">What is 340B?</a>
-    <a href="static.html">PA Hospitals Dashboard</a>
+<header class="dashboard-header">
+  <div class="header-left">
+    <p class="report-by">Hospital &amp; Healthsystem Association of Pennsylvania</p>
+    <h1>340B Drug Pricing Program</h1>
+    <span class="badge-live">BRIEFING</span>
+  </div>
+  <nav class="dashboard-nav" aria-label="Dashboard sections">
+    <a href="#what-is-340b" class="active">Overview</a>
+    <a href="#overview">HAP Position</a>
     <a href="#state-laws">State Map</a>
+    <a href="#policy">Policy</a>
+    <a href="static.html">PA Dashboard</a>
   </nav>
 </header>
 
+<!-- KPI Strip -->
+<section class="kpi-strip" aria-label="Key metrics">
+  <div class="kpi-card">
+    <p class="kpi-label">U.S. Drug Market</p>
+    <p class="kpi-value count-up" data-count-up="7" data-suffix="%">0</p>
+    <p class="kpi-desc">340B share of total U.S. drug purchases</p>
+  </div>
+  <div class="kpi-card">
+    <p class="kpi-label">Community Benefit</p>
+    <p class="kpi-value count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">0</p>
+    <p class="kpi-desc">Total benefits from 340B hospitals (2024)</p>
+  </div>
+  <div class="kpi-card">
+    <p class="kpi-label">Oversight</p>
+    <p class="kpi-value primary count-up" data-count-up="200" data-suffix="+">0</p>
+    <p class="kpi-desc">Hospitals audited by HRSA in 2024</p>
+  </div>
+  <div class="kpi-card">
+    <p class="kpi-label">Pennsylvania</p>
+    <p class="kpi-value primary">72</p>
+    <p class="kpi-desc">PA hospitals participating in 340B</p>
+  </div>
+</section>
+
 <main id="main-content">
+  <div class="dashboard-grid">
 
-  <section id="what-is-340b" class="section section--explainer reveal">
-    <div class="section-graphic section-graphic--pill" aria-hidden="true">
-      <svg viewBox="0 0 48 24" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="4" width="20" height="16" rx="8" fill="#0072bc" opacity="0.2"/><rect x="26" y="4" width="20" height="16" rx="8" fill="#f59e0b" opacity="0.2"/><rect x="2" y="4" width="20" height="16" rx="8" stroke="#0072bc" stroke-width="1.5" fill="none"/><rect x="26" y="4" width="20" height="16" rx="8" stroke="#f59e0b" stroke-width="1.5" fill="none"/></svg>
-    </div>
-    <p class="section-label">Overview</p>
-    <h2>What is 340B?</h2>
-    <p>The 340B drug pricing program requires pharmaceutical manufacturers that participate in Medicaid to sell outpatient drugs at a discounted rate to eligible health care providers. The program operates at <strong>no cost to taxpayers</strong> and helps providers stretch limited resources to serve vulnerable populations.</p>
-    <div class="stat-row">
-      <div class="stat-tile">
-        <span class="val count-up" data-count-up="7" data-suffix="%">0</span>
-        <span class="lbl">Of total U.S. drug market — 340B purchases</span>
-      </div>
-    </div>
-  </section>
-
-  <section id="overview" class="section section--hero accent-border reveal">
-    <div class="section-graphic section-graphic--hero" aria-hidden="true">
-      <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" fill="none"/></svg>
-    </div>
-    <p class="section-label">HAP position</p>
-    <h2>Protect 340B and contract pharmacy access.</h2>
-    <p>HAP supports policies that protect the integrity of the 340B program and preserve hospitals' ability to use contract pharmacies to ensure patient access to medications.</p>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <span class="num count-up" data-count-up="7" data-suffix="%">0</span>
-        <span class="label">Of U.S. drug market (340B)</span>
-      </div>
-      <div class="hero-stat">
-        <span class="num count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">0</span>
-        <span class="label">Community benefits (2024)</span>
-      </div>
-      <div class="hero-stat">
-        <span class="num primary count-up" data-count-up="200" data-suffix="+">0</span>
-        <span class="label">Hospitals audited (2024)</span>
-      </div>
-      <div class="hero-stat">
-        <span class="num primary">72</span>
-        <span class="label">PA hospitals in 340B</span>
-      </div>
-    </div>
-    <div class="key-msg">
-      <strong>HAP asks lawmakers:</strong> Protect 340B integrity. Preserve contract pharmacy access for patient medications.
-    </div>
-  </section>
-
-  <section id="state-laws" class="section section--map reveal">
-    <p class="section-label">See where your state stands</p>
-    <h2>State-by-state: contract pharmacy protection</h2>
-    <p>Hover for state name · Click for details. <strong>Pennsylvania is working toward protection.</strong></p>
-    <div class="map-container">
-      <div class="us-map-wrap map-wrap" id="us-map-wrap">
-        <div id="us-map" aria-label="US map: states with and without 340B contract pharmacy protection"></div>
-        <div class="map-legend">
-          <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Has protection law</span>
-          <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No law yet</span>
+    <!-- What is 340B -->
+    <article id="what-is-340b" class="card span-4">
+      <p class="card-title">Overview</p>
+      <h2>What is 340B?</h2>
+      <p>The 340B program requires pharmaceutical manufacturers that participate in Medicaid to sell outpatient drugs at a discounted rate to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and helps providers serve vulnerable populations.</p>
+      <div class="stat-block">
+        <div class="stat">
+          <p class="stat-label">Market share</p>
+          <p class="stat-value count-up" data-count-up="7" data-suffix="%">0</p>
+          <p class="stat-desc">340B purchases</p>
         </div>
       </div>
-      <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite"><p>Select a state</p></div>
-    </div>
-    <div class="state-lists-wrap">
-      <div class="state-list-block protection">
-        <h3>States with protection (21)</h3>
-        <div class="state-list-grid" id="states-with-list">
-          <span class="state-chip" data-state="AR">Arkansas</span><span class="state-chip" data-state="CO">Colorado</span><span class="state-chip" data-state="HI">Hawaii</span><span class="state-chip" data-state="KS">Kansas</span><span class="state-chip" data-state="LA">Louisiana</span><span class="state-chip" data-state="ME">Maine</span><span class="state-chip" data-state="MD">Maryland</span><span class="state-chip" data-state="MN">Minnesota</span><span class="state-chip" data-state="MS">Mississippi</span><span class="state-chip" data-state="MO">Missouri</span><span class="state-chip" data-state="NE">Nebraska</span><span class="state-chip" data-state="NM">New Mexico</span><span class="state-chip" data-state="ND">North Dakota</span><span class="state-chip" data-state="OK">Oklahoma</span><span class="state-chip" data-state="OR">Oregon</span><span class="state-chip" data-state="RI">Rhode Island</span><span class="state-chip" data-state="SD">South Dakota</span><span class="state-chip" data-state="TN">Tennessee</span><span class="state-chip" data-state="UT">Utah</span><span class="state-chip" data-state="VT">Vermont</span><span class="state-chip" data-state="WV">West Virginia</span>
+    </article>
+
+    <!-- HAP Position — prominent -->
+    <article id="overview" class="card card-hap span-8">
+      <p class="card-title">HAP Position</p>
+      <h2>Protect 340B integrity and contract pharmacy access.</h2>
+      <p>HAP supports policies that protect the integrity of the 340B program and preserve hospitals' ability to use contract pharmacies to ensure patient access to medications.</p>
+      <div class="hap-ask">
+        <strong>HAP asks lawmakers:</strong> Protect 340B integrity. Preserve contract pharmacy access for patient medications.
+      </div>
+    </article>
+
+    <!-- Map -->
+    <article id="state-laws" class="card span-8">
+      <p class="card-title">State-by-state</p>
+      <h2>Contract pharmacy protection</h2>
+      <p>Click a state for details. <strong>Pennsylvania is working toward protection.</strong></p>
+      <div class="map-container">
+        <div class="us-map-wrap map-wrap" id="us-map-wrap">
+          <div id="us-map" aria-label="US map: states with and without 340B contract pharmacy protection"></div>
+          <div class="map-legend">
+            <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Has protection</span>
+            <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No law yet</span>
+          </div>
+        </div>
+        <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite"><p>Select a state</p></div>
+      </div>
+      <div class="state-lists-wrap">
+        <div class="state-list-block protection">
+          <h3>With protection (21)</h3>
+          <div class="state-list-grid" id="states-with-list">
+            <span class="state-chip" data-state="AR">AR</span><span class="state-chip" data-state="CO">CO</span><span class="state-chip" data-state="HI">HI</span><span class="state-chip" data-state="KS">KS</span><span class="state-chip" data-state="LA">LA</span><span class="state-chip" data-state="ME">ME</span><span class="state-chip" data-state="MD">MD</span><span class="state-chip" data-state="MN">MN</span><span class="state-chip" data-state="MS">MS</span><span class="state-chip" data-state="MO">MO</span><span class="state-chip" data-state="NE">NE</span><span class="state-chip" data-state="NM">NM</span><span class="state-chip" data-state="ND">ND</span><span class="state-chip" data-state="OK">OK</span><span class="state-chip" data-state="OR">OR</span><span class="state-chip" data-state="RI">RI</span><span class="state-chip" data-state="SD">SD</span><span class="state-chip" data-state="TN">TN</span><span class="state-chip" data-state="UT">UT</span><span class="state-chip" data-state="VT">VT</span><span class="state-chip" data-state="WV">WV</span>
+          </div>
+        </div>
+        <div class="state-list-block no-protection">
+          <h3>No law yet (28)</h3>
+          <div class="state-list-grid" id="states-without-list">
+            <span class="state-chip" data-state="AL">AL</span><span class="state-chip" data-state="AK">AK</span><span class="state-chip" data-state="AZ">AZ</span><span class="state-chip" data-state="CA">CA</span><span class="state-chip" data-state="DE">DE</span><span class="state-chip" data-state="FL">FL</span><span class="state-chip" data-state="GA">GA</span><span class="state-chip" data-state="ID">ID</span><span class="state-chip" data-state="IL">IL</span><span class="state-chip" data-state="IN">IN</span><span class="state-chip" data-state="IA">IA</span><span class="state-chip" data-state="KY">KY</span><span class="state-chip" data-state="MA">MA</span><span class="state-chip" data-state="MI">MI</span><span class="state-chip" data-state="MT">MT</span><span class="state-chip" data-state="NV">NV</span><span class="state-chip" data-state="NH">NH</span><span class="state-chip" data-state="NJ">NJ</span><span class="state-chip" data-state="NY">NY</span><span class="state-chip" data-state="NC">NC</span><span class="state-chip" data-state="OH">OH</span><span class="state-chip" data-state="PA">PA</span><span class="state-chip" data-state="SC">SC</span><span class="state-chip" data-state="TX">TX</span><span class="state-chip" data-state="VA">VA</span><span class="state-chip" data-state="WA">WA</span><span class="state-chip" data-state="WI">WI</span><span class="state-chip" data-state="WY">WY</span>
+          </div>
         </div>
       </div>
-      <div class="state-list-block no-protection">
-        <h3>No law yet (28)</h3>
-        <div class="state-list-grid" id="states-without-list">
-          <span class="state-chip" data-state="AL">Alabama</span><span class="state-chip" data-state="AK">Alaska</span><span class="state-chip" data-state="AZ">Arizona</span><span class="state-chip" data-state="CA">California</span><span class="state-chip" data-state="DE">Delaware</span><span class="state-chip" data-state="FL">Florida</span><span class="state-chip" data-state="GA">Georgia</span><span class="state-chip" data-state="ID">Idaho</span><span class="state-chip" data-state="IL">Illinois</span><span class="state-chip" data-state="IN">Indiana</span><span class="state-chip" data-state="IA">Iowa</span><span class="state-chip" data-state="KY">Kentucky</span><span class="state-chip" data-state="MA">Massachusetts</span><span class="state-chip" data-state="MI">Michigan</span><span class="state-chip" data-state="MT">Montana</span><span class="state-chip" data-state="NV">Nevada</span><span class="state-chip" data-state="NH">New Hampshire</span><span class="state-chip" data-state="NJ">New Jersey</span><span class="state-chip" data-state="NY">New York</span><span class="state-chip" data-state="NC">North Carolina</span><span class="state-chip" data-state="OH">Ohio</span><span class="state-chip" data-state="PA">Pennsylvania</span><span class="state-chip" data-state="SC">South Carolina</span><span class="state-chip" data-state="TX">Texas</span><span class="state-chip" data-state="VA">Virginia</span><span class="state-chip" data-state="WA">Washington</span><span class="state-chip" data-state="WI">Wisconsin</span><span class="state-chip" data-state="WY">Wyoming</span>
+      <h3 style="font-size:0.85rem;margin-top:1rem;">Legal trends</h3>
+      <div class="trends-grid">
+        <div class="trends-card">
+          <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
+          <div><h4>Courts</h4><p>States (AR, LA, MO, MN, TN, RI) prevailed when manufacturers challenged laws.</p></div>
+        </div>
+        <div class="trends-card">
+          <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
+          <div><h4>2025 hybrid</h4><p>CO, ME, OH, RI, VT combined pharmacy protections with reporting.</p></div>
+        </div>
+        <div class="trends-card">
+          <span class="trends-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
+          <div><h4>Vetoes</h4><p>Some governors vetoed 340B protection (e.g., Virginia).</p></div>
         </div>
       </div>
-    </div>
-    <h3 style="margin-top:1.5rem;font-size:1rem;">Legal trends</h3>
-    <div class="trends-grid">
-      <div class="trends-card">
-        <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M5 21h14"/><path d="M8 13l4-8 4 8"/><path d="M4 13h4"/><path d="M16 13h4"/></svg></span>
-        <div><h4>Courts</h4><p>Courts sided with states (AR, LA, MO, MN, TN, RI) when drug makers challenged laws.</p></div>
-      </div>
-      <div class="trends-card">
-        <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
-        <div><h4>2025 hybrid bills</h4><p>CO, ME, OH, RI, VT combined pharmacy protections with reporting.</p></div>
-      </div>
-      <div class="trends-card">
-        <span class="trends-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
-        <div><h4>Vetoes</h4><p>Some governors vetoed 340B protection (e.g., Virginia).</p></div>
-      </div>
-    </div>
-    <p class="sources">State law data: MultiState, ASHP, America's Essential Hospitals</p>
-  </section>
+      <p class="sources">State law data: MultiState, ASHP, America's Essential Hospitals</p>
+    </article>
 
-  <section id="eligibility" class="section section--alt reveal">
-    <p class="section-label">Eligibility</p>
-    <h2>Who 340B supports</h2>
-    <p>The 340B program supports rural and urban health care providers, including:</p>
-    <ul>
-      <li>Children's and cancer hospitals</li>
-      <li>Critical Access Hospitals (CAHs) and Disproportionate Share Hospitals (DSHs)</li>
-      <li>Federally Qualified Health Centers (FQHCs)</li>
-    </ul>
-  </section>
+    <!-- Eligibility -->
+    <article id="eligibility" class="card span-4">
+      <p class="card-title">Eligibility</p>
+      <h2>Who 340B supports</h2>
+      <p>Rural and urban providers, including:</p>
+      <ul>
+        <li>Children's and cancer hospitals</li>
+        <li>Critical Access Hospitals (CAHs) and DSHs</li>
+        <li>Federally Qualified Health Centers (FQHCs)</li>
+      </ul>
+    </article>
 
-  <section id="oversight" class="section section--accent reveal accent-border">
-    <p class="section-label">Oversight</p>
-    <h2>HRSA audits hospitals far more than manufacturers</h2>
-    <p>The Health Resources and Services Administration (HRSA) has authority to audit both drug manufacturers and covered entities and to impose penalties for noncompliance. In 2024:</p>
-    <div class="stat-row">
-      <div class="stat-tile">
-        <span class="val count-up" data-count-up="200" data-suffix="+">0</span>
-        <span class="lbl">Hospitals audited for compliance</span>
+    <!-- Policy section anchor -->
+    <div id="policy" class="span-12" style="height:0;margin:0;padding:0;"></div>
+
+    <!-- Oversight -->
+    <article id="oversight" class="card span-4">
+      <p class="card-title">Oversight</p>
+      <h2>HRSA audits</h2>
+      <p>HRSA audits both manufacturers and covered entities. In 2024:</p>
+      <div class="stat-block">
+        <div class="stat">
+          <p class="stat-label">Hospitals audited</p>
+          <p class="stat-value count-up" data-count-up="200" data-suffix="+">0</p>
+          <p class="stat-desc">Compliance audits</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Manufacturers</p>
+          <p class="stat-value count-up" data-count-up="6" data-suffix="%">0</p>
+          <p class="stat-desc">Audited (same period)</p>
+        </div>
       </div>
-      <div class="stat-tile">
-        <span class="val count-up" data-count-up="6" data-suffix="%">0</span>
-        <span class="lbl">Of pharmaceutical manufacturers audited (same period)</span>
+      <p style="margin-top:0.75rem;">HAP supports <strong>parity in oversight</strong> so manufacturers are held to the same accountability as providers.</p>
+    </article>
+
+    <!-- PA Impact -->
+    <article id="pa-impact" class="card span-4">
+      <p class="card-title">Pennsylvania</p>
+      <h2>340B in your state</h2>
+      <p><strong>72 hospitals (30%)</strong> participate. Of participating hospitals:</p>
+      <div class="stat-block">
+        <div class="stat">
+          <p class="stat-label">Rural</p>
+          <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+          <p class="stat-desc">Rural providers</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">Margin</p>
+          <p class="stat-value count-up" data-count-up="53" data-suffix="%">0</p>
+          <p class="stat-desc">Negative margin</p>
+        </div>
+        <div class="stat">
+          <p class="stat-label">L&amp;D</p>
+          <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+          <p class="stat-desc">Labor &amp; delivery</p>
+        </div>
       </div>
-    </div>
-    <p>HAP supports <strong>parity in oversight</strong> so manufacturers are held to the same accountability as providers.</p>
-  </section>
+    </article>
 
-  <section id="pa-impact" class="section section--alt reveal">
-    <p class="section-label">Pennsylvania impact</p>
-    <h2>340B in your state</h2>
-    <p>In Pennsylvania, <strong>72 hospitals (30%)</strong> participate in the 340B program. Of the participating hospitals:</p>
-    <div class="stat-row">
-      <div class="stat-tile">
-        <span class="val count-up" data-count-up="49" data-suffix="%">0</span>
-        <span class="lbl">Are rural providers</span>
+    <!-- Community benefit -->
+    <article id="community-benefit" class="card span-4">
+      <p class="card-title">Community benefit</p>
+      <h2>Reinvesting savings</h2>
+      <ul style="margin-top:0.5rem;">
+        <li><strong>23%</strong> average savings on pharma purchases</li>
+        <li>Free or reduced-price prescriptions</li>
+        <li>Mobile mammography, cancer screening, dental care</li>
+      </ul>
+      <div class="big-stat">
+        <p class="big-stat-label">Total community benefits (2024)</p>
+        <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">0</span>B</p>
+        <p class="big-stat-desc">9% increase over 2023</p>
       </div>
-      <div class="stat-tile">
-        <span class="val count-up" data-count-up="53" data-suffix="%">0</span>
-        <span class="lbl">Operate with a negative margin</span>
-      </div>
-      <div class="stat-tile">
-        <span class="val count-up" data-count-up="49" data-suffix="%">0</span>
-        <span class="lbl">Provide labor and delivery services</span>
-      </div>
-    </div>
-  </section>
+    </article>
 
-  <section id="community-benefit" class="section section--accent reveal accent-border">
-    <p class="section-label">Community benefit</p>
-    <h2>How 340B hospitals reinvest savings</h2>
-    <p>340B hospitals reinvest savings to expand access to care:</p>
-    <ul>
-      <li><strong>23%</strong> average savings on pharmaceutical purchases</li>
-      <li>Free or reduced-price prescriptions to patients</li>
-      <li>Investments in services such as mobile mammography, cancer screening, and dental care</li>
-    </ul>
-    <div class="stat-tile" style="margin-top:1rem;text-align:left;padding:1.5rem;">
-      <span class="big-num">$<span class="count-up" data-count-up="7.95" data-decimals="2">0</span>B</span>
-      <span class="big-num-label">Total benefits to communities from 340B hospitals in 2024 — <strong>9% increase</strong> over 2023</span>
-    </div>
-  </section>
+    <!-- Access -->
+    <article id="access" class="card span-6">
+      <p class="card-title">Access to care</p>
+      <h2>Contract pharmacy at risk</h2>
+      <p>Federal guidance allows 340B dispensing via in-house or contract pharmacies. Manufacturers have imposed policies that <strong>limit hospitals to one contract pharmacy</strong>. Rural and underserved hospitals rely on contract and specialty pharmacies for high-cost specialty drugs.</p>
+    </article>
 
-  <section id="access" class="section section--alt reveal accent-border">
-    <p class="section-label">Access to care</p>
-    <h2>Contract pharmacy access is at risk</h2>
-    <p>Federal guidance allows covered entities to dispense 340B drugs through in-house or contract pharmacies. However, manufacturers have imposed policies that <strong>limit hospitals to one contract pharmacy</strong>.</p>
-    <p>Rural and underserved hospitals rely on contract and specialty pharmacies to provide patients access to high-cost specialty drugs.</p>
-  </section>
+    <!-- PA Safeguards -->
+    <article id="pa-safeguards" class="card span-6">
+      <p class="card-title">Pennsylvania safeguards</p>
+      <h2>PA prevents duplicate discounts</h2>
+      <ul>
+        <li>Manufacturers are not required to provide both 340B discount and Medicaid rebate for the same drug.</li>
+        <li>DHS administers the <strong>340B Drug Exclusion List</strong> and invoices manufacturers for Medicaid rebates; covered entities may not dispense 340B-priced drugs on this list.</li>
+        <li>Contract pharmacies dispense non-340B drugs to MA beneficiaries; DHS invoices manufacturers for rebates.</li>
+      </ul>
+    </article>
 
-  <section id="pa-safeguards" class="section section--alt reveal">
-    <p class="section-label">Pennsylvania safeguards</p>
-    <h2>PA prevents duplicate discounts</h2>
-    <ul>
-      <li>Drug manufacturers are not required to provide both a 340B discount and a Medicaid rebate for the same drug.</li>
-      <li>The Department of Human Services administers a <strong>340B Drug Exclusion List</strong> and invoices manufacturers directly for Medicaid rebates. Covered entities may not dispense 340B-priced drugs for drugs on this list.</li>
-      <li>Contract pharmacies dispense non-340B purchased drugs to all MA beneficiaries. DHS invoices manufacturers for Medicaid rebates on these drugs.</li>
-    </ul>
-  </section>
-
+  </div>
 </main>
 
 <footer>
   <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
-  <p style="margin:0.75rem 0 0;"><strong>Hospital &amp; Healthsystem Association of Pennsylvania (HAP)</strong></p>
+  <p style="margin:0.5rem 0 0;"><strong>Hospital &amp; Healthsystem Association of Pennsylvania (HAP)</strong></p>
 </footer>
 </div>
 
@@ -416,7 +429,7 @@
       var paths = g.selectAll("path").data(st.features).join("path")
         .attr("class",function(d,i){var ab=getStateAbbr(d); var b="state "+(ab&&STATES_WITH_PROTECTION.indexOf(ab)>=0?"protection":"no-protection"); return reduceMotion?b:b+" state-domino";})
         .attr("d",path).attr("data-state",function(d){return getStateAbbr(d)||"";})
-        .each(function(_,i){this.style.animationDelay=(om[i]||0)*58+"ms";});
+        .each(function(_,i){this.style.animationDelay=(om[i]||0)*55+"ms";});
       bindMap(paths);
       var wrap = document.getElementById("us-map-wrap");
       if (wrap) {
@@ -431,7 +444,7 @@
   function bindMap(paths) {
     var tt = document.getElementById("map-tooltip"), panel = document.getElementById("state-detail-panel");
     if (!tt||!panel) return;
-    function place(ev){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY+12)+"px"; }
+    function place(ev){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY+14)+"px"; }
     paths.on("mouseenter",function(ev,d){ var ab=getStateAbbr(d); tt.textContent=getStateName(ab,d); place(ev); tt.classList.add("visible"); tt.setAttribute("aria-hidden","false"); })
       .on("mousemove",place)
       .on("mouseleave",function(){ tt.classList.remove("visible"); tt.setAttribute("aria-hidden","true"); })
@@ -461,9 +474,9 @@
         var name = STATE_NAMES[ab]||ab;
         var html = "<strong>"+name+"</strong>";
         if(data){ html += " <span class='badge "+(data.cp?"yes":"no")+"'>CP: "+(data.cp?"Yes":"No")+"</span> <span class='badge "+(data.pbm?"yes":"no")+"'>PBM: "+(data.pbm?"Yes":"No")+"</span>"; if(data.y) html+="<br>Year: "+data.y; if(data.notes) html+="<br>"+data.notes; }
-        tt.innerHTML = html; tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-14)+"px"; tt.classList.add("visible");
+        tt.innerHTML = html; tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-12)+"px"; tt.classList.add("visible");
       });
-      chip.addEventListener("mousemove",function(ev){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-14)+"px"; });
+      chip.addEventListener("mousemove",function(ev){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-12)+"px"; });
       chip.addEventListener("mouseleave",function(){ tt.classList.remove("visible"); });
     });
   }
@@ -478,14 +491,30 @@
     els.forEach(function(el){ obs.observe(el); });
   }
 
-  function initReveal() {
-    if (window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.querySelectorAll(".section.reveal").forEach(function(s){ s.classList.add("visible"); });
-    else { var obs = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add("visible"); }); },{threshold:0.05}); document.querySelectorAll(".section.reveal").forEach(function(s){ obs.observe(s); }); }
+  function initNavHighlight() {
+    var navLinks = document.querySelectorAll(".dashboard-nav a[href^='#']");
+    var policySections = ["oversight","pa-impact","community-benefit","access","pa-safeguards"];
+    navLinks.forEach(function(a){
+      a.addEventListener("click", function(){ navLinks.forEach(function(l){ l.classList.remove("active"); }); a.classList.add("active"); });
+    });
+    var observer = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if(!entry.isIntersecting) return;
+        var id = entry.target.id;
+        navLinks.forEach(function(a){
+          a.classList.remove("active");
+          var href = a.getAttribute("href");
+          if(href==="#"+id) a.classList.add("active");
+          else if(href==="#policy" && policySections.indexOf(id)>=0) a.classList.add("active");
+        });
+      });
+    },{rootMargin:"-80px 0 -50% 0", threshold: 0});
+    document.querySelectorAll("#what-is-340b, #overview, #state-laws, #eligibility, #oversight, #pa-impact, #community-benefit, #access, #pa-safeguards").forEach(function(s){ observer.observe(s); });
   }
 
   var lastW=0, touch = "ontouchstart" in window || navigator.maxTouchPoints>0;
   function resize(){ if(touch) return; var c=document.getElementById("us-map"); if(!c) return; var w=c.offsetWidth; if(Math.abs(w-lastW)<40 && lastW) return; lastW=w; drawMap(); }
-  function go(){ drawMap(); var c=document.getElementById("us-map"); if(c) lastW=c.offsetWidth; initCountUp(); initReveal(); initStateListHover(); if(!touch) window.addEventListener("resize",function(){ clearTimeout(window._rt); window._rt=setTimeout(resize,300); }); }
+  function go(){ drawMap(); var c=document.getElementById("us-map"); if(c) lastW=c.offsetWidth; initCountUp(); initStateListHover(); initNavHighlight(); if(!touch) window.addEventListener("resize",function(){ clearTimeout(window._rt); window._rt=setTimeout(resize,300); }); }
   if (document.readyState==="loading") document.addEventListener("DOMContentLoaded",go);
   else go();
 })();
