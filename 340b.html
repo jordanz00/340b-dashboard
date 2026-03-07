@@ -3,226 +3,167 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>340B Drug Pricing Program | HAP</title>
-  <meta name="description" content="HAP advocates for the 340B program — protecting Pennsylvania’s safety-net hospitals and the patients they serve. 30+ years of proven results; manufacturers must not undermine it.">
+  <title>340B Drug Pricing Program | HAP Advocacy</title>
+  <meta name="description" content="Protect 340B. 30 years helping vulnerable patients. $100 billion in community benefits. Pennsylvania needs your support.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3"></script>
   <style>
     :root {
       --primary: #0072bc;
-      --primary-soft: #8ed8f8;
-      --primary-deep: #005a94;
+      --primary-soft: #e0f2fe;
+      --primary-deep: #0369a1;
       --accent: #f59e0b;
-      --accent-soft: rgba(245,158,11,0.12);
+      --accent-strong: #d97706;
+      --accent-soft: rgba(245,158,11,0.15);
+      --accent-glass: rgba(245,158,11,0.08);
       --muted: #64748b;
       --text: #0f172a;
-      --space-lg: 1.5rem;
-      --space-xl: 2rem;
-      --radius: 10px;
-      --radius-lg: 14px;
-      --glass-bg: rgba(255,255,255,0.72);
-      --glass-border: rgba(255,255,255,0.6);
-      --glass-shadow: 0 4px 24px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
-      --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+      --text-soft: #334155;
+      --glass: rgba(255,255,255,0.7);
+      --glass-border: rgba(255,255,255,0.9);
+      --glass-strong: rgba(255,255,255,0.85);
+      --radius: 16px;
+      --radius-sm: 12px;
+      --ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
-    body:has(> .pa-dashboard) { margin: 0; }
-    .pa-dashboard * { box-sizing: border-box; }
-    .pa-dashboard { font-family: "Montserrat", system-ui, -apple-system, sans-serif; background: #e6f1f9; background: linear-gradient(160deg, #dbeaf5 0%, #e8f2fa 40%, #eef6fc 100%); background-attachment: fixed; color: var(--text); line-height: 1.55; -webkit-font-smoothing: antialiased; position: relative; min-height: 100vh; margin: 0; overflow-x: hidden; }
-    .pa-dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 100% 60% at 50% -10%, rgba(142,216,248,0.28), transparent 50%), radial-gradient(ellipse 80% 50% at 100% 30%, rgba(0,114,188,0.06), transparent), radial-gradient(ellipse 60% 40% at 0% 80%, rgba(245,158,11,0.05), transparent); pointer-events: none; z-index: 0; }
-    .pa-dashboard [id] { scroll-margin-top: 5.5rem; }
-    .pa-dashboard a { color: var(--primary); text-decoration: none; transition: color 0.2s; }
-    .pa-dashboard a:hover { color: #005a94; text-decoration: underline; }
-    .pa-dashboard .pa-dashboard-header { position: sticky; top: 0; z-index: 20; background: rgba(255,255,255,0.92); border-bottom: 1px solid rgba(0,114,188,0.1); box-shadow: 0 1px 0 rgba(255,255,255,0.8), 0 4px 20px rgba(0,114,188,0.04); padding: 1rem 1.5rem 0.9rem; }
-    @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) { .pa-dashboard .pa-dashboard-header { background: rgba(255,255,255,0.65); backdrop-filter: blur(40px) saturate(180%); -webkit-backdrop-filter: blur(40px) saturate(180%); } }
-    .pa-dashboard .report-by { margin: 0 0 0.35rem; font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
-    .pa-dashboard .pa-dashboard-header h1 { margin: 0; font-family: "Montserrat", sans-serif; font-size: 1.95rem; font-weight: 800; color: var(--primary); letter-spacing: -0.02em; }
-    .pa-dashboard .tagline { margin: 0.25rem 0 0; font-size: 0.85rem; font-weight: 500; color: var(--muted); line-height: 1.4; }
-    .pa-dashboard nav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
-    .pa-dashboard nav a { padding: 0.5rem 1.1rem; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.8rem; background: #fff; border: 1px solid rgba(0,114,188,0.12); color: var(--muted); transition: color 0.2s var(--ease-out), border-color 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), transform 0.2s var(--ease-out); box-shadow: 0 1px 3px rgba(0,0,0,0.04); -webkit-tap-highlight-color: rgba(0,114,188,0.1); }
-    .pa-dashboard nav a:hover { color: var(--primary); border-color: rgba(0,114,188,0.28); box-shadow: 0 6px 20px rgba(0,114,188,0.1); transform: translateY(-2px); }
-    .pa-dashboard nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-    .pa-dashboard main { width: 100%; max-width: 70rem; margin: 0 auto; padding: var(--space-lg) 1.5rem; position: relative; z-index: 1; }
-    .pa-dashboard section { margin-bottom: var(--space-xl); padding: var(--space-lg); background: var(--glass-bg); border-radius: var(--radius-lg); box-shadow: var(--glass-shadow); border: 1px solid rgba(0,114,188,0.06); border-left-width: 4px; border-left-color: transparent; transition: box-shadow 0.35s var(--ease-out), border-color 0.25s var(--ease-out); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section { background: rgba(255,255,255,0.6); backdrop-filter: blur(24px) saturate(140%); -webkit-backdrop-filter: blur(24px) saturate(140%); box-shadow: 0 8px 32px rgba(0,114,188,0.05), inset 0 1px 0 var(--glass-border); } }
-    .pa-dashboard section:hover { box-shadow: 0 12px 40px rgba(0,114,188,0.08), inset 0 1px 0 var(--glass-border); border-color: rgba(0,114,188,0.1); }
-    .pa-dashboard section.alt { background: linear-gradient(135deg, rgba(255,255,255,0.85) 0%, rgba(248,252,255,0.9) 100%); border-left-color: rgba(0,114,188,0.15); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.alt { background: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, rgba(248,252,255,0.6) 100%); backdrop-filter: blur(28px) saturate(140%); -webkit-backdrop-filter: blur(28px) saturate(140%); } }
-    .pa-dashboard section.section-primary { background: linear-gradient(135deg, rgba(0,114,188,0.04) 0%, rgba(255,255,255,0.92) 50%); border-left-color: var(--primary); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.section-primary { background: linear-gradient(135deg, rgba(0,114,188,0.06) 0%, rgba(255,255,255,0.7) 50%); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
-    .pa-dashboard section.reveal { opacity: 0; transform: translateY(20px); transition: opacity 0.65s var(--ease-out), transform 0.55s var(--ease-out); }
-    .pa-dashboard section.reveal.visible { opacity: 1; transform: translateY(0); }
-    @media (prefers-reduced-motion: reduce) { .pa-dashboard section.reveal { opacity: 1; transform: none; transition: none; } }
-    .pa-dashboard .section-header { display: flex; align-items: flex-start; gap: 0.65rem; margin-bottom: 0.5rem; }
-.pa-dashboard .section-header > div { min-width: 0; flex: 1; }
-.pa-dashboard .section-header + .section-intro,
-.pa-dashboard .section-header ~ .key-message,
-.pa-dashboard .section-header ~ .key-issues { margin-top: 0; }
-.pa-dashboard .section-header .section-label { margin-bottom: 0.25rem; }
-.pa-dashboard .section-icon { flex-shrink: 0; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(0,114,188,0.08); color: var(--primary); margin-top: 0.1rem; }
-.pa-dashboard .section-icon svg { width: 18px; height: 18px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-.pa-dashboard .section-icon svg.icon-fill { stroke: none; fill: currentColor; }
-.pa-dashboard .section-label { font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin: 0 0 0.35rem; }
-    .pa-dashboard h2 { margin: 0 0 0.5rem; font-family: "Montserrat", sans-serif; font-size: 1.5rem; font-weight: 700; color: var(--primary); letter-spacing: -0.02em; line-height: 1.25; }
-    .pa-dashboard h3 { margin: 0 0 0.5rem; font-family: "Montserrat", sans-serif; font-size: 1.05rem; font-weight: 600; color: var(--text); }
-    .pa-dashboard .section-intro,
-    .pa-dashboard .section-body { width: 100%; max-width: 100%; margin: 0 0 1rem; color: var(--muted); font-size: 0.9375rem; line-height: 1.6; overflow-wrap: break-word; word-wrap: break-word; }
-    .pa-dashboard ul { width: 100%; max-width: 100%; margin: 0.5rem 0 1rem; padding-left: 1.25rem; line-height: 1.6; font-size: 0.9375rem; overflow-wrap: break-word; }
-    .pa-dashboard ul li { margin-bottom: 0.35rem; }
-    .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 0.75rem; margin: 0.85rem 0; }
-    .pa-dashboard .stat-card, .stat-card { display: block; padding: 0.9rem 1rem; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,114,188,0.12); border-radius: var(--radius); border-left: 4px solid var(--primary); box-shadow: 0 2px 12px rgba(0,114,188,0.06); text-align: left; transition: box-shadow 0.3s var(--ease-out), transform 0.28s var(--ease-out), border-color 0.25s; }
-    .pa-dashboard .stat-card:hover { box-shadow: 0 8px 24px rgba(0,114,188,0.12); transform: translateY(-2px); border-color: rgba(0,114,188,0.2); }
-    @supports (backdrop-filter: blur(1px)) { .stat-card { background: rgba(255,255,255,0.7); backdrop-filter: blur(12px); } }
-    .stat-card .stat-value { display: block; font-size: 1.45rem; font-weight: 800; font-family: "Montserrat", sans-serif; color: var(--primary); margin: 0 0 0.15rem; letter-spacing: -0.02em; }
-    .stat-card .stat-label { display: block; font-size: 0.78rem; color: var(--muted); line-height: 1.35; }
-    .card { padding: 1.15rem 1.25rem; background: #fff; border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); box-shadow: 0 4px 20px rgba(0,114,188,0.06); margin-top: 1rem; text-align: left; }
-    @supports (backdrop-filter: blur(1px)) { .card { background: rgba(255,255,255,0.75); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); } }
-    .card h3 { margin-top: 0; }
-    .pa-dashboard footer { padding: 1.75rem; text-align: center; color: var(--muted); font-size: 0.9rem; border-top: 1px solid rgba(0,114,188,0.1); background: #f8fbfd; position: relative; z-index: 1; }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard footer { background: rgba(255,255,255,0.5); backdrop-filter: blur(24px); } }
-    .pa-dashboard .back-link { display: inline-block; margin: 1rem 0; padding: 0.55rem 1.2rem; background: linear-gradient(135deg, var(--primary) 0%, #0088e0 100%); color: white; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 14px rgba(0,114,188,0.3); transition: transform 0.28s var(--ease-out), box-shadow 0.3s var(--ease-out), background 0.25s; -webkit-tap-highlight-color: transparent; }
-    .pa-dashboard .back-link:hover { text-decoration: none; background: linear-gradient(135deg, #005a94 0%, var(--primary) 100%); color: white; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,114,188,0.4); }
-    .pa-dashboard .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 100; padding: 0.5rem 1rem; background: var(--primary); color: white; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 600; border-radius: 10px; transition: top 0.2s ease; }
-    .pa-dashboard .skip-link:focus { top: 1rem; outline: 2px solid white; outline-offset: 2px; }
-    .pa-dashboard .highlight-box { width: 100%; max-width: 100%; padding: 1rem 1.25rem; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 var(--radius) var(--radius) 0; margin: 1rem 0; box-shadow: 0 2px 16px rgba(0,114,188,0.06); transition: box-shadow 0.35s var(--ease-out), border-left-color 0.25s; overflow-wrap: break-word; box-sizing: border-box; }
-    .pa-dashboard .highlight-box:hover { box-shadow: 0 4px 20px rgba(0,114,188,0.08); }
-.pa-dashboard .highlight-box p { margin: 0; font-size: 0.9375rem; line-height: 1.6; max-width: 100%; }
-    .pa-dashboard .big-stat { font-size: 2.2rem; font-weight: 800; font-family: "Montserrat", sans-serif; color: var(--primary); letter-spacing: -0.03em; margin: 0.2rem 0; }
-    .pa-dashboard .count-up { display: inline-block; font-variant-numeric: tabular-nums; }
-    .us-map-wrap { background: #fff; border-radius: var(--radius-lg); padding: 1.25rem; margin: 1.25rem 0; border: 1px solid rgba(0,114,188,0.08); box-shadow: 0 4px 24px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.9); overflow: visible; opacity: 0; transform: translateY(8px); transition: opacity 0.85s var(--ease-out), transform 0.7s var(--ease-out), box-shadow 0.35s var(--ease-out); }
-    .pa-dashboard .us-map-wrap.map-visible { opacity: 1; transform: translateY(0); box-shadow: 0 8px 32px rgba(0,114,188,0.08), inset 0 1px 0 rgba(255,255,255,0.9); }
-    @media (prefers-reduced-motion: reduce) { .pa-dashboard .us-map-wrap { opacity: 1; transform: none; transition: none; } .pa-dashboard .us-map-wrap.map-visible { transform: none; } }
-    @media (min-width: 769px) { .pa-dashboard .us-map-wrap { background: rgba(255,255,255,0.6); overflow: hidden; } @supports (backdrop-filter: blur(1px)) { .pa-dashboard .us-map-wrap { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); } } }
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; -webkit-font-smoothing: antialiased; }
+    .pa-dashboard { min-height: 100vh; background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 25%, #f8fafc 70%); color: var(--text); overflow-x: hidden; }
+    .pa-dashboard::before { content: ""; position: fixed; inset: 0; background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(14,165,233,0.12), transparent 50%); pointer-events: none; z-index: 0; }
+    .pa-dashboard [id] { scroll-margin-top: 5rem; }
+    .pa-dashboard a { color: var(--primary); text-decoration: none; }
+    .pa-dashboard a:hover { text-decoration: underline; }
+
+    /* Liquid glass header */
+    .pa-dashboard-header { position: sticky; top: 0; z-index: 50; padding: 1rem 1.5rem; background: rgba(255,255,255,0.6); border-bottom: 1px solid rgba(255,255,255,0.5); }
+    @supports (backdrop-filter: blur(20px)) { .pa-dashboard-header { background: rgba(255,255,255,0.4); backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); } }
+    .report-by { margin: 0; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); }
+    .pa-dashboard-header h1 { margin: 0.2rem 0 0; font-size: 1.6rem; font-weight: 800; color: var(--primary); letter-spacing: -0.03em; }
+    .tagline { margin: 0.25rem 0 0; font-size: 0.9rem; color: var(--muted); }
+    .pa-dashboard nav { display: flex; gap: 0.5rem; margin-top: 0.75rem; }
+    .pa-dashboard nav a { padding: 0.5rem 1rem; border-radius: 999px; font-weight: 600; font-size: 0.8rem; background: rgba(255,255,255,0.8); border: 1px solid rgba(0,0,0,0.06); color: var(--muted); transition: all 0.25s var(--ease); }
+    .pa-dashboard nav a:hover { color: var(--primary); background: #fff; box-shadow: 0 4px 20px rgba(0,0,0,0.06); }
+
+    main { max-width: 56rem; margin: 0 auto; padding: 2rem 1.5rem; position: relative; z-index: 1; }
+
+    /* Liquid glass sections */
+    .section { margin-bottom: 2rem; padding: 2rem; border-radius: var(--radius); background: var(--glass); border: 1px solid var(--glass-border); box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+    @supports (backdrop-filter: blur(20px)) { .section { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px) saturate(150%); -webkit-backdrop-filter: blur(20px) saturate(150%); } }
+    .section.accent-border { border-left: 4px solid var(--accent); }
+    .section-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin: 0 0 0.5rem; }
+    .section h2 { margin: 0 0 1rem; font-size: 1.5rem; font-weight: 700; color: var(--text); letter-spacing: -0.02em; line-height: 1.2; }
+    .section p, .section li { font-size: 1rem; line-height: 1.65; color: var(--text-soft); }
+    .section ul { margin: 0.5rem 0 1rem; padding-left: 1.25rem; }
+
+    /* MEGA NUMBERS - key advocacy figures */
+    .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin: 1.5rem 0; }
+    @media (min-width: 640px) { .hero-stats { grid-template-columns: repeat(4, 1fr); } }
+    .hero-stat { text-align: center; padding: 1.5rem 1rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); }
+    @supports (backdrop-filter: blur(12px)) { .hero-stat { background: rgba(255,255,255,0.4); backdrop-filter: blur(12px); } }
+    .hero-stat .num { display: block; font-size: 2.5rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; margin-bottom: 0.35rem; }
+    @media (min-width: 640px) { .hero-stat .num { font-size: 3.25rem; } }
+    .hero-stat .num.primary { color: var(--primary); }
+    .hero-stat .label { font-size: 0.85rem; font-weight: 500; color: var(--muted); line-height: 1.3; }
+
+    /* Big number callouts */
+    .big-num { font-size: 3.5rem; font-weight: 800; color: var(--accent); letter-spacing: -0.04em; line-height: 1; display: block; margin: 0.5rem 0; }
+    @media (min-width: 640px) { .big-num { font-size: 4.5rem; } }
+    .big-num + .big-num-label { font-size: 1rem; color: var(--muted); margin-top: 0.25rem; }
+    .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; margin: 1.25rem 0; }
+    .stat-tile { padding: 1.25rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); text-align: center; }
+    @supports (backdrop-filter: blur(10px)) { .stat-tile { background: rgba(255,255,255,0.4); backdrop-filter: blur(10px); } }
+    .stat-tile .val { font-size: 2rem; font-weight: 800; color: var(--accent); letter-spacing: -0.03em; }
+    .stat-tile .val.blue { color: var(--primary); }
+    .stat-tile .lbl { font-size: 0.8rem; color: var(--muted); margin-top: 0.25rem; }
+
+    /* Key message - advocacy CTA */
+    .key-msg { padding: 1.5rem; border-radius: var(--radius-sm); background: var(--accent-glass); border-left: 4px solid var(--accent); margin: 1rem 0; font-size: 1.05rem; font-weight: 500; color: var(--text); }
+    .key-msg strong { color: var(--accent-strong); }
+
+    /* Map section */
+    .map-wrap { margin: 1.5rem 0; padding: 1.5rem; border-radius: var(--radius); background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.8); overflow: visible; opacity: 0; transform: translateY(8px); transition: opacity 0.6s var(--ease), transform 0.5s var(--ease); }
+    @supports (backdrop-filter: blur(16px)) { .map-wrap { background: rgba(255,255,255,0.45); backdrop-filter: blur(16px); } }
+    .map-wrap.visible { opacity: 1; transform: none; }
     .pa-dashboard .us-map-wrap svg { width: 100%; height: auto; display: block; }
-    .pa-dashboard .us-map-wrap .state { fill: #cbd5e1; stroke: #fff; stroke-width: 1; cursor: pointer; transition: fill 0.2s var(--ease-out), filter 0.2s var(--ease-out); }
+    .pa-dashboard .us-map-wrap .state { fill: #cbd5e1; stroke: #fff; stroke-width: 1; cursor: pointer; transition: fill 0.2s; }
     .pa-dashboard .us-map-wrap .state.protection { fill: var(--primary); }
-    .pa-dashboard .us-map-wrap .state.protection:hover { filter: brightness(1.08); }
+    .pa-dashboard .us-map-wrap .state.protection:hover { fill: var(--primary-deep); }
     .pa-dashboard .us-map-wrap .state.no-protection:hover { fill: #94a3b8; }
-    .pa-dashboard .us-map-wrap .state { opacity: 1; }
-.pa-dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-14px); }
-.pa-dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.45s var(--ease-out) forwards; }
-@keyframes dominoIn { to { opacity: 1; transform: translateX(0); } }
-@media (prefers-reduced-motion: reduce) { .pa-dashboard .us-map-wrap .state.state-domino { opacity: 1; transform: none; animation: none; } }
-    .pa-dashboard .map-container { position: relative; display: grid; grid-template-columns: 1fr; gap: 1rem; margin: 1rem 0; min-width: 0; }
-    @media (min-width: 640px) { .pa-dashboard .map-container { grid-template-columns: 1fr 280px; align-items: start; } }
+    .pa-dashboard .us-map-wrap .state.state-domino { opacity: 0; transform: translateX(-12px); }
+    .pa-dashboard .us-map-wrap.map-visible .state.state-domino { animation: dominoIn 0.4s var(--ease) forwards; }
+    @keyframes dominoIn { to { opacity: 1; transform: translateX(0); } }
+    @media (prefers-reduced-motion: reduce) { .pa-dashboard .us-map-wrap .state.state-domino { opacity: 1; transform: none; animation: none; } }
+    .map-container { display: grid; gap: 1rem; margin: 1rem 0; }
+    @media (min-width: 640px) { .map-container { grid-template-columns: 1fr 260px; } }
+    .map-legend { display: flex; flex-wrap: wrap; gap: 1.5rem; justify-content: center; margin-top: 1rem; font-size: 0.9rem; color: var(--muted); }
+    .map-legend-item { display: flex; align-items: center; gap: 0.5rem; }
+    .map-legend-swatch { width: 1rem; height: 1rem; border-radius: 6px; }
+    .map-legend-swatch.protection { background: var(--primary); }
+    .map-legend-swatch.no-protection { background: #cbd5e1; }
+    .state-detail-panel { padding: 1rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); min-height: 5rem; }
+    .state-detail-panel:not(.empty) { border-color: rgba(0,114,188,0.2); }
+    .state-detail-panel.empty { color: var(--muted); font-size: 0.9rem; text-align: center; display: flex; align-items: center; justify-content: center; }
+    .state-detail-panel h4 { margin: 0 0 0.5rem; color: var(--primary); font-size: 1.1rem; }
+    .state-detail-panel .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600; margin-right: 0.3rem; margin-bottom: 0.3rem; }
+    .state-detail-panel .badge.yes { background: rgba(0,114,188,0.15); color: var(--primary); }
+    .state-detail-panel .badge.no { background: #f1f5f9; color: var(--muted); }
+
+    /* State lists */
+    .state-lists-wrap { margin-top: 1.5rem; }
+    .state-list-block { padding: 1.25rem; border-radius: var(--radius-sm); margin-bottom: 1rem; }
+    .state-list-block.protection { background: rgba(0,114,188,0.08); border: 1px solid rgba(0,114,188,0.15); }
+    .state-list-block.no-protection { background: rgba(203,213,225,0.3); border: 1px solid rgba(148,163,184,0.3); }
+    .state-list-block h3 { font-size: 0.95rem; margin: 0 0 0.75rem; }
+    .state-list-block.protection h3 { color: var(--primary); }
+    .state-list-block.no-protection h3 { color: var(--muted); }
+    .state-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr)); gap: 0.25rem 0.75rem; font-size: 0.75rem; }
+    .state-chip { padding: 0.2rem 0.4rem; border-radius: 6px; cursor: help; transition: background 0.2s; }
+    .state-list-block.protection .state-chip { color: var(--primary-deep); }
+    .state-list-block.protection .state-chip:hover { background: rgba(0,114,188,0.15); }
+    .state-list-block.no-protection .state-chip:hover { background: rgba(148,163,184,0.2); }
+
+    .map-tooltip { position: fixed; z-index: 99999; padding: 0.5rem 0.9rem; background: var(--text); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 10px; pointer-events: none; opacity: 0; white-space: nowrap; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: opacity 0.12s; transform: translate(-50%, 0); }
+    .state-list-tooltip { position: fixed; z-index: 99999; padding: 0.5rem 0.9rem; background: var(--text); color: #fff; font-size: 0.8rem; font-weight: 600; border-radius: 10px; pointer-events: none; opacity: 0; box-shadow: 0 8px 24px rgba(0,0,0,0.2); transition: opacity 0.12s; }
+    .map-tooltip.visible, .state-list-tooltip.visible { opacity: 1; }
+    .state-list-tooltip { max-width: 260px; white-space: normal; transform: translate(-50%, -100%); }
+    .state-list-tooltip .badge { padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.65rem; margin: 0.1rem 0.2rem 0.1rem 0; }
+
+    /* Trends */
+    .trends-grid { display: grid; gap: 1rem; margin-top: 1rem; }
+    @media (min-width: 600px) { .trends-grid { grid-template-columns: repeat(3, 1fr); } }
+    .trends-card { padding: 1.25rem; border-radius: var(--radius-sm); background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.8); display: flex; gap: 1rem; align-items: flex-start; }
+    @supports (backdrop-filter: blur(12px)) { .trends-card { background: rgba(255,255,255,0.4); backdrop-filter: blur(12px); } }
+    .trends-card h4 { margin: 0 0 0.35rem; font-size: 0.95rem; color: var(--primary); }
+    .trends-card p { margin: 0; font-size: 0.9rem; color: var(--muted); line-height: 1.5; }
+    .trends-icon { width: 40px; height: 40px; border-radius: 12px; background: rgba(0,114,188,0.1); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .trends-icon svg { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
+
+    /* Reveal animation */
+    .section.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.6s var(--ease), transform 0.5s var(--ease); }
+    .section.reveal.visible { opacity: 1; transform: none; }
+    @media (prefers-reduced-motion: reduce) { .section.reveal { opacity: 1; transform: none; } }
+
+    footer { padding: 2rem; text-align: center; color: var(--muted); font-size: 0.9rem; border-top: 1px solid rgba(0,0,0,0.06); }
+    .back-link { display: inline-block; padding: 0.6rem 1.25rem; background: var(--primary); color: white !important; font-weight: 600; border-radius: 999px; transition: background 0.25s, transform 0.2s; }
+    .back-link:hover { background: var(--primary-deep); transform: translateY(-2px); text-decoration: none !important; }
+    .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 100; padding: 0.5rem 1rem; background: var(--primary); color: white; font-size: 0.85rem; font-weight: 600; border-radius: 10px; }
+    .skip-link:focus { top: 1rem; }
+
+    .count-up { font-variant-numeric: tabular-nums; }
+    .sources { font-size: 0.8rem; color: var(--muted); margin-top: 1.5rem; }
+
     @media (max-width: 768px) {
-      .pa-dashboard { background-attachment: scroll !important; }
-      .pa-dashboard::before { display: none !important; }
-      .pa-dashboard #state-laws { background: #f8fbfd !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-      .pa-dashboard #state-laws .map-container { isolation: isolate; }
-      .pa-dashboard #state-laws .us-map-wrap { min-height: 280px; background: #fff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-      .pa-dashboard #state-laws .us-map-wrap svg { min-height: 260px; }
-      .pa-dashboard #state-laws .state-detail-panel { background: #fff !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
-    }
-    .pa-dashboard section.state-laws-featured { padding: 1.25rem 1.5rem; }
-    @media (min-width: 768px) { .pa-dashboard section.state-laws-featured { padding: 1.5rem 2rem; } .pa-dashboard section.state-laws-featured .us-map-wrap { padding: 1.5rem; } }
-    .pa-dashboard section.state-laws-featured h2 { font-size: 1.65rem; margin-bottom: 0.35rem; }
-    .pa-dashboard section.state-laws-featured .section-label { color: var(--primary); font-weight: 700; }
-.pa-dashboard .map-tooltip { position: fixed; z-index: 2147483647; left: 0; top: 0; padding: 0.5rem 0.85rem; background: var(--text); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.8rem; font-weight: 600; letter-spacing: 0.02em; border-radius: 8px; pointer-events: none; opacity: 0; transform: translate(-50%, 0); box-shadow: 0 8px 24px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.1); transition: opacity 0.12s ease, left 0.05s ease, top 0.05s ease; white-space: nowrap; }
-.pa-dashboard .map-tooltip.visible { opacity: 1; }
-    .pa-dashboard .state-detail-panel { background: rgba(255,255,255,0.95); border: 1px solid rgba(0,114,188,0.08); border-radius: var(--radius); padding: 1.1rem; box-shadow: 0 4px 20px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.9); transition: box-shadow 0.3s var(--ease-out), border-color 0.25s; }
-    .pa-dashboard .state-detail-panel:not(.empty) { box-shadow: 0 6px 28px rgba(0,114,188,0.1), inset 0 1px 0 rgba(255,255,255,0.95); border-color: rgba(0,114,188,0.12); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard .state-detail-panel { background: rgba(255,255,255,0.88); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); } }
-    .pa-dashboard .state-detail-panel.empty { color: var(--muted); font-size: 0.9rem; text-align: center; padding: 1.5rem; }
-    .pa-dashboard .state-detail-panel h4 { margin: 0 0 0.5rem; font-size: 1.1rem; color: var(--primary); }
-    .pa-dashboard .state-detail-panel .state-stat { font-size: 0.85rem; margin: 0.25rem 0; color: var(--text); }
-    .pa-dashboard .state-detail-panel .state-stat strong { color: var(--primary); }
-    .pa-dashboard .state-detail-panel .state-notes { font-size: 0.8rem; color: var(--muted); margin-top: 0.5rem; line-height: 1.45; }
-    .pa-dashboard .state-detail-panel .badge { display: inline-block; padding: 0.2rem 0.5rem; border-radius: 4px; font-size: 0.7rem; font-weight: 600; margin-right: 0.35rem; margin-bottom: 0.35rem; }
-    .pa-dashboard .state-detail-panel .badge.yes { background: rgba(0,114,188,0.12); color: var(--primary); }
-    .pa-dashboard .state-detail-panel .badge.no { background: #f1f5f9; color: var(--muted); }
-    .pa-dashboard .map-legend { display: flex; flex-wrap: wrap; gap: 1.25rem; margin-top: 1rem; align-items: center; justify-content: center; }
-    .pa-dashboard .map-legend-item { display: flex; align-items: center; gap: 0.5rem; font-size: 0.82rem; font-weight: 500; color: var(--muted); letter-spacing: 0.02em; }
-    .pa-dashboard .map-legend-swatch { width: 1rem; height: 1rem; border-radius: 4px; border: 1px solid rgba(255,255,255,0.9); box-shadow: 0 1px 2px rgba(0,0,0,0.06); }
-    .pa-dashboard .map-legend-swatch.protection { background: var(--primary); }
-    .pa-dashboard .map-legend-swatch.no-protection { background: #cbd5e1; }
-.pa-dashboard .state-lists-wrap { margin-top: 1.25rem; min-width: 0; }
-.pa-dashboard .state-list-block { border-radius: var(--radius); padding: 1rem 1.25rem; margin-bottom: 1rem; transition: box-shadow 0.3s var(--ease-out); }
-.pa-dashboard .state-list-block:last-child { margin-bottom: 0; }
-.pa-dashboard .state-list-block.protection { background: linear-gradient(135deg, rgba(0,114,188,0.1) 0%, rgba(0,114,188,0.04) 100%); border: 1px solid rgba(0,114,188,0.18); }
-.pa-dashboard .state-list-block.protection h3 { color: var(--primary); font-size: 0.9rem; margin-bottom: 0.5rem; }
-.pa-dashboard .state-list-block.no-protection { background: linear-gradient(135deg, rgba(203,213,225,0.35) 0%, rgba(241,245,249,0.8) 100%); border: 1px solid rgba(148,163,184,0.35); }
-.pa-dashboard .state-list-block.no-protection h3 { color: var(--muted); font-size: 0.9rem; margin-bottom: 0.5rem; }
-.pa-dashboard .state-list-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr)); gap: 0.25rem 0.75rem; font-size: 0.7rem; line-height: 1.5; }
-.pa-dashboard .state-list-grid .state-chip { display: inline-block; padding: 0.2rem 0.4rem; border-radius: 4px; cursor: help; transition: background 0.2s var(--ease-out), color 0.2s var(--ease-out); position: relative; }
-.pa-dashboard .state-list-block.protection .state-chip { color: var(--primary-deep); }
-.pa-dashboard .state-list-block.protection .state-chip:hover { background: rgba(0,114,188,0.15); color: var(--primary); }
-.pa-dashboard .state-list-block.no-protection .state-chip { color: var(--text); }
-.pa-dashboard .state-list-block.no-protection .state-chip:hover { background: rgba(148,163,184,0.2); color: var(--muted); }
-.pa-dashboard .state-list-tooltip { position: fixed; z-index: 2147483646; left: 0; top: 0; max-width: 280px; padding: 0.65rem 0.95rem; background: var(--text); color: #fff; font-family: "Montserrat", sans-serif; font-size: 0.72rem; font-weight: 500; line-height: 1.5; border-radius: 10px; pointer-events: none; opacity: 0; transform: translate(-50%, -100%); margin-top: -10px; box-shadow: 0 12px 32px rgba(0,0,0,0.28); transition: opacity 0.15s ease; white-space: normal; }
-.pa-dashboard .state-list-tooltip.visible { opacity: 1; }
-.pa-dashboard .state-list-tooltip strong { font-size: 0.78rem; display: block; margin-bottom: 0.25rem; }
-.pa-dashboard .state-list-tooltip .badge { display: inline-block; padding: 0.1rem 0.35rem; border-radius: 4px; font-size: 0.65rem; margin-right: 0.25rem; margin-top: 0.15rem; }
-.pa-dashboard .state-list-tooltip .badge.yes { background: rgba(255,255,255,0.25); color: #fff; }
-.pa-dashboard .state-list-tooltip .badge.no { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
-.pa-dashboard .trends-grid { display: grid; gap: 0.75rem; margin-top: 0.75rem; }
-@media (min-width: 640px) { .pa-dashboard .trends-grid { grid-template-columns: repeat(3, 1fr); } }
-.pa-dashboard .trends-card { display: flex; align-items: flex-start; gap: 0.75rem; padding: 1rem 1.2rem; background: rgba(255,255,255,0.6); border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); transition: box-shadow 0.3s var(--ease-out), transform 0.25s var(--ease-out), border-color 0.2s; }
-.pa-dashboard .trends-card:hover { box-shadow: 0 6px 24px rgba(0,114,188,0.1); border-color: rgba(0,114,188,0.15); transform: translateY(-2px); }
-@supports (backdrop-filter: blur(1px)) { .pa-dashboard .trends-card { background: rgba(255,255,255,0.5); backdrop-filter: blur(16px); } }
-.pa-dashboard .trends-card-icon { flex-shrink: 0; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; border-radius: 10px; background: rgba(0,114,188,0.08); color: var(--primary); }
-.pa-dashboard .trends-card-icon svg { width: 20px; height: 20px; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; fill: none; }
-.pa-dashboard .trends-card-content { flex: 1; min-width: 0; }
-.pa-dashboard .trends-card h4 { margin: 0 0 0.35rem; font-size: 0.88rem; font-weight: 600; color: var(--primary); }
-.pa-dashboard .trends-card p { margin: 0; font-size: 0.86rem; color: var(--muted); line-height: 1.5; }
-    .pa-dashboard .key-message { width: 100%; max-width: 100%; padding: 0.85rem 1.15rem; background: linear-gradient(135deg, rgba(0,114,188,0.06) 0%, rgba(142,216,248,0.1) 100%); border-radius: var(--radius); border-left: 4px solid var(--primary); font-size: 0.9375rem; font-weight: 500; line-height: 1.6; color: var(--text); margin: 0 0 0.5rem; transition: box-shadow 0.3s var(--ease-out); overflow-wrap: break-word; }
-    .pa-dashboard .key-message:hover { box-shadow: 0 2px 12px rgba(0,114,188,0.06); }
-    .pa-dashboard .hap-position { width: 100%; max-width: 100%; font-size: 0.875rem; line-height: 1.6; color: var(--muted); margin: 0.75rem 0 0; overflow-wrap: break-word; }
-    .pa-dashboard .key-issues { width: 100%; max-width: 100%; margin: 0.5rem 0 0; padding-left: 1.25rem; font-size: 0.875rem; line-height: 1.6; color: var(--text); overflow-wrap: break-word; }
-    .pa-dashboard .key-issues li { margin-bottom: 0.25rem; }
-    .pa-dashboard section.issue-hero { border-left-color: var(--accent); background: linear-gradient(135deg, rgba(245,158,11,0.06) 0%, rgba(255,255,255,0.92) 40%); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.issue-hero { background: linear-gradient(135deg, rgba(245,158,11,0.05) 0%, rgba(255,255,255,0.75) 40%); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
-    .pa-dashboard section.issue-callout { border-left-color: #eab308; background: linear-gradient(135deg, rgba(234,179,8,0.08) 0%, rgba(255,255,255,0.9) 50%); }
-    .pa-dashboard section:not(.issue-hero):not(.alt):not(.issue-callout):not(.section-primary) { border-left-color: rgba(0,114,188,0.12); }
-    @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.issue-callout { background: linear-gradient(135deg, rgba(234,179,8,0.06) 0%, rgba(255,255,255,0.7) 50%); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
-    .pa-dashboard section { min-width: 0; }
-    .pa-dashboard section > * { min-width: 0; max-width: 100%; }
-    @media (min-width: 1024px) { .pa-dashboard main { padding: 2rem 2.25rem; } .pa-dashboard section { padding: 1.75rem 2rem; margin-bottom: 2rem; } .pa-dashboard h2 { font-size: 1.6rem; margin-bottom: 0.5rem; } .pa-dashboard h3 { font-size: 1.1rem; margin-bottom: 0.5rem; } .pa-dashboard .section-intro, .pa-dashboard .section-body { font-size: 0.9375rem; margin-bottom: 1rem; } }
-    @media (max-width: 768px) {
-      .pa-dashboard [id] { scroll-margin-top: 2.85rem; }
-      .pa-dashboard .pa-dashboard-header { padding: 0.28rem 0.55rem 0.32rem; }
-      .pa-dashboard .pa-dashboard-header h1 { font-size: 1.1rem; }
-      .pa-dashboard .tagline { font-size: 0.65rem; }
-      .pa-dashboard nav a { padding: 0.35rem 0.5rem; font-size: 0.7rem; min-height: 2.75rem; display: inline-flex; align-items: center; }
-      .pa-dashboard main { padding: 0.55rem 0.5rem; }
-      .pa-dashboard section { padding: 0.6rem 0.55rem; margin-bottom: 0.9rem; }
-      .pa-dashboard h2 { font-size: 1.05rem; }
-      .pa-dashboard h3 { font-size: 0.95rem; }
-      .pa-dashboard .section-intro, .pa-dashboard .section-body { font-size: 0.875rem; }
-      .pa-dashboard .stat-grid { grid-template-columns: repeat(2, 1fr); gap: 0.5rem; }
-      .pa-dashboard .stat-card { padding: 0.5rem 0.55rem; }
-      .pa-dashboard .stat-card .stat-value { font-size: 1.2rem; }
-      .pa-dashboard .section-label { font-size: 0.65rem; }
-      .pa-dashboard .key-message { padding: 0.6rem 0.85rem; font-size: 0.85rem; }
-      .pa-dashboard .map-container { grid-template-columns: 1fr; }
-      .pa-dashboard .state-detail-panel { min-height: 6rem; }
-      .pa-dashboard section.state-laws-featured { padding: 1rem 0.55rem; }
-      .pa-dashboard section.state-laws-featured h2 { font-size: 1.2rem; }
-      .pa-dashboard .us-map-wrap { padding: 0.75rem; margin: 0.75rem 0; }
-      .pa-dashboard .map-legend { gap: 0.6rem; margin-top: 0.75rem; font-size: 0.8rem; }
-      .pa-dashboard .state-list-grid { grid-template-columns: repeat(2, 1fr); gap: 0.2rem 0.5rem; font-size: 0.65rem; }
-      .pa-dashboard .state-list-block { padding: 0.75rem 1rem; }
-      .pa-dashboard .state-list-block h3 { font-size: 0.82rem; }
-      .pa-dashboard .trends-grid { grid-template-columns: 1fr; }
-      .pa-dashboard .trends-card { padding: 0.85rem 1rem; }
-      .pa-dashboard .trends-card { padding: 0.75rem 1rem; margin-top: 0.75rem; }
-      .pa-dashboard .stat-card .stat-label { font-size: 0.72rem; }
-      .pa-dashboard .card { padding: 0.55rem 0.6rem; margin-top: 0.75rem; }
-      .pa-dashboard .big-stat { font-size: 1.75rem; }
-      .pa-dashboard ul { padding-left: 1rem; font-size: 0.9rem; }
-      .pa-dashboard footer { padding: 0.65rem 0.5rem; font-size: 0.8rem; }
-      .pa-dashboard .back-link { padding: 0.5rem 0.85rem; font-size: 0.78rem; min-height: 2.75rem; display: inline-flex; align-items: center; justify-content: center; }
-    }
-    @media (max-width: 480px) {
-      .pa-dashboard .pa-dashboard-header h1 { font-size: 0.95rem; }
-      .pa-dashboard main { padding: 0.45rem 0.4rem; }
-      .pa-dashboard section { padding: 0.5rem 0.45rem; margin-bottom: 0.75rem; }
-      .pa-dashboard h2 { font-size: 0.98rem; }
-      .pa-dashboard .stat-grid { gap: 0.4rem; }
-      .pa-dashboard .stat-card .stat-value { font-size: 1.05rem; }
-      .pa-dashboard .big-stat { font-size: 1.5rem; }
+      .pa-dashboard-header h1 { font-size: 1.25rem; }
+      .pa-dashboard [id] { scroll-margin-top: 4rem; }
+      main { padding: 1rem; }
+      .section { padding: 1.25rem; margin-bottom: 1.5rem; }
+      .hero-stat .num { font-size: 2.25rem; }
+      .big-num { font-size: 2.75rem; }
+      .stat-tile .val { font-size: 1.6rem; }
+      .section h2 { font-size: 1.25rem; }
     }
   </style>
 </head>
@@ -232,48 +173,57 @@
 <div id="state-list-tooltip" class="state-list-tooltip" aria-hidden="true"></div>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <header class="pa-dashboard-header">
-  <p class="report-by">Hospital &amp;&#32;Healthsystem Association of Pennsylvania</p>
+  <p class="report-by">Hospital &amp; Healthsystem Association of Pennsylvania</p>
   <h1>340B Drug Pricing Program</h1>
-  <p class="tagline">At a glance: policy, impact, and state-by-state protection</p>
+  <p class="tagline">Why it matters · What you can do</p>
   <nav>
     <a href="static.html">PA Hospitals Dashboard</a>
-    <a href="#state-laws">State Laws Map</a>
+    <a href="#state-laws">State Map</a>
   </nav>
 </header>
 
 <main id="main-content">
 
-  <section id="overview" class="issue-hero">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg></span>
-      <div><p class="section-label">Why this matters</p><h2>340B needs attention</h2></div>
+  <section id="overview" class="section accent-border">
+    <p class="section-label">What you need to know</p>
+    <h2>340B helps vulnerable patients. Drug companies are undermining it.</h2>
+    <p>For over <strong>30 years</strong>, 340B has helped hospitals afford discounted medicines for low-income and uninsured patients. It costs taxpayers nothing. Yet some drug makers have <strong>illegally stopped</strong> giving discounts at community pharmacies — hurting rural and underserved communities.</p>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <span class="num count-up" data-count-up="30" data-suffix="+">0</span>
+        <span class="label">Years helping patients</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num count-up" data-count-up="100" data-suffix="B">0</span>
+        <span class="label">Community benefits (2022)</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num primary">21</span>
+        <span class="label">States with protection laws</span>
+      </div>
+      <div class="hero-stat">
+        <span class="num primary">72</span>
+        <span class="label">PA hospitals in 340B</span>
+      </div>
     </div>
-    <p class="key-message">For more than 30 years, the 340B program has helped hospitals serving vulnerable communities manage rising prescription drug costs. Despite HRSA oversight and a proven record, program critics want to scale it back — and several manufacturers have unlawfully stopped discounts for 340B drugs through contract pharmacies.</p>
-    <ul class="key-issues">
-      <li><strong>Manufacturers undermining the program:</strong> Several large drug companies have unilaterally stopped providing 340B discounts through community and specialty pharmacies — violating the statute.</li>
-      <li><strong>Oversight imbalance:</strong> HRSA audits 200 covered entities annually, but only five drug manufacturers — we need parity.</li>
-      <li><strong>State protection gap:</strong> Only 21 states have enacted contract pharmacy protection laws; Pennsylvania is in progress.</li>
-    </ul>
-    <p class="hap-position"><strong>HAP</strong> advocates to protect 340B for all Pennsylvania providers, ensure the program continues to stretch limited resources and serve more patients, and thwart manufacturers’ unlawful changes — including efforts to convert 340B from an upfront discount to a back-end rebate model.</p>
+    <div class="key-msg">
+      <strong>HAP asks lawmakers:</strong> Protect 340B. Support contract pharmacy access. Stop drug companies from unlawfully cutting off discounts.
+    </div>
   </section>
 
-  <section id="state-laws" class="state-laws-featured section-primary">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></span>
-      <div><p class="section-label">Our focus · 340B contract pharmacy protection</p><h2>State laws: contract pharmacy protection</h2></div>
-    </div>
-    <p class="section-intro">HAP supports state laws that protect 340B contract pharmacy access. Some states have enacted protection laws; others are in progress. <strong>Pennsylvania is moving toward 340B contract pharmacy protection legislation.</strong> Hover for state name; click for 340B details.</p>
+  <section id="state-laws" class="section reveal">
+    <p class="section-label">See where your state stands</p>
+    <h2>State-by-state: contract pharmacy protection</h2>
+    <p>Hover for state name · Click for details. <strong>Pennsylvania is working toward protection.</strong></p>
     <div class="map-container">
-      <div class="us-map-wrap">
-        <div id="us-map" aria-label="US map showing states with and without 340B contract pharmacy protection laws"></div>
+      <div class="us-map-wrap map-wrap" id="us-map-wrap">
+        <div id="us-map" aria-label="US map: states with and without 340B contract pharmacy protection"></div>
         <div class="map-legend">
           <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Has protection law</span>
-          <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No law yet / in progress</span>
+          <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No law yet</span>
         </div>
       </div>
-      <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite">
-        <p>Select a state on the map to view 340B status.</p>
-      </div>
+      <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite"><p>Select a state</p></div>
     </div>
     <div class="state-lists-wrap">
       <div class="state-list-block protection">
@@ -283,137 +233,106 @@
         </div>
       </div>
       <div class="state-list-block no-protection">
-        <h3>No law yet / in progress (28)</h3>
+        <h3>No law yet (28)</h3>
         <div class="state-list-grid" id="states-without-list">
           <span class="state-chip" data-state="AL">Alabama</span><span class="state-chip" data-state="AK">Alaska</span><span class="state-chip" data-state="AZ">Arizona</span><span class="state-chip" data-state="CA">California</span><span class="state-chip" data-state="DE">Delaware</span><span class="state-chip" data-state="FL">Florida</span><span class="state-chip" data-state="GA">Georgia</span><span class="state-chip" data-state="ID">Idaho</span><span class="state-chip" data-state="IL">Illinois</span><span class="state-chip" data-state="IN">Indiana</span><span class="state-chip" data-state="IA">Iowa</span><span class="state-chip" data-state="KY">Kentucky</span><span class="state-chip" data-state="MA">Massachusetts</span><span class="state-chip" data-state="MI">Michigan</span><span class="state-chip" data-state="MT">Montana</span><span class="state-chip" data-state="NV">Nevada</span><span class="state-chip" data-state="NH">New Hampshire</span><span class="state-chip" data-state="NJ">New Jersey</span><span class="state-chip" data-state="NY">New York</span><span class="state-chip" data-state="NC">North Carolina</span><span class="state-chip" data-state="OH">Ohio</span><span class="state-chip" data-state="PA">Pennsylvania</span><span class="state-chip" data-state="SC">South Carolina</span><span class="state-chip" data-state="TX">Texas</span><span class="state-chip" data-state="VA">Virginia</span><span class="state-chip" data-state="WA">Washington</span><span class="state-chip" data-state="WI">Wisconsin</span><span class="state-chip" data-state="WY">Wyoming</span>
         </div>
       </div>
     </div>
-    <p class="section-intro" style="margin-top:1rem;font-size:0.8125rem;">Sources: American Hospital Association (AHA), ASHP, America's Essential Hospitals, MultiState.</p>
-    <h3>Legal &amp;&#32;trends</h3>
+    <h3 style="margin-top:1.5rem;font-size:1rem;">Legal trends</h3>
     <div class="trends-grid">
       <div class="trends-card">
-        <span class="trends-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M5 21h14"/><path d="M8 13l4-8 4 8"/><path d="M4 13h4"/><path d="M16 13h4"/></svg></span>
-        <div class="trends-card-content"><h4>Courts</h4><p>Courts have sided with states (e.g., AR, LA, MO, MN, TN, RI) when PhRMA challenged laws.</p></div>
+        <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M5 21h14"/><path d="M8 13l4-8 4 8"/><path d="M4 13h4"/><path d="M16 13h4"/></svg></span>
+        <div><h4>Courts</h4><p>Courts sided with states (AR, LA, MO, MN, TN, RI) when drug makers challenged laws.</p></div>
       </div>
       <div class="trends-card">
-        <span class="trends-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
-        <div class="trends-card-content"><h4>2025 hybrid bills</h4><p>CO, ME, OH, RI, VT combined contract pharmacy protections with new 340B reporting.</p></div>
+        <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
+        <div><h4>2025 hybrid bills</h4><p>CO, ME, OH, RI, VT combined pharmacy protections with reporting.</p></div>
       </div>
       <div class="trends-card">
-        <span class="trends-card-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
-        <div class="trends-card-content"><h4>Vetoes</h4><p>Some governors have vetoed 340B protection (e.g., Virginia).</p></div>
+        <span class="trends-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
+        <div><h4>Vetoes</h4><p>Some governors vetoed 340B protection (e.g., Virginia).</p></div>
+      </div>
+    </div>
+    <p class="sources">Sources: AHA, ASHP, America's Essential Hospitals, MultiState</p>
+  </section>
+
+  <section id="what-is-340b" class="section reveal">
+    <p class="section-label">Simple explainer</p>
+    <h2>What is 340B?</h2>
+    <p>Law requires drug companies that sell to Medicaid to offer <strong>discounted prices</strong> to hospitals and health centers that serve many uninsured and low-income patients. It's a discount at purchase — not a rebate later. <strong>Taxpayers pay nothing.</strong></p>
+    <div class="stat-row">
+      <div class="stat-tile">
+        <span class="val count-up" data-count-up="3" data-suffix="%">0</span>
+        <span class="lbl">Of drug company revenue (tiny share)</span>
       </div>
     </div>
   </section>
 
-  <section id="what-is-340b" class="alt reveal">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 6h8v12H8z"/><path d="M10 6V4a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v2"/><path d="M14 18v2a2 2 0 0 1-2 2h0a2 2 0 0 1-2-2v-2"/><ellipse cx="12" cy="12" rx="4" ry="2"/></svg></span>
-      <div><p class="section-label">Overview</p><h2>What is 340B?</h2></div>
+  <section id="oversight" class="section reveal accent-border">
+    <p class="section-label">The imbalance</p>
+    <h2>Hospitals audited 40× more than drug companies</h2>
+    <p>340B hospitals must recertify every year and keep detailed records. Yet oversight is lopsided.</p>
+    <div class="stat-row">
+      <div class="stat-tile">
+        <span class="val count-up" data-count-up="200" data-suffix="">0</span>
+        <span class="lbl">Hospitals audited each year</span>
+      </div>
+      <div class="stat-tile">
+        <span class="val count-up" data-count-up="5" data-suffix="">0</span>
+        <span class="lbl">Drug companies audited each year</span>
+      </div>
     </div>
-    <p class="section-intro">Section 340B of the Public Health Service Act requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted prices to eligible providers caring for uninsured and low-income patients. <strong>It is an upfront discount, not a rebate</strong> — and it costs taxpayers nothing. 340B allows hospitals to stretch limited federal resources and expand health services to patients and communities.</p>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="3" data-suffix="%">0%</span>
-        <span class="stat-label">of drug companies’ global revenues — 340B discounts (2022, AHA)</span>
+    <p>HAP and AHA want <strong>equal accountability</strong> for drug companies.</p>
+  </section>
+
+  <section id="pa-impact" class="section reveal">
+    <p class="section-label">Pennsylvania</p>
+    <h2>340B in your state</h2>
+    <p><strong><span class="count-up" data-count-up="72">0</span> PA hospitals</strong> (<span class="count-up" data-count-up="30" data-suffix="%">0</span> of all PA hospitals) use 340B to help patients. Many serve rural areas, children, and cancer patients.</p>
+    <div class="stat-row">
+      <div class="stat-tile">
+        <span class="val count-up" data-count-up="49" data-suffix="%">0</span>
+        <span class="lbl">Rural providers</span>
+      </div>
+      <div class="stat-tile">
+        <span class="val count-up" data-count-up="53" data-suffix="%">0</span>
+        <span class="lbl">Operate at a loss</span>
+      </div>
+      <div class="stat-tile">
+        <span class="val count-up" data-count-up="49" data-suffix="%">0</span>
+        <span class="lbl">Offer labor & delivery</span>
       </div>
     </div>
   </section>
 
-  <section id="eligibility" class="reveal">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-6h6v6"/><path d="M9 9h6v6H9z"/></svg></span>
-      <div><p class="section-label">Program</p><h2>Who qualifies</h2></div>
-    </div>
-    <ul>
-      <li>Federal grantee organizations</li>
-      <li>Critical Access Hospitals (CAHs), Sole Community Hospitals (SCHs), Rural Referral Centers (RRCs)</li>
-      <li>Public and nonprofit Disproportionate Share Hospitals (DSH) serving low-income populations</li>
-      <li>Children’s and cancer hospitals</li>
-      <li>Federally Qualified Health Centers (FQHCs)</li>
-    </ul>
-  </section>
-
-  <section id="oversight" class="alt reveal issue-callout">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg></span>
-      <div><p class="section-label">Accountability</p><h2>Oversight gap</h2></div>
-    </div>
-    <p class="section-intro">340B hospitals must recertify annually, participate in HRSA and manufacturer audits, and maintain auditable records. Yet oversight is uneven: <strong>HRSA audits 200 covered entities every year</strong>, while <strong>only five drug companies are audited annually</strong>. HAP and AHA support parity in oversight so drug companies are held to the same accountability as providers.</p>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="200" data-suffix="">0</span>
-        <span class="stat-label">covered entities audited annually (HRSA)</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="5" data-suffix="">0</span>
-        <span class="stat-label">drug manufacturers audited annually</span>
-      </div>
+  <section id="community-benefit" class="section reveal accent-border">
+    <p class="section-label">Impact</p>
+    <h2>What 340B pays for</h2>
+    <p>Free care for uninsured patients. Free vaccines. Mental health. Medication help. Screenings. Dental. <strong>Without 340B, communities lose this.</strong></p>
+    <div class="stat-tile" style="margin-top:1rem;text-align:left;padding:1.5rem;">
+      <span class="big-num">$<span class="count-up" data-count-up="100" data-decimals="0">0</span>B</span>
+      <span class="big-num-label">Community benefits from 340B hospitals in 2022 — <strong>47% increase</strong> from 2019</span>
     </div>
   </section>
 
-  <section id="pa-impact" class="reveal">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 21h18"/><path d="M5 21V7l7-4 7 4v14"/><path d="M9 21v-4h6v4"/><path d="M9 11h6v6H9z"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2"/></svg></span>
-      <div><p class="section-label">Pennsylvania</p><h2>340B in PA</h2></div>
-    </div>
-    <p class="section-intro">340B-eligible Pennsylvania hospitals are the safety net for their communities. <strong><span class="count-up" data-count-up="72">0</span> PA hospitals (<span class="count-up" data-count-up="30" data-suffix="%">0</span>)</strong> participate in 340B — many care for children, cancer patients, and rural residents.</p>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="49" data-suffix="%">0%</span>
-        <span class="stat-label">are rural providers</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="53" data-suffix="%">0%</span>
-        <span class="stat-label">operate with a negative margin</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-value count-up" data-count-up="49" data-suffix="%">0%</span>
-        <span class="stat-label">provide labor and delivery services</span>
-      </div>
-    </div>
+  <section id="access" class="section reveal accent-border">
+    <p class="section-label">The problem</p>
+    <h2>Drug companies are blocking access</h2>
+    <p>Several large drug makers have <strong>illegally stopped</strong> giving 340B discounts at community and specialty pharmacies. Others want to switch to a rebate model — forcing cash-strapped hospitals to pay full price upfront and wait for refunds. Rural patients rely on these pharmacies for expensive drugs.</p>
   </section>
 
-  <section id="community-benefit" class="alt reveal">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg class="icon-fill" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></span>
-      <div><p class="section-label">Impact</p><h2>Community benefit</h2></div>
-    </div>
-    <p class="section-intro">340B savings help hospitals provide free care for uninsured patients, free vaccines, mental health services, medication management, mobile mammography, screening, dental care, and more. Without this support, communities could lose access to lifesaving care.</p>
-    <div class="highlight-box">
-      <p class="big-stat">$<span class="count-up" data-count-up="100" data-decimals="0">0</span>B</p>
-      <p style="margin:0;font-size:0.88rem;color:var(--muted);">Community benefits from 340B hospitals in 2022 — <strong>47% increase</strong> from 2019 (AHA).</p>
-    </div>
-  </section>
-
-  <section id="access" class="reveal issue-callout">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m12 2 10 18H2L12 2z"/><path d="M12 9v4M12 15h.01"/></svg></span>
-      <div><p class="section-label">The problem</p><h2>Access at risk</h2></div>
-    </div>
-    <p class="section-intro"><strong>Manufacturers are unlawfully limiting 340B access.</strong> Several large drug companies have unilaterally stopped providing discounts for 340B drugs dispensed through community and specialty pharmacies — violating the 340B statute. Others are pushing to convert the program from an <strong>upfront discount to a back-end rebate</strong>, which would require cash-strapped providers to finance drugs upfront, complicate patient access, and usurp HRSA’s oversight. Rural and underserved patients depend on contract pharmacies for high-cost drugs.</p>
-  </section>
-
-  <section id="pa-safeguards" class="reveal">
-    <div class="section-header">
-      <span class="section-icon" aria-hidden="true"><svg class="icon-fill" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-      <div><p class="section-label">Pennsylvania</p><h2>PA safeguards: no duplicate discounts</h2></div>
-    </div>
-    <p class="section-intro">HAP supports program integrity and compliance. Pennsylvania’s safeguards include:</p>
-    <ul>
-      <li>Manufacturers need not give both a 340B discount and a Medicaid rebate on the same drug (no duplicate discounts).</li>
-      <li>DHS maintains the <strong>340B Drug Exclusion List</strong> and invoices manufacturers; covered entities may not dispense 340B-priced drugs on the list.</li>
-      <li>Contract pharmacies use non-340B drugs for MA beneficiaries; DHS invoices manufacturers for those rebates.</li>
-    </ul>
-    <p class="hap-position" style="margin-top:0.75rem;">HAP opposes efforts to scale back 340B, impose excessive reporting burdens, or expand regulatory burden — and supports expanding the program to reach more vulnerable communities.</p>
+  <section id="pa-safeguards" class="section reveal">
+    <p class="section-label">Pennsylvania</p>
+    <h2>How PA prevents abuse</h2>
+    <p>PA has strong safeguards: no double discounts, a state exclusion list, and clear rules for contract pharmacies. HAP supports expanding 340B to reach more vulnerable communities — not scaling it back.</p>
   </section>
 
 </main>
 
 <footer>
   <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
-  <p style="margin:0.75rem 0 0;"><strong>Hospital &amp;&#32;Healthsystem Association of Pennsylvania (HAP)</strong></p>
+  <p style="margin:0.75rem 0 0;"><strong>Hospital &amp; Healthsystem Association of Pennsylvania (HAP)</strong></p>
 </footer>
 </div>
 
@@ -421,260 +340,103 @@
 (function() {
   var FIPS_TO_ABBR = { 1:"AL",2:"AK",4:"AZ",5:"AR",6:"CA",8:"CO",9:"CT",10:"DE",11:"DC",12:"FL",13:"GA",15:"HI",16:"ID",17:"IL",18:"IN",19:"IA",20:"KS",21:"KY",22:"LA",23:"ME",24:"MD",25:"MA",26:"MI",27:"MN",28:"MS",29:"MO",30:"MT",31:"NE",32:"NV",33:"NH",34:"NJ",35:"NM",36:"NY",37:"NC",38:"ND",39:"OH",40:"OK",41:"OR",42:"PA",44:"RI",45:"SC",46:"SD",47:"TN",48:"TX",49:"UT",50:"VT",51:"VA",53:"WA",54:"WV",55:"WI",56:"WY" };
   var STATE_NAMES = { AL:"Alabama",AK:"Alaska",AZ:"Arizona",AR:"Arkansas",CA:"California",CO:"Colorado",CT:"Connecticut",DE:"Delaware",DC:"D.C.",FL:"Florida",GA:"Georgia",HI:"Hawaii",ID:"Idaho",IL:"Illinois",IN:"Indiana",IA:"Iowa",KS:"Kansas",KY:"Kentucky",LA:"Louisiana",ME:"Maine",MD:"Maryland",MA:"Massachusetts",MI:"Michigan",MN:"Minnesota",MS:"Mississippi",MO:"Missouri",MT:"Montana",NE:"Nebraska",NV:"Nevada",NH:"New Hampshire",NJ:"New Jersey",NM:"New Mexico",NY:"New York",NC:"North Carolina",ND:"North Dakota",OH:"Ohio",OK:"Oklahoma",OR:"Oregon",PA:"Pennsylvania",RI:"Rhode Island",SC:"South Carolina",SD:"South Dakota",TN:"Tennessee",TX:"Texas",UT:"Utah",VT:"Vermont",VA:"Virginia",WA:"Washington",WV:"West Virginia",WI:"Wisconsin",WY:"Wyoming" };
-  function getStateAbbr(d) {
-      if (!d) return null;
-      var id = d.id != null ? d.id : (d.properties && (d.properties.FIPS || d.properties.STATE));
-      if (id == null || id === "") return null;
-      var num = parseInt(id, 10);
-      if (!isNaN(num)) id = num;
-      return FIPS_TO_ABBR[id] || FIPS_TO_ABBR[String(id)] || null;
-    }
-  function getStateName(abbr, d) {
-      var name = (abbr && (STATE_NAMES[abbr] || STATE_NAMES[String(abbr).toUpperCase()])) || (d && d.properties && d.properties.name);
-      return name && String(name).trim() ? String(name) : (abbr || "State");
-    }
-  var STATE_340B = { AL:{y:2021,pbm:true,cp:false,notes:""}, AZ:{y:2022,pbm:true,cp:false,notes:""}, AR:{y:2021,pbm:true,cp:true,notes:"First to enact; upheld in court. Same bill."}, CA:{y:2023,pbm:true,cp:false,notes:""}, CO:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy bill 2025. Reporting in 340B bill."}, CT:{y:2023,pbm:true,cp:false,notes:""}, GA:{y:2020,pbm:true,cp:false,notes:""}, HI:{y:2025,pbm:false,cp:true,notes:"Reporting required."}, IL:{y:2022,pbm:true,cp:false,notes:""}, IN:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill."}, IA:{y:2023,pbm:true,cp:false,notes:""}, KS:{y:2024,pbm:false,cp:true,notes:""}, KY:{y:2020,pbm:true,cp:false,notes:""}, LA:{y:2023,pbm:true,cp:true,notes:"Same bill. Upheld in court."}, ME:{y:2025,pbm:false,cp:true,notes:"Reporting required. Hybrid 2025."}, MD:{y:2024,pbm:false,cp:true,notes:""}, MA:{y:null,pbm:false,cp:false,notes:""}, MI:{y:2022,pbm:true,cp:false,notes:""}, MN:{y:2019,pbm:true,cp:true,notes:"Contract pharmacy 2024. Reporting separate. Upheld in court."}, MS:{y:2024,pbm:true,cp:true,notes:"Same bill."}, MO:{y:2024,pbm:false,cp:true,notes:"Upheld in court."}, MT:{y:2021,pbm:true,cp:false,notes:""}, NE:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, NV:{y:2023,pbm:true,cp:false,notes:""}, NH:{y:2024,pbm:true,cp:false,notes:""}, NJ:{y:null,pbm:false,cp:false,notes:""}, NM:{y:2023,pbm:true,cp:true,notes:"Contract pharmacy applies to CHCs only. Separate bills."}, NY:{y:null,pbm:false,cp:false,notes:""}, NC:{y:2021,pbm:true,cp:false,notes:""}, ND:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, OH:{y:2021,pbm:true,cp:false,notes:"Reporting in separate bill. Hybrid 2025."}, OK:{y:2025,pbm:false,cp:true,notes:""}, OR:{y:2025,pbm:true,cp:true,notes:"Contract pharmacy signed June 2025. Multiple bills."}, PA:{y:null,pbm:false,cp:false,notes:"In progress — Pennsylvania is moving toward 340B contract pharmacy protection legislation."}, RI:{y:2025,pbm:true,cp:true,notes:"Same bill, reporting. Signed June 2025. Upheld in court."}, SC:{y:null,pbm:false,cp:false,notes:""}, SD:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2025. PBM 2019, 2024."}, TN:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025; restrictions after 2025. Upheld in court."}, TX:{y:null,pbm:false,cp:false,notes:""}, UT:{y:2020,pbm:true,cp:true,notes:"Contract pharmacy 2025. Separate bills."}, VT:{y:2021,pbm:true,cp:true,notes:"Contract pharmacy 2025. Hybrid 2025."}, VA:{y:2021,pbm:true,cp:false,notes:"Governor has vetoed 340B protection legislation."}, WA:{y:null,pbm:false,cp:false,notes:"340B reporting required; no protection law."}, WV:{y:2024,pbm:true,cp:true,notes:"Contract pharmacy 2024. PBM 2019, 2021."}, WI:{y:null,pbm:false,cp:false,notes:""}, WY:{y:null,pbm:false,cp:false,notes:""}, FL:{y:null,pbm:false,cp:false,notes:""}, DE:{y:null,pbm:false,cp:false,notes:""}, ID:{y:null,pbm:false,cp:false,notes:"340B reporting; no protection law."}, DC:{y:null,pbm:false,cp:false,notes:""} };
+  function getStateAbbr(d) { var id = d.id != null ? d.id : (d.properties && (d.properties.FIPS || d.properties.STATE)); if (!id) return null; var n = parseInt(id,10); return FIPS_TO_ABBR[!isNaN(n)?n:id] || FIPS_TO_ABBR[String(id)] || null; }
+  function getStateName(abbr,d) { return (abbr && STATE_NAMES[abbr]) || (d&&d.properties&&d.properties.name) || abbr || "State"; }
+  var STATE_340B = { AL:{y:2021,pbm:true,cp:false,notes:""}, AZ:{y:2022,pbm:true,cp:false,notes:""}, AR:{y:2021,pbm:true,cp:true,notes:"First to enact; upheld in court."}, CA:{y:2023,pbm:true,cp:false,notes:""}, CO:{y:2022,pbm:true,cp:true,notes:"Contract pharmacy 2025."}, CT:{y:2023,pbm:true,cp:false,notes:""}, GA:{y:2020,pbm:true,cp:false,notes:""}, HI:{y:2025,pbm:false,cp:true,notes:"Reporting required."}, IL:{y:2022,pbm:true,cp:false,notes:""}, IN:{y:2021,pbm:true,cp:false,notes:""}, IA:{y:2023,pbm:true,cp:false,notes:""}, KS:{y:2024,pbm:false,cp:true,notes:""}, KY:{y:2020,pbm:true,cp:false,notes:""}, LA:{y:2023,pbm:true,cp:true,notes:"Upheld in court."}, ME:{y:2025,pbm:false,cp:true,notes:"Hybrid 2025."}, MD:{y:2024,pbm:false,cp:true,notes:""}, MA:{y:null,pbm:false,cp:false,notes:""}, MI:{y:2022,pbm:true,cp:false,notes:""}, MN:{y:2019,pbm:true,cp:true,notes:"Upheld in court."}, MS:{y:2024,pbm:true,cp:true,notes:""}, MO:{y:2024,pbm:false,cp:true,notes:"Upheld in court."}, MT:{y:2021,pbm:true,cp:false,notes:""}, NE:{y:2022,pbm:true,cp:true,notes:""}, NV:{y:2023,pbm:true,cp:false,notes:""}, NH:{y:2024,pbm:true,cp:false,notes:""}, NJ:{y:null,pbm:false,cp:false,notes:""}, NM:{y:2023,pbm:true,cp:true,notes:""}, NY:{y:null,pbm:false,cp:false,notes:""}, NC:{y:2021,pbm:true,cp:false,notes:""}, ND:{y:2021,pbm:true,cp:true,notes:""}, OH:{y:2021,pbm:true,cp:false,notes:"Hybrid 2025."}, OK:{y:2025,pbm:false,cp:true,notes:""}, OR:{y:2025,pbm:true,cp:true,notes:""}, PA:{y:null,pbm:false,cp:false,notes:"In progress."}, RI:{y:2025,pbm:true,cp:true,notes:"Upheld in court."}, SC:{y:null,pbm:false,cp:false,notes:""}, SD:{y:2024,pbm:true,cp:true,notes:""}, TN:{y:2021,pbm:true,cp:true,notes:"Upheld in court."}, TX:{y:null,pbm:false,cp:false,notes:""}, UT:{y:2020,pbm:true,cp:true,notes:""}, VT:{y:2021,pbm:true,cp:true,notes:"Hybrid 2025."}, VA:{y:2021,pbm:true,cp:false,notes:"Governor vetoed protection."}, WA:{y:null,pbm:false,cp:false,notes:""}, WV:{y:2024,pbm:true,cp:true,notes:""}, WI:{y:null,pbm:false,cp:false,notes:""}, WY:{y:null,pbm:false,cp:false,notes:""}, FL:{y:null,pbm:false,cp:false,notes:""}, DE:{y:null,pbm:false,cp:false,notes:""}, ID:{y:null,pbm:false,cp:false,notes:""}, DC:{y:null,pbm:false,cp:false,notes:""} };
   var STATES_WITH_PROTECTION = ["AR","CO","HI","KS","LA","ME","MD","MN","MS","MO","NE","NM","ND","OK","OR","RI","SD","TN","UT","VT","WV"];
 
   function drawMap() {
-    var container = document.getElementById("us-map");
-    if (!container) return;
-    var width = Math.min(container.offsetWidth || 640, 700);
-    var height = Math.round(width * 0.55);
-
-    if (typeof d3 === "undefined" || typeof topojson === "undefined") {
-      container.innerHTML = "<p style='text-align:center;color:var(--muted);padding:2rem;'>Map loads with D3. Enable script or view state lists below.</p>";
-      return;
-    }
-
-    container.innerHTML = "";
-    var svg = d3.select("#us-map").append("svg").attr("viewBox", [0, 0, width, height]).attr("width", "100%").attr("height", "auto").attr("aria-hidden", "true");
-
-    d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(us) {
-      var states = topojson.feature(us, us.objects.states);
-      var projection = d3.geoAlbersUsa().fitSize([width, height], states);
-      var path = d3.geoPath(projection);
+    var c = document.getElementById("us-map");
+    if (!c) return;
+    var w = Math.min(c.offsetWidth||600,680), h = Math.round(w*0.55);
+    if (typeof d3==="undefined"||typeof topojson==="undefined") { c.innerHTML="<p style='padding:2rem;text-align:center;color:#64748b'>Map loads with D3.</p>"; return; }
+    c.innerHTML="";
+    var svg = d3.select("#us-map").append("svg").attr("viewBox",[0,0,w,h]).attr("width","100%").attr("height","auto");
+    d3.json("https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json").then(function(us){
+      var st = topojson.feature(us,us.objects.states);
+      var proj = d3.geoAlbersUsa().fitSize([w,h],st);
+      var path = d3.geoPath(proj);
       var g = svg.append("g");
-      var indexed = states.features.map(function(d, i) { return { d: d, i: i }; });
-      indexed.sort(function(a, b) { var ca = path.centroid(a.d), cb = path.centroid(b.d); return ca[0] - cb[0]; });
-      indexed.forEach(function(item, order) { item.order = order; });
-      var orderMap = {};
-      indexed.forEach(function(item) { orderMap[item.i] = item.order; });
-      var paths = g.selectAll("path").data(states.features).join("path").attr("class", function(d, i) {
-        var abbr = getStateAbbr(d);
-        var base = "state " + (abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "protection" : "no-protection");
-        return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches ? base : base + " state-domino";
-      }).attr("d", path).attr("data-state", function(d) { return getStateAbbr(d) || (d.id != null ? d.id : ""); }).attr("opacity", 1);
-      paths.each(function(_, i) {
-        var order = orderMap[i] != null ? orderMap[i] : 0;
-        this.style.animationDelay = (order * 38) + "ms";
+      var idx = st.features.map(function(d,i){return{d:d,i:i};});
+      idx.sort(function(a,b){var ca=path.centroid(a.d),cb=path.centroid(b.d);return ca[0]-cb[0];});
+      idx.forEach(function(it,o){it.o=o;});
+      var om={}; idx.forEach(function(it){om[it.i]=it.o;});
+      var reduceMotion = window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      var paths = g.selectAll("path").data(st.features).join("path")
+        .attr("class",function(d,i){var ab=getStateAbbr(d); var b="state "+(ab&&STATES_WITH_PROTECTION.indexOf(ab)>=0?"protection":"no-protection"); return reduceMotion?b:b+" state-domino";})
+        .attr("d",path).attr("data-state",function(d){return getStateAbbr(d)||"";})
+        .each(function(_,i){this.style.animationDelay=(om[i]||0)*35+"ms";});
+      bindMap(paths);
+      var wrap = document.getElementById("us-map-wrap");
+      if (wrap) {
+        if (reduceMotion) wrap.classList.add("visible","map-visible");
+        else {
+          var io = new IntersectionObserver(function(entries){ if(entries[0].isIntersecting){wrap.classList.add("visible","map-visible");} },{threshold:0.1});
+          io.observe(wrap);
+        }
+      }
+    }).catch(function(){ c.innerHTML="<p style='padding:2rem;text-align:center;color:#64748b'>Map unavailable.</p>"; });
+  }
+  function bindMap(paths) {
+    var tt = document.getElementById("map-tooltip"), panel = document.getElementById("state-detail-panel");
+    if (!tt||!panel) return;
+    function place(ev){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY+12)+"px"; }
+    paths.on("mouseenter",function(ev,d){ var ab=getStateAbbr(d); tt.textContent=getStateName(ab,d); place(ev); tt.classList.add("visible"); tt.setAttribute("aria-hidden","false"); })
+      .on("mousemove",place)
+      .on("mouseleave",function(){ tt.classList.remove("visible"); tt.setAttribute("aria-hidden","true"); })
+      .on("click",function(ev,d){
+        ev.stopPropagation();
+        tt.classList.remove("visible");
+        var ab=getStateAbbr(d), name=getStateName(ab,d), data=ab?STATE_340B[ab]:null;
+        panel.classList.remove("empty");
+        if(!data) panel.innerHTML="<h4>"+name+"</h4><p>No state law data.</p>";
+        else {
+          var h="<h4>"+name+"</h4><p><span class='badge "+(data.cp?"yes":"no")+"'>Contract pharmacy: "+(data.cp?"Yes":"No")+"</span> <span class='badge "+(data.pbm?"yes":"no")+"'>PBM: "+(data.pbm?"Yes":"No")+"</span></p>";
+          if(data.y) h+="<p>Law year: "+data.y+"</p>";
+          if(data.notes) h+="<p>"+data.notes+"</p>";
+          panel.innerHTML=h;
+        }
       });
-      bindMapInteractions(paths);
-      scheduleMapFadeIn();
-    }).catch(function() {
-      container.innerHTML = "<p style='text-align:center;color:var(--muted);padding:2rem;'>Map data unavailable. See state lists below.</p>";
-    });
+    document.addEventListener("click",function(ev){ if(!panel.contains(ev.target)&&!ev.target.closest("#us-map path")){ panel.classList.add("empty"); panel.innerHTML="<p>Select a state</p>"; }});
   }
 
-  function scheduleMapFadeIn() {
-    var wrap = document.querySelector(".pa-dashboard .us-map-wrap");
-    if (!wrap) return;
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      wrap.classList.add("map-visible");
-      return;
-    }
-    var once = false;
-    var io = new IntersectionObserver(function(entries) {
-      if (once) return;
-      if (!entries[0].isIntersecting) return;
-      once = true;
-      wrap.classList.add("map-visible");
-    }, { rootMargin: "0px 0px -40px 0px", threshold: 0.1 });
-    io.observe(wrap);
-  }
-
-  function bindMapInteractions(paths) {
-    var tooltip = document.getElementById("map-tooltip");
-    var panel = document.getElementById("state-detail-panel");
-    if (!tooltip || !panel) return;
-    function placeTooltip(ev) {
-      var x = ev.clientX, y = ev.clientY;
-      var offset = 10;
-      tooltip.style.left = x + "px";
-      tooltip.style.top = (y + offset) + "px";
-    }
-    paths.on("mouseenter", function(ev, d) {
-      var abbr = getStateAbbr(d);
-      var name = getStateName(abbr, d);
-      tooltip.textContent = name;
-      placeTooltip(ev);
-      tooltip.classList.add("visible");
-      tooltip.setAttribute("aria-hidden", "false");
-    }).on("mousemove", function(ev) {
-      placeTooltip(ev);
-    }).on("mouseleave", function() {
-      tooltip.classList.remove("visible");
-      tooltip.setAttribute("aria-hidden", "true");
-    }).on("click", function(ev, d) {
-      ev.stopPropagation();
-      tooltip.classList.remove("visible");
-      tooltip.setAttribute("aria-hidden", "true");
-      var abbr = getStateAbbr(d);
-      var name = getStateName(abbr, d);
-      var data = abbr ? STATE_340B[abbr] : null;
-      panel.classList.remove("empty");
-      if (!data) {
-        panel.innerHTML = "<h4>" + name + "</h4><p class=\"state-notes\">No 340B state law data in this snapshot. Check state sources for current status.</p>";
-        return;
-      }
-      var html = "<h4>" + name + "</h4>";
-      html += "<p class=\"state-stat\"><span class=\"badge " + (data.cp ? "yes" : "no") + "\">Contract pharmacy protection: " + (data.cp ? "Yes" : "No") + "</span>";
-      html += "<span class=\"badge " + (data.pbm ? "yes" : "no") + "\">PBM protections: " + (data.pbm ? "Yes" : "No") + "</span></p>";
-      if (data.y) html += "<p class=\"state-stat\"><strong>First/notable law year:</strong> " + data.y + "</p>";
-      if (data.notes) html += "<p class=\"state-notes\">" + data.notes + "</p>";
-      panel.innerHTML = html;
-    });
-    document.addEventListener("click", function(ev) {
-      if (!panel.contains(ev.target) && !ev.target.closest(".us-map-wrap path")) {
-        panel.classList.add("empty");
-        panel.innerHTML = "<p>Select a state on the map to view 340B status.</p>";
-      }
+  function initStateListHover() {
+    var tt = document.getElementById("state-list-tooltip");
+    if (!tt) return;
+    document.querySelectorAll(".state-chip").forEach(function(chip){
+      var ab = chip.getAttribute("data-state"), data = ab ? STATE_340B[ab] : null;
+      chip.setAttribute("title", (STATE_NAMES[ab]||ab) + (data&&data.notes ? ": "+data.notes : ""));
+      chip.addEventListener("mouseenter",function(ev){
+        var name = STATE_NAMES[ab]||ab;
+        var html = "<strong>"+name+"</strong>";
+        if(data){ html += " <span class='badge "+(data.cp?"yes":"no")+"'>CP: "+(data.cp?"Yes":"No")+"</span> <span class='badge "+(data.pbm?"yes":"no")+"'>PBM: "+(data.pbm?"Yes":"No")+"</span>"; if(data.y) html+="<br>Year: "+data.y; if(data.notes) html+="<br>"+data.notes; }
+        tt.innerHTML = html; tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-14)+"px"; tt.classList.add("visible");
+      });
+      chip.addEventListener("mousemove",function(ev){ tt.style.left=ev.clientX+"px"; tt.style.top=(ev.clientY-14)+"px"; });
+      chip.addEventListener("mouseleave",function(){ tt.classList.remove("visible"); });
     });
   }
 
   function initCountUp() {
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document.querySelectorAll(".pa-dashboard [data-count-up]").forEach(function(el) {
-        var target = parseFloat(el.getAttribute("data-count-up"));
-        var suffix = el.getAttribute("data-suffix") || "";
-        var decimals = parseInt(el.getAttribute("data-decimals"), 10) || 0;
-        el.textContent = (decimals ? target.toFixed(decimals) : Math.round(target).toString()) + suffix;
-      });
+    var els = document.querySelectorAll("[data-count-up]");
+    if (window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      els.forEach(function(el){ var t=parseFloat(el.getAttribute("data-count-up")); var s=el.getAttribute("data-suffix")||""; var d=parseInt(el.getAttribute("data-decimals"),10)||0; el.textContent=(d?t.toFixed(d):Math.round(t))+s; });
       return;
     }
-    var els = document.querySelectorAll(".pa-dashboard [data-count-up]");
-    if (!els.length) return;
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (!entry.isIntersecting) return;
-        var el = entry.target;
-        if (el.dataset.countUpDone) return;
-        el.dataset.countUpDone = "1";
-        var target = parseFloat(el.getAttribute("data-count-up"));
-        var suffix = el.getAttribute("data-suffix") || "";
-        var prefix = el.getAttribute("data-prefix") || "";
-        var decimals = parseInt(el.getAttribute("data-decimals"), 10) || 0;
-        var duration = 1400;
-        var start = performance.now();
-        function update(now) {
-          var t = Math.min((now - start) / duration, 1);
-          t = 1 - Math.pow(1 - t, 2);
-          var v = target * t;
-          var text = prefix + (decimals ? v.toFixed(decimals) : Math.round(v).toString()) + suffix;
-          el.textContent = text;
-          if (t < 1) requestAnimationFrame(update);
-        }
-        requestAnimationFrame(update);
-      });
-    }, { rootMargin: "0px 0px -60px 0px", threshold: 0.1 });
-    els.forEach(function(el) { observer.observe(el); });
-  }
-
-  function initStateListHover() {
-    var tooltip = document.getElementById("state-list-tooltip");
-    if (!tooltip) return;
-    document.querySelectorAll(".pa-dashboard .state-chip").forEach(function(chip) {
-      var abbr = chip.getAttribute("data-state");
-      var data = abbr ? STATE_340B[abbr] : null;
-      var title = (STATE_NAMES[abbr] || abbr) + ": " + (data && data.notes ? data.notes : (data ? "CP " + (data.cp ? "Yes" : "No") + ", PBM " + (data.pbm ? "Yes" : "No") : "No data"));
-      chip.setAttribute("title", title);
-      chip.addEventListener("mouseenter", function(ev) {
-        var abbr = chip.getAttribute("data-state");
-        var name = STATE_NAMES[abbr] || abbr;
-        var data = abbr ? STATE_340B[abbr] : null;
-        var html = "<strong>" + name + "</strong>";
-        if (data) {
-          html += "<span class=\"badge " + (data.cp ? "yes" : "no") + "\">Contract pharmacy: " + (data.cp ? "Yes" : "No") + "</span> ";
-          html += "<span class=\"badge " + (data.pbm ? "yes" : "no") + "\">PBM: " + (data.pbm ? "Yes" : "No") + "</span>";
-          if (data.y) html += "<br>Law year: " + data.y;
-          if (data.notes) html += "<br>" + data.notes;
-        } else {
-          html += "<br>No 340B state law data in this snapshot.";
-        }
-        tooltip.innerHTML = html;
-        placeStateTooltip(ev);
-        tooltip.classList.add("visible");
-        tooltip.setAttribute("aria-hidden", "false");
-      });
-      chip.addEventListener("mousemove", placeStateTooltip);
-      chip.addEventListener("mouseleave", function() {
-        tooltip.classList.remove("visible");
-        tooltip.setAttribute("aria-hidden", "true");
-      });
-    });
-    function placeStateTooltip(ev) {
-      var x = ev.clientX, y = ev.clientY;
-      tooltip.style.left = x + "px";
-      tooltip.style.top = (y - 12) + "px";
-    }
+    var obs = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(!e.isIntersecting) return; var el=e.target; if(el.dataset.done) return; el.dataset.done="1"; var t=parseFloat(el.getAttribute("data-count-up")), s=el.getAttribute("data-suffix")||"", d=parseInt(el.getAttribute("data-decimals"),10)||0, start=performance.now(); function up(now){ var x=Math.min((now-start)/1200,1); x=1-Math.pow(1-x,2); el.textContent=(d?(t*x).toFixed(d):Math.round(t*x))+s; if(x<1) requestAnimationFrame(up); } requestAnimationFrame(up); }); },{threshold:0.1});
+    els.forEach(function(el){ obs.observe(el); });
   }
 
   function initReveal() {
-    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      document.querySelectorAll(".pa-dashboard section.reveal").forEach(function(s) { s.classList.add("visible"); });
-      return;
-    }
-    var sections = document.querySelectorAll(".pa-dashboard section.reveal");
-    var observer = new IntersectionObserver(function(entries) {
-      entries.forEach(function(entry) {
-        if (entry.isIntersecting) entry.target.classList.add("visible");
-      });
-    }, { rootMargin: "0px 0px -80px 0px", threshold: 0.05 });
-    sections.forEach(function(s) { observer.observe(s); });
+    if (window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches) document.querySelectorAll(".section.reveal").forEach(function(s){ s.classList.add("visible"); });
+    else { var obs = new IntersectionObserver(function(entries){ entries.forEach(function(e){ if(e.isIntersecting) e.target.classList.add("visible"); }); },{threshold:0.05}); document.querySelectorAll(".section.reveal").forEach(function(s){ obs.observe(s); }); }
   }
 
-var lastMapWidth = 0;
-  var isTouch = typeof window !== "undefined" && ("ontouchstart" in window || navigator.maxTouchPoints > 0);
-  function onResize() {
-    if (isTouch) return;
-    var container = document.getElementById("us-map");
-    if (!container) return;
-    var w = container.offsetWidth;
-    if (Math.abs(w - lastMapWidth) < 40 && lastMapWidth > 0) return;
-    lastMapWidth = w;
-    drawMap();
-  }
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function() {
-      drawMap();
-      var c = document.getElementById("us-map");
-      if (c) lastMapWidth = c.offsetWidth;
-      initCountUp();
-      initReveal();
-      initStateListHover();
-      if (!isTouch) {
-        var resizeT;
-        window.addEventListener("resize", function() {
-          clearTimeout(resizeT);
-          resizeT = setTimeout(onResize, 350);
-        });
-      }
-    });
-  } else {
-    drawMap();
-    var c = document.getElementById("us-map");
-    if (c) lastMapWidth = c.offsetWidth;
-    initCountUp();
-    initReveal();
-    initStateListHover();
-    if (!isTouch) {
-      var resizeT;
-      window.addEventListener("resize", function() {
-        clearTimeout(resizeT);
-        resizeT = setTimeout(onResize, 350);
-      });
-    }
-  }
+  var lastW=0, touch = "ontouchstart" in window || navigator.maxTouchPoints>0;
+  function resize(){ if(touch) return; var c=document.getElementById("us-map"); if(!c) return; var w=c.offsetWidth; if(Math.abs(w-lastW)<40 && lastW) return; lastW=w; drawMap(); }
+  function go(){ drawMap(); var c=document.getElementById("us-map"); if(c) lastW=c.offsetWidth; initCountUp(); initReveal(); initStateListHover(); if(!touch) window.addEventListener("resize",function(){ clearTimeout(window._rt); window._rt=setTimeout(resize,300); }); }
+  if (document.readyState==="loading") document.addEventListener("DOMContentLoaded",go);
+  else go();
 })();
 </script>
 </body>
