@@ -1154,3 +1154,91 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 ### V13.10 Continuous Improvement Seed
 
 > Treat future changes as part of a loop: inspect real weaknesses, improve the code, update the docs, update the checklist, then generate the next prompt seeds.
+
+---
+
+## Prompts v14
+
+### V14.1 Print Intro Preservation Pass
+
+> Treat the first screen of the live dashboard as mandatory print content. Ensure the print/PDF output always includes the `Overview`, `What is 340B?`, `HAP Position`, and `HAP asks lawmakers` content even if layout, animation, grid behavior, or browser print rendering changes later.
+
+### V14.2 PDF-Only Executive Reader Pass
+
+> Re-read the exported PDF as if the audience never uses the interactive dashboard. Improve the printed narrative so a lawmaker, hospital CEO, or administrator can understand the issue, the policy position, and the data credibility without needing hover states, animation, or live interactions.
+
+### V14.3 Print Source Credibility Pass
+
+> Make sure the printed version still surfaces data provenance and recency. Preserve a compact “About this data” summary, key sources, and a clear last-updated marker in print without cluttering the live experience.
+
+### V14.4 Release-Gate Tightening Pass
+
+> Promote the most failure-prone dashboard checks into explicit release gates: print intro presence, final KPI numbers, visible map, share-link truthfulness, and audit success. Remove vague checklist items that do not catch regressions.
+
+### V14.5 Novice Print Debugging Pass
+
+> Refactor print-related code and docs so a first-time maintainer can answer three questions quickly: where print preparation happens, how final metric values are forced, and how to verify that the PDF reflects the live dashboard’s final state.
+
+### V14.6 Policy Audience Copy Precision Pass
+
+> Rework any sentence that sounds generic, promotional, or imprecise for policymakers and hospital leadership. Prefer exact statements about what 340B does, what HAP supports, and what lawmakers are being asked to protect.
+
+### V14.7 Layout Resilience Pass
+
+> Reduce dependence on fragile live-layout assumptions for printed output. Where a browser print engine might drop, reorder, or clip content, add a more explicit print-safe structure instead of hoping the interactive layout survives.
+
+### V14.8 Audit Truthfulness Pass
+
+> Keep the audit tool honest. Only automate checks that are small, reliable, and understandable by a novice. If a quality check still requires human judgment, document it clearly instead of pretending the script covers it.
+
+### V14.9 Prompt Specificity Pass
+
+> Make future prompt waves more concrete: each prompt should name the exact surface being improved, the target audience affected, the failure mode being prevented, and the limit that should not be crossed.
+
+### V14.10 Stability-First Optimization Pass
+
+> Favor improvements that make the existing dashboard more robust, maintainable, and production-safe over decorative churn. Optimization should improve reliability, clarity, or maintainability, not just novelty.
+
+---
+
+## Prompts v15
+
+### V15.1 Executive Summary Continuity Pass
+
+> Ensure the dashboard tells the same story in three modes: live screen, shared link, and printed PDF. The core message should remain intact across all three even when interactive affordances disappear.
+
+### V15.2 Print Regression Checklist Pass
+
+> Expand the QA checklist so a maintainer can quickly catch print regressions in the exact places they are most likely to occur: opening summary, state selection context, map rendering, final values, data recency, and blank-page failures.
+
+### V15.3 Security-and-Reliability Handoff Pass
+
+> Tighten the handoff docs so a novice maintainer understands which changes are “high risk” in this static site: DOM rendering, share logic, URL hash state, print preparation, external links, and vendor assets.
+
+### V15.4 Print Code Comment Pass
+
+> Add or improve comments only where they materially help a novice understand print preparation, final-state rendering, and why the code avoids relying on in-progress animations during export.
+
+### V15.5 Context-for-Lawmakers Pass
+
+> Reassess the dashboard’s framing for a policymaker audience. The copy should clarify what the program is, why contract pharmacy access matters, and what action HAP is asking lawmakers to protect, without drifting into vague advocacy slogans.
+
+### V15.6 Context-for-Hospital-Leaders Pass
+
+> Reassess the dashboard’s framing for CEOs, administrators, and strategy leaders. Make sure the PDF communicates operational stakes, patient-access implications, and data reliability with minimal jargon.
+
+### V15.7 Local-Only Trust Pass
+
+> Reconfirm that the dashboard stays self-contained and deployment-friendly for corporate or nonprofit environments: local assets, safe DOM APIs, narrow input handling, and no unnecessary remote dependencies.
+
+### V15.8 Prompt-to-Outcome Pass
+
+> Before adding another wave, identify which prompts actually produced meaningful code, UX, documentation, or security improvements. Prefer prompts that lead to real outcomes over abstract self-improvement language.
+
+### V15.9 Small-System Discipline Pass
+
+> Keep the project small enough for one novice maintainer. When adding resilience, prefer straightforward structure, obvious naming, and low-complexity checks over layered abstractions.
+
+### V15.10 Honest Optimization Pass
+
+> Define optimization as a balance of readability, reliability, security basics, print fidelity, and audience clarity. Reject “optimized” changes that make the project harder to understand or easier to break.

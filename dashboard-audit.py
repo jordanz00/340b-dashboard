@@ -185,6 +185,27 @@ def check_removed_feature_copy(results: list[str]) -> bool:
     return okay
 
 
+def check_print_structure(results: list[str]) -> bool:
+    html = read_text(ROOT / "340b.html")
+    required_snippets = [
+        'class="print-report-header print-only"',
+        'class="print-executive-summary print-only"',
+        'class="print-sources print-only"',
+        'id="btn-print"',
+        'id="print-last-updated"',
+        'id="print-methodology-last-updated"',
+    ]
+    missing = [snippet for snippet in required_snippets if snippet not in html]
+
+    if missing:
+        for snippet in missing:
+            record(results, False, f"340b.html is missing expected print structure snippet `{snippet}`")
+        return False
+
+    record(results, True, "340b.html includes the expected print header, executive summary, and source summary structure")
+    return True
+
+
 def check_prompt_waves(results: list[str]) -> bool:
     prompts = read_text(PROMPTS_FILE)
     required_sections = [
@@ -193,6 +214,8 @@ def check_prompt_waves(results: list[str]) -> bool:
         "## Prompts v11",
         "## Prompts v12",
         "## Prompts v13",
+        "## Prompts v14",
+        "## Prompts v15",
     ]
     missing = [section for section in required_sections if section not in prompts]
 
@@ -201,7 +224,7 @@ def check_prompt_waves(results: list[str]) -> bool:
             record(results, False, f"Prompt library is missing section `{section}`")
         return False
 
-    record(results, True, "Prompt library contains v09 through v13 sections")
+    record(results, True, "Prompt library contains v09 through v15 sections")
     return True
 
 
@@ -215,6 +238,7 @@ def main() -> int:
         check_page_hardening,
         check_remote_assets,
         check_removed_feature_copy,
+        check_print_structure,
         check_prompt_waves,
     ]
 

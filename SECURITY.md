@@ -30,9 +30,10 @@ Run these checks after meaningful edits:
 3. Verify all outbound links that open a new tab use `rel="noopener noreferrer"`.
 4. Confirm the Share button still copies a canonical URL.
 5. Confirm the map fallback still works if map assets fail.
-6. Re-check print/PDF output after layout changes.
-7. Run `python3 dashboard-audit.py` for the project’s lightweight built-in audit.
-8. Run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` for a deeper SAST scan when security-sensitive code changes.
+6. Re-check print/PDF output after layout changes, including the overview, HAP position, map visibility, and final metric values.
+7. Confirm the PDF still reads clearly for a lawmaker, hospital CEO, or hospital administrator who may never open the live dashboard.
+8. Run `python3 dashboard-audit.py` for the project’s lightweight built-in audit.
+9. Run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` for a deeper SAST scan when security-sensitive code changes.
 
 ## Things to avoid
 

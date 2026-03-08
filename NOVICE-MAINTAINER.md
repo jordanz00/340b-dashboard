@@ -43,3 +43,16 @@ Edit this when you need to change:
 - Use `QA-CHECKLIST.md` before pushing changes.
 - Run `python3 dashboard-audit.py` after meaningful edits so the project checks for common regressions.
 - Read `THREAT-MODEL.md` before making security-related changes or adding any remote service, auth flow, or external script.
+
+## Simple release order
+
+Follow this order after meaningful changes:
+
+1. Update the content or behavior.
+2. Open the page through a local server and test the changed feature.
+3. Open `Print / PDF` and confirm the print version still includes the overview, HAP position, map, and final numbers.
+4. Run `python3 dashboard-audit.py`.
+5. Use `QA-CHECKLIST.md`.
+6. Run Semgrep if you changed security-sensitive code.
+
+If the printed PDF would confuse a lawmaker, hospital CEO, or administrator, treat that as a real bug and fix it before publishing.

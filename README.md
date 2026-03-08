@@ -78,7 +78,12 @@ No package install is required for the dashboard itself.
 
 ## Maintenance workflow
 
-- Use `NOVICE-MAINTAINER.md` for file-by-file editing guidance.
-- Use `QA-CHECKLIST.md` before pushing updates.
-- Run `python3 dashboard-audit.py` after meaningful code or content changes.
-- For deeper static analysis, run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .`
+Use this order to keep the project easy to maintain:
+
+1. Update content in `state-data.js` or structure in `340b.html`.
+2. Update behavior in `340b.js` only if the change is interactive.
+3. Open the dashboard locally and test the changed feature.
+4. Open `Print / PDF` and confirm the PDF-only reader still sees the overview, HAP position, map, and final metric values.
+5. Run `python3 dashboard-audit.py`.
+6. Use `QA-CHECKLIST.md`.
+7. For deeper static analysis after security-sensitive changes, run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .`.

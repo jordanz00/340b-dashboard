@@ -67,7 +67,8 @@
       methodologyContent: document.getElementById("methodology-content"),
       dataFreshness: document.getElementById("data-freshness-text"),
       methodologyLastUpdated: document.getElementById("methodology-last-updated"),
-      printLastUpdated: document.getElementById("print-last-updated")
+      printLastUpdated: document.getElementById("print-last-updated"),
+      printMethodologyLastUpdated: document.getElementById("print-methodology-last-updated")
     };
   }
 
@@ -268,6 +269,7 @@
     }
     if (appState.dom.methodologyLastUpdated) appState.dom.methodologyLastUpdated.textContent = config.lastUpdated;
     if (appState.dom.printLastUpdated) appState.dom.printLastUpdated.textContent = config.lastUpdated;
+    if (appState.dom.printMethodologyLastUpdated) appState.dom.printMethodologyLastUpdated.textContent = config.lastUpdated;
   }
 
   function updateSelectionSummary(abbr) {

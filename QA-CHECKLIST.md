@@ -24,11 +24,13 @@ Use this checklist before pushing dashboard changes.
 ## Print / PDF
 
 1. Open print preview from the `Print / PDF` button.
-2. Confirm KPI values show final numbers, not `0`.
-3. Confirm the map is visible.
-4. Confirm there are no unexpected blank pages.
-5. Confirm the selected state summary prints when a state is selected.
-6. Confirm the print header shows the title and last-updated date.
+2. Confirm the print intro includes `Overview`, `What is 340B?`, `HAP Position`, and `HAP asks lawmakers`.
+3. Confirm the print version includes the `About this data` summary and last-updated date.
+4. Confirm KPI values show final numbers, not `0`.
+5. Confirm the map is visible.
+6. Confirm there are no unexpected blank pages.
+7. Confirm the selected state summary prints when a state is selected.
+8. Confirm the print header shows the title and last-updated date.
 
 ## Accessibility and fallback
 
@@ -41,4 +43,5 @@ Use this checklist before pushing dashboard changes.
 
 1. Confirm `dataFreshness`, `lastUpdated`, and `shareUrlBase` are correct in `state-data.js`.
 2. Confirm source links are still valid and use `rel="noopener noreferrer"`.
-3. Confirm `README.md`, `SECURITY.md`, and `DATA-UPDATE.md` still match the current behavior.
+3. Confirm the printed dashboard still makes sense to a PDF-only reader such as a lawmaker, hospital CEO, or administrator.
+4. Confirm `README.md`, `SECURITY.md`, `NOVICE-MAINTAINER.md`, and `DATA-UPDATE.md` still match the current behavior.
