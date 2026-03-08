@@ -1,0 +1,158 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2818
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fswiss\fcharset0 Helvetica-Bold;}
+{\colortbl;\red255\green255\blue255;}
+{\*\expandedcolortbl;;}
+\vieww12000\viewh15840\viewkind0
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 Project Overview: How I Built the HAP Interactive Dashboards Using Cursor AI\
+\
+
+\f1\b Prepared for:
+\f0\b0  [Supervisor Name]\
+
+\f1\b From:
+\f0\b0  [Your Name]\
+
+\f1\b Date:
+\f0\b0  [Date]\
+\
+\pard\tx720\pardeftab720\partightenfactor0
+\cf0 ---\
+\
+
+\f1\b What I'm Doing\
+
+\f0\b0 \
+I'm creating 
+\f1\b interactive web dashboards
+\f0\b0  that turn HAP's policy and financial reports into visual, explorable experiences. Instead of relying only on PDFs and static documents, we can now offer legislators, hospital leaders, and the public tools they can click through, filter, and interact with all in a browser, with no special software required.\
+\
+
+\f1\b The Two Projects\
+
+\f0\b0 \
+1. 
+\f1\b "Time to Act" Pennsylvania Hospitals Dashboard
+\f0\b0   Based on the Oliver Wyman report on hospital financial sustainability. Users can see economic impact metrics, hospital financial health data, closure maps, and 2030 scenarios. They can also adjust policy levers (e.g., reimbursement, sequestration) and see how outcomes change.\
+\
+2. 
+\f1\b 340B Drug Pricing Advocacy Dashboard
+\f0\b0  An interactive U.S. map showing state-by-state 340B and contract pharmacy protections. Users can click states for details, see Pennsylvania's position, and understand the $7.95B in community benefits and 72 PA hospitals in the program.\
+\
+---\
+\
+
+\f1\b How I Made This\
+
+\f0\b0 \
+I used 
+\f1\b Cursor
+\f0\b0 , an AI-powered code editor, to design and build these dashboards. Here's the workflow:\
+\
+
+\f1\b 1. Defining the Goal\
+
+\f0\b0 I started with the source material, the Oliver Wyman report text, the 340B state laws data (CSV), and HAP's messaging. I had to understand what the data meant, who the audience was, and what actions we wanted people to take.\
+\
+
+\f1\b 2. Describing What I Wanted\
+
+\f0\b0 In Cursor, I described what I needed in plain English for example: "Create an interactive map of the U.S. where each state is clickable and shows its 340B protection status" or "Add a section with policy levers that let users toggle options and see updated outcomes." The AI suggested code, structure, and design patterns.\
+\
+
+\f1\b 3. Iterating and Refining\
+
+\f0\b0 I didn't accept the first output. I reviewed it for accuracy, brand alignment, and usability. I asked for changes: "Make the chart mobile-friendly," "Use HAP blue (#0066a1) for the primary color," "Add ARIA labels for accessibility." Each round of feedback improved the result.\
+\
+
+\f1\b 4. Integrating Data and Brand\
+
+\f0\b0 I connected the dashboards to real data (e.g., the 340B state laws CSV) and ensured HAP branding colors, fonts, logo, tone was consistent throughout. The AI helped with the technical implementation; I ensured it matched our standards.\
+\
+---\
+\
+
+\f1\b The Cursor Tools I Used\
+
+\f0\b0 \
+
+\f1\b AI Chat\
+
+\f0\b0  Conversational assistant that understands code and context. I asked for HTML/CSS/JavaScript to build charts, maps, and interactive sections; got suggestions for structure and styling.\
+\
+
+\f1\b Inline Editing\
+
+\f0\b0 Edit code with natural-language instructions. I refined layouts, fixed bugs, and adjusted styles by describing what I wanted changed.\
+\
+
+\f1\b Codebase Awareness\
+
+\f0\b0 AI reads your project files. I referenced existing files so new sections matched the design system and data format.\
+\
+
+\f1\b Multi-file Editing\
+
+\f0\b0 Changes across several files at once. I updated styles, content, and structure across HTML, CSS, and data files in a single request.\
+\
+---\
+\
+
+\f1\b What This Required From Me\
+
+\f0\b0 \
+
+\f1\b Domain knowledge
+\f0\b0  Understanding hospital policy, 340B, and HAP's advocacy goals so the dashboards told the right story\
+
+\f1\b Editorial judgment
+\f0\b0  Deciding what to highlight, what to simplify, and what to leave out\
+
+\f1\b Quality control
+\f0\b0  Checking numbers, labels, and links for accuracy before anything goes out\
+
+\f1\b Design sense
+\f0\b0  Guiding layout, hierarchy, and visual clarity so the dashboards feel professional and on-brand\
+
+\f1\b Learning to prompt effectively
+\f0\b0  Knowing how to ask the AI for specific outcomes, when to be vague vs. precise, and when to push back on suggestions\
+\
+The AI didn't replace my role it extended what I could accomplish with the skills and context I already have.\
+\
+---\
+\
+
+\f1\b What You're Seeing\
+
+\f0\b0 \
+
+\f1\b index.html
+\f0\b0  Interactive "Time to Act" dashboard (Oliver Wyman report)\
+
+\f1\b static.html
+\f0\b0  Static version of the same content for simpler sharing\
+
+\f1\b 340b.html
+\f0\b0  340B advocacy dashboard with interactive U.S. map\
+
+\f1\b 340b-state-laws.csv
+\f0\b0  Data source for the 340B dashboard\
+\
+All of these can be opened in a web browser. No server or special setup is required for local viewing.\
+\
+---\
+\
+
+\f1\b Next Steps I'm Considering\
+
+\f0\b0 \
+Gather feedback from communications and advocacy on content and usability\
+Explore hosting options if we want to share these publicly or via link\
+Identify other reports or campaigns that could benefit from this format\
+Document the process so others on the team can learn the workflow\
+\
+---\
+\
+I'm happy to walk you through the dashboards or the Cursor workflow in more detail whenever works for you.\
+}
