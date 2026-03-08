@@ -1,10 +1,7 @@
 /**
  * HAP 340B Advocacy Dashboard — Main Script
- * ==========================================
- * Beginner-friendly structure:
- * - Config + state data live in `state-data.js`
- * - This file handles rendering and interactions
- * - Dynamic UI uses safe DOM APIs instead of raw HTML strings
+ * Keep this file simple: data lives in `state-data.js`, and this file
+ * handles rendering, accessibility, and user interactions.
  */
 
 (function () {
@@ -18,60 +15,65 @@
     shareDescription: "340B contract pharmacy protection dashboard.",
     dataFreshness: "March 2025",
     lastUpdated: "March 2025",
-    mapDataUrl: "assets/vendor/states-10m.json",
     mapAspectRatio: 0.55,
     mapMaxWidth: 960,
     countUpDuration: 1200,
     dominoDelayPerState: 55,
-    scrollRevealThreshold: 0.1
+    scrollRevealThreshold: 0.1,
+    shareUrlBase: ""
   };
 
   var appState = {
     selectedStateAbbr: null,
     currentFilter: "all",
-    currentQuery: "",
     mapPaths: null,
     lastMapWidth: 0,
     resizeTimer: null,
     mapVisibilityObserver: null,
     touchDevice: "ontouchstart" in window || navigator.maxTouchPoints > 0,
-    hoverCapable: window.matchMedia && window.matchMedia("(hover: hover)").matches
+    hoverCapable: window.matchMedia && window.matchMedia("(hover: hover)").matches,
+    dom: {}
   };
 
-  function getStateAbbr(feature) {
-    var id = feature && (feature.id != null ? feature.id : (feature.properties && (feature.properties.FIPS || feature.properties.STATE)));
-    var numericId;
+  /* ---------- DOM cache ---------- */
 
-    if (!id) return null;
-
-    numericId = parseInt(id, 10);
-    return FIPS_TO_ABBR[!isNaN(numericId) ? numericId : id] || FIPS_TO_ABBR[String(id)] || null;
+  function cacheDom() {
+    appState.dom = {
+      utilityStatus: document.getElementById("utility-status"),
+      filterStatus: document.getElementById("state-filter-status"),
+      selectionStatus: document.getElementById("state-selection-status"),
+      selectionSummaryTitle: document.getElementById("selection-summary-title"),
+      selectionSummaryText: document.getElementById("selection-summary-text"),
+      selectionClear: document.getElementById("selection-clear"),
+      mapWrap: document.getElementById("us-map-wrap"),
+      mapContainer: document.getElementById("us-map"),
+      mapSkeleton: document.getElementById("map-loading-skeleton"),
+      mapTooltip: document.getElementById("map-tooltip"),
+      chipTooltip: document.getElementById("state-list-tooltip"),
+      stateDetailPanel: document.getElementById("state-detail-panel"),
+      stateListWith: document.getElementById("states-with-list"),
+      stateListWithout: document.getElementById("states-without-list"),
+      protectionCount: document.getElementById("protection-count"),
+      noProtectionCount: document.getElementById("no-protection-count"),
+      noResults: document.getElementById("state-no-results"),
+      protectionBlock: document.getElementById("state-list-block-protection"),
+      noProtectionBlock: document.getElementById("state-list-block-no-protection"),
+      printButton: document.getElementById("btn-print"),
+      shareButton: document.getElementById("btn-share"),
+      methodologyButton: document.getElementById("methodology-toggle"),
+      methodologyContent: document.getElementById("methodology-content"),
+      dataFreshness: document.getElementById("data-freshness-text"),
+      methodologyLastUpdated: document.getElementById("methodology-last-updated"),
+      printLastUpdated: document.getElementById("print-last-updated")
+    };
   }
 
-  function getStateName(abbr, feature) {
-    return (abbr && STATE_NAMES[abbr]) || (feature && feature.properties && feature.properties.name) || abbr || "State";
-  }
-
-  function getStateData(abbr) {
-    return abbr && STATE_340B[abbr] ? STATE_340B[abbr] : null;
-  }
-
-  function prefersReducedMotion() {
-    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  }
-
-  function getSortedStates() {
-    return Object.keys(STATE_340B)
-      .filter(function (abbr) {
-        return abbr !== "DC";
-      })
-      .sort(function (a, b) {
-        return getStateName(a).localeCompare(getStateName(b));
-      });
-  }
+  /* ---------- Small helpers ---------- */
 
   function clearElement(element) {
-    if (element) element.replaceChildren();
+    if (element) {
+      element.replaceChildren();
+    }
   }
 
   function createElement(tagName, className, text) {
@@ -87,43 +89,75 @@
     return badge;
   }
 
+  function prefersReducedMotion() {
+    return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  }
+
+  function getCssVariable(variableName, fallbackValue) {
+    var value = getComputedStyle(document.documentElement).getPropertyValue(variableName);
+    return value ? value.trim() : fallbackValue;
+  }
+
   function setUtilityStatus(message) {
-    var status = document.getElementById("utility-status");
-    if (status) status.textContent = message || "";
+    if (appState.dom.utilityStatus) appState.dom.utilityStatus.textContent = message || "";
   }
 
   function setFilterStatus(message) {
-    var status = document.getElementById("state-filter-status");
-    if (status) status.textContent = message || "";
+    if (appState.dom.filterStatus) appState.dom.filterStatus.textContent = message || "";
   }
 
-  function setMapBusy(isBusy) {
-    var wrapper = document.getElementById("us-map-wrap");
-    var container = document.getElementById("us-map");
-
-    if (wrapper) wrapper.setAttribute("aria-busy", isBusy ? "true" : "false");
-    if (container) container.setAttribute("aria-busy", isBusy ? "true" : "false");
+  function announceSelection(message) {
+    if (appState.dom.selectionStatus) appState.dom.selectionStatus.textContent = message || "";
   }
 
-  function updateMetadata() {
-    var fullTitle = config.dashboardTitle + " | " + config.dashboardSubtitle;
-    var metaDescription = document.getElementById("meta-description");
-    var ogTitle = document.getElementById("meta-og-title");
-    var ogDescription = document.getElementById("meta-og-description");
-    var twitterTitle = document.getElementById("meta-twitter-title");
-    var twitterDescription = document.getElementById("meta-twitter-description");
-    var freshness = document.getElementById("data-freshness-text");
-    var lastUpdated = document.getElementById("methodology-last-updated");
+  /* ---------- Data helpers ---------- */
 
-    document.title = fullTitle;
+  function getStateAbbr(feature) {
+    var id = feature && (feature.id != null ? feature.id : (feature.properties && (feature.properties.FIPS || feature.properties.STATE)));
+    var numericId;
 
-    if (metaDescription) metaDescription.setAttribute("content", config.pageDescription);
-    if (ogTitle) ogTitle.setAttribute("content", config.shareTitle || fullTitle);
-    if (ogDescription) ogDescription.setAttribute("content", config.shareDescription || config.pageDescription);
-    if (twitterTitle) twitterTitle.setAttribute("content", config.shareTitle || fullTitle);
-    if (twitterDescription) twitterDescription.setAttribute("content", config.shareDescription || config.pageDescription);
-    if (freshness) freshness.textContent = "Data as of " + config.dataFreshness + " - Last updated " + config.lastUpdated;
-    if (lastUpdated) lastUpdated.textContent = config.lastUpdated;
+    if (!id) return null;
+    numericId = parseInt(id, 10);
+    return FIPS_TO_ABBR[!isNaN(numericId) ? numericId : id] || FIPS_TO_ABBR[String(id)] || null;
+  }
+
+  function getStateName(abbr, feature) {
+    return (abbr && STATE_NAMES[abbr]) || (feature && feature.properties && feature.properties.name) || abbr || "State";
+  }
+
+  function getStateData(abbr) {
+    return abbr && STATE_340B[abbr] ? STATE_340B[abbr] : null;
+  }
+
+  function getSortedStates() {
+    return Object.keys(STATE_340B)
+      .filter(function (abbr) {
+        return abbr !== "DC";
+      })
+      .sort();
+  }
+
+  function buildStateSummaryText(abbr) {
+    var data = getStateData(abbr);
+
+    if (!data) {
+      return "No state law data is available.";
+    }
+
+    return (data.cp ? "Contract pharmacy protected" : "No contract pharmacy law") +
+      " · " +
+      (data.pbm ? "PBM protections in place" : "No PBM protection law");
+  }
+
+  function buildSelectionAnnouncement(abbr) {
+    var data = getStateData(abbr);
+    var summary = getStateName(abbr) + " selected.";
+
+    if (!data) return summary;
+
+    summary += " " + (data.cp ? "Contract pharmacy protected." : "No contract pharmacy law.");
+    summary += " " + (data.pbm ? "PBM protections in place." : "No PBM protection law.");
+    return summary;
   }
 
   function validateStateData() {
@@ -139,11 +173,66 @@
         }
       });
 
-      if (missingKeys.length && console && console.warn) {
+      if (missingKeys.length && typeof console !== "undefined" && console.warn) {
         console.warn("State data is missing keys for", abbr, missingKeys.join(", "));
+      }
+
+      if (!data) return;
+
+      if (typeof data.cp !== "boolean" || typeof data.pbm !== "boolean") {
+        console.warn("State data should use boolean values for", abbr);
+      }
+
+      if (data.y !== null && typeof data.y !== "number") {
+        console.warn("State data should use a year number or null for", abbr);
+      }
+
+      if (typeof data.notes !== "string") {
+        console.warn("State notes should be a string for", abbr);
       }
     });
   }
+
+  /* ---------- Metadata and summary text ---------- */
+
+  function updateMetadata() {
+    var fullTitle = config.dashboardTitle + " | " + config.dashboardSubtitle;
+    var metaDescription = document.getElementById("meta-description");
+    var ogTitle = document.getElementById("meta-og-title");
+    var ogDescription = document.getElementById("meta-og-description");
+    var twitterTitle = document.getElementById("meta-twitter-title");
+    var twitterDescription = document.getElementById("meta-twitter-description");
+
+    document.title = fullTitle;
+
+    if (metaDescription) metaDescription.setAttribute("content", config.pageDescription);
+    if (ogTitle) ogTitle.setAttribute("content", config.shareTitle || fullTitle);
+    if (ogDescription) ogDescription.setAttribute("content", config.shareDescription || config.pageDescription);
+    if (twitterTitle) twitterTitle.setAttribute("content", config.shareTitle || fullTitle);
+    if (twitterDescription) twitterDescription.setAttribute("content", config.shareDescription || config.pageDescription);
+    if (appState.dom.dataFreshness) {
+      appState.dom.dataFreshness.textContent = "Data as of " + config.dataFreshness + " - Last updated " + config.lastUpdated;
+    }
+    if (appState.dom.methodologyLastUpdated) appState.dom.methodologyLastUpdated.textContent = config.lastUpdated;
+    if (appState.dom.printLastUpdated) appState.dom.printLastUpdated.textContent = config.lastUpdated;
+  }
+
+  function updateSelectionSummary(abbr) {
+    if (!appState.dom.selectionSummaryTitle || !appState.dom.selectionSummaryText) return;
+
+    if (!abbr) {
+      appState.dom.selectionSummaryTitle.textContent = "No state selected";
+      appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to view dashboard details.";
+      if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
+      return;
+    }
+
+    appState.dom.selectionSummaryTitle.textContent = getStateName(abbr);
+    appState.dom.selectionSummaryText.textContent = buildStateSummaryText(abbr);
+    if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = false;
+  }
+
+  /* ---------- Share and hash helpers ---------- */
 
   function updateUrlHash(abbr) {
     var nextHash = abbr ? "#state-" + abbr : "";
@@ -151,7 +240,7 @@
     if (location.hash === nextHash) return;
 
     if (history.replaceState) {
-      history.replaceState(null, "", location.pathname + location.search + nextHash);
+      history.replaceState(null, "", location.pathname + nextHash);
     } else {
       location.hash = nextHash;
     }
@@ -162,38 +251,55 @@
     return rawHash && rawHash.length === 2 ? rawHash : null;
   }
 
-  function scrollToMapSection() {
-    var section = document.getElementById("state-laws");
-    if (section) {
-      section.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+  function getCanonicalPageBase() {
+    if (config.shareUrlBase) return config.shareUrlBase;
+
+    if (location.protocol === "file:") {
+      return location.href.split("#")[0].split("?")[0];
     }
+
+    return location.origin + location.pathname;
   }
 
+  function buildShareUrl() {
+    var hash = appState.selectedStateAbbr ? "#state-" + appState.selectedStateAbbr : "";
+    return getCanonicalPageBase() + hash;
+  }
+
+  function scrollToMapSection() {
+    var mapSection = document.getElementById("state-laws");
+
+    if (!mapSection) return;
+
+    mapSection.scrollIntoView({
+      behavior: prefersReducedMotion() ? "auto" : "smooth",
+      block: "start"
+    });
+  }
+
+  /* ---------- Detail panel and selection ---------- */
+
   function renderEmptyStateDetail() {
-    var panel = document.getElementById("state-detail-panel");
+    var panel = appState.dom.stateDetailPanel;
+
     if (!panel) return;
 
     panel.classList.add("empty");
-    panel.setAttribute("aria-live", "polite");
     clearElement(panel);
-    panel.appendChild(createElement("p", "", "Select a state to view contract pharmacy and PBM details."));
+    panel.appendChild(createElement("p", "", "Select a state to view dashboard details."));
   }
 
   function renderStateDetail(abbr) {
-    var panel = document.getElementById("state-detail-panel");
+    var panel = appState.dom.stateDetailPanel;
     var data = getStateData(abbr);
-    var heading;
     var badgeRow;
     var detailGrid;
 
     if (!panel) return;
 
     panel.classList.remove("empty");
-    panel.setAttribute("aria-live", "polite");
     clearElement(panel);
-
-    heading = createElement("h4", "", getStateName(abbr));
-    panel.appendChild(heading);
+    panel.appendChild(createElement("h4", "", getStateName(abbr)));
 
     if (!data) {
       panel.appendChild(createElement("p", "", "No state law data is available."));
@@ -206,19 +312,14 @@
     panel.appendChild(badgeRow);
 
     detailGrid = createElement("dl", "state-detail-grid");
-
     detailGrid.appendChild(createElement("dt", "", "Contract pharmacy"));
     detailGrid.appendChild(createElement("dd", "", data.cp ? "Yes" : "No"));
-
     detailGrid.appendChild(createElement("dt", "", "PBM protections"));
     detailGrid.appendChild(createElement("dd", "", data.pbm ? "Yes" : "No"));
-
     detailGrid.appendChild(createElement("dt", "", "Law year"));
     detailGrid.appendChild(createElement("dd", "", data.y ? String(data.y) : "Not enacted"));
-
     detailGrid.appendChild(createElement("dt", "", "Notes"));
     detailGrid.appendChild(createElement("dd", "", data.notes || "No additional notes."));
-
     panel.appendChild(detailGrid);
   }
 
@@ -230,11 +331,8 @@
       var href = link.getAttribute("href");
       var isActive = href === "#" + activeId || (href === "#policy" && policySections.indexOf(activeId) >= 0);
       link.classList.toggle("active", isActive);
-      if (isActive) {
-        link.setAttribute("aria-current", "page");
-      } else {
-        link.removeAttribute("aria-current");
-      }
+      if (isActive) link.setAttribute("aria-current", "page");
+      else link.removeAttribute("aria-current");
     });
   }
 
@@ -249,12 +347,6 @@
       .classed("selected", true);
   }
 
-  function clearMapHighlight() {
-    if (appState.mapPaths) {
-      appState.mapPaths.classed("selected", false);
-    }
-  }
-
   function highlightStateChip(abbr) {
     document.querySelectorAll(".state-chip").forEach(function (chip) {
       var isSelected = chip.getAttribute("data-state") === abbr;
@@ -263,16 +355,21 @@
     });
   }
 
-  function clearSelection() {
+  function clearSelection(announceMessage) {
     appState.selectedStateAbbr = null;
     updateUrlHash(null);
     renderEmptyStateDetail();
-    clearMapHighlight();
+    updateSelectionSummary(null);
+    announceSelection(typeof announceMessage === "string" ? announceMessage : "State selection cleared.");
+
+    if (appState.mapPaths) {
+      appState.mapPaths.classed("selected", false);
+    }
+
     highlightStateChip(null);
   }
 
   function selectState(abbr, options) {
-    var panel = document.getElementById("state-detail-panel");
     var settings = options || {};
 
     if (!abbr) return;
@@ -280,34 +377,40 @@
     appState.selectedStateAbbr = abbr;
     updateUrlHash(abbr);
     renderStateDetail(abbr);
+    updateSelectionSummary(abbr);
     highlightMapState(abbr);
     highlightStateChip(abbr);
+    announceSelection(buildSelectionAnnouncement(abbr));
 
     if (settings.scrollToMap) {
       scrollToMapSection();
     }
 
-    if (settings.focusPanel && panel) {
-      panel.focus({ preventScroll: !!settings.scrollToMap });
+    if (settings.focusPanel && appState.dom.stateDetailPanel) {
+      appState.dom.stateDetailPanel.focus({
+        preventScroll: !!settings.scrollToMap
+      });
     }
   }
+
+  /* ---------- Tooltip helpers ---------- */
 
   function clampTooltip(tooltip, left, top) {
     var maxLeft = window.innerWidth - tooltip.offsetWidth - 12;
     var maxTop = window.innerHeight - tooltip.offsetHeight - 12;
-    var safeLeft = Math.max(12, Math.min(left, maxLeft));
-    var safeTop = Math.max(12, Math.min(top, maxTop));
 
-    tooltip.style.left = safeLeft + "px";
-    tooltip.style.top = safeTop + "px";
+    tooltip.style.left = Math.max(12, Math.min(left, maxLeft)) + "px";
+    tooltip.style.top = Math.max(12, Math.min(top, maxTop)) + "px";
   }
 
   function showTooltip(tooltip, left, top) {
     tooltip.classList.add("visible");
+    tooltip.setAttribute("aria-hidden", "false");
     clampTooltip(tooltip, left, top);
   }
 
   function hideTooltip(tooltip) {
+    if (!tooltip) return;
     tooltip.classList.remove("visible");
     tooltip.setAttribute("aria-hidden", "true");
   }
@@ -315,27 +418,65 @@
   function buildMapTooltip(tooltip, abbr) {
     clearElement(tooltip);
     tooltip.appendChild(document.createTextNode(getStateName(abbr)));
-    tooltip.setAttribute("aria-hidden", "false");
   }
 
   function buildStateChipTooltip(tooltip, abbr) {
     var data = getStateData(abbr);
+
     clearElement(tooltip);
     tooltip.appendChild(createElement("strong", "", getStateName(abbr)));
 
-    if (!data) {
-      tooltip.setAttribute("aria-hidden", "false");
-      return;
-    }
+    if (!data) return;
 
     tooltip.appendChild(document.createTextNode(" "));
     appendBadge(tooltip, data.cp ? "yes" : "no", "CP: " + (data.cp ? "Yes" : "No"));
     appendBadge(tooltip, data.pbm ? "yes" : "no", "PBM: " + (data.pbm ? "Yes" : "No"));
-
     if (data.y) tooltip.appendChild(createElement("div", "", "Year: " + data.y));
     if (data.notes) tooltip.appendChild(createElement("div", "", data.notes));
+  }
 
-    tooltip.setAttribute("aria-hidden", "false");
+  /* ---------- Map lifecycle ---------- */
+
+  function setMapBusy(isBusy) {
+    if (appState.dom.mapWrap) appState.dom.mapWrap.setAttribute("aria-busy", isBusy ? "true" : "false");
+    if (appState.dom.mapContainer) appState.dom.mapContainer.setAttribute("aria-busy", isBusy ? "true" : "false");
+  }
+
+  function showMapSkeleton() {
+    if (appState.dom.mapSkeleton) appState.dom.mapSkeleton.classList.remove("hidden");
+    setMapBusy(true);
+  }
+
+  function hideMapSkeleton() {
+    if (appState.dom.mapSkeleton) appState.dom.mapSkeleton.classList.add("hidden");
+    setMapBusy(false);
+  }
+
+  function showMapWrapImmediately() {
+    if (!appState.dom.mapWrap) return;
+    appState.dom.mapWrap.classList.add("visible", "map-visible");
+  }
+
+  function setupMapVisibilityObserver() {
+    if (!appState.dom.mapWrap) return;
+
+    if (appState.mapVisibilityObserver) {
+      appState.mapVisibilityObserver.disconnect();
+      appState.mapVisibilityObserver = null;
+    }
+
+    if (prefersReducedMotion() || typeof IntersectionObserver === "undefined") {
+      showMapWrapImmediately();
+      return;
+    }
+
+    appState.mapVisibilityObserver = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        showMapWrapImmediately();
+      }
+    }, { threshold: 0.1 });
+
+    appState.mapVisibilityObserver.observe(appState.dom.mapWrap);
   }
 
   function buildMapFallback(container) {
@@ -345,8 +486,7 @@
 
     getSortedStates().forEach(function (abbr) {
       var data = getStateData(abbr);
-      var item = createElement("li", "map-fallback-item");
-      item.textContent = getStateName(abbr) + " - " + (data && data.cp ? "Protection in place" : "No protection law");
+      var item = createElement("li", "map-fallback-item", abbr + " - " + (data && data.cp ? "Protection in place" : "No protection law"));
       list.appendChild(item);
     });
 
@@ -355,69 +495,66 @@
     container.appendChild(fallback);
   }
 
-  function showMapError(message, allowRetry) {
-    var container = document.getElementById("us-map");
-    var skeleton = document.getElementById("map-loading-skeleton");
+  function showMapError(message) {
+    var container = appState.dom.mapContainer;
     var wrapper;
     var retryButton;
 
     if (!container) return;
 
     clearElement(container);
-    setMapBusy(false);
-    container.setAttribute("role", "region");
-    container.setAttribute("aria-label", "340B state protection fallback summary");
-    if (skeleton) skeleton.classList.add("hidden");
+    hideMapSkeleton();
+    showMapWrapImmediately();
 
     wrapper = createElement("div", "map-error-wrap");
     wrapper.appendChild(createElement("p", "map-error-msg", message));
 
-    if (allowRetry) {
-      retryButton = createElement("button", "map-retry-btn", "Retry");
-      retryButton.type = "button";
-      retryButton.addEventListener("click", drawMap);
-      wrapper.appendChild(retryButton);
-    }
+    retryButton = createElement("button", "map-retry-btn", "Retry");
+    retryButton.type = "button";
+    retryButton.addEventListener("click", drawMap);
 
+    wrapper.appendChild(retryButton);
     container.appendChild(wrapper);
     buildMapFallback(container);
   }
 
-  function setupMapVisibilityObserver() {
-    var wrapper = document.getElementById("us-map-wrap");
+  function bindMapEvents() {
+    if (!appState.mapPaths || !appState.dom.mapTooltip) return;
 
-    if (!wrapper) return;
-    if (appState.mapVisibilityObserver) {
-      appState.mapVisibilityObserver.disconnect();
-      appState.mapVisibilityObserver = null;
-    }
-
-    if (prefersReducedMotion()) {
-      wrapper.classList.add("visible", "map-visible");
-      return;
-    }
-
-    appState.mapVisibilityObserver = new IntersectionObserver(function (entries) {
-      if (entries[0].isIntersecting) {
-        wrapper.classList.add("visible", "map-visible");
-      }
-    }, { threshold: 0.1 });
-
-    appState.mapVisibilityObserver.observe(wrapper);
+    appState.mapPaths
+      .on("mouseenter", function (event, feature) {
+        if (!appState.hoverCapable) return;
+        buildMapTooltip(appState.dom.mapTooltip, getStateAbbr(feature));
+        showTooltip(appState.dom.mapTooltip, event.clientX, event.clientY + 14);
+      })
+      .on("mousemove", function (event) {
+        if (!appState.hoverCapable) return;
+        clampTooltip(appState.dom.mapTooltip, event.clientX, event.clientY + 14);
+      })
+      .on("mouseleave", function () {
+        hideTooltip(appState.dom.mapTooltip);
+      })
+      .on("click", function (event, feature) {
+        event.stopPropagation();
+        hideTooltip(appState.dom.mapTooltip);
+        selectState(getStateAbbr(feature), { focusPanel: true });
+      });
   }
 
   function setupMapKeyboardNav() {
     var paths = Array.prototype.slice.call(document.querySelectorAll("#us-map path[data-state]"));
 
     paths.forEach(function (path, index) {
+      var abbr = path.getAttribute("data-state");
+
       path.setAttribute("tabindex", "0");
       path.setAttribute("role", "button");
-      path.setAttribute("aria-label", "Select " + getStateName(path.getAttribute("data-state")));
+      path.setAttribute("aria-label", "Select " + getStateName(abbr));
 
       path.addEventListener("keydown", function (event) {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
-          selectState(path.getAttribute("data-state"), { focusPanel: true });
+          selectState(abbr, { focusPanel: true });
           return;
         }
 
@@ -434,38 +571,20 @@
     });
   }
 
-  function bindMapEvents() {
-    var tooltip = document.getElementById("map-tooltip");
-
-    if (!appState.mapPaths || !tooltip) return;
-
-    appState.mapPaths
-      .on("mouseenter", function (event, feature) {
-        var abbr = getStateAbbr(feature);
-        if (!appState.hoverCapable) return;
-        buildMapTooltip(tooltip, abbr);
-        showTooltip(tooltip, event.clientX, event.clientY + 14);
-      })
-      .on("mousemove", function (event) {
-        if (!appState.hoverCapable) return;
-        clampTooltip(tooltip, event.clientX, event.clientY + 14);
-      })
-      .on("mouseleave", function () {
-        hideTooltip(tooltip);
-      })
-      .on("click", function (event, feature) {
-        event.stopPropagation();
-        hideTooltip(tooltip);
-        selectState(getStateAbbr(feature), { focusPanel: true });
-      });
-  }
-
   function drawMap() {
-    var container = document.getElementById("us-map");
-    var skeleton = document.getElementById("map-loading-skeleton");
+    var container = appState.dom.mapContainer;
+    var atlas = window.US_ATLAS_STATES_10M;
     var width;
     var height;
     var svg;
+    var states;
+    var projection;
+    var pathGenerator;
+    var group;
+    var orderedStates;
+    var animationOrder = {};
+    var mapProtectionColor = getCssVariable("--map-protection", "#0b67c2");
+    var mapNoProtectionColor = getCssVariable("--map-no-protection", "#d7e0ea");
 
     if (!container) return;
 
@@ -474,13 +593,10 @@
     appState.lastMapWidth = width;
 
     clearElement(container);
-    container.setAttribute("role", "img");
-    container.setAttribute("aria-label", "Interactive US map showing states with and without 340B contract pharmacy protection.");
-    setMapBusy(true);
-    if (skeleton) skeleton.classList.remove("hidden");
+    showMapSkeleton();
 
-    if (typeof d3 === "undefined" || typeof topojson === "undefined") {
-      showMapError("The interactive map could not load. You can still use the state summary below.", true);
+    if (typeof d3 === "undefined" || typeof topojson === "undefined" || !atlas || !atlas.objects || !atlas.objects.states) {
+      showMapError("The interactive map could not load. You can still use the state summary below.");
       return;
     }
 
@@ -490,79 +606,65 @@
       .attr("width", "100%")
       .attr("height", "auto");
 
-    d3.json(config.mapDataUrl)
-      .then(function (us) {
-        var states = topojson.feature(us, us.objects.states);
-        var projection = d3.geoAlbersUsa().fitSize([width, height], states);
-        var pathGenerator = d3.geoPath(projection);
-        var group = svg.append("g");
-        var orderedStates = states.features.map(function (feature, index) {
-          return { feature: feature, index: index };
-        });
-        var animationOrder = {};
+    states = topojson.feature(atlas, atlas.objects.states);
+    projection = d3.geoAlbersUsa().fitSize([width, height], states);
+    pathGenerator = d3.geoPath(projection);
+    group = svg.append("g");
+    orderedStates = states.features.map(function (feature, index) {
+      return { feature: feature, index: index };
+    });
 
-        orderedStates.sort(function (a, b) {
-          var centerA = pathGenerator.centroid(a.feature);
-          var centerB = pathGenerator.centroid(b.feature);
-          return centerA[0] - centerB[0];
-        });
+    orderedStates.sort(function (a, b) {
+      var centerA = pathGenerator.centroid(a.feature);
+      var centerB = pathGenerator.centroid(b.feature);
+      return centerA[0] - centerB[0];
+    });
 
-        orderedStates.forEach(function (item, order) {
-          animationOrder[item.index] = order;
-        });
+    orderedStates.forEach(function (item, order) {
+      animationOrder[item.index] = order;
+    });
 
-        appState.mapPaths = group.selectAll("path")
-          .data(states.features)
-          .join("path")
-          .attr("class", function (feature, index) {
-            var abbr = getStateAbbr(feature);
-            var baseClass = STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "state protection" : "state no-protection";
-            return prefersReducedMotion() ? baseClass : baseClass + " state-domino";
-          })
-          .attr("d", pathGenerator)
-          .attr("data-state", function (feature) {
-            return getStateAbbr(feature) || "";
-          })
-          .attr("fill", function (feature) {
-            return STATES_WITH_PROTECTION.indexOf(getStateAbbr(feature)) >= 0 ? "#0066a1" : "#e2e8f0";
-          })
-          .attr("stroke", "rgba(255,255,255,0.9)")
-          .attr("stroke-width", 1)
-          .each(function (_, index) {
-            this.style.animationDelay = (animationOrder[index] || 0) * config.dominoDelayPerState + "ms";
-          });
-
-        setupMapVisibilityObserver();
-        bindMapEvents();
-        setupMapKeyboardNav();
-        setMapBusy(false);
-        if (skeleton) skeleton.classList.add("hidden");
-
-        if (appState.selectedStateAbbr) {
-          highlightMapState(appState.selectedStateAbbr);
-        }
+    appState.mapPaths = group.selectAll("path")
+      .data(states.features)
+      .join("path")
+      .attr("class", function (feature) {
+        var abbr = getStateAbbr(feature);
+        var baseClass = STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "state protection" : "state no-protection";
+        return prefersReducedMotion() ? baseClass : baseClass + " state-domino";
       })
-      .catch(function (error) {
-        if (console && console.warn) {
-          console.warn("340B map data failed to load", error);
-        }
-        showMapError("The interactive map is temporarily unavailable. You can still review the state summary below.", true);
+      .attr("d", pathGenerator)
+      .attr("data-state", function (feature) {
+        return getStateAbbr(feature) || "";
+      })
+      .attr("fill", function (feature) {
+        return STATES_WITH_PROTECTION.indexOf(getStateAbbr(feature)) >= 0 ? mapProtectionColor : mapNoProtectionColor;
+      })
+      .attr("stroke", "rgba(255,255,255,0.9)")
+      .attr("stroke-width", 1)
+      .each(function (_, index) {
+        this.style.animationDelay = (animationOrder[index] || 0) * config.dominoDelayPerState + "ms";
       });
+
+    hideMapSkeleton();
+    setupMapVisibilityObserver();
+    bindMapEvents();
+    setupMapKeyboardNav();
+
+    if (appState.selectedStateAbbr) {
+      highlightMapState(appState.selectedStateAbbr);
+    }
   }
 
+  /* ---------- State list ---------- */
+
   function createStateChip(abbr) {
-    var button = createElement("button", "state-chip");
-    var name = createElement("span", "state-chip-name", getStateName(abbr));
-    var shortCode = createElement("span", "state-chip-abbr", abbr);
+    var button = createElement("button", "state-chip", abbr);
 
     button.type = "button";
     button.setAttribute("data-state", abbr);
     button.setAttribute("aria-controls", "state-detail-panel");
     button.setAttribute("aria-pressed", "false");
     button.setAttribute("aria-label", "View details for " + getStateName(abbr));
-    button.appendChild(name);
-    button.appendChild(shortCode);
-
     button.addEventListener("click", function () {
       selectState(abbr, { focusPanel: false });
     });
@@ -571,17 +673,13 @@
   }
 
   function renderStateChips() {
-    var withList = document.getElementById("states-with-list");
-    var withoutList = document.getElementById("states-without-list");
-    var protectionCount = document.getElementById("protection-count");
-    var noProtectionCount = document.getElementById("no-protection-count");
     var withProtection = [];
     var withoutProtection = [];
 
-    if (!withList || !withoutList) return;
+    if (!appState.dom.stateListWith || !appState.dom.stateListWithout) return;
 
-    clearElement(withList);
-    clearElement(withoutList);
+    clearElement(appState.dom.stateListWith);
+    clearElement(appState.dom.stateListWithout);
 
     getSortedStates().forEach(function (abbr) {
       if (getStateData(abbr) && getStateData(abbr).cp) {
@@ -592,15 +690,15 @@
     });
 
     withProtection.forEach(function (abbr) {
-      withList.appendChild(createStateChip(abbr));
+      appState.dom.stateListWith.appendChild(createStateChip(abbr));
     });
 
     withoutProtection.forEach(function (abbr) {
-      withoutList.appendChild(createStateChip(abbr));
+      appState.dom.stateListWithout.appendChild(createStateChip(abbr));
     });
 
-    if (protectionCount) protectionCount.textContent = String(withProtection.length);
-    if (noProtectionCount) noProtectionCount.textContent = String(withoutProtection.length);
+    if (appState.dom.protectionCount) appState.dom.protectionCount.textContent = String(withProtection.length);
+    if (appState.dom.noProtectionCount) appState.dom.noProtectionCount.textContent = String(withoutProtection.length);
 
     initStateChipTooltips();
     highlightStateChip(appState.selectedStateAbbr);
@@ -608,59 +706,38 @@
   }
 
   function initStateChipTooltips() {
-    var tooltip = document.getElementById("state-list-tooltip");
-
-    if (!tooltip) return;
+    if (!appState.dom.chipTooltip) return;
 
     document.querySelectorAll(".state-chip").forEach(function (chip) {
       var abbr = chip.getAttribute("data-state");
       var data = getStateData(abbr);
+
       chip.title = getStateName(abbr) + (data && data.notes ? ": " + data.notes : "");
+      chip.addEventListener("focus", function () {
+        hideTooltip(appState.dom.chipTooltip);
+      });
+      chip.addEventListener("blur", function () {
+        hideTooltip(appState.dom.chipTooltip);
+      });
 
       if (!appState.hoverCapable) return;
 
       chip.addEventListener("mouseenter", function (event) {
-        buildStateChipTooltip(tooltip, abbr);
-        showTooltip(tooltip, event.clientX, event.clientY - 12);
+        buildStateChipTooltip(appState.dom.chipTooltip, abbr);
+        showTooltip(appState.dom.chipTooltip, event.clientX, event.clientY - 12);
       });
 
       chip.addEventListener("mousemove", function (event) {
-        clampTooltip(tooltip, event.clientX, event.clientY - 12);
+        clampTooltip(appState.dom.chipTooltip, event.clientX, event.clientY - 12);
       });
 
       chip.addEventListener("mouseleave", function () {
-        hideTooltip(tooltip);
+        hideTooltip(appState.dom.chipTooltip);
       });
     });
-
-    document.querySelectorAll(".state-chip").forEach(function (chip) {
-      var abbr = chip.getAttribute("data-state");
-      chip.addEventListener("focus", function () {
-        var rect = chip.getBoundingClientRect();
-        buildStateChipTooltip(tooltip, abbr);
-        showTooltip(tooltip, rect.left + rect.width / 2, rect.top - 8);
-      });
-      chip.addEventListener("blur", function () {
-        hideTooltip(tooltip);
-      });
-    });
-  }
-
-  function matchesStateFilter(abbr) {
-    var data = getStateData(abbr);
-    var hasProtection = data && data.cp;
-    var query = appState.currentQuery.toLowerCase();
-    var name = getStateName(abbr).toLowerCase();
-    var matchesGroup = appState.currentFilter === "all" || (appState.currentFilter === "protection" && hasProtection) || (appState.currentFilter === "no-protection" && !hasProtection);
-    var matchesQuery = !query || name.indexOf(query) >= 0 || abbr.toLowerCase().indexOf(query) >= 0;
-
-    return matchesGroup && matchesQuery;
   }
 
   function updateListBlockVisibility() {
-    var protectionBlock = document.getElementById("state-list-block-protection");
-    var noProtectionBlock = document.getElementById("state-list-block-no-protection");
-    var noResults = document.getElementById("state-no-results");
     var visibleProtection = 0;
     var visibleNoProtection = 0;
 
@@ -672,9 +749,9 @@
       if (!chip.hidden) visibleNoProtection += 1;
     });
 
-    if (protectionBlock) protectionBlock.hidden = visibleProtection === 0;
-    if (noProtectionBlock) noProtectionBlock.hidden = visibleNoProtection === 0;
-    if (noResults) noResults.hidden = visibleProtection + visibleNoProtection > 0;
+    if (appState.dom.protectionBlock) appState.dom.protectionBlock.hidden = visibleProtection === 0;
+    if (appState.dom.noProtectionBlock) appState.dom.noProtectionBlock.hidden = visibleNoProtection === 0;
+    if (appState.dom.noResults) appState.dom.noResults.hidden = visibleProtection + visibleNoProtection > 0;
   }
 
   function applyStateFilter() {
@@ -682,51 +759,113 @@
 
     document.querySelectorAll(".state-chip").forEach(function (chip) {
       var abbr = chip.getAttribute("data-state");
-      var shouldShow = matchesStateFilter(abbr);
+      var data = getStateData(abbr);
+      var hasProtection = data && data.cp;
+      var shouldShow = appState.currentFilter === "all" ||
+        (appState.currentFilter === "protection" && hasProtection) ||
+        (appState.currentFilter === "no-protection" && !hasProtection);
+
       chip.hidden = !shouldShow;
       if (shouldShow) visibleCount += 1;
     });
 
     updateListBlockVisibility();
 
-    if (visibleCount === 0) {
-      setFilterStatus("No states match the current search or filter.");
-    } else if (appState.currentQuery || appState.currentFilter !== "all") {
-      setFilterStatus("Showing " + visibleCount + " matching states.");
-    } else {
-      setFilterStatus("Showing all states.");
-    }
+    if (visibleCount === 0) setFilterStatus("No states match the current filter.");
+    else if (appState.currentFilter === "all") setFilterStatus("Showing all states.");
+    else setFilterStatus("Showing " + visibleCount + " states in this view.");
   }
 
   function initStateFilter() {
-    var searchInput = document.getElementById("state-search");
     var filterButtons = document.querySelectorAll(".state-filter-btn");
-
-    if (searchInput) {
-      searchInput.addEventListener("input", function () {
-        appState.currentQuery = searchInput.value.trim();
-        applyStateFilter();
-      });
-    }
 
     filterButtons.forEach(function (button) {
       button.addEventListener("click", function () {
         appState.currentFilter = button.getAttribute("data-filter") || "all";
+
         filterButtons.forEach(function (item) {
           var isActive = item === button;
           item.classList.toggle("active", isActive);
           item.setAttribute("aria-pressed", isActive ? "true" : "false");
         });
+
         applyStateFilter();
       });
     });
   }
 
+  /* ---------- Utility actions ---------- */
+
+  function initPrint() {
+    if (!appState.dom.printButton) return;
+
+    appState.dom.printButton.addEventListener("click", function () {
+      if (typeof window.print !== "function") {
+        setUtilityStatus("Print is not available in this browser.");
+        return;
+      }
+
+      setUtilityStatus("Opening print dialog...");
+      window.print();
+
+      window.setTimeout(function () {
+        setUtilityStatus("");
+      }, 1500);
+    });
+  }
+
+  function initShare() {
+    if (!appState.dom.shareButton) return;
+
+    appState.dom.shareButton.addEventListener("click", function () {
+      var url = buildShareUrl();
+
+      setUtilityStatus("Copying link...");
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url)
+          .then(function () {
+            setUtilityStatus("Link copied.");
+          })
+          .catch(function () {
+            window.prompt("Copy this link:", url);
+            setUtilityStatus("Use the prompt to copy the link.");
+          });
+      } else {
+        window.prompt("Copy this link:", url);
+        setUtilityStatus("Use the prompt to copy the link.");
+      }
+
+      window.setTimeout(function () {
+        setUtilityStatus("");
+      }, 2500);
+    });
+  }
+
+  function initMethodologyToggle() {
+    if (!appState.dom.methodologyButton || !appState.dom.methodologyContent) return;
+
+    appState.dom.methodologyButton.addEventListener("click", function () {
+      var isOpen = appState.dom.methodologyContent.classList.toggle("open");
+      appState.dom.methodologyButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
+
+  function initSelectionControls() {
+    if (!appState.dom.selectionClear) return;
+
+    appState.dom.selectionClear.addEventListener("click", function () {
+      clearSelection();
+    });
+  }
+
+  /* ---------- Progressive enhancement helpers ---------- */
+
   function initCountUp() {
     var elements = document.querySelectorAll("[data-count-up]");
     var duration = config.countUpDuration || 1200;
 
-    if (prefersReducedMotion()) {
+    if (prefersReducedMotion() || typeof IntersectionObserver === "undefined") {
       elements.forEach(function (element) {
         var target = parseFloat(element.getAttribute("data-count-up"));
         var decimals = parseInt(element.getAttribute("data-decimals"), 10) || 0;
@@ -770,7 +909,7 @@
   function initScrollReveal() {
     var items = document.querySelectorAll(".scroll-reveal");
 
-    if (prefersReducedMotion()) {
+    if (prefersReducedMotion() || typeof IntersectionObserver === "undefined") {
       items.forEach(function (item) {
         item.classList.add("revealed");
       });
@@ -779,9 +918,7 @@
 
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add("revealed");
-        }
+        if (entry.isIntersecting) entry.target.classList.add("revealed");
       });
     }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
 
@@ -792,11 +929,15 @@
 
   function initNavHighlight() {
     var sections = document.querySelectorAll("#what-is-340b, #overview, #state-laws, #eligibility, #oversight, #pa-impact, #community-benefit, #access, #pa-safeguards");
+
+    if (typeof IntersectionObserver === "undefined") {
+      updateNavCurrent("what-is-340b");
+      return;
+    }
+
     var observer = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          updateNavCurrent(entry.target.id);
-        }
+        if (entry.isIntersecting) updateNavCurrent(entry.target.id);
       });
     }, { rootMargin: "-80px 0 -50% 0", threshold: 0 });
 
@@ -805,98 +946,64 @@
     });
   }
 
-  function initPrint() {
-    var button = document.getElementById("btn-print");
-
-    if (!button) return;
-
-    button.addEventListener("click", function () {
-      setUtilityStatus("Opening print dialog...");
-      window.print();
-      window.setTimeout(function () {
-        setUtilityStatus("");
-      }, 1500);
-    });
-  }
-
-  function initShare() {
-    var button = document.getElementById("btn-share");
-
-    if (!button) return;
-
-    button.addEventListener("click", function () {
-      var url = location.href;
-
-      setUtilityStatus("Copying link...");
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url)
-          .then(function () {
-            setUtilityStatus("Link copied.");
-          })
-          .catch(function () {
-            window.prompt("Copy this link:", url);
-            setUtilityStatus("Use the prompt to copy the link.");
-          });
-      } else {
-        window.prompt("Copy this link:", url);
-        setUtilityStatus("Use the prompt to copy the link.");
-      }
-
-      window.setTimeout(function () {
-        setUtilityStatus("");
-      }, 2500);
-    });
-  }
-
-  function initMethodologyToggle() {
-    var button = document.getElementById("methodology-toggle");
-    var content = document.getElementById("methodology-content");
-
-    if (!button || !content) return;
-
-    button.addEventListener("click", function () {
-      var isOpen = content.classList.toggle("open");
-      button.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    });
-  }
+  /* ---------- Event handlers ---------- */
 
   function syncSelectionFromHash() {
     var hashState = getHashState();
 
     if (hashState) {
-      selectState(hashState, { scrollToMap: true, focusPanel: true });
+      selectState(hashState, { focusPanel: true, scrollToMap: true });
     } else if (appState.selectedStateAbbr) {
-      clearSelection();
+      clearSelection("");
     }
   }
 
   function handleDocumentClick(event) {
-    var panel = document.getElementById("state-detail-panel");
+    if (!appState.dom.stateDetailPanel) return;
 
-    if (!panel) return;
-    if (event.target.closest("#us-map path") || event.target.closest(".state-chip") || event.target.closest("#state-detail-panel")) return;
+    if (
+      event.target.closest("#us-map path") ||
+      event.target.closest(".state-chip") ||
+      event.target.closest("#state-detail-panel") ||
+      event.target.closest("#selection-summary") ||
+      event.target.closest("#methodology-toggle") ||
+      event.target.closest("#methodology-content") ||
+      event.target.closest("#selection-clear") ||
+      event.target.closest(".state-filter-bar") ||
+      event.target.closest(".utility-toolbar")
+    ) {
+      return;
+    }
 
-    clearSelection();
+    clearSelection("");
+  }
+
+  function handleKeydown(event) {
+    if (event.key === "Escape" && appState.selectedStateAbbr) {
+      clearSelection();
+    }
   }
 
   function handleResize() {
-    var map = document.getElementById("us-map");
     var width;
 
-    if (appState.touchDevice || !map) return;
+    if (appState.touchDevice || !appState.dom.mapContainer) return;
 
-    width = map.offsetWidth;
+    width = appState.dom.mapContainer.offsetWidth;
     if (Math.abs(width - appState.lastMapWidth) < 40 && appState.lastMapWidth) return;
 
     appState.lastMapWidth = width;
     drawMap();
   }
 
+  /* ---------- Init ---------- */
+
   function init() {
+    cacheDom();
     updateMetadata();
     validateStateData();
     renderEmptyStateDetail();
+    updateSelectionSummary(null);
     renderStateChips();
     initStateFilter();
     drawMap();
@@ -906,9 +1013,11 @@
     initPrint();
     initShare();
     initMethodologyToggle();
+    initSelectionControls();
     syncSelectionFromHash();
 
     document.addEventListener("click", handleDocumentClick);
+    document.addEventListener("keydown", handleKeydown);
     window.addEventListener("hashchange", syncSelectionFromHash);
 
     if (!appState.touchDevice) {

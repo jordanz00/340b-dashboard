@@ -26,6 +26,7 @@ XX: { y: 2025, pbm: true, cp: true, notes: "Your note here." },
 In `CONFIG`, change:
 - `dataFreshness` — Shown in the KPI strip
 - `lastUpdated` — Shown in methodology
+- `shareUrlBase` — Public URL used by the Share button
 
 ## Data sources
 
