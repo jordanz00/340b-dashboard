@@ -571,6 +571,14 @@ function renderScenarioCards() {
 
   scenarios.forEach((s) => {
     const card = document.createElement("article");
+    const toggle = document.createElement("button");
+    const toggleLabel = document.createElement("span");
+    const toggleMargin = document.createElement("span");
+    const toggleIcon = document.createElement("span");
+    const detailsBody = document.createElement("div");
+    const summaryText = document.createElement("p");
+    const marginText = document.createElement("p");
+    const pointsList = document.createElement("ul");
     card.className = "scenario-card scenario-expandable";
     card.setAttribute("data-scenario-id", s.id);
 
@@ -579,29 +587,57 @@ function renderScenarioCards() {
         ? `+${s.netMargin2030Percent}% margin · $${Math.abs(s.revenueDelta2030Billion)}B net income`
         : `${s.netMargin2030Percent}% margin · $${Math.abs(s.revenueDelta2030Billion)}B shortfall`;
 
-    const closureText =
-      s.projectedClosuresMin && s.projectedClosuresMax
-        ? `<li><strong>${s.projectedClosuresMin}–${s.projectedClosuresMax} hospitals</strong> at risk of closing by 2030.</li>`
-        : "";
-
-    const pointsHtml = s.keyPoints.map((p) => `<li>${p}</li>`).join("");
     const summary = summaries[s.id] || "";
 
-    card.innerHTML = `
-      <button type="button" class="scenario-toggle" aria-expanded="false" aria-controls="scenario-body-${s.id}">
-        <span class="scenario-toggle-label">${s.name}</span>
-        <span class="scenario-toggle-margin">${s.netMargin2030Percent > 0 ? "+" : ""}${s.netMargin2030Percent}%</span>
-        <span class="scenario-toggle-icon" aria-hidden="true"></span>
-      </button>
-      <div id="scenario-body-${s.id}" class="scenario-details-body" hidden>
-        <p class="scenario-summary">${summary}</p>
-        <p class="scenario-margin">${marginLabel}</p>
-        <ul class="scenario-points">
-          ${closureText}
-          ${pointsHtml}
-        </ul>
-      </div>
-    `;
+    toggle.type = "button";
+    toggle.className = "scenario-toggle";
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-controls", `scenario-body-${s.id}`);
+
+    toggleLabel.className = "scenario-toggle-label";
+    toggleLabel.textContent = s.name;
+    toggle.appendChild(toggleLabel);
+
+    toggleMargin.className = "scenario-toggle-margin";
+    toggleMargin.textContent = `${s.netMargin2030Percent > 0 ? "+" : ""}${s.netMargin2030Percent}%`;
+    toggle.appendChild(toggleMargin);
+
+    toggleIcon.className = "scenario-toggle-icon";
+    toggleIcon.setAttribute("aria-hidden", "true");
+    toggle.appendChild(toggleIcon);
+
+    detailsBody.id = `scenario-body-${s.id}`;
+    detailsBody.className = "scenario-details-body";
+    detailsBody.hidden = true;
+
+    summaryText.className = "scenario-summary";
+    summaryText.textContent = summary;
+    detailsBody.appendChild(summaryText);
+
+    marginText.className = "scenario-margin";
+    marginText.textContent = marginLabel;
+    detailsBody.appendChild(marginText);
+
+    pointsList.className = "scenario-points";
+
+    if (s.projectedClosuresMin && s.projectedClosuresMax) {
+      const closureItem = document.createElement("li");
+      const closureStrong = document.createElement("strong");
+      closureStrong.textContent = `${s.projectedClosuresMin}–${s.projectedClosuresMax} hospitals`;
+      closureItem.appendChild(closureStrong);
+      closureItem.appendChild(document.createTextNode(" at risk of closing by 2030."));
+      pointsList.appendChild(closureItem);
+    }
+
+    s.keyPoints.forEach((point) => {
+      const pointItem = document.createElement("li");
+      pointItem.textContent = point;
+      pointsList.appendChild(pointItem);
+    });
+
+    detailsBody.appendChild(pointsList);
+    card.appendChild(toggle);
+    card.appendChild(detailsBody);
     container.appendChild(card);
   });
 }

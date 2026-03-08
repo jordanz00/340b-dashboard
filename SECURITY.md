@@ -3,8 +3,11 @@
 This dashboard is a static site. Most of its security posture comes from:
 
 - safe DOM rendering in `340b.js`
+- safe DOM rendering in older dashboard scripts like `main.js` and inline legacy pages
 - keeping local vendor files trusted and documented
 - deploying with strong host-level headers
+- keeping the documented threat model honest for future AI and human edits
+- avoiding remote fonts, remote runtime data fetches, and unnecessary third-party scripts
 
 ## Recommended host headers
 
@@ -28,6 +31,8 @@ Run these checks after meaningful edits:
 4. Confirm the Share button still copies a canonical URL.
 5. Confirm the map fallback still works if map assets fail.
 6. Re-check print/PDF output after layout changes.
+7. Run `python3 dashboard-audit.py` for the project’s lightweight built-in audit.
+8. Run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` for a deeper SAST scan when security-sensitive code changes.
 
 ## Things to avoid
 
@@ -35,3 +40,4 @@ Run these checks after meaningful edits:
 - Do not move editable content into multiple places.
 - Do not replace safe DOM creation with string-based HTML rendering.
 - Do not update vendor assets without also updating `assets/vendor/README.md`.
+- Do not describe this static site as having backend auth or secret-handling protections that do not actually exist.

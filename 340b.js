@@ -30,8 +30,10 @@
     lastMapWidth: 0,
     resizeTimer: null,
     mapVisibilityObserver: null,
+    countUpObserver: null,
     touchDevice: "ontouchstart" in window || navigator.maxTouchPoints > 0,
     hoverCapable: window.matchMedia && window.matchMedia("(hover: hover)").matches,
+    printPreparationPending: false,
     dom: {}
   };
 
@@ -60,6 +62,7 @@
       noProtectionBlock: document.getElementById("state-list-block-no-protection"),
       printButton: document.getElementById("btn-print"),
       shareButton: document.getElementById("btn-share"),
+      methodologyWrap: document.getElementById("methodology-wrap"),
       methodologyButton: document.getElementById("methodology-toggle"),
       methodologyContent: document.getElementById("methodology-content"),
       dataFreshness: document.getElementById("data-freshness-text"),
@@ -89,6 +92,14 @@
     return badge;
   }
 
+  function showTemporaryUtilityStatus(message, delayMs) {
+    setUtilityStatus(message);
+
+    window.setTimeout(function () {
+      setUtilityStatus("");
+    }, delayMs || 2500);
+  }
+
   function prefersReducedMotion() {
     return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
@@ -110,6 +121,44 @@
     if (appState.dom.selectionStatus) appState.dom.selectionStatus.textContent = message || "";
   }
 
+  function setCountUpValue(element) {
+    var target = parseFloat(element.getAttribute("data-count-up"));
+    var decimals = parseInt(element.getAttribute("data-decimals"), 10) || 0;
+    var suffix = element.getAttribute("data-suffix") || "";
+
+    if (isNaN(target)) return;
+
+    element.dataset.done = "1";
+    element.textContent = (decimals ? target.toFixed(decimals) : Math.round(target)) + suffix;
+  }
+
+  function finalizeCountUpValues() {
+    // Printing and PDF export should always use final values, not in-progress animation frames.
+    document.querySelectorAll("[data-count-up]").forEach(function (element) {
+      setCountUpValue(element);
+    });
+  }
+
+  function revealAllAnimatedSections() {
+    document.querySelectorAll(".scroll-reveal").forEach(function (element) {
+      element.classList.add("revealed");
+    });
+
+    showMapWrapImmediately();
+    hideTooltip(appState.dom.mapTooltip);
+    hideTooltip(appState.dom.chipTooltip);
+  }
+
+  function runTaskSafely(taskName, taskFn) {
+    try {
+      taskFn();
+    } catch (error) {
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("Dashboard task failed:", taskName, error);
+      }
+    }
+  }
+
   /* ---------- Data helpers ---------- */
 
   function getStateAbbr(feature) {
@@ -127,6 +176,10 @@
 
   function getStateData(abbr) {
     return abbr && STATE_340B[abbr] ? STATE_340B[abbr] : null;
+  }
+
+  function isKnownState(abbr) {
+    return !!getStateData(abbr);
   }
 
   function getSortedStates() {
@@ -248,7 +301,7 @@
 
   function getHashState() {
     var rawHash = (location.hash || "").replace(/^#state-/, "").toUpperCase();
-    return rawHash && rawHash.length === 2 ? rawHash : null;
+    return rawHash && rawHash.length === 2 && isKnownState(rawHash) ? rawHash : null;
   }
 
   function getCanonicalPageBase() {
@@ -264,6 +317,25 @@
   function buildShareUrl() {
     var hash = appState.selectedStateAbbr ? "#state-" + appState.selectedStateAbbr : "";
     return getCanonicalPageBase() + hash;
+  }
+
+  function preparePrintSnapshot(onReady) {
+    var callback = typeof onReady === "function" ? onReady : function () {};
+    var mapSvgMissing = !appState.dom.mapContainer || !appState.dom.mapContainer.querySelector("svg");
+
+    // Print preview needs the page in its final visual state:
+    // no partially animated counters, no hidden reveal sections, and a visible map.
+    finalizeCountUpValues();
+    revealAllAnimatedSections();
+
+    if (mapSvgMissing) {
+      runTaskSafely("draw map for print", drawMap);
+      revealAllAnimatedSections();
+    }
+
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(callback);
+    });
   }
 
   function scrollToMapSection() {
@@ -372,7 +444,7 @@
   function selectState(abbr, options) {
     var settings = options || {};
 
-    if (!abbr) return;
+    if (!abbr || !isKnownState(abbr)) return;
 
     appState.selectedStateAbbr = abbr;
     updateUrlHash(abbr);
@@ -592,6 +664,7 @@
     height = Math.round(width * config.mapAspectRatio);
     appState.lastMapWidth = width;
 
+    // Rebuild the SVG from scratch on each draw so resize behavior stays predictable.
     clearElement(container);
     showMapSkeleton();
 
@@ -805,12 +878,25 @@
         return;
       }
 
-      setUtilityStatus("Opening print dialog...");
-      window.print();
+      appState.printPreparationPending = true;
+      setUtilityStatus("Preparing print preview...");
 
-      window.setTimeout(function () {
-        setUtilityStatus("");
-      }, 1500);
+      preparePrintSnapshot(function () {
+        try {
+          setUtilityStatus("Opening print dialog...");
+          window.print();
+        } catch (error) {
+          setUtilityStatus("Print could not open automatically.");
+          if (typeof console !== "undefined" && console.warn) {
+            console.warn("Print failed", error);
+          }
+          return;
+        }
+
+        window.setTimeout(function () {
+          setUtilityStatus("");
+        }, 1500);
+      });
     });
   }
 
@@ -819,8 +905,22 @@
 
     appState.dom.shareButton.addEventListener("click", function () {
       var url = buildShareUrl();
+      var fallbackField;
 
       setUtilityStatus("Copying link...");
+
+      if (navigator.share) {
+        navigator.share({
+          title: config.shareTitle || config.dashboardTitle,
+          text: config.shareDescription || config.pageDescription,
+          url: url
+        }).then(function () {
+          setUtilityStatus("Link shared.");
+        }).catch(function () {
+          setUtilityStatus("");
+        });
+        return;
+      }
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(url)
@@ -828,12 +928,32 @@
             setUtilityStatus("Link copied.");
           })
           .catch(function () {
-            window.prompt("Copy this link:", url);
-            setUtilityStatus("Use the prompt to copy the link.");
+            fallbackField = createElement("textarea");
+            fallbackField.value = url;
+            fallbackField.setAttribute("readonly", "readonly");
+            fallbackField.setAttribute("aria-hidden", "true");
+            fallbackField.style.position = "fixed";
+            fallbackField.style.left = "-9999px";
+            document.body.appendChild(fallbackField);
+            fallbackField.select();
+
+            try {
+              if (document.execCommand("copy")) {
+                showTemporaryUtilityStatus("Link copied.");
+              } else {
+                window.prompt("Copy this link:", url);
+                showTemporaryUtilityStatus("Use the prompt to copy the link.");
+              }
+            } catch (error) {
+              window.prompt("Copy this link:", url);
+              showTemporaryUtilityStatus("Use the prompt to copy the link.");
+            }
+
+            document.body.removeChild(fallbackField);
           });
       } else {
         window.prompt("Copy this link:", url);
-        setUtilityStatus("Use the prompt to copy the link.");
+        showTemporaryUtilityStatus("Use the prompt to copy the link.");
       }
 
       window.setTimeout(function () {
@@ -843,11 +963,10 @@
   }
 
   function initMethodologyToggle() {
-    if (!appState.dom.methodologyButton || !appState.dom.methodologyContent) return;
+    if (!appState.dom.methodologyWrap || !appState.dom.methodologyContent) return;
 
-    appState.dom.methodologyButton.addEventListener("click", function () {
-      var isOpen = appState.dom.methodologyContent.classList.toggle("open");
-      appState.dom.methodologyButton.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    appState.dom.methodologyWrap.addEventListener("toggle", function () {
+      appState.dom.methodologyContent.classList.toggle("open", appState.dom.methodologyWrap.open);
     });
   }
 
@@ -875,7 +994,7 @@
       return;
     }
 
-    var observer = new IntersectionObserver(function (entries) {
+    appState.countUpObserver = new IntersectionObserver(function (entries) {
       entries.forEach(function (entry) {
         var element = entry.target;
         var target;
@@ -902,7 +1021,7 @@
     }, { threshold: config.scrollRevealThreshold || 0.1 });
 
     elements.forEach(function (element) {
-      observer.observe(element);
+      appState.countUpObserver.observe(element);
     });
   }
 
@@ -950,9 +1069,13 @@
 
   function syncSelectionFromHash() {
     var hashState = getHashState();
+    var hasStateHash = /^#state-/i.test(location.hash || "");
 
     if (hashState) {
       selectState(hashState, { focusPanel: true, scrollToMap: true });
+    } else if (hasStateHash) {
+      updateUrlHash(null);
+      clearSelection("");
     } else if (appState.selectedStateAbbr) {
       clearSelection("");
     }
@@ -996,28 +1119,45 @@
     drawMap();
   }
 
+  function handleBeforePrint() {
+    // This catches users who open print from the browser menu instead of the page button.
+    preparePrintSnapshot(function () {
+      setUtilityStatus("");
+    });
+  }
+
+  function handleAfterPrint() {
+    appState.printPreparationPending = false;
+    setUtilityStatus("");
+  }
+
   /* ---------- Init ---------- */
 
   function init() {
     cacheDom();
-    updateMetadata();
-    validateStateData();
-    renderEmptyStateDetail();
-    updateSelectionSummary(null);
-    renderStateChips();
-    initStateFilter();
-    drawMap();
-    initCountUp();
-    initScrollReveal();
-    initNavHighlight();
-    initPrint();
-    initShare();
-    initMethodologyToggle();
-    initSelectionControls();
-    syncSelectionFromHash();
+    // Each task is isolated so one feature failing does not silently disable the whole page.
+    runTaskSafely("update metadata", updateMetadata);
+    runTaskSafely("validate state data", validateStateData);
+    runTaskSafely("render empty detail", renderEmptyStateDetail);
+    runTaskSafely("update selection summary", function () {
+      updateSelectionSummary(null);
+    });
+    runTaskSafely("render state chips", renderStateChips);
+    runTaskSafely("initialize filters", initStateFilter);
+    runTaskSafely("initialize print", initPrint);
+    runTaskSafely("initialize share", initShare);
+    runTaskSafely("initialize methodology toggle", initMethodologyToggle);
+    runTaskSafely("initialize selection controls", initSelectionControls);
+    runTaskSafely("draw map", drawMap);
+    runTaskSafely("initialize count up", initCountUp);
+    runTaskSafely("initialize scroll reveal", initScrollReveal);
+    runTaskSafely("initialize nav highlight", initNavHighlight);
+    runTaskSafely("sync selection from hash", syncSelectionFromHash);
 
     document.addEventListener("click", handleDocumentClick);
     document.addEventListener("keydown", handleKeydown);
+    window.addEventListener("beforeprint", handleBeforePrint);
+    window.addEventListener("afterprint", handleAfterPrint);
     window.addEventListener("hashchange", syncSelectionFromHash);
 
     if (!appState.touchDevice) {

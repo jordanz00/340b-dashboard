@@ -1,0 +1,16 @@
+---
+description: Project-wide security context for AI edits
+alwaysApply: true
+---
+
+# Static Dashboard Security Context
+
+- This repo is mostly static dashboards, not a backend service.
+- Assume no database, auth system, webhook handler, or secret store exists unless the user explicitly adds one.
+- Do not invent auth, token, or API behavior in static pages.
+- Never add secrets, API keys, passwords, bearer tokens, or private endpoints to source files.
+- Prefer local assets over remote scripts; if a hosted script is unavoidable, add SRI and `crossorigin="anonymous"`.
+- Use safe DOM APIs like `textContent`, `createElement`, and `appendChild`; avoid `innerHTML`, `outerHTML`, `eval`, and inline event handlers.
+- Treat URL hash, share links, and print/export flows as sensitive reliability surfaces. Validate hash-driven state and keep share output canonical.
+- Keep features failure-isolated: map issues must not break print, share, filters, or disclosures.
+- After meaningful edits, run `python3 dashboard-audit.py`; use Semgrep for a deeper code scan when security-sensitive changes are made.

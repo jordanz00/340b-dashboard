@@ -606,3 +606,551 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 ### V06.20 Next-Wave Prioritization
 
 > After completing the current prompt waves, identify the next 5 highest-value improvements and explain why they matter more than additional cosmetic polish.
+
+---
+
+## Prompts v07
+
+### V07.1 Brutal First-Load Audit
+
+> Review the dashboard as if a skeptical executive saw it for the first time on a slow laptop. Identify everything that feels fragile, confusing, visually noisy, or slow to understand in the first 10 seconds. Implement the highest-value fixes without reintroducing removed features.
+
+### V07.2 Broken-Control Zero Tolerance
+
+> Audit every button, filter, toggle, state interaction, and deep-link flow. If any control feels fake, delayed, or inconsistent, fix it so every interactive element has clear, real, observable behavior.
+
+### V07.3 Map-Failure Isolation
+
+> Refactor initialization so map failures can never break unrelated features like print, share, filters, disclosures, or selected-state clearing. Keep the code obvious for a novice maintainer.
+
+### V07.4 Clipboard and Share Reliability
+
+> Treat sharing as a reliability-critical feature. Improve the share flow so it works across mobile share sheets, clipboard-capable browsers, restricted browsers, and file-based viewing modes, with clear fallback feedback in each case.
+
+### V07.5 Print Workflow Reality Check
+
+> Audit the Print / PDF flow on modern browsers and make sure it feels like a real feature, not a hopeful call to `window.print()`. Improve messaging, fallback behavior, and print-specific layout cues where needed.
+
+### V07.6 Disclosure Interaction Honesty
+
+> Review the “About this data” disclosure critically. Make sure it always behaves like an obvious expandable region, with clear open/closed feedback and no ambiguity about what changed after activation.
+
+### V07.7 Selection-State Robustness
+
+> Stress-test selected-state behavior across map clicks, list clicks, clear selection, hash changes, filter changes, and reloads. Fix any behavior that feels stale, sticky, or surprising.
+
+### V07.8 Spacing Discipline Audit
+
+> Audit vertical rhythm, card padding, control spacing, and inter-section spacing across the page. Remove spacing that feels arbitrary and tighten anything that weakens hierarchy.
+
+### V07.9 Typography Honesty Pass
+
+> Reassess the current font stack, type scale, weight choices, and line lengths. Improve readability and premium feel without relying on remote fonts or decorative styling.
+
+### V07.10 Alignment Precision Pass
+
+> Audit the dashboard for subtle alignment issues across cards, buttons, legends, state lists, and footer elements. Fix anything that looks “almost aligned” but not deliberate.
+
+### V07.11 Sizing Rationalization
+
+> Review control sizes, text sizes, chip sizes, card radii, icon scales, and map proportions. Normalize the scale system so the dashboard feels intentional rather than patched together.
+
+### V07.12 Color Consistency Audit
+
+> Critically inspect the color system for drift between CSS tokens, SVG map colors, badges, utility buttons, and fallback states. Unify the palette so semantic meaning is stable everywhere.
+
+### V07.13 Empty-State Quality Threshold
+
+> Review every loading, empty, and fallback state. Rewrite or redesign anything that looks like a placeholder instead of a finished product.
+
+### V07.14 Footer Credibility Pass
+
+> Audit the footer critically. Make sure it reinforces trust, organization identity, and final navigation without feeling like an afterthought.
+
+### V07.15 Copy Tightening for Executives
+
+> Rewrite weak, repetitive, or bloated UI copy so the dashboard reads faster for executives. Keep the tone professional, assertive, and concise.
+
+### V07.16 Legal-Trends Clarity Pass
+
+> Review the “Recent legal trends” section for clarity, scannability, and authority. Improve the card structure and wording if any item feels too vague or too dense.
+
+### V07.17 Beginner Maintainer Friction Audit
+
+> Pretend a novice staff member must update the dashboard alone. Identify anything in the code or docs that would confuse them, then simplify or document it clearly.
+
+### V07.18 Function-Boundary Refactor
+
+> Reassess function boundaries in `340b.js`. Split functions that do too much, merge functions that are over-fragmented, and keep the final structure easier to follow than before.
+
+### V07.19 DOM Lookup Efficiency Pass
+
+> Audit repeated DOM work and event binding for unnecessary cost or complexity. Reduce repeated queries and fragile selector assumptions while keeping the code readable.
+
+### V07.20 Resize and Reflow Audit
+
+> Stress-test the layout during resize and responsive transitions. Remove avoidable redraws, jumping elements, or layout shifts that make the product feel unstable.
+
+### V07.21 Accessibility Regression Challenge
+
+> Re-check keyboard flow, focus visibility, live regions, disclosure semantics, print accessibility, and reduced-motion support. Fix anything that regressed during visual polish or refactors.
+
+### V07.22 Security Assumption Audit
+
+> Challenge every hidden assumption about safety in this static dashboard. Review browser hardening, dependency trust, data integrity, query/hash handling, and fallback behavior for weak spots.
+
+### V07.23 Hidden Technical Debt Hunt
+
+> Search for code, comments, copy, or styles that still reflect removed ideas like search, dark mode, presentation mode, or old toolbar patterns. Remove the leftovers completely.
+
+### V07.24 Data Provenance Visibility
+
+> Make it easier for a reader to trust where the dashboard’s claims come from. Improve the visibility, structure, and readability of data-source and update information without cluttering the UI.
+
+### V07.25 State-List Scan Speed
+
+> Critique the state list as a scanning tool. Improve grouping, density, legibility, hover/focus behavior, and selected-state clarity so it works better under time pressure.
+
+### V07.26 Map Visual Honesty
+
+> Review the map’s visual prominence versus its informational value. If the map looks more impressive than useful, improve the balance so the selection workflow is clearer and more honest.
+
+### V07.27 Report-Ready Print Audit
+
+> Audit printed output as if it will be forwarded to leadership as a PDF. Fix any orphaned sections, weak headings, missing context, or visual leftovers that reduce handoff quality.
+
+### V07.28 Self-Check Hook
+
+> Add or improve a simple, repeatable self-check routine for this dashboard: interaction checks, data checks, fallback checks, and print checks that a novice maintainer can follow every update.
+
+### V07.29 Self-Audit Prompt Generator
+
+> After completing the v07 pass, generate the next 10 highest-risk audit questions automatically based on remaining weak spots in the dashboard, not generic best practices.
+
+### V07.30 Ruthless Release Review
+
+> Evaluate the dashboard as if it must ship today. Name what still feels unfinished, fragile, misleading, or overdesigned, then implement the most important fixes rather than polishing easy details.
+
+---
+
+## Prompts v08
+
+### V08.1 No-Excuses Reliability Pass
+
+> Assume the dashboard will be opened in the least convenient environment possible: file mode, restricted clipboard, blocked features, slow machine, and narrow viewport. Improve resilience without bloating the codebase.
+
+### V08.2 Control Feedback Perfection
+
+> Review every interactive control and make sure the user always gets immediate feedback: visible, readable, and accurate. Eliminate “did that do anything?” moments entirely.
+
+### V08.3 Novice-Only Ownership Test
+
+> Assume a staff of one novice coder owns this dashboard for the next year. Simplify code structure, editing paths, config placement, and documentation until that ownership model feels realistic.
+
+### V08.4 Copy Severity Audit
+
+> Be brutally honest about weak content. Identify text that feels generic, soft, repetitive, or imprecise, and tighten it so every sentence earns its space.
+
+### V08.5 Layout Tension Audit
+
+> Review the dashboard for visual tension: cramped rows, awkward gaps, oversized islands of content, or controls that feel disconnected from nearby content. Resolve the worst tensions cleanly.
+
+### V08.6 Hierarchy Truth Test
+
+> Check whether the visual hierarchy truly matches the message hierarchy. If the page makes secondary ideas louder than primary ones, rebalance the design.
+
+### V08.7 Utility Toolbar Re-Validation
+
+> Reassess the page-tools area critically. Make sure it is discoverable, calm, and actually useful, not just another decorative control strip.
+
+### V08.8 Detail Panel Decision Audit
+
+> Evaluate whether the selected-state detail panel says the right things in the right order. Improve row order, labels, emphasis, and scan speed if any part feels bureaucratic instead of helpful.
+
+### V08.9 State Selection Narrative
+
+> Improve how the dashboard explains state selection to first-time users. Keep the guidance minimal, but make the interaction model unmistakable.
+
+### V08.10 Microcopy Precision Pass
+
+> Audit labels, helper text, status text, button text, and empty-state text for precision. Replace vague language with exact language that matches the actual feature behavior.
+
+### V08.11 Semantic Markup Review
+
+> Revisit semantic HTML and ensure the structure is helping, not fighting, accessibility and maintainability. Prefer cleaner native structure over extra complexity.
+
+### V08.12 CSS Token Rationalization
+
+> Audit the stylesheet for one-off values and unnecessary visual exceptions. Consolidate tokens where it improves consistency without turning the CSS into an abstraction puzzle.
+
+### V08.13 Visual Noise Reduction
+
+> Remove any decorative effect, border, shadow, or transition that makes the interface feel louder rather than clearer. Keep the end result more confident, not more plain.
+
+### V08.14 Selection Clear-Path Audit
+
+> Make sure the user always understands how to exit a selected state and return to the neutral view. Improve the clear-selection flow until it feels obvious and reliable.
+
+### V08.15 Error Recovery Design
+
+> Treat error recovery as a first-class UX problem. Improve retry states, fallback summaries, and plain-language recovery guidance so the page still feels competent under failure.
+
+### V08.16 Hash-Link Contract
+
+> Define and enforce a clear contract for `#state-XX` links: what should scroll, what should focus, what should update, and what should happen when the hash is invalid or removed.
+
+### V08.17 Performance Budget Reality Check
+
+> Audit the dashboard against a practical performance budget. If any styling, animation, or script pattern feels expensive for too little value, simplify it.
+
+### V08.18 Vendor Asset Trust Audit
+
+> Re-check local vendor assets and their documentation. Improve provenance notes, update rules, and verification guidance so dependency trust is explicit rather than assumed.
+
+### V08.19 Static Hosting Hardening
+
+> Improve the project’s guidance for static hosting hardening, including headers, file serving assumptions, share URL behavior, and privacy defaults. Keep the guidance actionable for a novice deployer.
+
+### V08.20 Design Mark Integrity
+
+> Audit visible versioning or design-mark labels in the interface and make sure they are intentional, current, and not misleading. Keep version labels aligned with the actual product state.
+
+### V08.21 Content-Date Alignment
+
+> Re-check every displayed date, freshness label, source note, and print header. Eliminate any mismatch that could reduce trust in the dashboard’s accuracy.
+
+### V08.22 Source-Link UX Pass
+
+> Make source links easier to verify, copy, and trust. Improve link wording and surrounding context without turning the data section into a wall of citations.
+
+### V08.23 Interaction Isolation Refactor
+
+> Refactor the code so each interaction system can fail independently without taking down unrelated features. Keep the failure boundaries clear in both code and comments.
+
+### V08.24 Debuggability Upgrade
+
+> Improve the codebase so future regressions are easier to diagnose. Add lightweight guardrails, clearer warnings, and better organization without adding noisy debug code.
+
+### V08.25 Documentation Honesty Pass
+
+> Review the project documentation for false confidence, stale instructions, and missing caveats. Make sure README and maintenance notes tell the truth about how the dashboard actually works.
+
+### V08.26 Self-Checking Release Checklist
+
+> Build a sharper release checklist that verifies controls, print, share, fallback mode, state selection, source visibility, and responsive behavior before any future push.
+
+### V08.27 Self-Auditing Diff Review
+
+> After each major edit, compare the intended behavior with the actual UI and code changes. If the diff shows drift, redundancy, or accidental complexity, clean it before considering the work done.
+
+### V08.28 Automated Prompt Seed for v09
+
+> Based on the current dashboard state, automatically generate the next 50 improvement prompt seeds for `v09`, grouped by reliability, design, content, accessibility, maintenance, and deployment risk.
+
+### V08.29 Automated Prompt Seed for v10
+
+> Based on the remaining unresolved weaknesses after `v09` planning, automatically generate another 50 prompt seeds for `v10` that are stricter, more skeptical, and more release-focused than earlier waves.
+
+### V08.30 Meta-Governor Prompt
+
+> Create a meta-process for future prompt waves so each new prompt set checks prior wins, avoids regressions, scores remaining weaknesses, and prioritizes work by user impact instead of novelty.
+
+---
+
+## Prompts v09
+
+### V09.1 Print Snapshot Guarantee
+
+> Guarantee that print preview and PDF export always capture the final rendered dashboard state, including final KPI values, visible map output, selected-state context, and fully revealed sections.
+
+### V09.2 Blank-Page Elimination Pass
+
+> Audit print output for blank pages caused by `content-visibility`, transforms, animations, fixed layers, or hidden overflow behavior. Remove every cause of missing printed content.
+
+### V09.3 Animation-to-Print Contract
+
+> Define a clear contract between animations and printing so count-up, scroll reveal, and map entrance motion can never leak partial states into print preview or PDF export.
+
+### V09.4 Browser-Menu Print Support
+
+> Make sure the dashboard prepares a clean final print state even when users open print from the browser menu instead of the on-page button.
+
+### V09.5 Print QA as Product
+
+> Treat print QA as a product requirement, not a final check. Add repeatable checks and code structure that make print regressions harder to introduce.
+
+### V09.6 Init-Order Reliability Audit
+
+> Review initialization order critically. Ensure optional enhancements like map rendering, scroll reveals, or observers can never block core controls from working.
+
+### V09.7 Control Isolation Refactor
+
+> Refactor interactive features so print, share, disclosure toggles, filters, and selection clearing remain operational even if the map or another subsystem fails.
+
+### V09.8 Count-Up Stability Review
+
+> Reassess count-up animation for correctness, maintainability, and print behavior. Keep the on-screen polish, but make the final value path obvious and reliable.
+
+### V09.9 Map Render Finality Pass
+
+> Ensure the map always has a stable final state for print, resize, fallback, and reduced-motion scenarios. Avoid animation classes or loading states lingering longer than they should.
+
+### V09.10 Selection Summary Trust Pass
+
+> Improve the selected-state summary so it is always current, useful in print, and understandable to a reader who sees the exported PDF without having used the interactive page.
+
+### V09.11 Novice Comment Audit
+
+> Reassess comments in the codebase and add explanations where a novice would otherwise have to reverse-engineer intent, especially around printing, sharing, map rendering, and init order.
+
+### V09.12 Helper Naming Audit
+
+> Critique helper and function names for clarity. Rename anything that sounds too generic, overloaded, or implementation-specific for a novice maintainer.
+
+### V09.13 Release-Failure Prevention
+
+> Identify the most likely ways a future edit could silently break printing, sharing, or state selection. Add small guardrails in code or documentation to prevent those failures.
+
+### V09.14 Documentation-to-Code Sync
+
+> Re-check README, maintainer notes, security notes, and QA guidance against actual behavior. Remove any stale instructions and close any missing gaps.
+
+### V09.15 Plain-Language Status Messages
+
+> Review status messages for print, share, selection, and fallback flows. Make them plain-language, immediate, and truthful about what just happened.
+
+### V09.16 Empty-State and Neutral-State Alignment
+
+> Ensure the neutral dashboard state, selected-state state, filtered states, and fallback states all feel like deliberate product states rather than leftovers from different revisions.
+
+### V09.17 Reduced-Motion Finality
+
+> Make reduced-motion behavior a first-class path, not an afterthought. Ensure it preserves the same information and print quality as the animated experience.
+
+### V09.18 PDF Narrative Review
+
+> Read the printed dashboard as a standalone document. Improve it until someone who never saw the live page can still understand the message and state context.
+
+### V09.19 Self-Audit Expansion
+
+> Expand the dashboard’s self-audit posture by documenting what must be checked after any layout, copy, or interaction change, with special attention to print and fallback behavior.
+
+### V09.20 Final Professionalism Pass
+
+> Review the dashboard one more time for the kinds of issues that make a polished project feel unfinished: awkward spacing, brittle controls, stale labels, fragile print output, or unclear maintenance ownership. Fix the highest-value problems.
+
+---
+
+## Prompts v10
+
+### V10.1 Native Disclosure Simplification
+
+> Replace custom disclosure behavior with native semantic HTML where it reduces fragility, accessibility debt, and maintenance burden without weakening the experience.
+
+### V10.2 Hash Validation Contract
+
+> Enforce a stricter contract for `#state-XX` links so invalid hashes never leave the dashboard in a confusing or fake selected state.
+
+### V10.3 Share Fallback Hardening
+
+> Improve share reliability for older or restricted browsers by adding a stronger copy fallback before dropping to a manual prompt.
+
+### V10.4 Self-Audit Runner
+
+> Add a lightweight built-in audit script that checks for the most likely regression sources in this static dashboard: unsafe DOM patterns, hidden characters, stale removed-feature copy, link hardening, and prompt-library drift.
+
+### V10.5 Documentation-to-Audit Bridge
+
+> Connect README, maintainer notes, QA guidance, and security notes to the actual self-audit workflow so future maintainers do not have to guess what to run.
+
+### V10.6 Empty-State Copy Honesty
+
+> Remove the last traces of stale or mismatched empty-state wording so every status line matches the current product exactly.
+
+### V10.7 Prompt Library Reality Check
+
+> Reassess the prompt library and remove drift between what the prompts ask for and what the project can realistically support as a static dashboard.
+
+### V10.8 Print-First Reliability Recheck
+
+> Re-run the print path critically after the latest fixes. Make sure the exported document still reflects the final visual state and does not regress under browser-menu printing.
+
+### V10.9 Interactive-Failure Boundaries
+
+> Tighten failure boundaries again so map, share, print, filters, and disclosure behavior degrade independently and predictably.
+
+### V10.10 Comment-Where-It-Helps Pass
+
+> Add only the comments that save a novice maintainer time on the hardest-to-understand flows: init order, print prep, hash syncing, and share fallback logic.
+
+### V10.11 Prompt-to-Code Traceability
+
+> Make it easier to explain which prompt waves drove which implementation changes, so the prompt library becomes a usable maintenance artifact rather than just a long idea list.
+
+### V10.12 Reduced-Motion Trust Pass
+
+> Ensure the reduced-motion path still communicates the full product clearly without relying on animation timing or reveal choreography.
+
+### V10.13 File-Mode Reliability Pass
+
+> Re-check behavior when the dashboard is opened directly from disk or in a constrained environment. Prefer resilience and truthfulness over fragile enhancement.
+
+### V10.14 Link-Safety Regression Pass
+
+> Re-check all user-facing outbound links and keep the browser-safety defaults explicit and consistent.
+
+### V10.15 Source Credibility Surface
+
+> Improve how the dashboard presents data provenance so the source section reads like a credibility layer, not a footnote afterthought.
+
+### V10.16 Tooling Without Bloat
+
+> Add small, practical maintainer tooling only where it reduces risk. Avoid turning a simple static dashboard into a pseudo-build system.
+
+### V10.17 False-Automation Audit
+
+> Challenge any claim that the dashboard is “self-maintaining” or “no babysitting required.” Replace hype with small, real automation that actually reduces maintenance effort.
+
+### V10.18 Copy-and-Behavior Alignment
+
+> Re-check whether button labels, status text, empty states, and section labels still match what the features actually do.
+
+### V10.19 Risk-Based Release Flow
+
+> Refactor release guidance so the highest-risk flows get checked first: print, share, map render, hash selection, and source credibility.
+
+### V10.20 Next-Wave Prompt Discipline
+
+> Generate the next prompt wave from actual unresolved weaknesses, not from novelty, repetition, or abstract perfection language.
+
+---
+
+## Prompts v11
+
+### V11.1 Audit Output Clarity
+
+> Improve the audit runner output so a novice maintainer can immediately tell what passed, what failed, and what to inspect next.
+
+### V11.2 Hash-Recovery UX
+
+> Reassess how the dashboard recovers from invalid or removed hash states so the neutral state feels deliberate and stable.
+
+### V11.3 Disclosure Semantics Recheck
+
+> Confirm the “About this data” section remains clear, accessible, and easy to maintain now that it relies on native disclosure semantics.
+
+### V11.4 Self-Check Coverage Review
+
+> Review what the automated audit still does not catch and document the remaining manual checks honestly instead of implying full automation.
+
+### V11.5 Source-Link Maintenance Pass
+
+> Improve source-link wording and maintenance guidance so future editors know which citations matter most and where to verify them.
+
+### V11.6 Prompt Library Compression Audit
+
+> Reduce prompt redundancy where multiple waves repeat the same idea with different phrasing. Keep the library more actionable and less bloated.
+
+### V11.7 Print-Narrative Credibility Pass
+
+> Re-read the printed dashboard as a board-ready document and improve any remaining weak transitions, headings, or context gaps.
+
+### V11.8 Maintainer Workflow Tightening
+
+> Tighten the sequence a novice maintainer should follow after editing: update content, run audit, run QA checklist, then publish.
+
+### V11.9 Realistic Cybersecurity Posture
+
+> Keep improving the dashboard’s security posture through static-site hardening, dependency trust, link safety, and safe DOM patterns without implying impossible self-defense capabilities.
+
+### V11.10 Honest Perfection Challenge
+
+> Critique the phrase “perfect project” itself. Replace perfection theater with a disciplined loop of reliability, auditability, readability, and incremental improvement.
+
+---
+
+## Prompts v12
+
+### V12.1 Automated Improvement Seed
+
+> Re-run the audit script and generate the next improvement only from what the script misses or what manual QA still catches.
+
+### V12.2 Prompt Drift Detector Seed
+
+> Compare the newest prompt waves against the codebase and remove or rewrite prompts that no longer describe real weaknesses.
+
+### V12.3 Dependency Trust Seed
+
+> Re-check local vendor assets, their provenance notes, and update rules. Improve only if trust or clarity still feels weak.
+
+### V12.4 Print Regression Seed
+
+> Stress-test future layout changes against print preview first so export quality remains a release gate, not an afterthought.
+
+### V12.5 Share-Path Seed
+
+> Re-check native share, clipboard, textarea-copy fallback, and prompt fallback after future changes to ensure every environment still gets a truthful result.
+
+### V12.6 Hash-State Seed
+
+> Treat hash-driven state as a contract. Re-test invalid, removed, pasted, and refreshed hashes after every major interaction change.
+
+### V12.7 Novice-Handoff Seed
+
+> Hand the repo to a hypothetical first-time maintainer and ask what they would still find confusing. Fix the highest-friction item only.
+
+### V12.8 Source-Credibility Seed
+
+> Reassess whether the current source/date presentation is still strong enough for an executive or policymaker audience.
+
+### V12.9 Security-Truthfulness Seed
+
+> Challenge whether the code and docs are still honest about the limits of static-site security and automation.
+
+### V12.10 Release-Gate Seed
+
+> Promote the most failure-prone checks into permanent release gates and remove low-value ritual from the checklist.
+
+---
+
+## Prompts v13
+
+### V13.1 Audit-Scope Expansion Seed
+
+> Expand the audit runner only if a newly recurring regression justifies automation. Keep the tool small, obvious, and reliable.
+
+### V13.2 Print-Reader Seed
+
+> Improve the dashboard for someone who only ever sees the PDF. Add context only if it raises comprehension more than clutter.
+
+### V13.3 Selection-Flow Seed
+
+> Re-check whether first-time users instantly understand how to select a state, clear a state, and interpret the selection summary.
+
+### V13.4 Reduced-Motion Seed
+
+> Re-audit the reduced-motion path and confirm it preserves clarity, hierarchy, and final-state correctness.
+
+### V13.5 Copy-Precision Seed
+
+> Remove the next most vague sentence in the interface or docs. Prefer exact language over ornamental or generic phrasing.
+
+### V13.6 Documentation-Honesty Seed
+
+> Re-read the docs with a skeptical maintainer mindset and tighten anything that overpromises simplicity or automation.
+
+### V13.7 Security-Hygiene Seed
+
+> Keep re-checking the boring but high-value security basics: safe DOM APIs, trusted local assets, strict link handling, and clean source text.
+
+### V13.8 Prompt-Priority Seed
+
+> Score future prompt ideas by user impact and regression risk before adding them. Avoid adding waves that are longer than they are useful.
+
+### V13.9 Stability-over-Novelty Seed
+
+> Prefer improvements that make the existing dashboard more reliable, maintainable, and credible over new decorative ideas.
+
+### V13.10 Continuous Improvement Seed
+
+> Treat future changes as part of a loop: inspect real weaknesses, improve the code, update the docs, update the checklist, then generate the next prompt seeds.

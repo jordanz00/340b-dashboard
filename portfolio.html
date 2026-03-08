@@ -1,0 +1,725 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>Jordan Zabady | Portfolio</title>
+  <meta name="description" content="Jordan Zabady is a digital communications and multimedia professional working across video, motion, photography, design, and emerging AI-assisted web and dashboard development.">
+  <meta name="theme-color" content="#0f0a0a">
+  <style>
+    :root {
+      --bg: #0b0808;
+      --bg-soft: #120d0d;
+      --panel: rgba(22, 15, 15, 0.84);
+      --panel-strong: rgba(29, 19, 19, 0.92);
+      --border: rgba(170, 78, 78, 0.18);
+      --border-strong: rgba(170, 78, 78, 0.28);
+      --text: #f4efef;
+      --muted: #b8a8a8;
+      --soft: #d4c7c7;
+      --accent: #aa4e4e;
+      --accent-bright: #d46b6b;
+      --accent-dim: rgba(212, 107, 107, 0.12);
+      --shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
+      --radius: 20px;
+      --radius-sm: 14px;
+      --max: 1080px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at top right, rgba(170, 78, 78, 0.16), transparent 26%),
+        radial-gradient(circle at left, rgba(212, 107, 107, 0.08), transparent 22%),
+        linear-gradient(180deg, #080606 0%, #0d0909 48%, #120d0d 100%);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--soft); text-decoration: none; }
+    a:hover { color: #fff; }
+
+    .skip-link {
+      position: absolute;
+      left: 1rem;
+      top: -3rem;
+      z-index: 100;
+      padding: 0.55rem 0.9rem;
+      border-radius: 999px;
+      background: var(--accent);
+      color: #fff;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(10, 7, 7, 0.78);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-bottom: 1px solid rgba(255,255,255,0.04);
+    }
+
+    .header-inner,
+    main,
+    .footer-inner {
+      width: min(calc(100% - 2rem), var(--max));
+      margin: 0 auto;
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 0.9rem 0;
+    }
+
+    .brand {
+      display: flex;
+      flex-direction: column;
+      gap: 0.1rem;
+    }
+
+    .eyebrow {
+      margin: 0;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 0.98rem;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+
+    .top-nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.3rem;
+    }
+
+    .top-nav a {
+      padding: 0.45rem 0.7rem;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      border: 1px solid transparent;
+      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+    }
+
+    .top-nav a:hover,
+    .top-nav a:focus-visible {
+      color: #fff;
+      background: rgba(255,255,255,0.03);
+      border-color: rgba(255,255,255,0.06);
+      outline: none;
+    }
+
+    main {
+      padding: 1.4rem 0 2.8rem;
+    }
+
+    section {
+      margin-top: 1rem;
+      padding: 1.15rem;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero {
+      padding: 1.5rem;
+      background:
+        linear-gradient(180deg, rgba(24,16,16,0.98) 0%, rgba(16,11,11,0.96) 100%);
+      border: 1px solid var(--border);
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.8fr);
+      gap: 1rem;
+      align-items: start;
+    }
+
+    .hero-kicker {
+      display: inline-block;
+      margin-bottom: 0.75rem;
+      padding: 0.32rem 0.55rem;
+      border-radius: 999px;
+      background: var(--accent-dim);
+      color: var(--accent-bright);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .hero h2 {
+      margin: 0;
+      max-width: 12ch;
+      font-size: clamp(1.9rem, 5vw, 3.3rem);
+      line-height: 0.98;
+      letter-spacing: -0.06em;
+      font-weight: 700;
+    }
+
+    .hero p {
+      margin: 0.85rem 0 0;
+      max-width: 58ch;
+      font-size: 0.96rem;
+      color: var(--muted);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.55rem;
+      margin-top: 1.1rem;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 2.45rem;
+      padding: 0.68rem 0.92rem;
+      border-radius: 999px;
+      border: 1px solid var(--border-strong);
+      background: rgba(255,255,255,0.03);
+      color: #fff;
+      font-size: 0.82rem;
+      font-weight: 700;
+      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .button:hover,
+    .button:focus-visible {
+      background: rgba(212,107,107,0.08);
+      border-color: rgba(212,107,107,0.36);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .hero-panel {
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: var(--panel-strong);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .hero-panel h3,
+    .section-title {
+      margin: 0;
+      font-size: 1rem;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-panel ul {
+      margin: 0.7rem 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 0.6rem;
+    }
+
+    .hero-panel li {
+      padding-top: 0.55rem;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .hero-panel li:first-child { border-top: 0; padding-top: 0; }
+    .hero-panel strong { display: block; color: var(--soft); font-size: 0.8rem; margin-bottom: 0.12rem; }
+
+    .section-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: end;
+      justify-content: space-between;
+      gap: 0.8rem;
+      margin-bottom: 0.85rem;
+    }
+
+    .section-head p {
+      margin: 0;
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .lede {
+      margin: 0;
+      max-width: 68ch;
+      color: var(--muted);
+      font-size: 0.94rem;
+    }
+
+    .grid-2,
+    .project-grid,
+    .capability-grid,
+    .links-grid,
+    .education-grid {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .grid-2,
+    .project-grid,
+    .education-grid,
+    .links-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .capability-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .card,
+    .project-card,
+    .experience-item,
+    .link-card {
+      padding: 1rem;
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.02);
+      border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .card h3,
+    .project-card h3,
+    .experience-item h3,
+    .link-card h3 {
+      margin: 0 0 0.45rem;
+      font-size: 0.98rem;
+      letter-spacing: -0.03em;
+      color: #fff;
+    }
+
+    .card p,
+    .project-card p,
+    .link-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .project-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .project-card::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto auto 0;
+      width: 100%;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent 72%);
+    }
+
+    .project-meta,
+    .education-meta,
+    .experience-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.7rem;
+      color: var(--muted);
+      font-size: 0.76rem;
+    }
+
+    .project-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      margin-top: 0.9rem;
+    }
+
+    .project-links a,
+    .link-card a {
+      color: var(--soft);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.4rem;
+      margin-top: 0.7rem;
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.8rem;
+      padding: 0.25rem 0.58rem;
+      border-radius: 999px;
+      background: rgba(212,107,107,0.08);
+      color: #e1c9c9;
+      border: 1px solid rgba(212,107,107,0.12);
+      font-size: 0.74rem;
+      font-weight: 600;
+    }
+
+    .experience-list {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .experience-head {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 0.4rem 0.8rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .experience-item p {
+      margin: 0 0 0.7rem;
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    .experience-item ul {
+      margin: 0;
+      padding-left: 1rem;
+      color: var(--muted);
+    }
+
+    .experience-item li {
+      margin-bottom: 0.35rem;
+      font-size: 0.88rem;
+    }
+
+    footer {
+      padding: 1.6rem 0 2.5rem;
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 0.8rem;
+      font-size: 0.84rem;
+    }
+
+    @media (max-width: 900px) {
+      .hero-grid,
+      .capability-grid,
+      .grid-2,
+      .project-grid,
+      .education-grid,
+      .links-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .top-nav {
+        justify-content: flex-start;
+      }
+      .hero,
+      section {
+        padding: 1rem;
+      }
+      .hero h2 {
+        max-width: none;
+        font-size: 2rem;
+      }
+      .hero-actions {
+        flex-direction: column;
+      }
+      .button { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">
+        <p class="eyebrow">Portfolio</p>
+        <h1>Jordan Zabady</h1>
+      </div>
+      <nav class="top-nav" aria-label="Primary">
+        <a href="#work">Work</a>
+        <a href="#about">About</a>
+        <a href="#experience">Experience</a>
+        <a href="#skills">Skills</a>
+        <a href="#education">Education</a>
+        <a href="https://github.com/jordanz00" target="_blank" rel="noopener noreferrer">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero">
+      <div class="hero-grid">
+        <div>
+          <span class="hero-kicker">Digital communications and multimedia</span>
+          <h2>Creative work, visual systems, and emerging AI-assisted product development.</h2>
+          <p>
+            I am a digital communications professional working across multimedia production, visual storytelling, content strategy, and design. My background is rooted in video, motion, photography, branding, and production, and I am now extending that work into dashboards, websites, and interactive digital experiences with AI-assisted tools.
+          </p>
+          <div class="hero-actions">
+            <a class="button" href="https://www.linkedin.com/in/jordanzabady/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+            <a class="button" href="https://github.com/jordanz00" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a class="button" href="https://www.pamedia.art" target="_blank" rel="noopener noreferrer">PA Media Arts</a>
+          </div>
+        </div>
+        <aside class="hero-panel" aria-label="Profile summary">
+          <h3>Current focus</h3>
+          <ul>
+            <li><strong>Core practice</strong> Multimedia production, communications, editing, motion, and design.</li>
+            <li><strong>New direction</strong> AI-assisted web, dashboard, and interface work.</li>
+            <li><strong>Approach</strong> Clear communication, visual precision, and practical execution.</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <section id="work" aria-labelledby="work-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Selected work</p>
+          <h2 id="work-title" class="section-title">Recent projects</h2>
+        </div>
+        <p>Recent work across interactive communications, advocacy storytelling, and independent creative practice.</p>
+      </div>
+      <div class="project-grid">
+        <article class="project-card">
+          <h3>Time to Act: Pennsylvania Hospitals Dashboard</h3>
+          <p>A report-driven interactive dashboard translating complex hospital sustainability material into a more accessible digital experience for communications and policy audiences.</p>
+          <div class="project-meta">
+            <span>Dashboard</span>
+            <span>HTML / CSS / JavaScript</span>
+            <span>AI-assisted build</span>
+          </div>
+          <div class="project-links">
+            <a href="index.html">Open project</a>
+            <a href="https://github.com/jordanz00/340b-dashboard" target="_blank" rel="noopener noreferrer">Repository</a>
+          </div>
+        </article>
+        <article class="project-card">
+          <h3>340B Advocacy Dashboard</h3>
+          <p>An advocacy-focused web experience using interactive state law mapping and concise narrative structure to make policy information clearer and more usable.</p>
+          <div class="project-meta">
+            <span>Policy communication</span>
+            <span>Interactive map</span>
+            <span>D3-based work</span>
+          </div>
+          <div class="project-links">
+            <a href="340b.html">Open project</a>
+            <a href="README.md">Project overview</a>
+          </div>
+        </article>
+        <article class="project-card">
+          <h3>Pennsylvania Media Arts</h3>
+          <p>An independent multimedia practice focused on audio, video, photography, and visual production for client work and creative development.</p>
+          <div class="project-meta">
+            <span>Founder</span>
+            <span>Production company</span>
+            <span>Client-facing work</span>
+          </div>
+          <div class="project-links">
+            <a href="https://www.pamedia.art" target="_blank" rel="noopener noreferrer">Visit site</a>
+          </div>
+        </article>
+        <article class="project-card">
+          <h3>AI transition in progress</h3>
+          <p>I am actively expanding from traditional multimedia and communications work into AI-assisted software, dashboard, and website development with a focus on professional, shareable outcomes.</p>
+          <div class="project-meta">
+            <span>Workflow shift</span>
+            <span>Portfolio development</span>
+            <span>Job-search ready</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="about" aria-labelledby="about-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">About</p>
+          <h2 id="about-title" class="section-title">Practice</h2>
+        </div>
+      </div>
+      <p class="lede">
+        I work at the intersection of digital communications, multimedia production, and visual storytelling. My experience includes video production, motion graphics, photography, design, brand development, content strategy, and production leadership. I am most effective in environments where communication needs to be clear, thoughtful, and useful.
+      </p>
+      <div class="grid-2" style="margin-top: 0.85rem;">
+        <article class="card">
+          <h3>What I do</h3>
+          <p>I develop and produce digital content, visual systems, and communication assets that help organizations present information clearly across platforms.</p>
+        </article>
+        <article class="card">
+          <h3>How AI fits in</h3>
+          <p>AI tools now extend my creative workflow into faster prototyping and real interface work, especially in dashboards, websites, and digital presentation systems.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="experience" aria-labelledby="experience-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Experience</p>
+          <h2 id="experience-title" class="section-title">Professional experience</h2>
+        </div>
+      </div>
+      <div class="experience-list">
+        <article class="experience-item">
+          <div class="experience-head">
+            <h3>Founder | PA Media Arts</h3>
+            <div class="experience-meta"><span>Apr 2025 - Present</span><span>New Cumberland, Pennsylvania</span></div>
+          </div>
+          <p>Established and lead a multimedia production company delivering audio, video, and photography services while overseeing creative direction, production management, client relationships, budgeting, and execution.</p>
+        </article>
+        <article class="experience-item">
+          <div class="experience-head">
+            <h3>Producer, Digital Communications | HAP</h3>
+            <div class="experience-meta"><span>Aug 2022 - Present</span><span>Harrisburg, PA</span></div>
+          </div>
+          <p>Produce digital content and communications across video, social, email, campaigns, websites, publications, and advocacy initiatives. Support strategy, reporting, content development, motion work, and web updates.</p>
+        </article>
+        <article class="experience-item">
+          <div class="experience-head">
+            <h3>Social Media Specialist | Roman Catholic Diocese of Harrisburg</h3>
+            <div class="experience-meta"><span>May 2019 - Aug 2022</span><span>Harrisburg, Pennsylvania</span></div>
+          </div>
+          <p>Led social media campaigns, livestreams, YouTube content, podcasts, analytics reporting, and multimedia production. Produced and directed recurring digital programming and platform content.</p>
+        </article>
+        <article class="experience-item">
+          <div class="experience-head">
+            <h3>Earlier production and AV roles</h3>
+            <div class="experience-meta"><span>2013 - 2019</span></div>
+          </div>
+          <p>Additional experience includes work with Hollywood Casino at Penn National Race Course, Stream Companies, and BridgeTower Media across AV operations, editing, live production, presentations, and event support.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="skills" aria-labelledby="skills-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Skills</p>
+          <h2 id="skills-title" class="section-title">Capabilities</h2>
+        </div>
+      </div>
+      <div class="capability-grid">
+        <article class="card">
+          <h3>Multimedia production</h3>
+          <p>Video production, photography, editing, livestreaming, webinars, audio, and event support.</p>
+        </article>
+        <article class="card">
+          <h3>Motion and animation</h3>
+          <p>Motion graphics, animation, storyboarding, visual pacing, and presentation-driven design.</p>
+        </article>
+        <article class="card">
+          <h3>3D and visual development</h3>
+          <p>3D modeling, rigging, texturing, compositing, rendering, and broader visual systems thinking.</p>
+        </article>
+        <article class="card">
+          <h3>Communications strategy</h3>
+          <p>Content strategy, digital communications, brand development, message clarity, and campaign support.</p>
+        </article>
+        <article class="card">
+          <h3>AI-assisted creation</h3>
+          <p>Cursor-based workflow development for dashboards, sites, prototypes, and faster digital execution.</p>
+        </article>
+        <article class="card">
+          <h3>Creative software</h3>
+          <p>After Effects, Premiere, Final Cut Pro, Maya, Blender, 3D Studio Max, Lightwave, and related tools.</p>
+        </article>
+      </div>
+      <div class="chips">
+        <span class="chip">Video Production</span>
+        <span class="chip">Photography</span>
+        <span class="chip">Motion Graphics</span>
+        <span class="chip">Animation</span>
+        <span class="chip">Graphic Design</span>
+        <span class="chip">Creative Direction</span>
+        <span class="chip">3D Modeling</span>
+        <span class="chip">Compositing</span>
+        <span class="chip">Rendering</span>
+        <span class="chip">Audio Editing</span>
+        <span class="chip">Content Strategy</span>
+        <span class="chip">HTML</span>
+        <span class="chip">CSS</span>
+        <span class="chip">JavaScript</span>
+        <span class="chip">Cursor</span>
+      </div>
+    </section>
+
+    <section id="education" aria-labelledby="education-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Education</p>
+          <h2 id="education-title" class="section-title">Education</h2>
+        </div>
+      </div>
+      <div class="education-grid">
+        <article class="card">
+          <h3>PennWest Edinboro</h3>
+          <p>B.F.A., Applied Media Arts; Computer Animation concentration.</p>
+          <div class="education-meta"><span>2008 - 2011</span><span>Film Club</span><span>Animation Club</span></div>
+        </article>
+        <article class="card">
+          <h3>Rochester Institute of Technology</h3>
+          <p>School of Film and Animation.</p>
+          <div class="education-meta"><span>2004 - 2007</span><span>Computer Science House member</span></div>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="links-title">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">Links</p>
+          <h2 id="links-title" class="section-title">Connect</h2>
+        </div>
+      </div>
+      <div class="links-grid">
+        <article class="link-card">
+          <h3>GitHub</h3>
+          <p>Code, dashboard work, and portfolio development.</p>
+          <div class="project-links"><a href="https://github.com/jordanz00" target="_blank" rel="noopener noreferrer">github.com/jordanz00</a></div>
+        </article>
+        <article class="link-card">
+          <h3>LinkedIn</h3>
+          <p>Professional profile and full work history.</p>
+          <div class="project-links"><a href="https://www.linkedin.com/in/jordanzabady/" target="_blank" rel="noopener noreferrer">linkedin.com/in/jordanzabady</a></div>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>Jordan Zabady</div>
+      <div>Digital communications, multimedia, and emerging AI-assisted product work.</div>
+    </div>
+  </footer>
+</body>
+</html>

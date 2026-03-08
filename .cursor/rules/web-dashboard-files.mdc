@@ -1,0 +1,13 @@
+---
+description: Security and maintenance rules for dashboard source files
+globs: "*.{html,css,js,py,md}"
+alwaysApply: false
+---
+
+# Dashboard File Guidance
+
+- Before changing UI code, check whether the edit affects print, share, selection state, or fallback behavior.
+- For user-controlled input, keep the accepted shape narrow and explicit. In this repo, the main user-controlled surface is URL/hash state.
+- For outbound links opening a new tab, require `rel="noopener noreferrer"`.
+- Keep docs honest: describe real static-site risks and real checks, not vague "self-healing" or "self-learning" claims.
+- If you touch security-sensitive behavior, update the nearest docs in `README.md`, `SECURITY.md`, `QA-CHECKLIST.md`, or `NOVICE-MAINTAINER.md`.
