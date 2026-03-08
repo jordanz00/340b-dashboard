@@ -44,6 +44,15 @@ The audit script is useful, but it is not a release decision by itself.
 - It does not verify whether the legal-status sources are still current.
 - It does not replace human review of policymaker or executive-facing copy.
 
+## Human release gate
+
+Do not publish until a human has confirmed:
+
+1. the PDF reads correctly from first page to last page
+2. the selected-state print context is acceptable
+3. the source dates and source links are current
+4. the wording still sounds precise for lawmakers, hospital CEOs, and administrators
+
 ## Things to avoid
 
 - Do not add remote scripts unless absolutely necessary.

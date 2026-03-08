@@ -71,6 +71,7 @@ MANUAL_CHECKS = [
     "Confirm Pennsylvania prints as the default state context when no live state is selected.",
     "Confirm the compact print state summary is readable and does not consume a full page.",
     "Verify source dates and source links still match the current law and reporting data.",
+    "Re-read the PDF and dashboard copy for lawmakers, hospital CEOs, and administrators before release.",
 ]
 
 
@@ -229,6 +230,11 @@ def check_prompt_waves(results: list[str]) -> bool:
         "## Prompts v18",
         "## Prompts v19",
         "## Prompts v20",
+        "## Prompts v21",
+        "## Prompts v22",
+        "## Prompts v23",
+        "## Prompts v24",
+        "## Prompts v25",
     ]
     missing = [section for section in required_sections if section not in prompts]
 
@@ -237,7 +243,7 @@ def check_prompt_waves(results: list[str]) -> bool:
             record(results, False, f"Prompt library is missing section `{section}`")
         return False
 
-    record(results, True, "Prompt library contains v09 through v20 sections")
+    record(results, True, "Prompt library contains v09 through v25 sections")
     return True
 
 

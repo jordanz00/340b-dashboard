@@ -9,6 +9,16 @@ Use this checklist before pushing dashboard changes.
 3. Run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` after security-sensitive changes.
 4. Review and fix any real findings instead of suppressing them blindly.
 
+## Release blockers first
+
+Check these before lower-risk polish:
+
+1. Print preview starts correctly and does not show blank or sparse pages.
+2. Pennsylvania prints as the default context only when no live state is selected.
+3. The selected-state story stays aligned across the map, selection summary, and detail panel.
+4. KPI values show final numbers in print, not `0`.
+5. Source dates and source links still match the current legal-status sources.
+
 ## Core interactions
 
 1. Open `340b.html` through a local server.

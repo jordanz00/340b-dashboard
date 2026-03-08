@@ -1462,3 +1462,231 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 ### V20.10 Next-Wave Discipline Pass
 
 > Generate future prompt waves only from observed issues in print preview, maintainability, source trust, or release QA. Do not generate more waves just because another round is possible.
+
+---
+
+## Prompts v21
+
+### V21.1 Print Appendix Compression Pass
+
+> Re-check any print-only appendix or summary block and compress it further if it begins to consume a disproportionate amount of page space. Keep it reference-friendly, not dominant.
+
+### V21.2 Counts-Before-Lists Pass
+
+> In print, always prioritize counts, selected-state meaning, and policy implications before long abbreviation lists. Lists should support the summary, not replace it.
+
+### V21.3 State Summary Readability Pass
+
+> Improve the printed state-law summary so it remains readable at higher density. Favor small hierarchy cues, shorter labels, and cleaner grouping over decorative styling.
+
+### V21.4 Pennsylvania Context Clarity Pass
+
+> Make sure Pennsylvania’s default print context adds policy value. The PDF should communicate why Pennsylvania is the temporary focus, not make it feel like a random UI fallback.
+
+### V21.5 Header-to-Card Continuity Pass
+
+> Re-check the visual transition from the print header to the first dashboard card. The first page should feel continuous and intentional, with no dead space or abrupt reset in hierarchy.
+
+### V21.6 Print Detail Panel Economy Pass
+
+> Tighten the printed state detail panel so it communicates the key state facts clearly without repeating labels or wasting vertical space that could serve the broader executive narrative.
+
+### V21.7 Appendix Placement Pass
+
+> Reassess where supporting state-law material belongs in print. Keep it near the map when it helps interpretation, but move or compress it if it interrupts the flow of the report.
+
+### V21.8 Selected-State Story Pass
+
+> Confirm that the selected-state highlight, detail panel, and surrounding copy tell one coherent story in print, especially for readers who never used the interactive map.
+
+### V21.9 Audience-Ready Density Pass
+
+> Increase print density only until the document feels executive-ready. Stop before readability drops for lawmakers, CEOs, or administrators reading a PDF on paper or screen.
+
+### V21.10 Print Release Memory Pass
+
+> Treat past print failures as release memory. Build future improvements around those exact regressions so they do not quietly return.
+
+---
+
+## Prompts v22
+
+### V22.1 Manual Gate Ordering Pass
+
+> Keep manual release checks in the order of risk, not convenience. Print and source credibility should remain ahead of cosmetic review.
+
+### V22.2 Source Proof Pass
+
+> Re-check that the dashboard shows enough source context to feel trustworthy, but not so much that the policy story disappears into citation clutter.
+
+### V22.3 Date Visibility Pass
+
+> Ensure data freshness and last-updated cues remain easy to find in both the live dashboard and the PDF. Keep them visible where decision-makers naturally look first.
+
+### V22.4 Share-Preview Continuity Pass
+
+> Make the shared preview language align with the dashboard’s actual framing. Shared metadata should communicate the same issue, stakes, and audience relevance as the live and printed views.
+
+### V22.5 Prompt Outcome Ledger Pass
+
+> Maintain a simple trace from prompt waves to meaningful outcomes. Keep the prompt library useful as maintenance history, not just as idea storage.
+
+### V22.6 High-Risk Surface Handoff Pass
+
+> Strengthen the handoff notes so future maintainers can immediately identify the real high-risk surfaces: print, selection state, share flow, map rendering, and source trust.
+
+### V22.7 Manual-vs-Automated Boundary Pass
+
+> Keep documenting where automation ends. The repo should be explicit about which checks still need a human eye before publishing.
+
+### V22.8 Policy Ask Precision Pass
+
+> Re-check any sentence describing what HAP is asking lawmakers to do. Keep it direct, specific, and consistent across the intro, policy framing, and print summary.
+
+### V22.9 Executive Stakes Precision Pass
+
+> Re-check any sentence aimed at hospital leaders. It should speak clearly to patient access, operational impact, or oversight realities without generic advocacy filler.
+
+### V22.10 Release Candidate Credibility Pass
+
+> Review the dashboard as if it were about to be sent to an executive team. Improve only what increases confidence, clarity, or evidence quality.
+
+---
+
+## Prompts v23
+
+### V23.1 Neutral-State UX Pass
+
+> Keep the live neutral state clear and deliberate. A user who has not clicked a state should still understand what to do and not interpret the dashboard as incomplete.
+
+### V23.2 State Detail Language Pass
+
+> Tighten the language inside the state detail panel so each field adds meaning. Remove or compress wording that repeats what the badges already convey.
+
+### V23.3 Badge Meaning Pass
+
+> Ensure the state detail badges and labels remain understandable in both live and print contexts. Prefer exact legal-status wording over shorthand that only makes sense to repeat users.
+
+### V23.4 Print Trends Density Pass
+
+> Reassess the “Recent legal trends” cards in print. Keep the signal, but reduce any padding or repetition that makes the section longer than its value justifies.
+
+### V23.5 KPI Context Pass
+
+> Ensure the KPI strip still makes sense as a printed executive summary. Tighten labels or descriptions if a PDF-only reader could misread what the numbers represent.
+
+### V23.6 Policy Flow Consistency Pass
+
+> Re-check whether the order of sections still supports a clean progression from “What is 340B?” to HAP position to state evidence to policy implications.
+
+### V23.7 Source Language Precision Pass
+
+> Remove the next vague phrase from the source and methodology guidance. Help maintainers understand exactly what each source verifies.
+
+### V23.8 Workflow Brevity Pass
+
+> Keep the novice workflow short enough to follow under pressure. If a maintenance instruction does not reduce risk or confusion, compress it.
+
+### V23.9 Small-Tool Discipline Pass
+
+> Before adding any new audit or helper script logic, ask whether the regression is common enough to justify automation. Favor fewer reliable checks over broader fragile ones.
+
+### V23.10 Prompt Debt Pass
+
+> Identify prompt debt the same way you identify code debt. If a prompt no longer points to a real weakness, revise or retire it instead of layering another near-duplicate.
+
+---
+
+## Prompts v24
+
+### V24.1 Release Checklist Compression Pass
+
+> Rework the release checklist so it stays scannable for a novice maintainer while still front-loading the highest-risk checks.
+
+### V24.2 Source Verification Shortcut Pass
+
+> Make it easier for a maintainer to remember the source verification order by placing the reminder where they are most likely to need it.
+
+### V24.3 Print Regression Naming Pass
+
+> Name recurring print regressions explicitly in docs and QA: blank first page, duplicated intro, empty-state PDF, zero metrics, and oversized appendix blocks.
+
+### V24.4 Human Review Gate Wording Pass
+
+> Tighten the wording around human review so it sounds like a real release requirement, not a soft suggestion.
+
+### V24.5 Dashboard-to-PDF Continuity Pass
+
+> Reassess whether every major printed section can still be traced back to a live dashboard section. Avoid print content that feels disconnected from the product.
+
+### V24.6 Share Fallback Honesty Pass
+
+> Make sure share status messages and docs still describe the actual behavior in modern browsers, fallback browsers, and constrained environments.
+
+### V24.7 Print State Restore Pass
+
+> Re-check the live-state restoration path after print so no temporary print behavior lingers after the dialog closes.
+
+### V24.8 Audience Framing Sync Pass
+
+> Synchronize the framing for lawmakers, hospital CEOs, and administrators across metadata, on-page intro copy, and print-specific content.
+
+### V24.9 Maintenance Routing Pass
+
+> Keep improving the maintainer decision tree: content issue, data issue, print issue, behavior issue, or source issue. Route each one to the right file immediately.
+
+### V24.10 Prompt Specificity Recheck
+
+> Re-evaluate the latest prompt waves and make sure they still name the exact surface, audience, regression risk, and constraint. Tighten any wave that drifts back toward abstraction.
+
+---
+
+## Prompts v25
+
+### V25.1 Executive Deliverable Pass
+
+> Treat the dashboard and PDF as executive deliverables, not experiments. Improve only what helps credibility, clarity, and decision-making confidence.
+
+### V25.2 Appendix-to-Narrative Balance Pass
+
+> Keep balancing narrative pages against reference material. The PDF should stay informative without becoming a dense legal-status dump.
+
+### V25.3 Default-State Confidence Pass
+
+> Reconfirm that the default print state and neutral live state each serve their own purpose cleanly: one for executive clarity, one for honest interaction.
+
+### V25.4 Metadata Truth Pass
+
+> Re-check title, description, Open Graph, and Twitter metadata so they faithfully represent the current dashboard instead of lagging behind the real product.
+
+### V25.5 Print Header Economy Pass
+
+> Review the printed header again and remove anything that does not earn its space. The header should frame the report, not compete with the first card.
+
+### V25.6 Source Trust Signal Pass
+
+> Strengthen the small trust signals that matter: source labels, dates, verification order, and legal-status wording. Prefer evidence cues over decorative polish.
+
+### V25.7 Manual Review Durability Pass
+
+> Make the manual review expectations durable enough that a rushed maintainer still sees them before release. Place them in docs, QA, and audit output where they are hard to miss.
+
+### V25.8 Small-System Longevity Pass
+
+> Re-check whether the dashboard is still evolving as a small maintainable system. Reject improvements that add more complexity than confidence.
+
+### V25.9 Outcome-Based Prompt Writing Pass
+
+> Require future prompt writing to begin from observed failures, missed checks, or vague copy. Keep prompt generation grounded in evidence and shipped outcomes.
+
+### V25.10 Next-Wave Restraint Pass
+
+> Do not generate future prompt waves until the current wave has produced visible product, documentation, or release-quality improvements worth keeping.
+
+---
+
+## Prompt Outcome Notes
+
+- `v15-v16` contributed to the current print continuity work: live intro cards preserved in print, compact print-only state summary, and print-only Pennsylvania default selection.
+- `v17-v18` contributed to clearer neutral-state wording, source-verification guidance, and explicit manual-review expectations around print and source credibility.
+- `v19-v20` contributed to stricter release discipline, smaller-system maintenance guidance, and tighter boundaries around what the audit can and cannot prove.

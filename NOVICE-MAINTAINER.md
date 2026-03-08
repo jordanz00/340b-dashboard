@@ -110,6 +110,16 @@ If you do not know where to start, use this list:
 3. Broken button, map, filter, or share behavior: check `340b.js`
 4. Wrong dates or state facts: check `state-data.js`
 
+## Quick decision tree
+
+Use this shortcut before you edit:
+
+1. Content issue: start in `340b.html`
+2. Data or date issue: start in `state-data.js`
+3. Print or page-break issue: start in `340b.css`, then `340b.js`
+4. Button, map, share, or selection issue: start in `340b.js`
+5. Source-verification wording issue: check `340b.html`, then `QA-CHECKLIST.md`, `README.md`, and `SECURITY.md`
+
 ## Source verification order
 
 If you update state-law content, verify in this order:

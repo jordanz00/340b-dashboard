@@ -29,6 +29,9 @@ Prefer local assets. Corporate and nonprofit deployments should not rely on remo
 5. Print/PDF output
 Print should reflect the final rendered document state, not partial animation or hidden content.
 
+6. Source credibility
+Source dates, legal-status wording, and printed policy framing must stay aligned so the dashboard does not become visually polished but substantively misleading.
+
 ## Security checks to run
 
 - `python3 dashboard-audit.py`
@@ -46,6 +49,15 @@ For this static site, "safe" means reducing avoidable browser-side risk:
 - repeatable scans before release
 
 It does not honestly mean a mathematical guarantee that no compromise is ever possible.
+
+## Human release gate
+
+Before publishing, a human should still confirm:
+
+- the print preview reads correctly end-to-end
+- the default print state context is acceptable
+- the legal-status sources are current
+- the policymaker and hospital-leader framing still sounds precise and credible
 
 ## Maintenance note
 

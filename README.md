@@ -85,6 +85,16 @@ No package install is required for the dashboard itself.
 - See `THREAT-MODEL.md` for the current security boundaries and highest-risk surfaces.
 - Vendor asset provenance is recorded in `assets/vendor/README.md`.
 
+## Highest-risk surfaces
+
+If you are deciding where to be most careful, use this order:
+
+1. print/PDF preparation and page flow
+2. source dates and legal-status wording
+3. URL hash state and selection recovery
+4. share-link behavior and fallback copy
+5. map rendering and local vendor assets
+
 ## Maintenance workflow
 
 Use this order to keep the project easy to maintain:
@@ -98,6 +108,8 @@ Use this order to keep the project easy to maintain:
 7. Use `QA-CHECKLIST.md`.
 8. For deeper static analysis after security-sensitive changes, run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .`.
 9. Publish only after the manual print and source checks pass.
+
+If the dashboard or PDF would confuse a lawmaker, hospital CEO, or hospital administrator, treat that as a release blocker.
 
 ## Common fixes
 
