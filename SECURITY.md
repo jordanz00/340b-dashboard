@@ -35,6 +35,15 @@ Run these checks after meaningful edits:
 8. Run `python3 dashboard-audit.py` for the project’s lightweight built-in audit.
 9. Run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` for a deeper SAST scan when security-sensitive code changes.
 
+## Honesty note
+
+The audit script is useful, but it is not a release decision by itself.
+
+- It checks code and structure.
+- It does not prove the print preview looks correct.
+- It does not verify whether the legal-status sources are still current.
+- It does not replace human review of policymaker or executive-facing copy.
+
 ## Things to avoid
 
 - Do not add remote scripts unless absolutely necessary.

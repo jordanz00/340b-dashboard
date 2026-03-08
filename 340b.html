@@ -77,10 +77,20 @@
   <!-- Keep the print header minimal. The real intro cards below should be the printed source of truth,
        so the PDF matches the live dashboard instead of showing duplicated summary copy. -->
   <section class="print-report-header print-only" aria-hidden="true">
-    <p class="print-report-kicker">HAP Advocacy Dashboard</p>
+    <div class="print-report-brand">
+      <img src="haplogo_box_blue.jpeg" alt="" class="print-report-logo" width="52" height="52">
+      <div class="print-report-brand-copy">
+        <p class="print-report-org">The Hospital and Healthsystem Association of Pennsylvania</p>
+        <p class="print-report-kicker">HAP Advocacy Dashboard</p>
+      </div>
+    </div>
     <h2>340B Drug Pricing Program</h2>
     <p class="print-report-meta">Last updated <span id="print-last-updated">March 2025</span></p>
   </section>
+  <!-- This container is filled from JavaScript right before printing.
+       It clones the real intro cards into a print-safe block layout so the first PDF page
+       cannot lose or skip the dashboard's opening content. -->
+  <section id="print-intro-snapshot" class="print-intro-snapshot print-only" aria-hidden="true"></section>
   <div class="dashboard-grid">
 
     <!-- Intro: What is 340B first, HAP Position below — aligned with map width -->
@@ -164,6 +174,24 @@
         </div>
         <p id="state-no-results" class="state-no-results" aria-live="polite" hidden>No states match the current filter.</p>
       </div>
+      <section class="print-state-summary print-only" id="print-state-summary" aria-hidden="true">
+        <div class="print-state-summary-header">
+          <h3>National state law summary</h3>
+          <p class="print-state-summary-note">Compact print summary of current contract pharmacy protection status.</p>
+        </div>
+        <div class="print-state-summary-grid">
+          <article class="print-state-summary-card">
+            <p class="print-state-summary-kicker">States with protection</p>
+            <p class="print-state-summary-count"><span id="print-protection-count">0</span> states</p>
+            <p class="print-state-summary-list" id="print-states-with-list"></p>
+          </article>
+          <article class="print-state-summary-card">
+            <p class="print-state-summary-kicker">No protection law</p>
+            <p class="print-state-summary-count"><span id="print-no-protection-count">0</span> states</p>
+            <p class="print-state-summary-list" id="print-states-without-list"></p>
+          </article>
+        </div>
+      </section>
       <h3 class="section-subhead">Recent legal trends</h3>
       <div class="trends-grid">
         <div class="trends-card">
@@ -179,13 +207,14 @@
           <div><h4>Vetoes</h4><p>Some governors vetoed 340B protection (e.g., Virginia).</p></div>
         </div>
       </div>
-      <p class="sources">State law data: MultiState, ASHP, America's Essential Hospitals</p>
+      <p class="sources">Primary legal tracking sources: MultiState, ASHP, and America's Essential Hospitals</p>
       <details class="methodology-wrap" id="methodology-wrap">
         <summary class="methodology-toggle" id="methodology-toggle">About this data</summary>
         <div class="methodology-content" id="methodology-content">
           <p><strong>State law data</strong> is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.</p>
           <p><strong>Community benefit</strong> figures are from 340B Health and AHA survey data (2024).</p>
           <p><strong>HRSA oversight</strong> figures reflect federal audit activity in 2024.</p>
+          <p><strong>Recommended verification order:</strong> check MultiState first for current legislative status, use ASHP as the pharmacy-policy cross-check, and use America's Essential Hospitals as the final advocacy-reference confirmation.</p>
           <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2025</span></p>
           <ul class="source-links">
             <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a></li>
@@ -199,6 +228,7 @@
       <section class="print-sources print-only" aria-hidden="true">
         <h3>About this data</h3>
         <p>State law data is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.</p>
+        <p><strong>Verification order:</strong> MultiState, then ASHP, then America's Essential Hospitals.</p>
         <p><strong>Last updated:</strong> <span id="print-methodology-last-updated">March 2025</span></p>
       </section>
         </article>

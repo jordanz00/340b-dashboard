@@ -6,7 +6,7 @@ This is intentionally simple so a novice maintainer can run it with:
 
     python3 dashboard-audit.py
 
-It checks a few high-value risks:
+It checks a few high-value risks in the 340B dashboard files only:
 - unsafe DOM patterns
 - hidden zero-width/control characters
 - missing rel="noopener noreferrer" on external links
@@ -14,6 +14,9 @@ It checks a few high-value risks:
 - unexpected remote fonts, scripts, or runtime data fetches
 - stale removed-feature copy in dashboard files
 - missing prompt waves
+
+It does NOT replace manual review. Print preview, source verification, and copy quality
+still need a human check before publishing.
 """
 
 from __future__ import annotations
@@ -27,12 +30,9 @@ ROOT = Path(__file__).resolve().parent
 PROMPTS_FILE = ROOT / "340b-dashboard-prompts.md"
 DASHBOARD_FILES = [
     ROOT / "340b.html",
-    ROOT / "index.html",
-    ROOT / "portfolio.html",
-    ROOT / "static.html",
     ROOT / "340b.css",
     ROOT / "340b.js",
-    ROOT / "main.js",
+    ROOT / "state-data.js",
     ROOT / "README.md",
     ROOT / "SECURITY.md",
     ROOT / "QA-CHECKLIST.md",
@@ -40,16 +40,11 @@ DASHBOARD_FILES = [
 ]
 EXECUTABLE_FILES = [
     ROOT / "340b.html",
-    ROOT / "index.html",
     ROOT / "340b.js",
-    ROOT / "main.js",
 ]
 SOURCE_FILES = list(DASHBOARD_FILES) + [PROMPTS_FILE]
 APP_HTML_FILES = [
     ROOT / "340b.html",
-    ROOT / "index.html",
-    ROOT / "portfolio.html",
-    ROOT / "static.html",
 ]
 
 UNSAFE_PATTERNS = [
@@ -71,6 +66,12 @@ REMOTE_ASSET_PATTERN = re.compile(
     re.IGNORECASE,
 )
 RUNTIME_FETCH_PATTERN = re.compile(r"\b(fetch\s*\(|d3\.json\s*\(|XMLHttpRequest\b)", re.IGNORECASE)
+MANUAL_CHECKS = [
+    "Open Print / PDF and confirm page 1 starts with the title and first dashboard card.",
+    "Confirm Pennsylvania prints as the default state context when no live state is selected.",
+    "Confirm the compact print state summary is readable and does not consume a full page.",
+    "Verify source dates and source links still match the current law and reporting data.",
+]
 
 
 def read_text(path: Path) -> str:
@@ -189,6 +190,8 @@ def check_print_structure(results: list[str]) -> bool:
     html = read_text(ROOT / "340b.html")
     required_snippets = [
         'class="print-report-header print-only"',
+        'id="print-intro-snapshot"',
+        'id="print-state-summary"',
         'class="print-sources print-only"',
         'id="btn-print"',
         'id="what-is-340b"',
@@ -221,6 +224,11 @@ def check_prompt_waves(results: list[str]) -> bool:
         "## Prompts v13",
         "## Prompts v14",
         "## Prompts v15",
+        "## Prompts v16",
+        "## Prompts v17",
+        "## Prompts v18",
+        "## Prompts v19",
+        "## Prompts v20",
     ]
     missing = [section for section in required_sections if section not in prompts]
 
@@ -229,7 +237,7 @@ def check_prompt_waves(results: list[str]) -> bool:
             record(results, False, f"Prompt library is missing section `{section}`")
         return False
 
-    record(results, True, "Prompt library contains v09 through v15 sections")
+    record(results, True, "Prompt library contains v09 through v20 sections")
     return True
 
 
@@ -255,6 +263,11 @@ def main() -> int:
     print("====================")
     for line in results:
         print(line)
+    print("")
+    print("Manual checks still required")
+    print("===========================")
+    for item in MANUAL_CHECKS:
+        print(f"- {item}")
 
     return 0 if all_ok else 1
 

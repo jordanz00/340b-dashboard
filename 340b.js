@@ -34,6 +34,7 @@
     touchDevice: "ontouchstart" in window || navigator.maxTouchPoints > 0,
     hoverCapable: window.matchMedia && window.matchMedia("(hover: hover)").matches,
     printPreparationPending: false,
+    printAppliedDefaultSelection: false,
     dom: {}
   };
 
@@ -55,13 +56,18 @@
       stateDetailPanel: document.getElementById("state-detail-panel"),
       stateListWith: document.getElementById("states-with-list"),
       stateListWithout: document.getElementById("states-without-list"),
+      printStateListWith: document.getElementById("print-states-with-list"),
+      printStateListWithout: document.getElementById("print-states-without-list"),
       protectionCount: document.getElementById("protection-count"),
       noProtectionCount: document.getElementById("no-protection-count"),
+      printProtectionCount: document.getElementById("print-protection-count"),
+      printNoProtectionCount: document.getElementById("print-no-protection-count"),
       noResults: document.getElementById("state-no-results"),
       protectionBlock: document.getElementById("state-list-block-protection"),
       noProtectionBlock: document.getElementById("state-list-block-no-protection"),
       printButton: document.getElementById("btn-print"),
       shareButton: document.getElementById("btn-share"),
+      introSection: document.querySelector(".dashboard-grid > .intro-section"),
       methodologyWrap: document.getElementById("methodology-wrap"),
       methodologyButton: document.getElementById("methodology-toggle"),
       methodologyContent: document.getElementById("methodology-content"),
@@ -70,6 +76,7 @@
       // The print version reuses the live dashboard cards, but it still has a small print header
       // and a compact print-only source note that need current dates.
       printLastUpdated: document.getElementById("print-last-updated"),
+      printIntroSnapshot: document.getElementById("print-intro-snapshot"),
       printMethodologyLastUpdated: document.getElementById("print-methodology-last-updated")
     };
   }
@@ -80,6 +87,18 @@
     if (element) {
       element.replaceChildren();
     }
+  }
+
+  function removeIdsFromClone(root) {
+    if (!root) return;
+
+    if (root.id) {
+      root.removeAttribute("id");
+    }
+
+    root.querySelectorAll("[id]").forEach(function (element) {
+      element.removeAttribute("id");
+    });
   }
 
   function createElement(tagName, className, text) {
@@ -154,6 +173,43 @@
     showMapWrapImmediately();
     hideTooltip(appState.dom.mapTooltip);
     hideTooltip(appState.dom.chipTooltip);
+  }
+
+  function buildPrintIntroSnapshot() {
+    var snapshotRoot = appState.dom.printIntroSnapshot;
+    var introSection = appState.dom.introSection;
+    var introClone;
+
+    if (!snapshotRoot) return;
+
+    clearElement(snapshotRoot);
+
+    if (!introSection) return;
+
+    // Clone the real intro cards right before print so the PDF starts with the same
+    // content the user sees on screen, but in a simpler block layout that print engines
+    // handle more reliably than the live grid.
+    introClone = introSection.cloneNode(true);
+    removeIdsFromClone(introClone);
+    snapshotRoot.appendChild(introClone);
+  }
+
+  function buildPrintStateSummary(withProtection, withoutProtection) {
+    if (appState.dom.printStateListWith) {
+      appState.dom.printStateListWith.textContent = withProtection.join(", ");
+    }
+
+    if (appState.dom.printStateListWithout) {
+      appState.dom.printStateListWithout.textContent = withoutProtection.join(", ");
+    }
+
+    if (appState.dom.printProtectionCount) {
+      appState.dom.printProtectionCount.textContent = String(withProtection.length);
+    }
+
+    if (appState.dom.printNoProtectionCount) {
+      appState.dom.printNoProtectionCount.textContent = String(withoutProtection.length);
+    }
   }
 
   function runTaskSafely(taskName, taskFn) {
@@ -284,7 +340,7 @@
     if (!appState.dom.selectionSummaryTitle || !appState.dom.selectionSummaryText) return;
 
     if (!abbr) {
-      appState.dom.selectionSummaryTitle.textContent = "No state selected";
+      appState.dom.selectionSummaryTitle.textContent = "No state selected yet";
       appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to view dashboard details.";
       if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
       return;
@@ -340,10 +396,14 @@
     // 3. make sure the SVG map exists before print opens
     finalizeCountUpValues();
     revealAllAnimatedSections();
+    preparePrintSelectionState();
+    buildPrintIntroSnapshot();
 
     if (mapSvgMissing) {
       runTaskSafely("draw map for print", drawMap);
       revealAllAnimatedSections();
+      preparePrintSelectionState();
+      buildPrintIntroSnapshot();
     }
 
     window.requestAnimationFrame(function () {
@@ -371,7 +431,7 @@
 
     panel.classList.add("empty");
     clearElement(panel);
-    panel.appendChild(createElement("p", "", "Select a state to view dashboard details."));
+    panel.appendChild(createElement("p", "", "No state selected. Choose a state to view dashboard details."));
   }
 
   function renderStateDetail(abbr) {
@@ -440,12 +500,18 @@
     });
   }
 
-  function clearSelection(announceMessage) {
+  function clearSelection(announceMessage, options) {
+    var settings = options || {};
+
     appState.selectedStateAbbr = null;
-    updateUrlHash(null);
+    if (settings.updateHash !== false) {
+      updateUrlHash(null);
+    }
     renderEmptyStateDetail();
     updateSelectionSummary(null);
-    announceSelection(typeof announceMessage === "string" ? announceMessage : "State selection cleared.");
+    if (settings.announce !== false) {
+      announceSelection(typeof announceMessage === "string" ? announceMessage : "State selection cleared.");
+    }
 
     if (appState.mapPaths) {
       appState.mapPaths.classed("selected", false);
@@ -460,12 +526,16 @@
     if (!abbr || !isKnownState(abbr)) return;
 
     appState.selectedStateAbbr = abbr;
-    updateUrlHash(abbr);
+    if (settings.updateHash !== false) {
+      updateUrlHash(abbr);
+    }
     renderStateDetail(abbr);
     updateSelectionSummary(abbr);
     highlightMapState(abbr);
     highlightStateChip(abbr);
-    announceSelection(buildSelectionAnnouncement(abbr));
+    if (settings.announce !== false) {
+      announceSelection(buildSelectionAnnouncement(abbr));
+    }
 
     if (settings.scrollToMap) {
       scrollToMapSection();
@@ -785,10 +855,33 @@
 
     if (appState.dom.protectionCount) appState.dom.protectionCount.textContent = String(withProtection.length);
     if (appState.dom.noProtectionCount) appState.dom.noProtectionCount.textContent = String(withoutProtection.length);
+    buildPrintStateSummary(withProtection, withoutProtection);
 
     initStateChipTooltips();
     highlightStateChip(appState.selectedStateAbbr);
     applyStateFilter();
+  }
+
+  function preparePrintSelectionState() {
+    if (appState.printAppliedDefaultSelection) {
+      return;
+    }
+
+    if (appState.selectedStateAbbr) {
+      appState.printAppliedDefaultSelection = false;
+      return;
+    }
+
+    // Print should not show an empty state panel when no one has selected a state.
+    // Use Pennsylvania as the temporary print-only context because this dashboard is
+    // aimed at HAP and Pennsylvania hospital leaders. Do not change the live URL hash.
+    selectState("PA", {
+      updateHash: false,
+      announce: false,
+      focusPanel: false,
+      scrollToMap: false
+    });
+    appState.printAppliedDefaultSelection = true;
   }
 
   function initStateChipTooltips() {
@@ -1145,6 +1238,15 @@
   function handleAfterPrint() {
     appState.printPreparationPending = false;
     setUtilityStatus("");
+    clearElement(appState.dom.printIntroSnapshot);
+
+    if (appState.printAppliedDefaultSelection) {
+      clearSelection("", {
+        updateHash: false,
+        announce: false
+      });
+      appState.printAppliedDefaultSelection = false;
+    }
   }
 
   /* ---------- Init ---------- */

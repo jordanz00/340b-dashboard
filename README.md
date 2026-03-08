@@ -93,10 +93,11 @@ Use this order to keep the project easy to maintain:
 2. Update behavior in `340b.js` only if the change is interactive.
 3. If the change affects layout or print appearance, check `340b.css` before editing JavaScript.
 4. Open the dashboard locally and test the exact feature you changed.
-5. Open `Print / PDF` and confirm the PDF-only reader still sees the real intro cards, the map, and final metric values.
+5. Open `Print / PDF` and confirm the PDF-only reader still sees the real intro cards, the map, final metric values, and Pennsylvania as the default print context when no state is selected live.
 6. Run `python3 dashboard-audit.py`.
 7. Use `QA-CHECKLIST.md`.
 8. For deeper static analysis after security-sensitive changes, run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .`.
+9. Publish only after the manual print and source checks pass.
 
 ## Common fixes
 
@@ -105,8 +106,16 @@ Use this order to keep the project easy to maintain:
 Check these files in this order:
 
 1. `340b.html` — confirm the real intro cards still exist and there is no duplicate print-only copy.
-2. `340b.css` — check the `@media print` section for anything hiding content or causing page breaks.
-3. `340b.js` — check `preparePrintSnapshot()` and `finalizeCountUpValues()`.
+2. `340b.css` — check the `@media print` section for anything hiding content, causing page breaks, or making print-only summaries too large.
+3. `340b.js` — check `preparePrintSnapshot()`, `preparePrintSelectionState()`, and `finalizeCountUpValues()`.
+
+### If source guidance needs updating
+
+Check these files in this order:
+
+1. `340b.html` in the `About this data` section
+2. `state-data.js` for dates and legal-status notes
+3. `QA-CHECKLIST.md` for release verification wording
 
 ### If the map is missing
 

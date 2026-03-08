@@ -5,54 +5,54 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <title>Jordan Zabady | Portfolio</title>
-  <meta name="description" content="Jordan Zabady is a digital communications and multimedia professional working across video, motion, photography, design, and emerging AI-assisted web and dashboard development.">
-  <meta name="theme-color" content="#0f0a0a">
+  <title>Jordan Zabady | Creative Producer and AI-Enabled Builder</title>
+  <meta name="description" content="Jordan Zabady is a multidisciplinary creative producer working across video, photography, audio, motion graphics, 3D, digital communications, and AI-enabled web and interactive development.">
+  <meta name="theme-color" content="#f5f8fc">
   <style>
     :root {
-      --bg: #0b0808;
-      --bg-soft: #120d0d;
-      --panel: rgba(22, 15, 15, 0.84);
-      --panel-strong: rgba(29, 19, 19, 0.92);
-      --border: rgba(170, 78, 78, 0.18);
-      --border-strong: rgba(170, 78, 78, 0.28);
-      --text: #f4efef;
-      --muted: #b8a8a8;
-      --soft: #d4c7c7;
-      --accent: #aa4e4e;
-      --accent-bright: #d46b6b;
-      --accent-dim: rgba(212, 107, 107, 0.12);
-      --shadow: 0 18px 40px rgba(0, 0, 0, 0.38);
-      --radius: 20px;
-      --radius-sm: 14px;
-      --max: 1080px;
+      --bg: #f5f8fc;
+      --bg-soft: #edf3fa;
+      --panel: rgba(255, 255, 255, 0.82);
+      --panel-solid: #ffffff;
+      --text: #0f172a;
+      --muted: #5f6f87;
+      --line: rgba(15, 23, 42, 0.08);
+      --line-strong: rgba(34, 95, 176, 0.18);
+      --blue: #2563eb;
+      --blue-soft: rgba(37, 99, 235, 0.09);
+      --blue-faint: rgba(37, 99, 235, 0.04);
+      --shadow: 0 24px 60px rgba(30, 41, 59, 0.08);
+      --shadow-soft: 0 12px 32px rgba(30, 41, 59, 0.06);
+      --radius: 24px;
+      --radius-sm: 18px;
+      --max: 1120px;
     }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       margin: 0;
-      font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       color: var(--text);
       background:
-        radial-gradient(circle at top right, rgba(170, 78, 78, 0.16), transparent 26%),
-        radial-gradient(circle at left, rgba(212, 107, 107, 0.08), transparent 22%),
-        linear-gradient(180deg, #080606 0%, #0d0909 48%, #120d0d 100%);
-      line-height: 1.55;
+        radial-gradient(circle at top right, rgba(37,99,235,0.10), transparent 28%),
+        radial-gradient(circle at left, rgba(14,165,233,0.08), transparent 20%),
+        linear-gradient(180deg, #f8fbff 0%, #f4f8fc 42%, #eef4fb 100%);
       -webkit-font-smoothing: antialiased;
+      line-height: 1.55;
     }
 
-    a { color: var(--soft); text-decoration: none; }
-    a:hover { color: #fff; }
+    a { color: var(--blue); text-decoration: none; }
+    a:hover { text-decoration: underline; }
 
     .skip-link {
       position: absolute;
-      left: 1rem;
       top: -3rem;
+      left: 1rem;
       z-index: 100;
-      padding: 0.55rem 0.9rem;
+      padding: 0.55rem 0.95rem;
       border-radius: 999px;
-      background: var(--accent);
+      background: var(--blue);
       color: #fff;
     }
     .skip-link:focus { top: 1rem; }
@@ -61,10 +61,11 @@
       position: sticky;
       top: 0;
       z-index: 30;
-      background: rgba(10, 7, 7, 0.78);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border-bottom: 1px solid rgba(255,255,255,0.04);
+      background: rgba(245, 248, 252, 0.78);
+      backdrop-filter: blur(18px) saturate(160%);
+      -webkit-backdrop-filter: blur(18px) saturate(160%);
+      border-bottom: 1px solid rgba(255,255,255,0.7);
+      box-shadow: 0 1px 0 rgba(255,255,255,0.9);
     }
 
     .header-inner,
@@ -85,12 +86,12 @@
     .brand {
       display: flex;
       flex-direction: column;
-      gap: 0.1rem;
+      gap: 0.08rem;
     }
 
     .eyebrow {
       margin: 0;
-      font-size: 0.68rem;
+      font-size: 0.7rem;
       font-weight: 700;
       letter-spacing: 0.12em;
       text-transform: uppercase;
@@ -99,32 +100,35 @@
 
     .brand h1 {
       margin: 0;
-      font-size: 0.98rem;
+      font-size: 1rem;
       letter-spacing: -0.03em;
-      color: #fff;
+      font-weight: 700;
+      color: var(--text);
     }
 
     .top-nav {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.3rem;
+      gap: 0.35rem;
     }
 
     .top-nav a {
-      padding: 0.45rem 0.7rem;
+      padding: 0.45rem 0.72rem;
       border-radius: 999px;
-      font-size: 0.78rem;
+      font-size: 0.79rem;
       font-weight: 600;
       color: var(--muted);
       border: 1px solid transparent;
-      transition: border-color 0.2s ease, color 0.2s ease, background 0.2s ease;
+      transition: all 0.2s ease;
     }
 
     .top-nav a:hover,
     .top-nav a:focus-visible {
-      color: #fff;
-      background: rgba(255,255,255,0.03);
-      border-color: rgba(255,255,255,0.06);
+      color: var(--blue);
+      background: rgba(255,255,255,0.75);
+      border-color: rgba(37,99,235,0.10);
+      box-shadow: 0 4px 14px rgba(37,99,235,0.10);
+      text-decoration: none;
       outline: none;
     }
 
@@ -134,53 +138,67 @@
 
     section {
       margin-top: 1rem;
-      padding: 1.15rem;
-      background: var(--panel);
-      border: 1px solid rgba(255,255,255,0.04);
+      padding: 1.2rem;
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.8);
+      box-shadow: var(--shadow-soft), inset 0 1px 0 rgba(255,255,255,0.95);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
     }
 
     .hero {
-      padding: 1.5rem;
+      padding: 1.6rem;
       background:
-        linear-gradient(180deg, rgba(24,16,16,0.98) 0%, rgba(16,11,11,0.96) 100%);
-      border: 1px solid var(--border);
+        radial-gradient(circle at top right, rgba(37,99,235,0.12), transparent 24%),
+        linear-gradient(180deg, rgba(255,255,255,0.88) 0%, rgba(247,250,255,0.88) 100%);
+      border: 1px solid rgba(37,99,235,0.10);
+      box-shadow: var(--shadow), inset 0 1px 0 rgba(255,255,255,0.95);
     }
 
     .hero-grid {
       display: grid;
-      grid-template-columns: minmax(0, 1.5fr) minmax(240px, 0.8fr);
+      grid-template-columns: minmax(0, 1.5fr) minmax(280px, 0.9fr);
       gap: 1rem;
       align-items: start;
     }
 
     .hero-kicker {
-      display: inline-block;
-      margin-bottom: 0.75rem;
-      padding: 0.32rem 0.55rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      padding: 0.34rem 0.62rem;
       border-radius: 999px;
-      background: var(--accent-dim);
-      color: var(--accent-bright);
+      background: var(--blue-soft);
+      color: var(--blue);
       font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
+      margin-bottom: 0.85rem;
     }
 
     .hero h2 {
       margin: 0;
       max-width: 12ch;
-      font-size: clamp(1.9rem, 5vw, 3.3rem);
-      line-height: 0.98;
-      letter-spacing: -0.06em;
+      font-size: clamp(2.2rem, 5.3vw, 4.4rem);
+      line-height: 0.96;
+      letter-spacing: -0.07em;
       font-weight: 700;
+      color: #0b1220;
     }
 
-    .hero p {
-      margin: 0.85rem 0 0;
-      max-width: 58ch;
-      font-size: 0.96rem;
+    .hero-lede {
+      margin: 0.9rem 0 0;
+      max-width: 64ch;
+      font-size: 1rem;
+      color: var(--muted);
+    }
+
+    .hero-sub {
+      margin: 0.8rem 0 0;
+      max-width: 64ch;
+      font-size: 0.94rem;
       color: var(--muted);
     }
 
@@ -188,70 +206,85 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.55rem;
-      margin-top: 1.1rem;
+      margin-top: 1.15rem;
     }
 
-    .button {
+    .button,
+    .button-secondary {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 2.45rem;
-      padding: 0.68rem 0.92rem;
+      min-height: 2.55rem;
+      padding: 0.72rem 0.96rem;
       border-radius: 999px;
-      border: 1px solid var(--border-strong);
-      background: rgba(255,255,255,0.03);
-      color: #fff;
       font-size: 0.82rem;
       font-weight: 700;
-      transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+      transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+      text-decoration: none;
+    }
+
+    .button {
+      color: #fff;
+      background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+      box-shadow: 0 14px 28px rgba(37,99,235,0.18);
+    }
+
+    .button-secondary {
+      color: var(--blue);
+      background: rgba(255,255,255,0.86);
+      border: 1px solid rgba(37,99,235,0.12);
+      box-shadow: 0 8px 20px rgba(37,99,235,0.08);
     }
 
     .button:hover,
-    .button:focus-visible {
-      background: rgba(212,107,107,0.08);
-      border-color: rgba(212,107,107,0.36);
+    .button-secondary:hover,
+    .button:focus-visible,
+    .button-secondary:focus-visible {
       transform: translateY(-1px);
+      text-decoration: none;
       outline: none;
     }
 
     .hero-panel {
       padding: 1rem;
       border-radius: var(--radius-sm);
-      background: var(--panel-strong);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.78);
+      border: 1px solid rgba(37,99,235,0.10);
+      box-shadow: 0 8px 22px rgba(37,99,235,0.06);
     }
 
     .hero-panel h3,
     .section-title {
       margin: 0;
-      font-size: 1rem;
+      font-size: 1.02rem;
       letter-spacing: -0.03em;
+      color: var(--text);
     }
 
     .hero-panel ul {
-      margin: 0.7rem 0 0;
-      padding: 0;
       list-style: none;
+      margin: 0.8rem 0 0;
+      padding: 0;
       display: grid;
-      gap: 0.6rem;
+      gap: 0.7rem;
     }
 
     .hero-panel li {
-      padding-top: 0.55rem;
-      border-top: 1px solid rgba(255,255,255,0.06);
+      padding-top: 0.65rem;
+      border-top: 1px solid rgba(15,23,42,0.06);
       color: var(--muted);
       font-size: 0.88rem;
     }
 
-    .hero-panel li:first-child { border-top: 0; padding-top: 0; }
-    .hero-panel strong { display: block; color: var(--soft); font-size: 0.8rem; margin-bottom: 0.12rem; }
+    .hero-panel li:first-child { padding-top: 0; border-top: 0; }
+    .hero-panel strong { display: block; color: var(--text); font-size: 0.82rem; margin-bottom: 0.12rem; }
 
     .section-head {
       display: flex;
       flex-wrap: wrap;
       align-items: end;
       justify-content: space-between;
-      gap: 0.8rem;
+      gap: 0.75rem;
       margin-bottom: 0.85rem;
     }
 
@@ -264,16 +297,16 @@
 
     .lede {
       margin: 0;
-      max-width: 68ch;
+      max-width: 70ch;
+      font-size: 0.95rem;
       color: var(--muted);
-      font-size: 0.94rem;
     }
 
     .grid-2,
     .project-grid,
     .capability-grid,
-    .links-grid,
-    .education-grid {
+    .education-grid,
+    .links-grid {
       display: grid;
       gap: 0.8rem;
     }
@@ -295,22 +328,24 @@
     .link-card {
       padding: 1rem;
       border-radius: var(--radius-sm);
-      background: rgba(255,255,255,0.02);
-      border: 1px solid rgba(255,255,255,0.05);
+      background: rgba(255,255,255,0.76);
+      border: 1px solid rgba(37,99,235,0.08);
+      box-shadow: 0 8px 22px rgba(30,41,59,0.05);
     }
 
     .card h3,
     .project-card h3,
     .experience-item h3,
     .link-card h3 {
-      margin: 0 0 0.45rem;
+      margin: 0 0 0.42rem;
       font-size: 0.98rem;
       letter-spacing: -0.03em;
-      color: #fff;
+      color: var(--text);
     }
 
     .card p,
     .project-card p,
+    .experience-item p,
     .link-card p {
       margin: 0;
       color: var(--muted);
@@ -328,7 +363,7 @@
       inset: 0 auto auto 0;
       width: 100%;
       height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent 72%);
+      background: linear-gradient(90deg, var(--blue), rgba(37,99,235,0.08) 70%);
     }
 
     .project-meta,
@@ -337,7 +372,7 @@
       display: flex;
       flex-wrap: wrap;
       gap: 0.45rem;
-      margin-top: 0.7rem;
+      margin-top: 0.68rem;
       color: var(--muted);
       font-size: 0.76rem;
     }
@@ -345,33 +380,33 @@
     .project-links {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.7rem;
+      gap: 0.68rem;
       margin-top: 0.9rem;
     }
 
     .project-links a,
     .link-card a {
-      color: var(--soft);
       font-size: 0.82rem;
       font-weight: 700;
+      color: var(--blue);
     }
 
     .chips {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.4rem;
-      margin-top: 0.7rem;
+      gap: 0.42rem;
+      margin-top: 0.72rem;
     }
 
     .chip {
       display: inline-flex;
       align-items: center;
-      min-height: 1.8rem;
-      padding: 0.25rem 0.58rem;
+      min-height: 1.85rem;
+      padding: 0.26rem 0.6rem;
       border-radius: 999px;
-      background: rgba(212,107,107,0.08);
-      color: #e1c9c9;
-      border: 1px solid rgba(212,107,107,0.12);
+      background: var(--blue-faint);
+      color: #2957b7;
+      border: 1px solid rgba(37,99,235,0.10);
       font-size: 0.74rem;
       font-weight: 600;
     }
@@ -387,28 +422,11 @@
       align-items: baseline;
       justify-content: space-between;
       gap: 0.4rem 0.8rem;
-      margin-bottom: 0.35rem;
-    }
-
-    .experience-item p {
-      margin: 0 0 0.7rem;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    .experience-item ul {
-      margin: 0;
-      padding-left: 1rem;
-      color: var(--muted);
-    }
-
-    .experience-item li {
-      margin-bottom: 0.35rem;
-      font-size: 0.88rem;
+      margin-bottom: 0.32rem;
     }
 
     footer {
-      padding: 1.6rem 0 2.5rem;
+      padding: 1.8rem 0 2.6rem;
       color: var(--muted);
     }
 
@@ -420,7 +438,7 @@
       font-size: 0.84rem;
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 920px) {
       .hero-grid,
       .capability-grid,
       .grid-2,
@@ -445,12 +463,15 @@
       }
       .hero h2 {
         max-width: none;
-        font-size: 2rem;
+        font-size: 2.35rem;
       }
       .hero-actions {
         flex-direction: column;
       }
-      .button { width: 100%; }
+      .button,
+      .button-secondary {
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -478,23 +499,26 @@
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <span class="hero-kicker">Digital communications and multimedia</span>
-          <h2>Creative work, visual systems, and emerging AI-assisted product development.</h2>
-          <p>
-            I am a digital communications professional working across multimedia production, visual storytelling, content strategy, and design. My background is rooted in video, motion, photography, branding, and production, and I am now extending that work into dashboards, websites, and interactive digital experiences with AI-assisted tools.
+          <span class="hero-kicker">Creative producer · multimedia director · AI-enabled builder</span>
+          <h2>Jordan Zabady is a multidisciplinary creative building across media, sound, visuals, and intelligent digital experiences.</h2>
+          <p class="hero-lede">
+            I work across production, direction, videography, photography, editing, motion graphics, 3D, music, and audio engineering. Alongside that creative foundation, I now use ChatGPT and Cursor to expand into interactive websites, dashboards, apps, and digital experiences that bridge communication, design, and software.
+          </p>
+          <p class="hero-sub">
+            What sets me apart is the range: I can think like a producer, execute like a maker, and rapidly adopt new AI workflows to turn ideas into polished, real-world output.
           </p>
           <div class="hero-actions">
             <a class="button" href="https://www.linkedin.com/in/jordanzabady/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-            <a class="button" href="https://github.com/jordanz00" target="_blank" rel="noopener noreferrer">GitHub</a>
-            <a class="button" href="https://www.pamedia.art" target="_blank" rel="noopener noreferrer">PA Media Arts</a>
+            <a class="button-secondary" href="https://github.com/jordanz00" target="_blank" rel="noopener noreferrer">GitHub</a>
+            <a class="button-secondary" href="https://www.pamedia.art" target="_blank" rel="noopener noreferrer">PA Media Arts</a>
           </div>
         </div>
         <aside class="hero-panel" aria-label="Profile summary">
-          <h3>Current focus</h3>
+          <h3>Profile</h3>
           <ul>
-            <li><strong>Core practice</strong> Multimedia production, communications, editing, motion, and design.</li>
-            <li><strong>New direction</strong> AI-assisted web, dashboard, and interface work.</li>
-            <li><strong>Approach</strong> Clear communication, visual precision, and practical execution.</li>
+            <li><strong>Creative range</strong> Producer, director, videographer, photographer, editor, motion designer, 3D artist, musician, and audio engineer.</li>
+            <li><strong>Professional value</strong> Strong communication judgment, high creative output, and dependable execution across both strategy and production.</li>
+            <li><strong>AI capability</strong> Fast adoption of ChatGPT and Cursor to build dashboards, interactive sites, and new digital tools beyond a traditional multimedia role.</li>
           </ul>
         </aside>
       </div>
@@ -506,16 +530,16 @@
           <p class="eyebrow">Selected work</p>
           <h2 id="work-title" class="section-title">Recent projects</h2>
         </div>
-        <p>Recent work across interactive communications, advocacy storytelling, and independent creative practice.</p>
+        <p>Work that reflects both my established multimedia background and my newer AI-assisted product and interactive build workflow.</p>
       </div>
       <div class="project-grid">
         <article class="project-card">
           <h3>Time to Act: Pennsylvania Hospitals Dashboard</h3>
-          <p>A report-driven interactive dashboard translating complex hospital sustainability material into a more accessible digital experience for communications and policy audiences.</p>
+          <p>A report-driven interactive dashboard built to make hospital sustainability findings more understandable and more useful for communications, advocacy, and leadership audiences.</p>
           <div class="project-meta">
-            <span>Dashboard</span>
+            <span>Interactive dashboard</span>
             <span>HTML / CSS / JavaScript</span>
-            <span>AI-assisted build</span>
+            <span>AI-assisted development</span>
           </div>
           <div class="project-links">
             <a href="index.html">Open project</a>
@@ -524,11 +548,11 @@
         </article>
         <article class="project-card">
           <h3>340B Advocacy Dashboard</h3>
-          <p>An advocacy-focused web experience using interactive state law mapping and concise narrative structure to make policy information clearer and more usable.</p>
+          <p>An advocacy-focused web experience using state law mapping, design clarity, and interactivity to make policy information easier to explore and present.</p>
           <div class="project-meta">
             <span>Policy communication</span>
             <span>Interactive map</span>
-            <span>D3-based work</span>
+            <span>Design + narrative</span>
           </div>
           <div class="project-links">
             <a href="340b.html">Open project</a>
@@ -537,23 +561,23 @@
         </article>
         <article class="project-card">
           <h3>Pennsylvania Media Arts</h3>
-          <p>An independent multimedia practice focused on audio, video, photography, and visual production for client work and creative development.</p>
+          <p>An independent multimedia business through which I take on freelance photography, audio engineering, and broader creative production work.</p>
           <div class="project-meta">
             <span>Founder</span>
-            <span>Production company</span>
-            <span>Client-facing work</span>
+            <span>Freelance production</span>
+            <span>Client work</span>
           </div>
           <div class="project-links">
             <a href="https://www.pamedia.art" target="_blank" rel="noopener noreferrer">Visit site</a>
           </div>
         </article>
         <article class="project-card">
-          <h3>AI transition in progress</h3>
-          <p>I am actively expanding from traditional multimedia and communications work into AI-assisted software, dashboard, and website development with a focus on professional, shareable outcomes.</p>
+          <h3>AI-enabled creative workflow</h3>
+          <p>I am actively building a new layer of my practice around AI-assisted prototyping, digital product thinking, and interactive web experiences that expand what one creative professional can deliver.</p>
           <div class="project-meta">
-            <span>Workflow shift</span>
-            <span>Portfolio development</span>
+            <span>Workflow evolution</span>
             <span>Job-search ready</span>
+            <span>Creative + technical bridge</span>
           </div>
         </article>
       </div>
@@ -563,20 +587,20 @@
       <div class="section-head">
         <div>
           <p class="eyebrow">About</p>
-          <h2 id="about-title" class="section-title">Practice</h2>
+          <h2 id="about-title" class="section-title">A broader creative and technical profile</h2>
         </div>
       </div>
       <p class="lede">
-        I work at the intersection of digital communications, multimedia production, and visual storytelling. My experience includes video production, motion graphics, photography, design, brand development, content strategy, and production leadership. I am most effective in environments where communication needs to be clear, thoughtful, and useful.
+        I am a digital communications professional with a strong focus on multimedia production, visual storytelling, and content strategy. My work blends creative craft with strategic planning so organizations can communicate clearly and effectively across digital platforms. I have led content initiatives, developed digital campaigns, produced media across formats, and built communication systems that support both audience engagement and organizational goals.
       </p>
       <div class="grid-2" style="margin-top: 0.85rem;">
         <article class="card">
-          <h3>What I do</h3>
-          <p>I develop and produce digital content, visual systems, and communication assets that help organizations present information clearly across platforms.</p>
+          <h3>Creative foundation</h3>
+          <p>My background includes video production, motion graphics, photography, design, branding, editing, 3D, music, and audio engineering. I am used to working across concept, execution, and polish.</p>
         </article>
         <article class="card">
-          <h3>How AI fits in</h3>
-          <p>AI tools now extend my creative workflow into faster prototyping and real interface work, especially in dashboards, websites, and digital presentation systems.</p>
+          <h3>Why AI matters in my work</h3>
+          <p>I am able to use AI tools intelligently and strategically, not just casually. ChatGPT and Cursor help me move faster, prototype better, and build new types of work that combine communication, design, and software.</p>
         </article>
       </div>
     </section>
@@ -594,28 +618,28 @@
             <h3>Founder | PA Media Arts</h3>
             <div class="experience-meta"><span>Apr 2025 - Present</span><span>New Cumberland, Pennsylvania</span></div>
           </div>
-          <p>Established and lead a multimedia production company delivering audio, video, and photography services while overseeing creative direction, production management, client relationships, budgeting, and execution.</p>
+          <p>Lead a multimedia production company delivering photography, audio, video, and production services. Frequently booked for freelance photography and audio engineering while also overseeing client relationships, project development, creative direction, and business operations.</p>
         </article>
         <article class="experience-item">
           <div class="experience-head">
             <h3>Producer, Digital Communications | HAP</h3>
             <div class="experience-meta"><span>Aug 2022 - Present</span><span>Harrisburg, PA</span></div>
           </div>
-          <p>Produce digital content and communications across video, social, email, campaigns, websites, publications, and advocacy initiatives. Support strategy, reporting, content development, motion work, and web updates.</p>
+          <p>Produce and support digital content, communications strategy, email marketing, social media, videos, motion graphics, web content, and advocacy communications aligned with organizational goals and public-facing messaging.</p>
         </article>
         <article class="experience-item">
           <div class="experience-head">
             <h3>Social Media Specialist | Roman Catholic Diocese of Harrisburg</h3>
             <div class="experience-meta"><span>May 2019 - Aug 2022</span><span>Harrisburg, Pennsylvania</span></div>
           </div>
-          <p>Led social media campaigns, livestreams, YouTube content, podcasts, analytics reporting, and multimedia production. Produced and directed recurring digital programming and platform content.</p>
+          <p>Led social media strategy, livestreaming, video production, podcast production, digital reporting, and multimedia programming while helping shape and expand the organization’s online presence.</p>
         </article>
         <article class="experience-item">
           <div class="experience-head">
-            <h3>Earlier production and AV roles</h3>
+            <h3>Additional production and AV work</h3>
             <div class="experience-meta"><span>2013 - 2019</span></div>
           </div>
-          <p>Additional experience includes work with Hollywood Casino at Penn National Race Course, Stream Companies, and BridgeTower Media across AV operations, editing, live production, presentations, and event support.</p>
+          <p>Experience includes BridgeTower Media, Stream Companies, and Hollywood Casino at Penn National Race Course across editing, presentations, event AV, live production, post-production, and technical support.</p>
         </article>
       </div>
     </section>
@@ -630,45 +654,52 @@
       <div class="capability-grid">
         <article class="card">
           <h3>Multimedia production</h3>
-          <p>Video production, photography, editing, livestreaming, webinars, audio, and event support.</p>
+          <p>Video production, directing, videography, photography, editing, livestreaming, live events, and audio support.</p>
         </article>
         <article class="card">
-          <h3>Motion and animation</h3>
-          <p>Motion graphics, animation, storyboarding, visual pacing, and presentation-driven design.</p>
+          <h3>Visual and motion work</h3>
+          <p>Motion graphics, animation, design, branding, visual storytelling, and presentation craft.</p>
         </article>
         <article class="card">
-          <h3>3D and visual development</h3>
-          <p>3D modeling, rigging, texturing, compositing, rendering, and broader visual systems thinking.</p>
+          <h3>3D and technical artistry</h3>
+          <p>3D modeling, rigging, texturing, compositing, rendering, and a strong visual systems foundation.</p>
         </article>
         <article class="card">
-          <h3>Communications strategy</h3>
-          <p>Content strategy, digital communications, brand development, message clarity, and campaign support.</p>
+          <h3>Music and audio</h3>
+          <p>Music creation, audio engineering, mix work, audio editing, and live sound support.</p>
         </article>
         <article class="card">
-          <h3>AI-assisted creation</h3>
-          <p>Cursor-based workflow development for dashboards, sites, prototypes, and faster digital execution.</p>
+          <h3>Communications and strategy</h3>
+          <p>Content strategy, digital communications, campaign support, message clarity, and audience-focused execution.</p>
         </article>
         <article class="card">
-          <h3>Creative software</h3>
-          <p>After Effects, Premiere, Final Cut Pro, Maya, Blender, 3D Studio Max, Lightwave, and related tools.</p>
+          <h3>AI-enabled building</h3>
+          <p>Strong adoption of ChatGPT and Cursor for dashboards, websites, prototypes, interactive elements, and app-like experiences.</p>
         </article>
       </div>
       <div class="chips">
-        <span class="chip">Video Production</span>
-        <span class="chip">Photography</span>
+        <span class="chip">Producer</span>
+        <span class="chip">Director</span>
+        <span class="chip">Videographer</span>
+        <span class="chip">Photographer</span>
+        <span class="chip">Editor</span>
         <span class="chip">Motion Graphics</span>
-        <span class="chip">Animation</span>
-        <span class="chip">Graphic Design</span>
+        <span class="chip">3D Artist</span>
+        <span class="chip">Musician</span>
+        <span class="chip">Audio Engineer</span>
         <span class="chip">Creative Direction</span>
-        <span class="chip">3D Modeling</span>
-        <span class="chip">Compositing</span>
-        <span class="chip">Rendering</span>
-        <span class="chip">Audio Editing</span>
         <span class="chip">Content Strategy</span>
+        <span class="chip">Graphic Design</span>
         <span class="chip">HTML</span>
         <span class="chip">CSS</span>
         <span class="chip">JavaScript</span>
+        <span class="chip">ChatGPT</span>
         <span class="chip">Cursor</span>
+        <span class="chip">After Effects</span>
+        <span class="chip">Premiere</span>
+        <span class="chip">Final Cut Pro</span>
+        <span class="chip">Maya</span>
+        <span class="chip">Blender</span>
       </div>
     </section>
 
@@ -682,7 +713,7 @@
       <div class="education-grid">
         <article class="card">
           <h3>PennWest Edinboro</h3>
-          <p>B.F.A., Applied Media Arts; Computer Animation concentration.</p>
+          <p>B.F.A., Applied Media Arts with a Computer Animation concentration.</p>
           <div class="education-meta"><span>2008 - 2011</span><span>Film Club</span><span>Animation Club</span></div>
         </article>
         <article class="card">
@@ -703,12 +734,12 @@
       <div class="links-grid">
         <article class="link-card">
           <h3>GitHub</h3>
-          <p>Code, dashboard work, and portfolio development.</p>
+          <p>Code, dashboard work, and emerging AI-assisted build projects.</p>
           <div class="project-links"><a href="https://github.com/jordanz00" target="_blank" rel="noopener noreferrer">github.com/jordanz00</a></div>
         </article>
         <article class="link-card">
           <h3>LinkedIn</h3>
-          <p>Professional profile and full work history.</p>
+          <p>Professional profile, work history, and career background.</p>
           <div class="project-links"><a href="https://www.linkedin.com/in/jordanzabady/" target="_blank" rel="noopener noreferrer">linkedin.com/in/jordanzabady</a></div>
         </article>
       </div>
@@ -718,7 +749,7 @@
   <footer>
     <div class="footer-inner">
       <div>Jordan Zabady</div>
-      <div>Digital communications, multimedia, and emerging AI-assisted product work.</div>
+      <div>Creative producer, multimedia professional, and AI-enabled digital builder.</div>
     </div>
   </footer>
 </body>

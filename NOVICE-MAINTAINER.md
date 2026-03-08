@@ -54,8 +54,10 @@ Use this file when:
 Important print note:
 
 - The print/PDF flow is prepared in `preparePrintSnapshot()`.
+- The print-only Pennsylvania default is applied in `preparePrintSelectionState()`.
 - The counter values are forced to their final numbers in `finalizeCountUpValues()`.
 - If print is wrong, check those functions before rewriting HTML.
+- The compact print state summary is filled from JavaScript and should stay smaller than the live interactive state lists.
 
 ## 4. `340b.css`
 
@@ -95,6 +97,7 @@ Follow this order after meaningful changes:
 5. Run `python3 dashboard-audit.py`.
 6. Use `QA-CHECKLIST.md`.
 7. Run Semgrep if you changed security-sensitive code.
+8. Publish only after the print preview and source checks look correct to a human reviewer.
 
 If the printed PDF would confuse a lawmaker, hospital CEO, or administrator, treat that as a real bug and fix it before publishing.
 
@@ -106,3 +109,11 @@ If you do not know where to start, use this list:
 2. Wrong spacing, hidden content, or print layout issue: check `340b.css`
 3. Broken button, map, filter, or share behavior: check `340b.js`
 4. Wrong dates or state facts: check `state-data.js`
+
+## Source verification order
+
+If you update state-law content, verify in this order:
+
+1. `MultiState` for the most current legislative status
+2. `ASHP` as the pharmacy-policy cross-check
+3. `America's Essential Hospitals` as the advocacy-reference confirmation
