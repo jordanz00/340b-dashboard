@@ -28,6 +28,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="340b.css">
+  <script src="state-data.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/d3@7" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/topojson-client@3" crossorigin="anonymous"></script>
 </head>
@@ -55,6 +56,7 @@
     <a href="#policy">Policy</a>
     <a href="static.html">PA Dashboard</a>
     <button type="button" id="btn-print" class="nav-action-btn" aria-label="Print or save as PDF">Print / PDF</button>
+    <button type="button" id="btn-share" class="nav-action-btn" aria-label="Copy link to clipboard">Share</button>
     <button type="button" id="btn-presentation" class="nav-action-btn" aria-label="Presentation mode">Present</button>
     <button type="button" id="btn-dark" class="nav-action-btn" aria-label="Toggle dark mode">Dark</button>
   </nav>
@@ -101,7 +103,7 @@
     </div>
 
     <!-- Map hero — centerpiece display -->
-    <section id="state-laws" class="map-hero-section span-12">
+    <section id="state-laws" class="map-hero-section span-12 scroll-reveal">
       <div class="map-hero-inner">
         <article class="map-hero-card">
           <p class="map-hero-title">State-by-state analysis</p>
@@ -119,17 +121,21 @@
         <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite"><p>Select a state</p></div>
       </div>
       <div class="state-lists-wrap" id="state-lists-wrap">
-        <div class="state-list-block protection">
-          <h3>States with protection (21)</h3>
-          <div class="state-list-grid" id="states-with-list">
-            <span class="state-chip" data-state="AR">AR</span><span class="state-chip" data-state="CO">CO</span><span class="state-chip" data-state="HI">HI</span><span class="state-chip" data-state="KS">KS</span><span class="state-chip" data-state="LA">LA</span><span class="state-chip" data-state="ME">ME</span><span class="state-chip" data-state="MD">MD</span><span class="state-chip" data-state="MN">MN</span><span class="state-chip" data-state="MS">MS</span><span class="state-chip" data-state="MO">MO</span><span class="state-chip" data-state="NE">NE</span><span class="state-chip" data-state="NM">NM</span><span class="state-chip" data-state="ND">ND</span><span class="state-chip" data-state="OK">OK</span><span class="state-chip" data-state="OR">OR</span><span class="state-chip" data-state="RI">RI</span><span class="state-chip" data-state="SD">SD</span><span class="state-chip" data-state="TN">TN</span><span class="state-chip" data-state="UT">UT</span><span class="state-chip" data-state="VT">VT</span><span class="state-chip" data-state="WV">WV</span>
+        <div class="state-filter-bar">
+          <input type="text" id="state-search" class="state-search-input" placeholder="Search states…" aria-label="Search states by name or abbreviation">
+          <div class="state-filter-toggles" role="group" aria-label="Filter by protection status">
+            <button type="button" class="state-filter-btn active" data-filter="all" aria-pressed="true">All</button>
+            <button type="button" class="state-filter-btn" data-filter="protection" aria-pressed="false">Protection</button>
+            <button type="button" class="state-filter-btn" data-filter="no-protection" aria-pressed="false">No protection</button>
           </div>
         </div>
+        <div class="state-list-block protection">
+          <h3>States with protection (<span id="protection-count">0</span>)</h3>
+          <div class="state-list-grid" id="states-with-list"></div>
+        </div>
         <div class="state-list-block no-protection">
-          <h3>No protection law (28)</h3>
-          <div class="state-list-grid" id="states-without-list">
-            <span class="state-chip" data-state="AL">AL</span><span class="state-chip" data-state="AK">AK</span><span class="state-chip" data-state="AZ">AZ</span><span class="state-chip" data-state="CA">CA</span><span class="state-chip" data-state="DE">DE</span><span class="state-chip" data-state="FL">FL</span><span class="state-chip" data-state="GA">GA</span><span class="state-chip" data-state="ID">ID</span><span class="state-chip" data-state="IL">IL</span><span class="state-chip" data-state="IN">IN</span><span class="state-chip" data-state="IA">IA</span><span class="state-chip" data-state="KY">KY</span><span class="state-chip" data-state="MA">MA</span><span class="state-chip" data-state="MI">MI</span><span class="state-chip" data-state="MT">MT</span><span class="state-chip" data-state="NV">NV</span><span class="state-chip" data-state="NH">NH</span><span class="state-chip" data-state="NJ">NJ</span><span class="state-chip" data-state="NY">NY</span><span class="state-chip" data-state="NC">NC</span><span class="state-chip" data-state="OH">OH</span><span class="state-chip" data-state="PA">PA</span><span class="state-chip" data-state="SC">SC</span><span class="state-chip" data-state="TX">TX</span><span class="state-chip" data-state="VA">VA</span><span class="state-chip" data-state="WA">WA</span><span class="state-chip" data-state="WI">WI</span><span class="state-chip" data-state="WY">WY</span>
-          </div>
+          <h3>No protection law (<span id="no-protection-count">0</span>)</h3>
+          <div class="state-list-grid" id="states-without-list"></div>
         </div>
       </div>
       <h3 class="section-subhead">Recent legal trends</h3>
@@ -154,7 +160,7 @@
           <p><strong>State law data</strong> is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.</p>
           <p><strong>Community benefit</strong> figures are from 340B Health and AHA survey data (2024).</p>
           <p><strong>HRSA oversight</strong> figures reflect federal audit activity in 2024.</p>
-          <p><strong>Last updated:</strong> March 2025</p>
+          <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2025</span></p>
           <ul>
             <li><a href="https://www.multistate.us/" target="_blank" rel="noopener">MultiState</a></li>
             <li><a href="https://www.ashp.org/" target="_blank" rel="noopener">ASHP</a></li>
@@ -167,7 +173,7 @@
     </section>
 
     <!-- Key metrics — below map -->
-    <section class="kpi-strip span-12" aria-label="Key metrics">
+    <section class="kpi-strip span-12 scroll-reveal" aria-label="Key metrics">
       <div class="kpi-card">
         <p class="kpi-label">U.S. Drug Market</p>
         <p class="kpi-value count-up" data-count-up="7" data-suffix="%">0</p>
@@ -188,11 +194,11 @@
         <p class="kpi-value primary">72</p>
         <p class="kpi-desc">Pennsylvania hospitals participating in 340B</p>
       </div>
-      <p class="data-freshness">Data as of March 2025 · Last updated March 2025</p>
+      <p class="data-freshness" id="data-freshness-text">Data as of March 2025 · Last updated March 2025</p>
     </section>
 
     <!-- Supporting context cards -->
-    <div class="supporting-cards-row span-12">
+    <div class="supporting-cards-row span-12 scroll-reveal">
       <article id="eligibility" class="card card--compact">
         <div class="card-heading">
           <div class="card-heading-text">
@@ -258,7 +264,7 @@
     </div>
 
     <!-- Community benefit — full width under map -->
-    <article id="community-benefit" class="card span-12">
+    <article id="community-benefit" class="card span-12 scroll-reveal">
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">Community benefit</p>
