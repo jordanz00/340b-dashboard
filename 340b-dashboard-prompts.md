@@ -140,9 +140,177 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 
 ---
 
+## Prompts v02
+
+### V02.1 Utility Toolbar Relocation
+
+> Remove print/share actions from the main navigation and place them in a dedicated page tools or accessibility-style toolbar that is easier to discover and use. Keep the top navigation focused on section navigation only. Update `340b.html` and `340b.css`.
+
+### V02.2 Remove Dark Mode
+
+> Remove dark mode entirely from the 340B dashboard, including UI controls, JS state, local storage usage, and CSS selectors. Ensure no dead code remains. Update `340b.html`, `340b.css`, and `340b.js`.
+
+### V02.3 Remove Presentation Mode
+
+> Remove presentation mode entirely from the 340B dashboard. Delete the UI, styles, and JS behavior so the codebase is simpler and easier to maintain. Update `340b.html`, `340b.css`, and `340b.js`.
+
+### V02.4 Safer State Detail Rendering
+
+> Refactor the state detail panel so it uses DOM APIs (`createElement`, `textContent`, `appendChild`) instead of string-based `innerHTML`. Keep the same visible output. Update `340b.js`.
+
+### V02.5 Safer Tooltip Rendering
+
+> Refactor both map and state-list tooltips to avoid string-based HTML generation. Use safe DOM node creation and text insertion for all tooltip content. Update `340b.js`.
+
+### V02.6 Simpler Button Feedback
+
+> Improve print/share feedback with clear temporary status text (for example: “Copying link...”, “Link copied.”, “Opening print dialog...”). Keep the UI compact and non-intrusive. Update `340b.html`, `340b.css`, and `340b.js`.
+
+### V02.7 Filter Status Messaging
+
+> Add live feedback below the state filters so users know how many states match the current search or filter. Keep the message short and accessible. Update `340b.html`, `340b.css`, and `340b.js`.
+
+### V02.8 Map Fallback Summary
+
+> If the map cannot load, show a readable fallback summary list of states and whether each has contract pharmacy protection. Keep the rest of the page usable. Update `340b.js` and `340b.css`.
+
+### V02.9 Content Security Policy
+
+> Add a reasonable Content Security Policy for this static dashboard that still allows local files, fonts, D3/TopoJSON CDN assets, images, and optional analytics. Update `340b.html`.
+
+### V02.10 External Link Hardening
+
+> Audit all external links that open in a new tab and ensure they use `rel=\"noopener noreferrer\"`. Update `340b.html`.
+
+### V02.11 Beginner-Friendly JS Structure
+
+> Refactor `340b.js` into simpler sections with beginner-friendly helper functions such as `createElement`, `clearElement`, `selectState`, and `renderStateDetail`. Add lightweight comments that explain responsibility boundaries.
+
+### V02.12 Shared App State
+
+> Use a small shared `appState` object in `340b.js` to manage selected state, active filter, search query, and map resize state. Keep names descriptive and easy to edit.
+
+### V02.13 Remove Dead Selectors
+
+> Delete CSS selectors and media queries that no longer apply after toolbar cleanup and removal of old actions. Keep the stylesheet easier to scan and maintain. Update `340b.css`.
+
+### V02.14 Accessible Action Targets
+
+> Ensure print/share controls meet accessible touch-target sizing and have clear focus styles. Keep them easy to use on mobile. Update `340b.css`.
+
+### V02.15 Config-Driven Page Text
+
+> Continue moving editable values to config-driven rendering where it improves maintainability, especially dates and page title text. Update `state-data.js` and `340b.js` if needed.
+
+### V02.16 Cleaner Error Messaging
+
+> Improve error messaging tone for map failures so it is plain-language, calm, and useful for non-technical users. Keep the retry action obvious. Update `340b.js` and `340b.css`.
+
+### V02.17 ASCII Cleanup Pass
+
+> Normalize newly edited code and UI copy to ASCII where practical, especially placeholders, status text, and helper comments. Avoid introducing hidden or decorative Unicode characters in code paths.
+
+### V02.18 Security Review Prompt
+
+> Audit the 340B dashboard for avoidable security risks such as raw HTML injection, unnecessary storage usage, unsafe external links, or over-permissive dynamic behavior. Fix what you find while keeping the app static and simple.
+
+### V02.19 Hidden Character Audit
+
+> Check the dashboard source files for invisible Unicode characters such as zero-width spaces, byte order marks in the middle of files, or other hidden control characters. Remove them if found.
+
+### V02.20 Post-Refactor Verification
+
+> After the cleanup, verify that print, share, state selection, filters, keyboard navigation, and map fallback behavior still work. If any of these regress, fix them before finishing.
+
+---
+
 ## Usage Tips
 
 1. **Run the Master Prompt first** to get a prioritized plan.
 2. **Apply prompts in order** within each category (Design → Functionality → Interactivity → etc.) for coherent improvements.
 3. **Re-run M1–M4** periodically to catch regressions and find new polish opportunities.
 4. **Combine prompts** when it makes sense (e.g., D2 + I1 for card polish and micro-interactions).
+
+---
+
+## Prompts v03
+
+### V03.1 Localize Map Dependencies
+
+> Move the map libraries and U.S. atlas data to local project assets so the dashboard remains resilient when CDNs or restricted networks are unavailable. Update `340b.html`, `state-data.js`, and any related loading logic.
+
+### V03.2 Redraw Lifecycle Cleanup
+
+> Refactor the map redraw flow so resize events and map visibility observers do not attach duplicate listeners or observers after repeated redraws. Keep `340b.js` easier to reason about.
+
+### V03.3 Name-First State Controls
+
+> Replace abbreviation-only state chips with more readable state controls that show full state names plus abbreviations. Sort them by full name for faster scanning by executive audiences.
+
+### V03.4 Accessible State Selection Semantics
+
+> Treat the state list buttons as a first-class accessible control. Add clear `aria-pressed`, `aria-controls`, and selected-state behavior while keeping the map visually synchronized.
+
+### V03.5 Hash-Driven Focus Flow
+
+> Improve deep-link behavior so `#state-XX` links scroll the map into view and move focus to the selected state detail panel. Keep shared links useful and accessible.
+
+### V03.6 Viewport-Safe Tooltips
+
+> Clamp map and chip tooltips so they stay inside the viewport. Keep them supplemental only and avoid hover-only overflow issues near screen edges.
+
+### V03.7 Touch-Friendly Tooltip Behavior
+
+> Disable hover tooltips on touch devices and rely on the detail panel instead, so important information is not tied to hover behavior that does not translate to mobile.
+
+### V03.8 Better Filter Empty States
+
+> Add clearer filter feedback with a no-results message and hide empty protection/no-protection groups when current filters remove all items from a section.
+
+### V03.9 Structured State Detail Panel
+
+> Reformat the selected state detail panel into a faster-scanning structure with labeled rows for contract pharmacy status, PBM status, law year, and notes. Keep it readable for non-technical audiences.
+
+### V03.10 Config-Driven Metadata
+
+> Move more page metadata into the config layer, including page description and social title/description values. Use `state-data.js` as the single source of truth where practical.
+
+### V03.11 State Data Validation
+
+> Add a lightweight validation pass that warns in the console when state records are missing expected keys like `cp`, `pbm`, `y`, or `notes`. Keep it non-blocking and beginner-friendly.
+
+### V03.12 Loading Semantics Upgrade
+
+> Add `aria-busy` and clearer loading-state semantics around the map container and fallback states so assistive technologies receive better progress feedback.
+
+### V03.13 Disclosure Semantics
+
+> Improve the “About this data” toggle with `aria-controls`, stronger open/closed states, and clearer disclosure semantics in both HTML and CSS.
+
+### V03.14 Nav Location Semantics
+
+> Add `aria-current` and more reliable current-section updates in the sticky navigation so screen readers and keyboard users know where they are in the page.
+
+### V03.15 Stronger Share Fallback
+
+> Improve share behavior so clipboard failures fall back to a predictable, user-readable option such as a copy prompt. Keep status messages clear and temporary.
+
+### V03.16 Progressive Enhancement Notice
+
+> Add a concise `noscript` message so users understand which features require JavaScript while still being able to read the core policy content.
+
+### V03.17 CSS Debt Cleanup
+
+> Remove unused CSS blocks and stale selectors left behind from earlier experiments so the stylesheet is easier for a beginner to scan and edit.
+
+### V03.18 Print Briefing Polish
+
+> Improve the print layout so the map section, state detail, key metrics, and supporting content print as a cleaner briefing with fewer awkward page breaks.
+
+### V03.19 Plain-Language Error Copy
+
+> Rewrite map failure and empty-state text so it feels calm, plain-language, and useful for executives rather than technical users.
+
+### V03.20 Post-Refactor Verification Matrix
+
+> Re-check print, share, state filters, map selection, hash deep-links, keyboard navigation, and fallback behavior after each major cleanup. Fix anything that regresses before finishing.

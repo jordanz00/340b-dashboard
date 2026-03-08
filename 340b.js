@@ -1,85 +1,491 @@
 /**
  * HAP 340B Advocacy Dashboard — Main Script
  * ==========================================
- * Handles: map, state chips, filters, keyboard nav, URL hash, count-up,
- * scroll reveals, presentation mode, dark mode, print, share.
- *
- * Depends on: state-data.js (CONFIG, STATE_340B, etc.), D3.js, Topojson
+ * Beginner-friendly structure:
+ * - Config + state data live in `state-data.js`
+ * - This file handles rendering and interactions
+ * - Dynamic UI uses safe DOM APIs instead of raw HTML strings
  */
 
 (function () {
   "use strict";
 
   var config = typeof CONFIG !== "undefined" ? CONFIG : {
+    dashboardTitle: "340B Drug Pricing Program",
+    dashboardSubtitle: "HAP Advocacy Dashboard",
+    pageDescription: "340B advocacy dashboard.",
+    shareTitle: "340B Drug Pricing Program | HAP Advocacy Dashboard",
+    shareDescription: "340B contract pharmacy protection dashboard.",
     dataFreshness: "March 2025",
     lastUpdated: "March 2025",
-    mapDataUrl: "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json",
+    mapDataUrl: "assets/vendor/states-10m.json",
     mapAspectRatio: 0.55,
     mapMaxWidth: 960,
     countUpDuration: 1200,
     dominoDelayPerState: 55,
-    scrollRevealThreshold: 0.1,
+    scrollRevealThreshold: 0.1
   };
 
-  var selectedStateAbbr = null;
-  var mapPaths = null;
-  var stateFeatures = null;
-  var pathGenerator = null;
+  var appState = {
+    selectedStateAbbr: null,
+    currentFilter: "all",
+    currentQuery: "",
+    mapPaths: null,
+    lastMapWidth: 0,
+    resizeTimer: null,
+    mapVisibilityObserver: null,
+    touchDevice: "ontouchstart" in window || navigator.maxTouchPoints > 0,
+    hoverCapable: window.matchMedia && window.matchMedia("(hover: hover)").matches
+  };
 
-  /* ========== UTILITY HELPERS ========== */
+  function getStateAbbr(feature) {
+    var id = feature && (feature.id != null ? feature.id : (feature.properties && (feature.properties.FIPS || feature.properties.STATE)));
+    var numericId;
 
-  function getStateAbbr(d) {
-    var id = d.id != null ? d.id : (d.properties && (d.properties.FIPS || d.properties.STATE));
     if (!id) return null;
-    var n = parseInt(id, 10);
-    return FIPS_TO_ABBR[!isNaN(n) ? n : id] || FIPS_TO_ABBR[String(id)] || null;
+
+    numericId = parseInt(id, 10);
+    return FIPS_TO_ABBR[!isNaN(numericId) ? numericId : id] || FIPS_TO_ABBR[String(id)] || null;
   }
 
-  function getStateName(abbr, d) {
-    return (abbr && STATE_NAMES[abbr]) || (d && d.properties && d.properties.name) || abbr || "State";
+  function getStateName(abbr, feature) {
+    return (abbr && STATE_NAMES[abbr]) || (feature && feature.properties && feature.properties.name) || abbr || "State";
+  }
+
+  function getStateData(abbr) {
+    return abbr && STATE_340B[abbr] ? STATE_340B[abbr] : null;
   }
 
   function prefersReducedMotion() {
     return window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   }
 
-  /* ========== MAP: DRAW & BIND ========== */
+  function getSortedStates() {
+    return Object.keys(STATE_340B)
+      .filter(function (abbr) {
+        return abbr !== "DC";
+      })
+      .sort(function (a, b) {
+        return getStateName(a).localeCompare(getStateName(b));
+      });
+  }
 
-  function showMapError(container, message, showRetry) {
-    if (!container) return;
-    var skeleton = document.getElementById("map-loading-skeleton");
-    if (skeleton) skeleton.classList.add("hidden");
-    var retryHtml = showRetry
-      ? ' <button type="button" class="map-retry-btn" id="map-retry-btn">Retry</button>'
-      : "";
-    container.innerHTML =
-      "<p class='map-error-msg'>" + message + retryHtml + "</p>";
-    if (showRetry) {
-      var btn = document.getElementById("map-retry-btn");
-      if (btn) btn.addEventListener("click", function () { drawMap(); });
+  function clearElement(element) {
+    if (element) element.replaceChildren();
+  }
+
+  function createElement(tagName, className, text) {
+    var element = document.createElement(tagName);
+    if (className) element.className = className;
+    if (typeof text === "string") element.textContent = text;
+    return element;
+  }
+
+  function appendBadge(parent, tone, text) {
+    var badge = createElement("span", "badge " + tone, text);
+    parent.appendChild(badge);
+    return badge;
+  }
+
+  function setUtilityStatus(message) {
+    var status = document.getElementById("utility-status");
+    if (status) status.textContent = message || "";
+  }
+
+  function setFilterStatus(message) {
+    var status = document.getElementById("state-filter-status");
+    if (status) status.textContent = message || "";
+  }
+
+  function setMapBusy(isBusy) {
+    var wrapper = document.getElementById("us-map-wrap");
+    var container = document.getElementById("us-map");
+
+    if (wrapper) wrapper.setAttribute("aria-busy", isBusy ? "true" : "false");
+    if (container) container.setAttribute("aria-busy", isBusy ? "true" : "false");
+  }
+
+  function updateMetadata() {
+    var fullTitle = config.dashboardTitle + " | " + config.dashboardSubtitle;
+    var metaDescription = document.getElementById("meta-description");
+    var ogTitle = document.getElementById("meta-og-title");
+    var ogDescription = document.getElementById("meta-og-description");
+    var twitterTitle = document.getElementById("meta-twitter-title");
+    var twitterDescription = document.getElementById("meta-twitter-description");
+    var freshness = document.getElementById("data-freshness-text");
+    var lastUpdated = document.getElementById("methodology-last-updated");
+
+    document.title = fullTitle;
+
+    if (metaDescription) metaDescription.setAttribute("content", config.pageDescription);
+    if (ogTitle) ogTitle.setAttribute("content", config.shareTitle || fullTitle);
+    if (ogDescription) ogDescription.setAttribute("content", config.shareDescription || config.pageDescription);
+    if (twitterTitle) twitterTitle.setAttribute("content", config.shareTitle || fullTitle);
+    if (twitterDescription) twitterDescription.setAttribute("content", config.shareDescription || config.pageDescription);
+    if (freshness) freshness.textContent = "Data as of " + config.dataFreshness + " - Last updated " + config.lastUpdated;
+    if (lastUpdated) lastUpdated.textContent = config.lastUpdated;
+  }
+
+  function validateStateData() {
+    var requiredKeys = ["cp", "pbm", "y", "notes"];
+
+    getSortedStates().forEach(function (abbr) {
+      var data = getStateData(abbr);
+      var missingKeys = [];
+
+      requiredKeys.forEach(function (key) {
+        if (!data || !Object.prototype.hasOwnProperty.call(data, key)) {
+          missingKeys.push(key);
+        }
+      });
+
+      if (missingKeys.length && console && console.warn) {
+        console.warn("State data is missing keys for", abbr, missingKeys.join(", "));
+      }
+    });
+  }
+
+  function updateUrlHash(abbr) {
+    var nextHash = abbr ? "#state-" + abbr : "";
+
+    if (location.hash === nextHash) return;
+
+    if (history.replaceState) {
+      history.replaceState(null, "", location.pathname + location.search + nextHash);
+    } else {
+      location.hash = nextHash;
     }
   }
 
-  function drawMap() {
-    var mapContainer = document.getElementById("us-map");
-    if (!mapContainer) return;
+  function getHashState() {
+    var rawHash = (location.hash || "").replace(/^#state-/, "").toUpperCase();
+    return rawHash && rawHash.length === 2 ? rawHash : null;
+  }
 
-    var width = Math.min(mapContainer.offsetWidth || 800, config.mapMaxWidth);
-    var height = Math.round(width * config.mapAspectRatio);
+  function scrollToMapSection() {
+    var section = document.getElementById("state-laws");
+    if (section) {
+      section.scrollIntoView({ behavior: prefersReducedMotion() ? "auto" : "smooth", block: "start" });
+    }
+  }
 
-    if (typeof d3 === "undefined" || typeof topojson === "undefined") {
-      showMapError(
-        mapContainer,
-        "Map libraries could not load. Please check your connection and refresh the page.",
-        true
-      );
-      var skel = document.getElementById("map-loading-skeleton");
-      if (skel) skel.classList.add("hidden");
+  function renderEmptyStateDetail() {
+    var panel = document.getElementById("state-detail-panel");
+    if (!panel) return;
+
+    panel.classList.add("empty");
+    panel.setAttribute("aria-live", "polite");
+    clearElement(panel);
+    panel.appendChild(createElement("p", "", "Select a state to view contract pharmacy and PBM details."));
+  }
+
+  function renderStateDetail(abbr) {
+    var panel = document.getElementById("state-detail-panel");
+    var data = getStateData(abbr);
+    var heading;
+    var badgeRow;
+    var detailGrid;
+
+    if (!panel) return;
+
+    panel.classList.remove("empty");
+    panel.setAttribute("aria-live", "polite");
+    clearElement(panel);
+
+    heading = createElement("h4", "", getStateName(abbr));
+    panel.appendChild(heading);
+
+    if (!data) {
+      panel.appendChild(createElement("p", "", "No state law data is available."));
       return;
     }
 
-    mapContainer.innerHTML = "";
-    var svg = d3.select("#us-map").append("svg")
+    badgeRow = createElement("p", "state-detail-badges");
+    appendBadge(badgeRow, data.cp ? "yes" : "no", data.cp ? "Contract pharmacy protected" : "No contract pharmacy law");
+    appendBadge(badgeRow, data.pbm ? "yes" : "no", data.pbm ? "PBM protections in place" : "No PBM protection law");
+    panel.appendChild(badgeRow);
+
+    detailGrid = createElement("dl", "state-detail-grid");
+
+    detailGrid.appendChild(createElement("dt", "", "Contract pharmacy"));
+    detailGrid.appendChild(createElement("dd", "", data.cp ? "Yes" : "No"));
+
+    detailGrid.appendChild(createElement("dt", "", "PBM protections"));
+    detailGrid.appendChild(createElement("dd", "", data.pbm ? "Yes" : "No"));
+
+    detailGrid.appendChild(createElement("dt", "", "Law year"));
+    detailGrid.appendChild(createElement("dd", "", data.y ? String(data.y) : "Not enacted"));
+
+    detailGrid.appendChild(createElement("dt", "", "Notes"));
+    detailGrid.appendChild(createElement("dd", "", data.notes || "No additional notes."));
+
+    panel.appendChild(detailGrid);
+  }
+
+  function updateNavCurrent(activeId) {
+    var navLinks = document.querySelectorAll(".dashboard-nav a[href^='#']");
+    var policySections = ["oversight", "pa-impact", "community-benefit", "access", "pa-safeguards"];
+
+    navLinks.forEach(function (link) {
+      var href = link.getAttribute("href");
+      var isActive = href === "#" + activeId || (href === "#policy" && policySections.indexOf(activeId) >= 0);
+      link.classList.toggle("active", isActive);
+      if (isActive) {
+        link.setAttribute("aria-current", "page");
+      } else {
+        link.removeAttribute("aria-current");
+      }
+    });
+  }
+
+  function highlightMapState(abbr) {
+    if (!appState.mapPaths) return;
+
+    appState.mapPaths
+      .classed("selected", false)
+      .filter(function (feature) {
+        return getStateAbbr(feature) === abbr;
+      })
+      .classed("selected", true);
+  }
+
+  function clearMapHighlight() {
+    if (appState.mapPaths) {
+      appState.mapPaths.classed("selected", false);
+    }
+  }
+
+  function highlightStateChip(abbr) {
+    document.querySelectorAll(".state-chip").forEach(function (chip) {
+      var isSelected = chip.getAttribute("data-state") === abbr;
+      chip.classList.toggle("selected", isSelected);
+      chip.setAttribute("aria-pressed", isSelected ? "true" : "false");
+    });
+  }
+
+  function clearSelection() {
+    appState.selectedStateAbbr = null;
+    updateUrlHash(null);
+    renderEmptyStateDetail();
+    clearMapHighlight();
+    highlightStateChip(null);
+  }
+
+  function selectState(abbr, options) {
+    var panel = document.getElementById("state-detail-panel");
+    var settings = options || {};
+
+    if (!abbr) return;
+
+    appState.selectedStateAbbr = abbr;
+    updateUrlHash(abbr);
+    renderStateDetail(abbr);
+    highlightMapState(abbr);
+    highlightStateChip(abbr);
+
+    if (settings.scrollToMap) {
+      scrollToMapSection();
+    }
+
+    if (settings.focusPanel && panel) {
+      panel.focus({ preventScroll: !!settings.scrollToMap });
+    }
+  }
+
+  function clampTooltip(tooltip, left, top) {
+    var maxLeft = window.innerWidth - tooltip.offsetWidth - 12;
+    var maxTop = window.innerHeight - tooltip.offsetHeight - 12;
+    var safeLeft = Math.max(12, Math.min(left, maxLeft));
+    var safeTop = Math.max(12, Math.min(top, maxTop));
+
+    tooltip.style.left = safeLeft + "px";
+    tooltip.style.top = safeTop + "px";
+  }
+
+  function showTooltip(tooltip, left, top) {
+    tooltip.classList.add("visible");
+    clampTooltip(tooltip, left, top);
+  }
+
+  function hideTooltip(tooltip) {
+    tooltip.classList.remove("visible");
+    tooltip.setAttribute("aria-hidden", "true");
+  }
+
+  function buildMapTooltip(tooltip, abbr) {
+    clearElement(tooltip);
+    tooltip.appendChild(document.createTextNode(getStateName(abbr)));
+    tooltip.setAttribute("aria-hidden", "false");
+  }
+
+  function buildStateChipTooltip(tooltip, abbr) {
+    var data = getStateData(abbr);
+    clearElement(tooltip);
+    tooltip.appendChild(createElement("strong", "", getStateName(abbr)));
+
+    if (!data) {
+      tooltip.setAttribute("aria-hidden", "false");
+      return;
+    }
+
+    tooltip.appendChild(document.createTextNode(" "));
+    appendBadge(tooltip, data.cp ? "yes" : "no", "CP: " + (data.cp ? "Yes" : "No"));
+    appendBadge(tooltip, data.pbm ? "yes" : "no", "PBM: " + (data.pbm ? "Yes" : "No"));
+
+    if (data.y) tooltip.appendChild(createElement("div", "", "Year: " + data.y));
+    if (data.notes) tooltip.appendChild(createElement("div", "", data.notes));
+
+    tooltip.setAttribute("aria-hidden", "false");
+  }
+
+  function buildMapFallback(container) {
+    var fallback = createElement("div", "map-fallback");
+    var title = createElement("h3", "map-fallback-title", "State protection summary");
+    var list = createElement("ul", "map-fallback-list");
+
+    getSortedStates().forEach(function (abbr) {
+      var data = getStateData(abbr);
+      var item = createElement("li", "map-fallback-item");
+      item.textContent = getStateName(abbr) + " - " + (data && data.cp ? "Protection in place" : "No protection law");
+      list.appendChild(item);
+    });
+
+    fallback.appendChild(title);
+    fallback.appendChild(list);
+    container.appendChild(fallback);
+  }
+
+  function showMapError(message, allowRetry) {
+    var container = document.getElementById("us-map");
+    var skeleton = document.getElementById("map-loading-skeleton");
+    var wrapper;
+    var retryButton;
+
+    if (!container) return;
+
+    clearElement(container);
+    setMapBusy(false);
+    container.setAttribute("role", "region");
+    container.setAttribute("aria-label", "340B state protection fallback summary");
+    if (skeleton) skeleton.classList.add("hidden");
+
+    wrapper = createElement("div", "map-error-wrap");
+    wrapper.appendChild(createElement("p", "map-error-msg", message));
+
+    if (allowRetry) {
+      retryButton = createElement("button", "map-retry-btn", "Retry");
+      retryButton.type = "button";
+      retryButton.addEventListener("click", drawMap);
+      wrapper.appendChild(retryButton);
+    }
+
+    container.appendChild(wrapper);
+    buildMapFallback(container);
+  }
+
+  function setupMapVisibilityObserver() {
+    var wrapper = document.getElementById("us-map-wrap");
+
+    if (!wrapper) return;
+    if (appState.mapVisibilityObserver) {
+      appState.mapVisibilityObserver.disconnect();
+      appState.mapVisibilityObserver = null;
+    }
+
+    if (prefersReducedMotion()) {
+      wrapper.classList.add("visible", "map-visible");
+      return;
+    }
+
+    appState.mapVisibilityObserver = new IntersectionObserver(function (entries) {
+      if (entries[0].isIntersecting) {
+        wrapper.classList.add("visible", "map-visible");
+      }
+    }, { threshold: 0.1 });
+
+    appState.mapVisibilityObserver.observe(wrapper);
+  }
+
+  function setupMapKeyboardNav() {
+    var paths = Array.prototype.slice.call(document.querySelectorAll("#us-map path[data-state]"));
+
+    paths.forEach(function (path, index) {
+      path.setAttribute("tabindex", "0");
+      path.setAttribute("role", "button");
+      path.setAttribute("aria-label", "Select " + getStateName(path.getAttribute("data-state")));
+
+      path.addEventListener("keydown", function (event) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          selectState(path.getAttribute("data-state"), { focusPanel: true });
+          return;
+        }
+
+        if (event.key === "ArrowRight" || event.key === "ArrowDown") {
+          event.preventDefault();
+          if (paths[index + 1]) paths[index + 1].focus();
+        }
+
+        if (event.key === "ArrowLeft" || event.key === "ArrowUp") {
+          event.preventDefault();
+          if (paths[index - 1]) paths[index - 1].focus();
+        }
+      });
+    });
+  }
+
+  function bindMapEvents() {
+    var tooltip = document.getElementById("map-tooltip");
+
+    if (!appState.mapPaths || !tooltip) return;
+
+    appState.mapPaths
+      .on("mouseenter", function (event, feature) {
+        var abbr = getStateAbbr(feature);
+        if (!appState.hoverCapable) return;
+        buildMapTooltip(tooltip, abbr);
+        showTooltip(tooltip, event.clientX, event.clientY + 14);
+      })
+      .on("mousemove", function (event) {
+        if (!appState.hoverCapable) return;
+        clampTooltip(tooltip, event.clientX, event.clientY + 14);
+      })
+      .on("mouseleave", function () {
+        hideTooltip(tooltip);
+      })
+      .on("click", function (event, feature) {
+        event.stopPropagation();
+        hideTooltip(tooltip);
+        selectState(getStateAbbr(feature), { focusPanel: true });
+      });
+  }
+
+  function drawMap() {
+    var container = document.getElementById("us-map");
+    var skeleton = document.getElementById("map-loading-skeleton");
+    var width;
+    var height;
+    var svg;
+
+    if (!container) return;
+
+    width = Math.min(container.offsetWidth || 800, config.mapMaxWidth);
+    height = Math.round(width * config.mapAspectRatio);
+    appState.lastMapWidth = width;
+
+    clearElement(container);
+    container.setAttribute("role", "img");
+    container.setAttribute("aria-label", "Interactive US map showing states with and without 340B contract pharmacy protection.");
+    setMapBusy(true);
+    if (skeleton) skeleton.classList.remove("hidden");
+
+    if (typeof d3 === "undefined" || typeof topojson === "undefined") {
+      showMapError("The interactive map could not load. You can still use the state summary below.", true);
+      return;
+    }
+
+    svg = d3.select(container)
+      .append("svg")
       .attr("viewBox", [0, 0, width, height])
       .attr("width", "100%")
       .attr("height", "auto");
@@ -88,609 +494,427 @@
       .then(function (us) {
         var states = topojson.feature(us, us.objects.states);
         var projection = d3.geoAlbersUsa().fitSize([width, height], states);
-        pathGenerator = d3.geoPath(projection);
-        stateFeatures = states.features;
-
+        var pathGenerator = d3.geoPath(projection);
         var group = svg.append("g");
-        var orderMap = {};
-        var indexed = states.features.map(function (d, i) {
-          return { d: d, i: i };
+        var orderedStates = states.features.map(function (feature, index) {
+          return { feature: feature, index: index };
         });
-        indexed.sort(function (a, b) {
-          var ca = pathGenerator.centroid(a.d);
-          var cb = pathGenerator.centroid(b.d);
-          return ca[0] - cb[0];
-        });
-        indexed.forEach(function (it, o) {
-          orderMap[it.i] = o;
+        var animationOrder = {};
+
+        orderedStates.sort(function (a, b) {
+          var centerA = pathGenerator.centroid(a.feature);
+          var centerB = pathGenerator.centroid(b.feature);
+          return centerA[0] - centerB[0];
         });
 
-        var reduceMotion = prefersReducedMotion();
-        mapPaths = group
-          .selectAll("path")
+        orderedStates.forEach(function (item, order) {
+          animationOrder[item.index] = order;
+        });
+
+        appState.mapPaths = group.selectAll("path")
           .data(states.features)
           .join("path")
-          .attr("class", function (d, i) {
-            var abbr = getStateAbbr(d);
-            var base = "state " + (abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "protection" : "no-protection");
-            return reduceMotion ? base : base + " state-domino";
+          .attr("class", function (feature, index) {
+            var abbr = getStateAbbr(feature);
+            var baseClass = STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "state protection" : "state no-protection";
+            return prefersReducedMotion() ? baseClass : baseClass + " state-domino";
           })
           .attr("d", pathGenerator)
-          .attr("data-state", function (d) {
-            return getStateAbbr(d) || "";
+          .attr("data-state", function (feature) {
+            return getStateAbbr(feature) || "";
           })
-          .attr("fill", function (d) {
-            var abbr = getStateAbbr(d);
-            return abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "#0066a1" : "#e2e8f0";
+          .attr("fill", function (feature) {
+            return STATES_WITH_PROTECTION.indexOf(getStateAbbr(feature)) >= 0 ? "#0066a1" : "#e2e8f0";
           })
           .attr("stroke", "rgba(255,255,255,0.9)")
           .attr("stroke-width", 1)
-          .each(function (_, i) {
-            this.style.animationDelay = (orderMap[i] || 0) * config.dominoDelayPerState + "ms";
+          .each(function (_, index) {
+            this.style.animationDelay = (animationOrder[index] || 0) * config.dominoDelayPerState + "ms";
           });
 
-        bindMapEvents(mapPaths);
+        setupMapVisibilityObserver();
+        bindMapEvents();
         setupMapKeyboardNav();
+        setMapBusy(false);
+        if (skeleton) skeleton.classList.add("hidden");
 
-        var wrap = document.getElementById("us-map-wrap");
-        if (wrap) {
-          if (reduceMotion) {
-            wrap.classList.add("visible", "map-visible");
-          } else {
-            var io = new IntersectionObserver(
-              function (entries) {
-                if (entries[0].isIntersecting) {
-                  wrap.classList.add("visible", "map-visible");
-                }
-              },
-              { threshold: 0.1 }
-            );
-            io.observe(wrap);
-          }
-        }
-
-        var skel = document.getElementById("map-loading-skeleton");
-        if (skel) skel.classList.add("hidden");
-
-        var hash = (location.hash || "").replace(/^#state-/, "");
-        if (hash && hash.length === 2) {
-          selectStateByAbbr(hash.toUpperCase());
-          var mapSection = document.getElementById("state-laws");
-          if (mapSection) mapSection.scrollIntoView({ behavior: "smooth" });
+        if (appState.selectedStateAbbr) {
+          highlightMapState(appState.selectedStateAbbr);
         }
       })
-      .catch(function (err) {
-        if (typeof console !== "undefined" && console.warn) {
-          console.warn("340B map: data load failed", err);
+      .catch(function (error) {
+        if (console && console.warn) {
+          console.warn("340B map data failed to load", error);
         }
-        showMapError(
-          mapContainer,
-          "Map data temporarily unavailable. Please check your connection and refresh the page.",
-          true
-        );
-        var skel = document.getElementById("map-loading-skeleton");
-        if (skel) skel.classList.add("hidden");
+        showMapError("The interactive map is temporarily unavailable. You can still review the state summary below.", true);
       });
   }
 
-  function bindMapEvents(paths) {
-    var tooltip = document.getElementById("map-tooltip");
-    var panel = document.getElementById("state-detail-panel");
-    if (!tooltip || !panel) return;
+  function createStateChip(abbr) {
+    var button = createElement("button", "state-chip");
+    var name = createElement("span", "state-chip-name", getStateName(abbr));
+    var shortCode = createElement("span", "state-chip-abbr", abbr);
 
-    function placeTooltip(ev) {
-      tooltip.style.left = ev.clientX + "px";
-      tooltip.style.top = ev.clientY + 14 + "px";
-    }
+    button.type = "button";
+    button.setAttribute("data-state", abbr);
+    button.setAttribute("aria-controls", "state-detail-panel");
+    button.setAttribute("aria-pressed", "false");
+    button.setAttribute("aria-label", "View details for " + getStateName(abbr));
+    button.appendChild(name);
+    button.appendChild(shortCode);
 
-    paths
-      .on("mouseenter", function (ev, d) {
-        var abbr = getStateAbbr(d);
-        tooltip.textContent = getStateName(abbr, d);
-        placeTooltip(ev);
-        tooltip.classList.add("visible");
-        tooltip.setAttribute("aria-hidden", "false");
-      })
-      .on("mousemove", placeTooltip)
-      .on("mouseleave", function () {
-        tooltip.classList.remove("visible");
-        tooltip.setAttribute("aria-hidden", "true");
-      })
-      .on("click", function (ev, d) {
-        ev.stopPropagation();
-        tooltip.classList.remove("visible");
-        var abbr = getStateAbbr(d);
-        selectStateByAbbr(abbr);
-      });
-
-    document.addEventListener("click", function (ev) {
-      if (!panel.contains(ev.target) && !ev.target.closest("#us-map path")) {
-        clearStateSelection();
-      }
+    button.addEventListener("click", function () {
+      selectState(abbr, { focusPanel: false });
     });
+
+    return button;
   }
-
-  function selectStateByAbbr(abbr) {
-    if (!abbr) return;
-    selectedStateAbbr = abbr;
-    updateUrlHash(abbr);
-    updateStateDetailPanel(abbr);
-    highlightMapState(abbr);
-    highlightStateChip(abbr);
-  }
-
-  function clearStateSelection() {
-    selectedStateAbbr = null;
-    updateUrlHash(null);
-    var panel = document.getElementById("state-detail-panel");
-    if (panel) {
-      panel.classList.add("empty");
-      panel.innerHTML = "<p>Select a state</p>";
-      panel.setAttribute("aria-live", "polite");
-    }
-    unhighlightMapState();
-    unhighlightStateChip();
-  }
-
-  function updateStateDetailPanel(abbr) {
-    var panel = document.getElementById("state-detail-panel");
-    if (!panel) return;
-    var name = getStateName(abbr, null);
-    var data = abbr && STATE_340B[abbr] ? STATE_340B[abbr] : null;
-    panel.classList.remove("empty");
-    if (!data) {
-      panel.innerHTML = "<h4>" + name + "</h4><p>No state law data.</p>";
-    } else {
-      var html =
-        "<h4>" + name + "</h4><p><span class='badge " + (data.cp ? "yes" : "no") + "'>Contract pharmacy: " + (data.cp ? "Yes" : "No") + "</span> <span class='badge " + (data.pbm ? "yes" : "no") + "'>PBM: " + (data.pbm ? "Yes" : "No") + "</span></p>";
-      if (data.y) html += "<p>Law year: " + data.y + "</p>";
-      if (data.notes) html += "<p>" + data.notes + "</p>";
-      panel.innerHTML = html;
-    }
-    panel.setAttribute("aria-live", "polite");
-  }
-
-  function highlightMapState(abbr) {
-    if (!mapPaths) return;
-    mapPaths
-      .classed("selected", false)
-      .filter(function (d) {
-        return getStateAbbr(d) === abbr;
-      })
-      .classed("selected", true);
-  }
-
-  function unhighlightMapState() {
-    if (mapPaths) mapPaths.classed("selected", false);
-  }
-
-  function updateUrlHash(abbr) {
-    var newHash = abbr ? "#state-" + abbr : "";
-    if (location.hash !== newHash) {
-      if (history.replaceState) {
-        history.replaceState(null, "", location.pathname + location.search + newHash);
-      } else {
-        location.hash = newHash;
-      }
-    }
-  }
-
-  function highlightStateChip(abbr) {
-    document.querySelectorAll(".state-chip.selected").forEach(function (el) {
-      el.classList.remove("selected");
-    });
-    var chip = document.querySelector(".state-chip[data-state='" + abbr + "']");
-    if (chip) {
-      chip.classList.add("selected");
-      chip.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-  }
-
-  function unhighlightStateChip() {
-    document.querySelectorAll(".state-chip.selected").forEach(function (el) {
-      el.classList.remove("selected");
-    });
-  }
-
-  /* ========== KEYBOARD NAVIGATION FOR MAP ========== */
-
-  function setupMapKeyboardNav() {
-    if (!stateFeatures || !pathGenerator) return;
-    var focusable = document.querySelectorAll("#us-map path[data-state]");
-    var list = Array.prototype.slice.call(focusable);
-    list.forEach(function (path, i) {
-      path.setAttribute("tabindex", "0");
-      path.setAttribute("role", "button");
-      path.setAttribute("aria-label", "Select " + (path.getAttribute("data-state") || "state"));
-      path.addEventListener("keydown", function (ev) {
-        if (ev.key === "Enter" || ev.key === " ") {
-          ev.preventDefault();
-          selectStateByAbbr(path.getAttribute("data-state"));
-        }
-        if (ev.key === "ArrowRight" || ev.key === "ArrowDown") {
-          ev.preventDefault();
-          var next = list[i + 1];
-          if (next) next.focus();
-        }
-        if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") {
-          ev.preventDefault();
-          var prev = list[i - 1];
-          if (prev) prev.focus();
-        }
-      });
-    });
-  }
-
-  /* ========== STATE CHIPS: RENDER, SYNC, FILTER ========== */
 
   function renderStateChips() {
     var withList = document.getElementById("states-with-list");
     var withoutList = document.getElementById("states-without-list");
     var protectionCount = document.getElementById("protection-count");
     var noProtectionCount = document.getElementById("no-protection-count");
-    if (!withList || !withoutList) return;
-
     var withProtection = [];
     var withoutProtection = [];
-    var abbrs = Object.keys(STATE_340B).filter(function (a) { return a !== "DC"; }).sort();
-    abbrs.forEach(function (abbr) {
-      var data = STATE_340B[abbr];
-      var chip = "<span class='state-chip' data-state='" + abbr + "' tabindex='0' role='button' aria-label='View " + (STATE_NAMES[abbr] || abbr) + " details'>" + abbr + "</span>";
-      if (data && data.cp) {
-        withProtection.push({ abbr: abbr, chip: chip });
+
+    if (!withList || !withoutList) return;
+
+    clearElement(withList);
+    clearElement(withoutList);
+
+    getSortedStates().forEach(function (abbr) {
+      if (getStateData(abbr) && getStateData(abbr).cp) {
+        withProtection.push(abbr);
       } else {
-        withoutProtection.push({ abbr: abbr, chip: chip });
+        withoutProtection.push(abbr);
       }
     });
 
-    withList.innerHTML = withProtection.map(function (x) { return x.chip; }).join("");
-    withoutList.innerHTML = withoutProtection.map(function (x) { return x.chip; }).join("");
-
-    if (protectionCount) protectionCount.textContent = withProtection.length;
-    if (noProtectionCount) noProtectionCount.textContent = withoutProtection.length;
-
-    initStateChipClickHandlers();
-    initStateListHover();
-    initStateFilter();
-  }
-
-  function initStateChipClickHandlers() {
-    document.querySelectorAll(".state-chip").forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        var abbr = chip.getAttribute("data-state");
-        if (abbr) selectStateByAbbr(abbr);
-      });
-      chip.addEventListener("keydown", function (ev) {
-        if (ev.key === "Enter" || ev.key === " ") {
-          ev.preventDefault();
-          var abbr = chip.getAttribute("data-state");
-          if (abbr) selectStateByAbbr(abbr);
-        }
-      });
+    withProtection.forEach(function (abbr) {
+      withList.appendChild(createStateChip(abbr));
     });
+
+    withoutProtection.forEach(function (abbr) {
+      withoutList.appendChild(createStateChip(abbr));
+    });
+
+    if (protectionCount) protectionCount.textContent = String(withProtection.length);
+    if (noProtectionCount) noProtectionCount.textContent = String(withoutProtection.length);
+
+    initStateChipTooltips();
+    highlightStateChip(appState.selectedStateAbbr);
+    applyStateFilter();
   }
 
-  function initStateListHover() {
+  function initStateChipTooltips() {
     var tooltip = document.getElementById("state-list-tooltip");
+
     if (!tooltip) return;
+
     document.querySelectorAll(".state-chip").forEach(function (chip) {
       var abbr = chip.getAttribute("data-state");
-      var data = abbr && STATE_340B[abbr] ? STATE_340B[abbr] : null;
-      chip.setAttribute("title", (STATE_NAMES[abbr] || abbr) + (data && data.notes ? ": " + data.notes : ""));
-      function showTooltip(ev) {
-        var name = STATE_NAMES[abbr] || abbr;
-        var html = "<strong>" + name + "</strong>";
-        if (data) {
-          html += " <span class='badge " + (data.cp ? "yes" : "no") + "'>CP: " + (data.cp ? "Yes" : "No") + "</span> <span class='badge " + (data.pbm ? "yes" : "no") + "'>PBM: " + (data.pbm ? "Yes" : "No") + "</span>";
-          if (data.y) html += "<br>Year: " + data.y;
-          if (data.notes) html += "<br>" + data.notes;
-        }
-        tooltip.innerHTML = html;
-        if (ev && ev.clientX != null) {
-          tooltip.style.left = ev.clientX + "px";
-          tooltip.style.top = ev.clientY - 12 + "px";
-        } else {
-          var r = chip.getBoundingClientRect();
-          tooltip.style.left = r.left + r.width / 2 - 80 + "px";
-          tooltip.style.top = r.top - 8 + "px";
-        }
-        tooltip.classList.add("visible");
-      }
-      chip.addEventListener("mouseenter", showTooltip);
-      chip.addEventListener("focus", showTooltip);
-      chip.addEventListener("mousemove", function (ev) {
-        tooltip.style.left = ev.clientX + "px";
-        tooltip.style.top = ev.clientY - 12 + "px";
+      var data = getStateData(abbr);
+      chip.title = getStateName(abbr) + (data && data.notes ? ": " + data.notes : "");
+
+      if (!appState.hoverCapable) return;
+
+      chip.addEventListener("mouseenter", function (event) {
+        buildStateChipTooltip(tooltip, abbr);
+        showTooltip(tooltip, event.clientX, event.clientY - 12);
       });
+
+      chip.addEventListener("mousemove", function (event) {
+        clampTooltip(tooltip, event.clientX, event.clientY - 12);
+      });
+
       chip.addEventListener("mouseleave", function () {
-        tooltip.classList.remove("visible");
-      });
-      chip.addEventListener("blur", function () {
-        tooltip.classList.remove("visible");
+        hideTooltip(tooltip);
       });
     });
+
+    document.querySelectorAll(".state-chip").forEach(function (chip) {
+      var abbr = chip.getAttribute("data-state");
+      chip.addEventListener("focus", function () {
+        var rect = chip.getBoundingClientRect();
+        buildStateChipTooltip(tooltip, abbr);
+        showTooltip(tooltip, rect.left + rect.width / 2, rect.top - 8);
+      });
+      chip.addEventListener("blur", function () {
+        hideTooltip(tooltip);
+      });
+    });
+  }
+
+  function matchesStateFilter(abbr) {
+    var data = getStateData(abbr);
+    var hasProtection = data && data.cp;
+    var query = appState.currentQuery.toLowerCase();
+    var name = getStateName(abbr).toLowerCase();
+    var matchesGroup = appState.currentFilter === "all" || (appState.currentFilter === "protection" && hasProtection) || (appState.currentFilter === "no-protection" && !hasProtection);
+    var matchesQuery = !query || name.indexOf(query) >= 0 || abbr.toLowerCase().indexOf(query) >= 0;
+
+    return matchesGroup && matchesQuery;
+  }
+
+  function updateListBlockVisibility() {
+    var protectionBlock = document.getElementById("state-list-block-protection");
+    var noProtectionBlock = document.getElementById("state-list-block-no-protection");
+    var noResults = document.getElementById("state-no-results");
+    var visibleProtection = 0;
+    var visibleNoProtection = 0;
+
+    document.querySelectorAll("#states-with-list .state-chip").forEach(function (chip) {
+      if (!chip.hidden) visibleProtection += 1;
+    });
+
+    document.querySelectorAll("#states-without-list .state-chip").forEach(function (chip) {
+      if (!chip.hidden) visibleNoProtection += 1;
+    });
+
+    if (protectionBlock) protectionBlock.hidden = visibleProtection === 0;
+    if (noProtectionBlock) noProtectionBlock.hidden = visibleNoProtection === 0;
+    if (noResults) noResults.hidden = visibleProtection + visibleNoProtection > 0;
+  }
+
+  function applyStateFilter() {
+    var visibleCount = 0;
+
+    document.querySelectorAll(".state-chip").forEach(function (chip) {
+      var abbr = chip.getAttribute("data-state");
+      var shouldShow = matchesStateFilter(abbr);
+      chip.hidden = !shouldShow;
+      if (shouldShow) visibleCount += 1;
+    });
+
+    updateListBlockVisibility();
+
+    if (visibleCount === 0) {
+      setFilterStatus("No states match the current search or filter.");
+    } else if (appState.currentQuery || appState.currentFilter !== "all") {
+      setFilterStatus("Showing " + visibleCount + " matching states.");
+    } else {
+      setFilterStatus("Showing all states.");
+    }
   }
 
   function initStateFilter() {
     var searchInput = document.getElementById("state-search");
-    var filterBtns = document.querySelectorAll(".state-filter-btn");
-    var currentFilter = "all";
-    var currentQuery = "";
-
-    function matchesFilter(chip, hasProtection) {
-      var matchFilter = currentFilter === "all" ||
-        (currentFilter === "protection" && hasProtection) ||
-        (currentFilter === "no-protection" && !hasProtection);
-      if (!matchFilter) return false;
-      var abbr = chip.getAttribute("data-state");
-      var name = (STATE_NAMES[abbr] || abbr).toLowerCase();
-      var q = currentQuery.toLowerCase();
-      return !q || name.indexOf(q) >= 0 || abbr.toLowerCase().indexOf(q) >= 0;
-    }
-
-    function applyFilter() {
-      document.querySelectorAll("#states-with-list .state-chip, #states-without-list .state-chip").forEach(function (chip) {
-        var block = chip.closest(".state-list-block");
-        var hasProtection = block && block.classList.contains("protection");
-        chip.style.display = matchesFilter(chip, hasProtection) ? "" : "none";
-      });
-    }
+    var filterButtons = document.querySelectorAll(".state-filter-btn");
 
     if (searchInput) {
       searchInput.addEventListener("input", function () {
-        currentQuery = searchInput.value.trim();
-        applyFilter();
+        appState.currentQuery = searchInput.value.trim();
+        applyStateFilter();
       });
     }
 
-    filterBtns.forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        currentFilter = btn.getAttribute("data-filter") || "all";
-        filterBtns.forEach(function (b) {
-          b.classList.toggle("active", b === btn);
-          b.setAttribute("aria-pressed", b === btn ? "true" : "false");
+    filterButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        appState.currentFilter = button.getAttribute("data-filter") || "all";
+        filterButtons.forEach(function (item) {
+          var isActive = item === button;
+          item.classList.toggle("active", isActive);
+          item.setAttribute("aria-pressed", isActive ? "true" : "false");
         });
-        applyFilter();
+        applyStateFilter();
       });
     });
   }
-
-  /* ========== COUNT-UP ANIMATION ========== */
 
   function initCountUp() {
     var elements = document.querySelectorAll("[data-count-up]");
     var duration = config.countUpDuration || 1200;
 
     if (prefersReducedMotion()) {
-      elements.forEach(function (el) {
-        var target = parseFloat(el.getAttribute("data-count-up"));
-        var suffix = el.getAttribute("data-suffix") || "";
-        var decimals = parseInt(el.getAttribute("data-decimals"), 10) || 0;
-        el.textContent = (decimals ? target.toFixed(decimals) : Math.round(target)) + suffix;
+      elements.forEach(function (element) {
+        var target = parseFloat(element.getAttribute("data-count-up"));
+        var decimals = parseInt(element.getAttribute("data-decimals"), 10) || 0;
+        var suffix = element.getAttribute("data-suffix") || "";
+        element.textContent = (decimals ? target.toFixed(decimals) : Math.round(target)) + suffix;
       });
       return;
     }
 
-    var observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var el = entry.target;
-          if (el.dataset.done) return;
-          el.dataset.done = "1";
-          var target = parseFloat(el.getAttribute("data-count-up"));
-          var suffix = el.getAttribute("data-suffix") || "";
-          var decimals = parseInt(el.getAttribute("data-decimals"), 10) || 0;
-          var start = performance.now();
-          function animate(now) {
-            var t = Math.min((now - start) / duration, 1);
-            t = 1 - Math.pow(1 - t, 2.5);
-            var val = target * t;
-            el.textContent = (decimals ? val.toFixed(decimals) : Math.round(val)) + suffix;
-            if (t < 1) requestAnimationFrame(animate);
-          }
-          requestAnimationFrame(animate);
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        var element = entry.target;
+        var target;
+        var decimals;
+        var suffix;
+        var start;
+
+        if (!entry.isIntersecting || element.dataset.done === "1") return;
+
+        element.dataset.done = "1";
+        target = parseFloat(element.getAttribute("data-count-up"));
+        decimals = parseInt(element.getAttribute("data-decimals"), 10) || 0;
+        suffix = element.getAttribute("data-suffix") || "";
+        start = performance.now();
+
+        requestAnimationFrame(function animate(now) {
+          var progress = Math.min((now - start) / duration, 1);
+          var eased = 1 - Math.pow(1 - progress, 2.5);
+          var value = target * eased;
+          element.textContent = (decimals ? value.toFixed(decimals) : Math.round(value)) + suffix;
+          if (progress < 1) requestAnimationFrame(animate);
         });
-      },
-      { threshold: config.scrollRevealThreshold || 0.1 }
-    );
-    elements.forEach(function (el) {
-      observer.observe(el);
+      });
+    }, { threshold: config.scrollRevealThreshold || 0.1 });
+
+    elements.forEach(function (element) {
+      observer.observe(element);
     });
   }
-
-  /* ========== SCROLL REVEAL ========== */
 
   function initScrollReveal() {
-    var elements = document.querySelectorAll(".scroll-reveal");
+    var items = document.querySelectorAll(".scroll-reveal");
+
     if (prefersReducedMotion()) {
-      elements.forEach(function (el) {
-        el.classList.add("revealed");
+      items.forEach(function (item) {
+        item.classList.add("revealed");
       });
       return;
     }
-    var observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("revealed");
-          }
-        });
-      },
-      { threshold: 0.08, rootMargin: "0px 0px -40px 0px" }
-    );
-    elements.forEach(function (el) {
-      observer.observe(el);
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("revealed");
+        }
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+
+    items.forEach(function (item) {
+      observer.observe(item);
     });
   }
-
-  /* ========== NAV HIGHLIGHT ========== */
 
   function initNavHighlight() {
-    var navLinks = document.querySelectorAll(".dashboard-nav a[href^='#']");
-    var policySections = ["oversight", "pa-impact", "community-benefit", "access", "pa-safeguards"];
-    navLinks.forEach(function (a) {
-      a.addEventListener("click", function () {
-        navLinks.forEach(function (l) { l.classList.remove("active"); });
-        a.classList.add("active");
+    var sections = document.querySelectorAll("#what-is-340b, #overview, #state-laws, #eligibility, #oversight, #pa-impact, #community-benefit, #access, #pa-safeguards");
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          updateNavCurrent(entry.target.id);
+        }
       });
-    });
-    var observer = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) return;
-          var id = entry.target.id;
-          navLinks.forEach(function (a) {
-            a.classList.remove("active");
-            var href = a.getAttribute("href");
-            if (href === "#" + id) a.classList.add("active");
-            else if (href === "#policy" && policySections.indexOf(id) >= 0) a.classList.add("active");
-          });
-        });
-      },
-      { rootMargin: "-80px 0 -50% 0", threshold: 0 }
-    );
-    document.querySelectorAll("#what-is-340b, #overview, #state-laws, #eligibility, #oversight, #pa-impact, #community-benefit, #access, #pa-safeguards").forEach(function (s) {
-      observer.observe(s);
+    }, { rootMargin: "-80px 0 -50% 0", threshold: 0 });
+
+    sections.forEach(function (section) {
+      observer.observe(section);
     });
   }
-
-  /* ========== CONFIG INJECTION ========== */
-
-  function injectConfig() {
-    var freshness = document.getElementById("data-freshness-text");
-    var methodology = document.getElementById("methodology-last-updated");
-    if (freshness) freshness.textContent = "Data as of " + config.dataFreshness + " · Last updated " + config.lastUpdated;
-    if (methodology) methodology.textContent = config.lastUpdated;
-  }
-
-  /* ========== BUTTON HANDLERS ========== */
 
   function initPrint() {
-    var btn = document.getElementById("btn-print");
-    if (btn) btn.addEventListener("click", function () { window.print(); });
+    var button = document.getElementById("btn-print");
+
+    if (!button) return;
+
+    button.addEventListener("click", function () {
+      setUtilityStatus("Opening print dialog...");
+      window.print();
+      window.setTimeout(function () {
+        setUtilityStatus("");
+      }, 1500);
+    });
   }
 
   function initShare() {
-    var btn = document.getElementById("btn-share");
-    if (!btn) return;
-    btn.addEventListener("click", function () {
+    var button = document.getElementById("btn-share");
+
+    if (!button) return;
+
+    button.addEventListener("click", function () {
       var url = location.href;
+
+      setUtilityStatus("Copying link...");
+
       if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url).then(function () {
-          btn.textContent = "Copied!";
-          setTimeout(function () { btn.textContent = "Share"; }, 2000);
-        }).catch(function () {
-          fallbackCopy(url, btn);
-        });
+        navigator.clipboard.writeText(url)
+          .then(function () {
+            setUtilityStatus("Link copied.");
+          })
+          .catch(function () {
+            window.prompt("Copy this link:", url);
+            setUtilityStatus("Use the prompt to copy the link.");
+          });
       } else {
-        fallbackCopy(url, btn);
+        window.prompt("Copy this link:", url);
+        setUtilityStatus("Use the prompt to copy the link.");
       }
+
+      window.setTimeout(function () {
+        setUtilityStatus("");
+      }, 2500);
     });
   }
 
-  function fallbackCopy(text, btn) {
-    var ta = document.createElement("textarea");
-    ta.value = text;
-    ta.style.position = "fixed";
-    ta.style.opacity = "0";
-    document.body.appendChild(ta);
-    ta.select();
-    try {
-      document.execCommand("copy");
-      btn.textContent = "Copied!";
-      setTimeout(function () { btn.textContent = "Share"; }, 2000);
-    } catch (e) {
-      if (typeof console !== "undefined" && console.warn) console.warn("Copy failed", e);
-    }
-    document.body.removeChild(ta);
-  }
-
-  function initPresentation() {
-    var btn = document.getElementById("btn-presentation");
-    var exitBtn = document.getElementById("exit-presentation");
-    var dashboard = document.querySelector(".dashboard");
-    if (btn) {
-      btn.addEventListener("click", function () {
-        dashboard.classList.toggle("presentation-mode");
-        btn.classList.toggle("active", dashboard.classList.contains("presentation-mode"));
-      });
-    }
-    if (exitBtn) {
-      exitBtn.addEventListener("click", function () {
-        dashboard.classList.remove("presentation-mode");
-        if (btn) btn.classList.remove("active");
-      });
-    }
-    document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && dashboard.classList.contains("presentation-mode")) {
-        dashboard.classList.remove("presentation-mode");
-        if (btn) btn.classList.remove("active");
-      }
-    });
-  }
-
-  function initDarkMode() {
-    var btn = document.getElementById("btn-dark");
-    var dashboard = document.querySelector(".dashboard");
-    if (!btn) return;
-    var saved = localStorage.getItem("340b-dark") === "1";
-    if (saved) dashboard.classList.add("dark-mode");
-    btn.classList.toggle("active", saved);
-    btn.addEventListener("click", function () {
-      dashboard.classList.toggle("dark-mode");
-      var on = dashboard.classList.contains("dark-mode");
-      localStorage.setItem("340b-dark", on ? "1" : "0");
-      btn.classList.toggle("active", on);
-    });
-  }
-
-  function initMethodology() {
-    var toggle = document.getElementById("methodology-toggle");
+  function initMethodologyToggle() {
+    var button = document.getElementById("methodology-toggle");
     var content = document.getElementById("methodology-content");
-    if (toggle && content) {
-      toggle.addEventListener("click", function () {
-        content.classList.toggle("open");
-        toggle.setAttribute("aria-expanded", content.classList.contains("open"));
-      });
+
+    if (!button || !content) return;
+
+    button.addEventListener("click", function () {
+      var isOpen = content.classList.toggle("open");
+      button.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    });
+  }
+
+  function syncSelectionFromHash() {
+    var hashState = getHashState();
+
+    if (hashState) {
+      selectState(hashState, { scrollToMap: true, focusPanel: true });
+    } else if (appState.selectedStateAbbr) {
+      clearSelection();
     }
   }
 
-  /* ========== RESIZE ========== */
+  function handleDocumentClick(event) {
+    var panel = document.getElementById("state-detail-panel");
 
-  var lastMapWidth = 0;
-  var isTouch = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+    if (!panel) return;
+    if (event.target.closest("#us-map path") || event.target.closest(".state-chip") || event.target.closest("#state-detail-panel")) return;
 
-  function onResize() {
-    if (isTouch) return;
-    var mapEl = document.getElementById("us-map");
-    if (!mapEl) return;
-    var w = mapEl.offsetWidth;
-    if (Math.abs(w - lastMapWidth) < 40 && lastMapWidth) return;
-    lastMapWidth = w;
+    clearSelection();
+  }
+
+  function handleResize() {
+    var map = document.getElementById("us-map");
+    var width;
+
+    if (appState.touchDevice || !map) return;
+
+    width = map.offsetWidth;
+    if (Math.abs(width - appState.lastMapWidth) < 40 && appState.lastMapWidth) return;
+
+    appState.lastMapWidth = width;
     drawMap();
   }
-
-  /* ========== INIT ========== */
 
   function init() {
-    injectConfig();
+    updateMetadata();
+    validateStateData();
+    renderEmptyStateDetail();
     renderStateChips();
+    initStateFilter();
     drawMap();
-    var mapEl = document.getElementById("us-map");
-    if (mapEl) lastMapWidth = mapEl.offsetWidth;
     initCountUp();
     initScrollReveal();
     initNavHighlight();
     initPrint();
     initShare();
-    initPresentation();
-    initDarkMode();
-    initMethodology();
-    if (!isTouch) {
+    initMethodologyToggle();
+    syncSelectionFromHash();
+
+    document.addEventListener("click", handleDocumentClick);
+    window.addEventListener("hashchange", syncSelectionFromHash);
+
+    if (!appState.touchDevice) {
       window.addEventListener("resize", function () {
-        clearTimeout(window._resizeTimeout);
-        window._resizeTimeout = setTimeout(onResize, 300);
+        clearTimeout(appState.resizeTimer);
+        appState.resizeTimer = window.setTimeout(handleResize, 300);
       });
     }
   }

@@ -11,11 +11,15 @@
 /* ========== CONFIGURATION ========== */
 var CONFIG = {
   dashboardTitle: "340B Drug Pricing Program",
+  dashboardSubtitle: "HAP Advocacy Dashboard",
+  pageDescription: "HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection map, community benefit data, and Pennsylvania hospital impact for lawmakers and health care leaders.",
+  shareTitle: "340B Drug Pricing Program | HAP Advocacy Dashboard",
+  shareDescription: "72 PA hospitals | $7.95B community benefits | State-by-state 340B contract pharmacy protection analysis.",
   dataFreshness: "March 2025",
   lastUpdated: "March 2025",
 
   /* Map settings */
-  mapDataUrl: "https://cdn.jsdelivr.net/npm/us-atlas@3/states-10m.json",
+  mapDataUrl: "assets/vendor/states-10m.json",
   mapAspectRatio: 0.55,
   mapMaxWidth: 960,
 

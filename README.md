@@ -11,6 +11,7 @@ A single-page briefing for lawmakers and hospital CEOs on the 340B Drug Pricing 
 | `340b.js` | Interactivity: map, filters, animations, buttons |
 | `state-data.js` | **Edit this** for dates and state law data |
 | `DATA-UPDATE.md` | Step-by-step guide to update state data |
+| `assets/vendor/` | Local map libraries and U.S. atlas data |
 
 ## Quick edits (beginner-friendly)
 
@@ -44,20 +45,19 @@ Then visit `http://localhost:8000/340b.html`
 
 ## Dependencies
 
-- [D3.js](https://d3js.org/) (map)
-- [Topojson](https://github.com/topojson/topojson) (map data)
-- [US Atlas](https://github.com/topojson/us-atlas) (state boundaries)
+- Local copies of D3, TopoJSON Client, and U.S. Atlas data in `assets/vendor/`
+- Google Fonts for typography
 
-Loaded from CDN; no install required.
+No package install is required for the dashboard itself.
 
 ## Features
 
 - Interactive US map (click states for details)
-- State chips sync with map (click chip → highlights map)
+- State list buttons sync with map and detail panel
 - Search and filter states
 - Keyboard navigation
 - Share link (copies URL with selected state)
 - Print / PDF
-- Presentation mode
-- Dark mode
+- Local map fallback summary if the map cannot load
+- Hash deep-links like `#state-PA`
 - Responsive (mobile-friendly)
