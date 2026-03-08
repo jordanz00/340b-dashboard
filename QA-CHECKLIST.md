@@ -24,13 +24,15 @@ Use this checklist before pushing dashboard changes.
 ## Print / PDF
 
 1. Open print preview from the `Print / PDF` button.
-2. Confirm the print intro includes `Overview`, `What is 340B?`, `HAP Position`, and `HAP asks lawmakers`.
-3. Confirm the print version includes the `About this data` summary and last-updated date.
-4. Confirm KPI values show final numbers, not `0`.
-5. Confirm the map is visible.
-6. Confirm there are no unexpected blank pages.
-7. Confirm the selected state summary prints when a state is selected.
-8. Confirm the print header shows the title and last-updated date.
+2. Confirm the first page is not blank.
+3. Confirm the print version uses the real intro cards with icons, not a duplicated text-only summary.
+4. Confirm the `Overview` and `HAP Position` cards appear only once.
+5. Confirm the print version includes the `About this data` summary and last-updated date.
+6. Confirm KPI values show final numbers, not `0`.
+7. Confirm the map is visible.
+8. Confirm there are no unexpected blank pages anywhere in the document.
+9. Confirm the selected state summary prints when a state is selected.
+10. Confirm the print header shows the title and last-updated date.
 
 ## Accessibility and fallback
 

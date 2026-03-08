@@ -189,9 +189,10 @@ def check_print_structure(results: list[str]) -> bool:
     html = read_text(ROOT / "340b.html")
     required_snippets = [
         'class="print-report-header print-only"',
-        'class="print-executive-summary print-only"',
         'class="print-sources print-only"',
         'id="btn-print"',
+        'id="what-is-340b"',
+        'id="overview"',
         'id="print-last-updated"',
         'id="print-methodology-last-updated"',
     ]
@@ -202,7 +203,11 @@ def check_print_structure(results: list[str]) -> bool:
             record(results, False, f"340b.html is missing expected print structure snippet `{snippet}`")
         return False
 
-    record(results, True, "340b.html includes the expected print header, executive summary, and source summary structure")
+    if 'class="print-executive-summary print-only"' in html:
+        record(results, False, "340b.html still contains the removed duplicate print executive summary block")
+        return False
+
+    record(results, True, "340b.html includes the expected print header, live intro cards, and source summary structure")
     return True
 
 

@@ -21,6 +21,13 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 
 ## Quick edits (beginner-friendly)
 
+If you are new to this repo, use this rule:
+
+- Change facts and dates in `state-data.js`
+- Change visible copy or section order in `340b.html`
+- Change layout and print appearance in `340b.css`
+- Change buttons, map behavior, filters, sharing, or print logic in `340b.js`
+
 ### Update dates
 Open `state-data.js` and change:
 - `dataFreshness` — e.g. `"March 2026"`
@@ -49,6 +56,8 @@ npx serve
 ```
 
 Then visit `http://localhost:8000/340b.html`
+
+Do not test only from the file browser if you are checking interactive behavior. Use a local server so the dashboard behaves more like the hosted site.
 
 ## Dependencies
 
@@ -82,8 +91,35 @@ Use this order to keep the project easy to maintain:
 
 1. Update content in `state-data.js` or structure in `340b.html`.
 2. Update behavior in `340b.js` only if the change is interactive.
-3. Open the dashboard locally and test the changed feature.
-4. Open `Print / PDF` and confirm the PDF-only reader still sees the overview, HAP position, map, and final metric values.
-5. Run `python3 dashboard-audit.py`.
-6. Use `QA-CHECKLIST.md`.
-7. For deeper static analysis after security-sensitive changes, run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .`.
+3. If the change affects layout or print appearance, check `340b.css` before editing JavaScript.
+4. Open the dashboard locally and test the exact feature you changed.
+5. Open `Print / PDF` and confirm the PDF-only reader still sees the real intro cards, the map, and final metric values.
+6. Run `python3 dashboard-audit.py`.
+7. Use `QA-CHECKLIST.md`.
+8. For deeper static analysis after security-sensitive changes, run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .`.
+
+## Common fixes
+
+### If print preview is wrong
+
+Check these files in this order:
+
+1. `340b.html` — confirm the real intro cards still exist and there is no duplicate print-only copy.
+2. `340b.css` — check the `@media print` section for anything hiding content or causing page breaks.
+3. `340b.js` — check `preparePrintSnapshot()` and `finalizeCountUpValues()`.
+
+### If the map is missing
+
+Check these files in this order:
+
+1. `assets/vendor/states-10m.js`
+2. `340b.html` script tags
+3. `340b.js` function `drawMap()`
+
+### If a button stopped working
+
+Check these files in this order:
+
+1. `340b.html` for the button `id`
+2. `340b.js` for the related `init...` function
+3. browser console warnings

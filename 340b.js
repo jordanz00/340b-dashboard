@@ -67,6 +67,8 @@
       methodologyContent: document.getElementById("methodology-content"),
       dataFreshness: document.getElementById("data-freshness-text"),
       methodologyLastUpdated: document.getElementById("methodology-last-updated"),
+      // The print version reuses the live dashboard cards, but it still has a small print header
+      // and a compact print-only source note that need current dates.
       printLastUpdated: document.getElementById("print-last-updated"),
       printMethodologyLastUpdated: document.getElementById("print-methodology-last-updated")
     };
@@ -134,13 +136,17 @@
   }
 
   function finalizeCountUpValues() {
-    // Printing and PDF export should always use final values, not in-progress animation frames.
+    // Count-up elements start at 0 on the live page and animate only after they enter view.
+    // Print preview must not capture those starting values, so this helper forces every
+    // number to its finished state before the browser builds the print snapshot.
     document.querySelectorAll("[data-count-up]").forEach(function (element) {
       setCountUpValue(element);
     });
   }
 
   function revealAllAnimatedSections() {
+    // The live page hides some sections until the user scrolls to them.
+    // Print preview needs the final fully revealed layout immediately.
     document.querySelectorAll(".scroll-reveal").forEach(function (element) {
       element.classList.add("revealed");
     });
@@ -269,6 +275,8 @@
     }
     if (appState.dom.methodologyLastUpdated) appState.dom.methodologyLastUpdated.textContent = config.lastUpdated;
     if (appState.dom.printLastUpdated) appState.dom.printLastUpdated.textContent = config.lastUpdated;
+    // The print-only source note lives near the map and uses a separate element,
+    // so it must be updated alongside the live methodology date.
     if (appState.dom.printMethodologyLastUpdated) appState.dom.printMethodologyLastUpdated.textContent = config.lastUpdated;
   }
 
@@ -325,8 +333,11 @@
     var callback = typeof onReady === "function" ? onReady : function () {};
     var mapSvgMissing = !appState.dom.mapContainer || !appState.dom.mapContainer.querySelector("svg");
 
-    // Print preview needs the page in its final visual state:
-    // no partially animated counters, no hidden reveal sections, and a visible map.
+    // Print/PDF should use the same cards the user sees on screen.
+    // To make that reliable, we force the page into its final visual state:
+    // 1. finish all count-up numbers
+    // 2. reveal scroll-based sections
+    // 3. make sure the SVG map exists before print opens
     finalizeCountUpValues();
     revealAllAnimatedSections();
 
@@ -883,6 +894,8 @@
       appState.printPreparationPending = true;
       setUtilityStatus("Preparing print preview...");
 
+      // Do not call window.print() until the DOM has had time to apply the final-state changes.
+      // This avoids blank pages, duplicated print-only content, missing maps, and 0-value metrics.
       preparePrintSnapshot(function () {
         try {
           setUtilityStatus("Opening print dialog...");
@@ -1122,7 +1135,8 @@
   }
 
   function handleBeforePrint() {
-    // This catches users who open print from the browser menu instead of the page button.
+    // Some users print from the browser menu instead of the on-page button.
+    // Run the same preparation step either way so both paths produce the same PDF.
     preparePrintSnapshot(function () {
       setUtilityStatus("");
     });
@@ -1137,7 +1151,8 @@
 
   function init() {
     cacheDom();
-    // Each task is isolated so one feature failing does not silently disable the whole page.
+    // Run each startup task independently so one broken feature does not take down the whole page.
+    // Example: if the map fails, share/print/filter logic should still initialize.
     runTaskSafely("update metadata", updateMetadata);
     runTaskSafely("validate state data", validateStateData);
     runTaskSafely("render empty detail", renderEmptyStateDetail);
