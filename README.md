@@ -78,6 +78,7 @@ No package install is required for the dashboard itself.
 - Print / PDF with a final-state print snapshot
 - Executive scan strip with policy, national, and trust cues
 - Selected-state summary near the map
+- Selected-state map context that tightens the story when a state is chosen
 - Local map fallback summary if the map cannot load
 - Hash deep-links like `#state-PA`
 - Responsive (mobile-friendly)
@@ -122,7 +123,7 @@ Check these files in this order:
 
 1. `340b.html` — confirm the real intro cards still exist and there is no duplicate print-only copy.
 2. `340b.css` — check the `@media print` section for anything hiding content, causing page breaks, or making print-only summaries too large.
-3. `340b.js` — check `preparePrintSnapshot()`, `preparePrintSelectionState()`, `updateExecutiveProofStrip()`, and `finalizeCountUpValues()`.
+3. `340b.js` — check `preparePrintSnapshot()`, `preparePrintSelectionState()`, `updateExecutiveProofStrip()`, `updateMapContext()`, and `finalizeCountUpValues()`.
 
 ### If source guidance needs updating
 

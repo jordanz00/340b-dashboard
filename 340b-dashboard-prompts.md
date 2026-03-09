@@ -2791,3 +2791,467 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 ### V50.10 End-of-Wave Restraint Pass
 
 > When the product is stronger, let the prompt system become quieter. The best future wave may be the one that decides not to exist yet.
+
+---
+
+## Alternate Prompts v40-v50
+
+### Alt V40.1 Executive Triage Pass
+
+> Force the dashboard to survive an impatient executive scan. Anything that does not clarify the issue, ask, proof, or state stakes within seconds should lose prominence.
+
+### Alt V40.2 Claim Compression Pass
+
+> Reduce each high-value claim to its strongest defensible wording and remove the softer neighboring explanation.
+
+### Alt V40.3 Trust Surface Ranking Pass
+
+> Re-rank trust cues by what readers actually notice first and strengthen only those surfaces.
+
+### Alt V40.4 Print First-Impression Pass
+
+> Treat the first printed page as the dashboard’s credibility test. Tighten anything that slows belief or comprehension.
+
+### Alt V40.5 Selection Narrative Priority Pass
+
+> Make the selected-state story feel as important as the interaction that reveals it.
+
+### Alt V40.6 Metric Merit Pass
+
+> Require every metric to justify its place in both live and print views with immediate meaning.
+
+### Alt V40.7 Section Scarcity Pass
+
+> Behave as if page space and reader attention are scarce resources; weak sections should shrink first.
+
+### Alt V40.8 Layout Authority Pass
+
+> Let layout show authority by clarifying priority, not by decorating content.
+
+### Alt V40.9 Maintenance Burden Pass
+
+> Reject any change that improves optics while making the system materially harder to maintain.
+
+### Alt V40.10 Executive Deliverable Pass
+
+> Make the product feel like something safe to circulate upward without verbal caveats from the sender.
+
+---
+
+### Alt V41.1 Proof Placement Pass
+
+> Move the next strongest proof surface closer to the claim it justifies.
+
+### Alt V41.2 Reader Question Pass
+
+> Improve the product by answering the next obvious reader question before the reader has to ask it.
+
+### Alt V41.3 Support Block Reduction Pass
+
+> Compress supporting material until it truly supports instead of competes.
+
+### Alt V41.4 Cold Reader Pass
+
+> Assume the next reader has no prior context and sharpen the path from title to understanding.
+
+### Alt V41.5 Metadata Alignment Pass
+
+> Keep public metadata synchronized with the actual dashboard story after every major revision.
+
+### Alt V41.6 Executive Recall Pass
+
+> Improve what a reader is likely to remember and repeat after one pass through the dashboard.
+
+### Alt V41.7 State Evidence Priority Pass
+
+> Make state-level evidence earn more persuasive value than generic framing.
+
+### Alt V41.8 Print Sequence Pass
+
+> Tighten the order of printed sections so each page sets up the next one.
+
+### Alt V41.9 Drift Friction Pass
+
+> Increase the friction against silent content drift where facts, dates, and story must stay aligned.
+
+### Alt V41.10 Outcome-Led Backlog Pass
+
+> Keep future backlog growth tied to what readers or maintainers still struggle with.
+
+---
+
+### Alt V42.1 Comparison Clarity Pass
+
+> Make state-to-state comparisons easier without turning the product into a dense matrix.
+
+### Alt V42.2 Hybrid State Precision Pass
+
+> Tighten the handling of hybrid and reporting states until their meaning is unmistakable.
+
+### Alt V42.3 Note Utility Pass
+
+> Ensure state notes add interpretation, not just metadata residue.
+
+### Alt V42.4 Selection Confidence Pass
+
+> Make each state click feel like a gain in understanding, not just a UI event.
+
+### Alt V42.5 Focal State Balance Pass
+
+> Preserve Pennsylvania’s relevance without letting it distort the national story.
+
+### Alt V42.6 Evidence Ladder Pass
+
+> Strengthen the path from broad claim to national proof to state example.
+
+### Alt V42.7 Print Comparison Pass
+
+> Keep printed state context useful even when different states are chosen live.
+
+### Alt V42.8 Legal Language Pass
+
+> Re-check every legal-status phrase for precision under scrutiny.
+
+### Alt V42.9 Neutral-State Confidence Pass
+
+> Keep the neutral state intentional enough that the product never feels half-loaded.
+
+### Alt V42.10 Policy Relevance Pass
+
+> Make sure the state experience always loops back to the HAP policy ask.
+
+---
+
+### Alt V43.1 Attention Economy Pass
+
+> Spend reader attention only on content that clarifies stakes, proof, or action.
+
+### Alt V43.2 Opening Trust Pass
+
+> Strengthen the trustworthiness of the dashboard before the reader reaches secondary sections.
+
+### Alt V43.3 PDF Standalone Pass
+
+> Assume the PDF will travel alone and harden it accordingly.
+
+### Alt V43.4 Ask Memory Pass
+
+> Improve how easily the HAP ask can be recalled after the first scan.
+
+### Alt V43.5 Section Memory Pass
+
+> Reduce prominent-but-forgettable sections and strengthen memorable ones.
+
+### Alt V43.6 Evidence Memory Pass
+
+> Improve what evidence a reader is most likely to cite back later.
+
+### Alt V43.7 Friction Removal Pass
+
+> Remove the next subtle friction point that slows comprehension more than it seems to.
+
+### Alt V43.8 Skeptical Re-read Pass
+
+> Re-check surfaces that sound fine on first read but weaken under a skeptical second read.
+
+### Alt V43.9 Reader Respect Compression Pass
+
+> Shorten whatever still feels polite, repetitive, or overexplained.
+
+### Alt V43.10 Prompt Outcome Discipline Pass
+
+> Keep new prompts tied to visible product change rather than abstract “improvement.”
+
+---
+
+### Alt V44.1 Appendix Entry Pass
+
+> If supporting reference material remains necessary, give it a cleaner entry and less visual drag.
+
+### Alt V44.2 Trust Reference Pass
+
+> Explore compact ways to clarify trust sources without smothering the narrative.
+
+### Alt V44.3 Print Navigation Pass
+
+> Add just enough print orientation to help readers move page to page confidently.
+
+### Alt V44.4 Page-Break Value Pass
+
+> Tune page breaks based on meaning preserved, not just whitespace reduced.
+
+### Alt V44.5 Verification Balance Pass
+
+> Keep verification language useful but subordinate to the main argument.
+
+### Alt V44.6 Hierarchy Survival Pass
+
+> Make hierarchy choices that stay strong even when the copy shifts slightly.
+
+### Alt V44.7 Reference Layer Pass
+
+> Treat dense support content like a disciplined reference layer, not an accidental second narrative.
+
+### Alt V44.8 Reader Reorientation Pass
+
+> Reduce the chance that readers lose the thread when moving into supporting material.
+
+### Alt V44.9 Annotation Utility Pass
+
+> Prefer compact labels or cues over new blocks when they achieve the same clarity.
+
+### Alt V44.10 Compression Integrity Pass
+
+> Compress only when meaning survives or improves.
+
+---
+
+### Alt V45.1 Update Scenario Pass
+
+> Plan around realistic update scenarios, not idealized maintenance conditions.
+
+### Alt V45.2 Impact Mapping Pass
+
+> Make future content and code dependencies easier to see before something drifts.
+
+### Alt V45.3 Silent Drift Pass
+
+> Hunt for the next place where a stale date or claim could quietly survive an update.
+
+### Alt V45.4 Maintainer Speed-with-Accuracy Pass
+
+> Optimize update workflows for correctness under time pressure.
+
+### Alt V45.5 Release Gate Integrity Pass
+
+> Keep the release gate sharp enough that complexity cannot slip past it unnoticed.
+
+### Alt V45.6 Audit Scope Discipline Pass
+
+> Expand automation only when a regression is recurring and structurally detectable.
+
+### Alt V45.7 Source Update Reliability Pass
+
+> Tighten how source updates propagate across live, print, and metadata surfaces.
+
+### Alt V45.8 Print Update Guardrail Pass
+
+> Keep future print edits from reopening known regressions through seemingly small changes.
+
+### Alt V45.9 Documentation Stress Pass
+
+> Make maintenance docs stronger under rushed real-world use, not just on calm review.
+
+### Alt V45.10 Safe Iteration Pass
+
+> Favor changes that make repeated safe iteration easier.
+
+---
+
+### Alt V46.1 Trust Resilience Pass
+
+> Make trust cues harder to bury or accidentally weaken during future polish passes.
+
+### Alt V46.2 Metadata Honesty Pass
+
+> Keep share metadata brutally honest about what the dashboard actually is and argues.
+
+### Alt V46.3 Legal Precision Pass
+
+> Tighten future handling of enacted, not enacted, hybrid, vetoed, and in-progress states.
+
+### Alt V46.4 Source Placement Pass
+
+> Put source cues where they strengthen credibility at the moment they are needed.
+
+### Alt V46.5 Evidence Durability Pass
+
+> Keep proof surfaces strong enough to survive later layout and copy changes.
+
+### Alt V46.6 Trust Recovery Pass
+
+> Target the next moment where reader trust can wobble and stabilize it.
+
+### Alt V46.7 Print Confidence Pass
+
+> Raise confidence that the PDF is current, intentional, and evidence-led.
+
+### Alt V46.8 Change Legibility Pass
+
+> Make it easier for future maintainers to understand what changed and what must stay aligned.
+
+### Alt V46.9 Calm Credibility Pass
+
+> Keep the product confident and calm rather than defensive or over-signaled.
+
+### Alt V46.10 Long-Horizon Trust Pass
+
+> Choose improvements that make the dashboard harder to doubt after many future revisions.
+
+---
+
+### Alt V47.1 Skeptical Packet Pass
+
+> Improve the dashboard as if it will be read inside a skeptical executive packet.
+
+### Alt V47.2 Objection Speed Pass
+
+> Answer the next likely objection faster: currentness, ask clarity, state relevance, or proof quality.
+
+### Alt V47.3 Decision Utility Pass
+
+> Make every prominent surface answer a real decision-maker need.
+
+### Alt V47.4 Evidence Stress Pass
+
+> Assume the strongest evidence will be challenged first and strengthen that surface first.
+
+### Alt V47.5 Tone Under Pressure Pass
+
+> Keep the tone precise and advocate-ready even under hostile rereading.
+
+### Alt V47.6 Map Value Defense Pass
+
+> Defend the map’s footprint by making its interpretive value more obvious.
+
+### Alt V47.7 Print Scrutiny Pass
+
+> Make the PDF harder to dismiss as bloated, vague, or ornamental.
+
+### Alt V47.8 Section Defense Pass
+
+> Require each prominent section to survive a tough “why is this still here?” review.
+
+### Alt V47.9 Signal Priority Pass
+
+> Make the most important signals impossible to miss without adding noise.
+
+### Alt V47.10 Harshness-to-Value Pass
+
+> Keep prompt harshness justified by product value, not by theatrics.
+
+---
+
+### Alt V48.1 Print Reliability Pass
+
+> Preserve and strengthen the print path against browser timing and layout quirks.
+
+### Alt V48.2 Share Reliability Pass
+
+> Keep share behavior honest and resilient across all supported fallbacks.
+
+### Alt V48.3 Restore-State Pass
+
+> Make temporary print behavior even less likely to leak back into the live session.
+
+### Alt V48.4 Degraded Experience Pass
+
+> Keep failure states coherent enough that the product still feels trustworthy.
+
+### Alt V48.5 Predictable Print Pass
+
+> Make print generation increasingly unsurprising for maintainers and readers.
+
+### Alt V48.6 Failure Isolation Pass
+
+> Separate high-risk behaviors so one break does not destabilize the rest of the page.
+
+### Alt V48.7 Interaction Recovery Pass
+
+> Improve how quickly the dashboard returns to a confident state after something goes wrong.
+
+### Alt V48.8 Regression Memory Pass
+
+> Preserve memory of old bugs where it materially shortens future diagnosis time.
+
+### Alt V48.9 Audit-to-Human Pass
+
+> Make audit results more actionable as the starting point for manual review.
+
+### Alt V48.10 Compounding Reliability Pass
+
+> Choose future changes that add reliability on top of reliability instead of resetting risk.
+
+---
+
+### Alt V49.1 Prompt Strictness Pass
+
+> Make future prompts earn their place with exact scope, audience, risk, and likely result.
+
+### Alt V49.2 Prompt Deletion Pass
+
+> Delete or retire future prompt ideas that are solved, duplicated, or too abstract.
+
+### Alt V49.3 Outcome Ledger Pass
+
+> Keep building the prompt-to-outcome trail so future work is grounded in shipped value.
+
+### Alt V49.4 Non-Goal Discipline Pass
+
+> Require future prompts to say what they will not change.
+
+### Alt V49.5 Product Bias Pass
+
+> Judge prompt quality by product improvement, not prompt sophistication.
+
+### Alt V49.6 Evidence Backlog Pass
+
+> Build future waves from observed evidence, review, and maintenance pain.
+
+### Alt V49.7 Maintenance Cost Pass
+
+> Price in long-term maintenance before promoting a prompt to backlog.
+
+### Alt V49.8 Architecture Restraint Pass
+
+> Keep future prompts from accidentally demanding a new architecture.
+
+### Alt V49.9 Overhaul Preservation Pass
+
+> Protect the best overhaul decisions from being slowly diluted by later drift.
+
+### Alt V49.10 Wave Restraint Pass
+
+> Stop generating prompts when the next set would mostly rename old lessons.
+
+---
+
+### Alt V50.1 Maturity Gate Pass
+
+> Generate future work only from genuine remaining product weakness after the latest improvements land.
+
+### Alt V50.2 Fewer-Surprises Pass
+
+> Treat maturity as fewer surprises in print, evidence, maintenance, and reader comprehension.
+
+### Alt V50.3 Evidence-Led Story Pass
+
+> Keep moving the dashboard toward a state where proof naturally leads the story.
+
+### Alt V50.4 Reader Result Pass
+
+> Improve future changes based on what readers can confidently understand and repeat after one pass.
+
+### Alt V50.5 Maintenance Calm Pass
+
+> Keep pushing the repo toward calmer, safer updates rather than just more instructions.
+
+### Alt V50.6 PDF Authority Pass
+
+> Make the PDF increasingly worthy of executive circulation without explanation from the sender.
+
+### Alt V50.7 Source Depth Pass
+
+> Strengthen source trust through depth and placement, not repetition.
+
+### Alt V50.8 Structural Longevity Pass
+
+> Favor structures that remain strong under years of copy, data, and print updates.
+
+### Alt V50.9 Backlog Harshness Pass
+
+> Keep the future backlog severe about what truly deserves attention.
+
+### Alt V50.10 Quiet Prompt System Pass
+
+> Let the prompt system quiet down as the product grows stronger; not every possible wave should exist.

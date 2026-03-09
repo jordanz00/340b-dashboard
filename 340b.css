@@ -167,6 +167,10 @@ body { margin: 0; font-family: var(--font-sans); font-size: var(--text-base); li
 .kpi-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-4); padding: var(--space-6) 0; border-bottom: 1px solid var(--border); }
 .data-freshness { font-size: var(--text-xs); color: var(--text-muted); grid-column: 1 / -1; margin: var(--space-2) 0 0; }
 .kpi-strip .kpi-card { min-height: 0; }
+.kpi-strip .kpi-card:first-child,
+.kpi-strip .kpi-card:nth-child(2) { background: rgba(255,255,255,0.9); }
+.kpi-strip .kpi-card:first-child .kpi-value,
+.kpi-strip .kpi-card:nth-child(2) .kpi-value { color: var(--primary); }
 @media (max-width: 900px) { .kpi-strip { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 480px) { .kpi-strip { grid-template-columns: 1fr; gap: var(--space-3); padding: var(--space-6) 0; } }
 .kpi-card { padding: var(--space-5); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-xs); transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
@@ -411,6 +415,7 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 
 .section-subhead { font-size: var(--text-sm); font-weight: 600; color: var(--text); margin: var(--space-6) 0 var(--space-3); letter-spacing: var(--tracking-tight); }
 .section-subhead:first-child { margin-top: 0; }
+.section-subhead--supporting { margin-top: var(--space-7); }
 .sources { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-4); font-style: italic; }
 
 footer { padding: var(--space-8) var(--space-6); text-align: center; color: var(--text-muted); font-size: var(--text-sm); border-top: 1px solid var(--border); background: var(--bg-card); position: relative; z-index: 1; }
@@ -568,6 +573,7 @@ footer a:hover { color: var(--primary); }
   .scroll-reveal { opacity: 1 !important; transform: none !important; }
   .selection-summary, .state-detail-panel, .state-list-block, .card, .kpi-card, .map-hero-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; backdrop-filter: none !important; background: #fff !important; }
   .kpi-strip, .map-hero-section, .supporting-cards-row, .map-container { break-inside: avoid; }
+  .section-subhead--supporting { margin-top: 0.7rem !important; }
   .kpi-value, .stat-value, .big-stat-value, .count-up { color: #111827 !important; }
   .state-list-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .selection-clear { display: none !important; }

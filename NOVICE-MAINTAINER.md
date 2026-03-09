@@ -59,6 +59,7 @@ Important print note:
 - The print-only Pennsylvania default is applied in `preparePrintSelectionState()`.
 - The counter values are forced to their final numbers in `finalizeCountUpValues()`.
 - The executive proof strip is updated in `updateExecutiveProofStrip()`.
+- The selected-state map story is updated in `updateMapContext()`.
 - If print is wrong, check those functions before rewriting HTML.
 - The compact print state summary is filled from JavaScript and should stay smaller than the live interactive state lists.
 

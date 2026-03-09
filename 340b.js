@@ -296,6 +296,38 @@
     appState.dom.executiveLandscapeValue.textContent = landscapeValue;
   }
 
+  function buildMapContextText(abbr, data) {
+    if (!abbr || !data) {
+      return (config.copy && config.copy.mapHeroSub) || "";
+    }
+
+    if (abbr === getDefaultPrintStateAbbr()) {
+      return "Pennsylvania remains the focal HAP context: 72 Pennsylvania hospitals participate in 340B while contract pharmacy protection is still in progress.";
+    }
+
+    if (data.cp && data.pbm) {
+      return getStateName(abbr) + " offers a strong comparison point because both contract pharmacy and PBM protections are in place.";
+    }
+
+    if (data.cp) {
+      return getStateName(abbr) + " shows enacted contract pharmacy protection, even though the broader protection model remains less complete than the strongest comparison states.";
+    }
+
+    if (data.pbm) {
+      return getStateName(abbr) + " shows partial protection through PBM safeguards, but contract pharmacy protection is still not enacted.";
+    }
+
+    return getStateName(abbr) + " shows the exposure hospitals face where contract pharmacy protection is not enacted.";
+  }
+
+  function updateMapContext(abbr) {
+    var data = getStateData(abbr);
+
+    if (!appState.dom.mapHeroSub) return;
+
+    appState.dom.mapHeroSub.textContent = buildMapContextText(abbr, data);
+  }
+
   /* ---------- Data helpers ---------- */
 
   function getStateAbbr(feature) {
@@ -470,12 +502,14 @@
     if (!abbr) {
       appState.dom.selectionSummaryTitle.textContent = "No state selected yet";
       appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to compare enacted protections, no-protection states, and Pennsylvania's current policy context.";
+      updateMapContext(null);
       if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
       return;
     }
 
     appState.dom.selectionSummaryTitle.textContent = getStateName(abbr);
     appState.dom.selectionSummaryText.textContent = buildStateSummaryText(abbr);
+    updateMapContext(abbr);
     if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = false;
   }
 

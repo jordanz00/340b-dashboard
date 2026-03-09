@@ -32,6 +32,7 @@ Check these before lower-risk polish:
 8. Test `Share link`.
 9. Test `Print / PDF`.
 10. Confirm the executive scan strip updates correctly with the national state counts.
+11. Confirm the map context sentence changes appropriately when a state is selected and resets when cleared.
 
 ## Print / PDF
 

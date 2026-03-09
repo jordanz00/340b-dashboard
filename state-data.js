@@ -23,8 +23,8 @@ var CONFIG = {
 
   /* High-salience copy */
   copy: {
-    overviewLead: "The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at no cost to taxpayers and helps hospitals and other providers sustain access for vulnerable and underserved patients.",
-    hapPositionLead: "HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies so patients can keep accessing affordable medications close to home.",
+    overviewLead: "The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at no cost to taxpayers and helps hospitals, clinics, and safety-net providers sustain medication access for vulnerable and underserved patients.",
+    hapPositionLead: "HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies so patients can keep accessing affordable medications close to home, including when care depends on distributed pharmacy networks.",
     hapAskLabel: "HAP asks lawmakers:",
     hapAskText: "Protect 340B integrity and preserve contract pharmacy access for patient medications.",
     mapHeroSub: "Select a state for details. Pennsylvania remains the focal HAP context because contract pharmacy protection is still in progress while 72 Pennsylvania hospitals participate in 340B.",
@@ -35,9 +35,9 @@ var CONFIG = {
     executiveStrip: {
       priorityLabel: "Policy priority",
       priorityValue: "Protect 340B integrity and contract pharmacy access",
-      priorityNote: "HAP's argument is strongest when access, integrity, and patient medication continuity stay linked together.",
+      priorityNote: "The dashboard is strongest when access, program integrity, and patient medication continuity are treated as one policy story.",
       landscapeLabel: "National landscape",
-      landscapeNote: "Use the state map and selected-state panel to compare enacted protections against states where hospitals remain exposed.",
+      landscapeNote: "Use the map and selected-state panel to compare enacted protections against states where hospitals remain exposed.",
       trustLabel: "Why trust this view",
       trustValue: "Legal status and recency are surfaced directly in the dashboard",
       trustNote: "Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals."

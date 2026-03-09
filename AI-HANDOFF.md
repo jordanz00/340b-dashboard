@@ -55,6 +55,7 @@ Recent prompt waves mainly drove these outcomes:
 - `v17-v18`: clearer neutral-state language, source-verification guidance, and manual review honesty
 - `v19-v20`: stronger release discipline, prompt specificity, and small-system maintenance guidance
 - `v21-v30`: stronger executive scan hierarchy, tighter state-context storytelling, more config-driven high-salience copy, and clearer trust-signal placement
+- `v31-v40`: tighter executive-facing supporting copy, stronger selected-state map context, sharper section hierarchy, and an alternate self-improving prompt track after `v50`
 
 ## Important constraint
 
