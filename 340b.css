@@ -212,7 +212,11 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 /* Intro section — What is 340B first, HAP Position below, aligned with map width */
 .intro-section { grid-column: 1 / -1; margin-bottom: var(--space-2); }
 .intro-section-inner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: stretch; }
-.intro-section .card { width: 100%; }
+.intro-section .card { width: 100%; min-height: 260px; display: flex; flex-direction: column; }
+.intro-section .card .card-heading { flex-shrink: 0; }
+.intro-section .card > p { flex: 1; min-height: 0; }
+.intro-section .card .stat-block,
+.intro-section .card .hap-ask { flex-shrink: 0; margin-top: auto; }
 .executive-proof-strip { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); margin-bottom: var(--space-2); }
 .executive-proof-card { padding: var(--space-4); border-radius: var(--radius-lg); border: 1px solid var(--border); background: rgba(255,255,255,0.78); box-shadow: var(--shadow-xs); backdrop-filter: blur(18px); }
 .executive-proof-card--accent { background: linear-gradient(180deg, rgba(255,255,255,0.82) 0%, var(--accent-muted) 100%); border-color: var(--accent-border); }
@@ -254,8 +258,9 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
   .selection-summary { flex-direction: column; align-items: stretch; }
   .selection-clear { width: 100%; justify-content: center; }
 }
-.supporting-cards-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-4); margin-top: var(--space-6); align-items: start; }
-@media (max-width: 900px) { .supporting-cards-row { grid-template-columns: 1fr; } }
+.section-subhead--supporting { margin-top: var(--space-6); margin-bottom: var(--space-4); font-size: var(--text-sm); font-weight: 700; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); }
+.supporting-cards-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); margin-top: 0; align-items: stretch; }
+@media (max-width: 1000px) { .supporting-cards-row { grid-template-columns: 1fr; } }
 /* Compact cards */
 .card--compact { padding: var(--space-4); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-xs); transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
 .card--compact:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); }

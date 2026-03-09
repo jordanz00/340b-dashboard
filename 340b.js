@@ -391,7 +391,7 @@
     }
 
     if (abbr === getDefaultPrintStateAbbr()) {
-      return "Pennsylvania remains the HAP focal state. Contract pharmacy protection is still in progress, which makes the state useful as both a live dashboard example and the default print context.";
+      return "Pennsylvania is the default dashboard context.";
     }
 
     if (data.cp && data.pbm) {
@@ -415,7 +415,7 @@
     }
 
     if (abbr === getDefaultPrintStateAbbr()) {
-      return config.printDefaultStateReason || "Pennsylvania remains the default print context because it is the HAP focal state.";
+      return config.printDefaultStateReason || "Pennsylvania is the default print context.";
     }
 
     if (data.cp) {

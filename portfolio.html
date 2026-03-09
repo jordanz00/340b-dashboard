@@ -171,42 +171,71 @@
       border-radius: 999px;
       background: var(--blue-soft);
       color: var(--blue);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       margin-bottom: 0.85rem;
     }
 
     .hero h2 {
       margin: 0;
-      max-width: 12ch;
-      font-size: clamp(2.2rem, 5.3vw, 4.4rem);
-      line-height: 0.96;
-      letter-spacing: -0.07em;
+      max-width: none;
+      font-size: clamp(1.55rem, 3vw, 2.15rem);
+      line-height: 1.04;
+      letter-spacing: -0.04em;
       font-weight: 700;
       color: #0b1220;
     }
 
+    .hero-titleline {
+      margin: 0.35rem 0 0;
+      font-size: 0.98rem;
+      line-height: 1.45;
+      color: #27405f;
+      font-weight: 600;
+      max-width: 44rem;
+    }
+
     .hero-lede {
-      margin: 0.9rem 0 0;
-      max-width: 64ch;
-      font-size: 1rem;
+      margin: 0.85rem 0 0;
+      max-width: 66ch;
+      font-size: 0.95rem;
       color: var(--muted);
     }
 
     .hero-sub {
-      margin: 0.8rem 0 0;
-      max-width: 64ch;
-      font-size: 0.94rem;
+      margin: 0.7rem 0 0;
+      max-width: 66ch;
+      font-size: 0.9rem;
       color: var(--muted);
+    }
+
+    .hero-role-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-top: 0.85rem;
+    }
+
+    .hero-role {
+      display: inline-flex;
+      align-items: center;
+      min-height: 1.8rem;
+      padding: 0.24rem 0.58rem;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.7);
+      border: 1px solid rgba(37,99,235,0.10);
+      color: #31558f;
+      font-size: 0.72rem;
+      font-weight: 600;
     }
 
     .hero-actions {
       display: flex;
       flex-wrap: wrap;
       gap: 0.55rem;
-      margin-top: 1.15rem;
+      margin-top: 1rem;
     }
 
     .button,
@@ -217,7 +246,7 @@
       min-height: 2.55rem;
       padding: 0.72rem 0.96rem;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 700;
       transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
       text-decoration: none;
@@ -278,6 +307,14 @@
 
     .hero-panel li:first-child { padding-top: 0; border-top: 0; }
     .hero-panel strong { display: block; color: var(--text); font-size: 0.82rem; margin-bottom: 0.12rem; }
+
+    .hero-panel-note {
+      margin: 0.85rem 0 0;
+      padding-top: 0.75rem;
+      border-top: 1px solid rgba(15,23,42,0.06);
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
 
     .section-head {
       display: flex;
@@ -463,7 +500,7 @@
       }
       .hero h2 {
         max-width: none;
-        font-size: 2.35rem;
+        font-size: 1.75rem;
       }
       .hero-actions {
         flex-direction: column;
@@ -499,14 +536,25 @@
     <section class="hero">
       <div class="hero-grid">
         <div>
-          <span class="hero-kicker">Creative producer · multimedia director · AI-enabled builder</span>
-          <h2>Jordan Zabady is a multidisciplinary creative building across media, sound, visuals, and intelligent digital experiences.</h2>
+          <span class="hero-kicker">Portfolio</span>
+          <h2>Jordan Zabady</h2>
+          <p class="hero-titleline">Creative Producer, Multimedia Director, and Digital Communications Professional</p>
           <p class="hero-lede">
-            I work across production, direction, videography, photography, editing, motion graphics, 3D, music, and audio engineering. Alongside that creative foundation, I now use ChatGPT and Cursor to expand into interactive websites, dashboards, apps, and digital experiences that bridge communication, design, and software.
+            I work across production, direction, videography, photography, editing, motion graphics, 3D, music, and audio engineering, with a strong foundation in digital communications and visual storytelling.
           </p>
           <p class="hero-sub">
-            What sets me apart is the range: I can think like a producer, execute like a maker, and rapidly adopt new AI workflows to turn ideas into polished, real-world output.
+            I am currently extending that background into AI-assisted web, dashboard, and interactive product work using tools such as ChatGPT and Cursor to build faster, broader, and more technically ambitious digital experiences.
           </p>
+          <div class="hero-role-list" aria-label="Core roles">
+            <span class="hero-role">Producer</span>
+            <span class="hero-role">Director</span>
+            <span class="hero-role">Videographer</span>
+            <span class="hero-role">Photographer</span>
+            <span class="hero-role">Editor</span>
+            <span class="hero-role">Motion Graphics</span>
+            <span class="hero-role">3D Artist</span>
+            <span class="hero-role">Audio Engineer</span>
+          </div>
           <div class="hero-actions">
             <a class="button" href="https://www.linkedin.com/in/jordanzabady/" target="_blank" rel="noopener noreferrer">LinkedIn</a>
             <a class="button-secondary" href="https://github.com/jordanz00" target="_blank" rel="noopener noreferrer">GitHub</a>
@@ -514,12 +562,13 @@
           </div>
         </div>
         <aside class="hero-panel" aria-label="Profile summary">
-          <h3>Profile</h3>
+          <h3>Recruiter Snapshot</h3>
           <ul>
             <li><strong>Creative range</strong> Producer, director, videographer, photographer, editor, motion designer, 3D artist, musician, and audio engineer.</li>
-            <li><strong>Professional value</strong> Strong communication judgment, high creative output, and dependable execution across both strategy and production.</li>
-            <li><strong>AI capability</strong> Fast adoption of ChatGPT and Cursor to build dashboards, interactive sites, and new digital tools beyond a traditional multimedia role.</li>
+            <li><strong>Professional value</strong> Strong communication judgment, dependable execution, and the ability to move between strategy, production, and presentation.</li>
+            <li><strong>Technical growth</strong> Rapid adoption of ChatGPT and Cursor for dashboards, interactive sites, prototypes, and digital product work.</li>
           </ul>
+          <p class="hero-panel-note">Relevant for roles in creative technology, AI-enabled communications, digital content leadership, multimedia production, and interactive experience development.</p>
         </aside>
       </div>
     </section>
@@ -530,7 +579,7 @@
           <p class="eyebrow">Selected work</p>
           <h2 id="work-title" class="section-title">Recent projects</h2>
         </div>
-        <p>Work that reflects both my established multimedia background and my newer AI-assisted product and interactive build workflow.</p>
+        <p>Selected projects that show both established multimedia experience and newer AI-assisted digital product work.</p>
       </div>
       <div class="project-grid">
         <article class="project-card">
