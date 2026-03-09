@@ -388,15 +388,15 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 @media (prefers-reduced-motion: reduce) { .scroll-reveal { opacity: 1; transform: none; transition: none; } .scroll-reveal.revealed { opacity: 1; } }
 
 /* State lists */
-.state-lists-wrap { display: grid; gap: var(--space-4); margin-top: var(--space-4); }
+.state-lists-wrap { display: grid; gap: var(--space-3); margin-top: var(--space-3); }
 @media (min-width: 500px) { .state-lists-wrap { grid-template-columns: 1fr 1fr; } }
-.state-list-block { padding: var(--space-4); border-radius: var(--radius-lg); box-shadow: var(--shadow-xs); backdrop-filter: blur(18px); }
+.state-list-block { padding: var(--space-3); border-radius: var(--radius-lg); box-shadow: var(--shadow-xs); backdrop-filter: blur(18px); }
 .state-list-block.protection { background: rgba(11,103,194,0.07); border: 1px solid rgba(11,103,194,0.12); }
 .state-list-block.no-protection { background: rgba(255,255,255,0.72); border: 1px solid rgba(255,255,255,0.85); }
-.state-list-block h3 { font-size: 0.78rem; margin: 0 0 var(--space-3); font-weight: 600; line-height: var(--leading-snug); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
+.state-list-block h3 { font-size: 0.78rem; margin: 0 0 var(--space-2); font-weight: 600; line-height: var(--leading-snug); letter-spacing: var(--tracking-wide); text-transform: uppercase; }
 .state-list-block.protection h3 { color: var(--primary); }
 .state-list-block.no-protection h3 { color: var(--text-muted); }
-.state-list-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); gap: 0.55rem; font-size: var(--text-xs); }
+.state-list-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(64px, 1fr)); gap: 0.28rem 0.4rem; font-size: var(--text-xs); }
 .state-chip { padding: 0.62rem 0.5rem; border-radius: 14px; border: 0; background: rgba(255,255,255,0.66); appearance: none; font: inherit; cursor: pointer; transition: background 0.2s var(--ease), transform 0.15s var(--ease), box-shadow 0.2s var(--ease), color 0.2s var(--ease); color: var(--text-secondary); text-align: center; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.8); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.08em; }
 .state-chip:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
 .state-list-block.protection .state-chip { color: var(--primary); }
