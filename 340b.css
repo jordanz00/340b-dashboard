@@ -185,7 +185,7 @@ body { margin: 0; font-family: var(--font-sans); font-size: var(--text-base); li
 /* Main grid — aligned content width with map */
 main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--content-max); margin-left: auto; margin-right: auto; }
 .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-4); align-items: start; }
-.supporting-cards-row, #community-benefit { content-visibility: auto; contain-intrinsic-size: auto 300px; }
+.supporting-section, #community-benefit { content-visibility: auto; contain-intrinsic-size: auto 300px; }
 .card { border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid rgba(255,255,255,0.78); padding: var(--space-5); box-shadow: var(--shadow-xs); position: relative; align-self: start; transition: transform 0.24s var(--ease), box-shadow 0.24s var(--ease), border-color 0.24s var(--ease), background 0.24s var(--ease); backdrop-filter: blur(18px); }
 .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); background: rgba(255,255,255,0.9); }
 .card-heading { display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: row; gap: var(--space-4); margin-bottom: var(--space-4); }
@@ -209,10 +209,10 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 .card-icon--scale, .card-icon--heart { background: var(--accent-muted); }
 .card-icon--scale svg, .card-icon--heart svg { stroke: var(--accent); fill: var(--accent); fill-opacity: 0.15; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
 
-/* Intro section — What is 340B first, HAP Position below, aligned with map width */
+/* Intro section — What is 340B first, HAP Position second, same height, bottoms aligned */
 .intro-section { grid-column: 1 / -1; margin-bottom: var(--space-2); }
 .intro-section-inner { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: stretch; }
-.intro-section .card { width: 100%; min-height: 260px; display: flex; flex-direction: column; }
+.intro-section .card { width: 100%; min-height: 300px; display: flex; flex-direction: column; align-self: stretch; }
 .intro-section .card .card-heading { flex-shrink: 0; }
 .intro-section .card > p { flex: 1; min-height: 0; }
 .intro-section .card .stat-block,
@@ -258,9 +258,18 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
   .selection-summary { flex-direction: column; align-items: stretch; }
   .selection-clear { width: 100%; justify-content: center; }
 }
-.section-subhead--supporting { margin-top: var(--space-6); margin-bottom: var(--space-4); font-size: var(--text-sm); font-weight: 700; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); }
-.supporting-cards-row { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); margin-top: 0; align-items: stretch; }
-@media (max-width: 1000px) { .supporting-cards-row { grid-template-columns: 1fr; } }
+.supporting-section { grid-column: 1 / -1; display: flex; flex-direction: column; align-items: center; margin-top: var(--space-6); }
+.section-subhead--supporting { margin: 0 0 var(--space-4); font-size: var(--text-sm); font-weight: 700; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); text-align: center; }
+.supporting-cards-row { display: flex; flex-wrap: nowrap; justify-content: center; gap: var(--space-4); width: 100%; max-width: var(--content-max); align-items: stretch; }
+.supporting-cards-row .card--compact { flex: 1; min-width: 0; max-width: 360px; }
+@media (max-width: 900px) {
+  .supporting-cards-row { flex-wrap: wrap; justify-content: center; }
+  .supporting-cards-row .card--compact { max-width: none; flex: 1 1 280px; }
+}
+@media (max-width: 640px) {
+  .supporting-cards-row { flex-direction: column; align-items: center; }
+  .supporting-cards-row .card--compact { flex: 1 1 auto; width: 100%; max-width: 400px; }
+}
 /* Compact cards */
 .card--compact { padding: var(--space-4); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); box-shadow: var(--shadow-xs); transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease), border-color 0.2s var(--ease); }
 .card--compact:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); }

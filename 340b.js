@@ -16,7 +16,7 @@
     dataFreshness: "March 2025",
     lastUpdated: "March 2025",
     printDefaultState: "PA",
-    printDefaultStateReason: "Pennsylvania remains the natural print context for HAP.",
+    printDefaultStateReason: "HAP focal state for print.",
     copy: {
       executiveStrip: {}
     },
@@ -391,7 +391,7 @@
     }
 
     if (abbr === getDefaultPrintStateAbbr()) {
-      return "Pennsylvania is the default dashboard context.";
+      return "72 Pennsylvania hospitals participate in 340B. Contract pharmacy protection is still in progress.";
     }
 
     if (data.cp && data.pbm) {
@@ -415,7 +415,7 @@
     }
 
     if (abbr === getDefaultPrintStateAbbr()) {
-      return config.printDefaultStateReason || "Pennsylvania is the default print context.";
+      return config.printDefaultStateReason || "HAP focal state for print.";
     }
 
     if (data.cp) {
@@ -501,7 +501,7 @@
 
     if (!abbr) {
       appState.dom.selectionSummaryTitle.textContent = "No state selected yet";
-      appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to compare enacted protections, no-protection states, and Pennsylvania's current policy context.";
+      appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to compare enacted protections and no-protection states.";
       updateMapContext(null);
       if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
       return;
