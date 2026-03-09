@@ -18,6 +18,7 @@ Check these before lower-risk polish:
 3. The selected-state story stays aligned across the map, selection summary, and detail panel.
 4. KPI values show final numbers in print, not `0`.
 5. Source dates and source links still match the current legal-status sources.
+6. The executive scan strip still matches the policy ask, national landscape, and trust cues shown elsewhere.
 
 ## Core interactions
 
@@ -30,6 +31,7 @@ Check these before lower-risk polish:
 7. Open and close `About this data`.
 8. Test `Share link`.
 9. Test `Print / PDF`.
+10. Confirm the executive scan strip updates correctly with the national state counts.
 
 ## Print / PDF
 
@@ -45,6 +47,7 @@ Check these before lower-risk polish:
 10. Confirm there are no unexpected blank pages anywhere in the document.
 11. Confirm the selected state summary prints when a state is selected.
 12. Confirm the print header shows the title and last-updated date.
+13. Confirm the executive scan strip still reads clearly in print and does not bloat the opening pages.
 
 ## Accessibility and fallback
 
@@ -56,8 +59,9 @@ Check these before lower-risk polish:
 ## Content and maintenance
 
 1. Confirm `dataFreshness`, `lastUpdated`, and `shareUrlBase` are correct in `state-data.js`.
-2. Confirm source links are still valid and use `rel="noopener noreferrer"`.
-3. Confirm state-law verification still follows this order: MultiState, then ASHP, then America's Essential Hospitals.
-4. Confirm the audit output is treated as a code check only, not a replacement for visual print review or source verification.
-5. Confirm the printed dashboard still makes sense to a PDF-only reader such as a lawmaker, hospital CEO, or administrator.
-6. Confirm `README.md`, `SECURITY.md`, `NOVICE-MAINTAINER.md`, and `DATA-UPDATE.md` still match the current behavior.
+2. Confirm the `copy` values in `state-data.js` still match the live intro, HAP ask, and trust-copy surfaces.
+3. Confirm source links are still valid and use `rel="noopener noreferrer"`.
+4. Confirm state-law verification still follows this order: MultiState, then ASHP, then America's Essential Hospitals.
+5. Confirm the audit output is treated as a code check only, not a replacement for visual print review or source verification.
+6. Confirm the printed dashboard still makes sense to a PDF-only reader such as a lawmaker, hospital CEO, or administrator.
+7. Confirm `README.md`, `SECURITY.md`, `NOVICE-MAINTAINER.md`, and `DATA-UPDATE.md` still match the current behavior.

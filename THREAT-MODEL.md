@@ -32,6 +32,9 @@ Print should reflect the final rendered document state, not partial animation or
 6. Source credibility
 Source dates, legal-status wording, and printed policy framing must stay aligned so the dashboard does not become visually polished but substantively misleading.
 
+7. Copy and metadata drift
+High-salience copy, metadata text, executive summary cues, and print-only trust surfaces must not drift out of sync across `state-data.js`, `340b.html`, and the print path.
+
 ## Security checks to run
 
 - `python3 dashboard-audit.py`

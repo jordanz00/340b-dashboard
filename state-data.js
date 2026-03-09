@@ -18,6 +18,31 @@ var CONFIG = {
   shareUrlBase: "https://jordanz00.github.io/340b-dashboard/340b.html",
   dataFreshness: "March 2025",
   lastUpdated: "March 2025",
+  printDefaultState: "PA",
+  printDefaultStateReason: "Pennsylvania remains the natural print context for HAP because hospitals participate heavily in 340B while contract pharmacy protection is still in progress.",
+
+  /* High-salience copy */
+  copy: {
+    overviewLead: "The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at no cost to taxpayers and helps hospitals and other providers sustain access for vulnerable and underserved patients.",
+    hapPositionLead: "HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies so patients can keep accessing affordable medications close to home.",
+    hapAskLabel: "HAP asks lawmakers:",
+    hapAskText: "Protect 340B integrity and preserve contract pharmacy access for patient medications.",
+    mapHeroSub: "Select a state for details. Pennsylvania remains the focal HAP context because contract pharmacy protection is still in progress while 72 Pennsylvania hospitals participate in 340B.",
+    sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
+    methodologyStateLaw: "State law data is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.",
+    printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.",
+    verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
+    executiveStrip: {
+      priorityLabel: "Policy priority",
+      priorityValue: "Protect 340B integrity and contract pharmacy access",
+      priorityNote: "HAP's argument is strongest when access, integrity, and patient medication continuity stay linked together.",
+      landscapeLabel: "National landscape",
+      landscapeNote: "Use the state map and selected-state panel to compare enacted protections against states where hospitals remain exposed.",
+      trustLabel: "Why trust this view",
+      trustValue: "Legal status and recency are surfaced directly in the dashboard",
+      trustNote: "Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals."
+    }
+  },
 
   /* Map settings */
   mapAspectRatio: 0.55,

@@ -54,6 +54,7 @@ Recent prompt waves mainly drove these outcomes:
 - `v15-v16`: print continuity, print-only Pennsylvania default, and compact print state summary
 - `v17-v18`: clearer neutral-state language, source-verification guidance, and manual review honesty
 - `v19-v20`: stronger release discipline, prompt specificity, and small-system maintenance guidance
+- `v21-v30`: stronger executive scan hierarchy, tighter state-context storytelling, more config-driven high-salience copy, and clearer trust-signal placement
 
 ## Important constraint
 

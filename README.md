@@ -24,6 +24,7 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 If you are new to this repo, use this rule:
 
 - Change facts and dates in `state-data.js`
+- Change high-salience intro or trust-copy defaults in `state-data.js`
 - Change visible copy or section order in `340b.html`
 - Change layout and print appearance in `340b.css`
 - Change buttons, map behavior, filters, sharing, or print logic in `340b.js`
@@ -33,6 +34,7 @@ Open `state-data.js` and change:
 - `dataFreshness` — e.g. `"March 2026"`
 - `lastUpdated` — e.g. `"March 2026"`
 - `shareUrlBase` — if the public dashboard URL changes
+- `copy` — if the intro, HAP ask, source summary, or executive-scan wording needs to change
 
 ### Update state law data
 When a new state passes 340B protection:
@@ -74,6 +76,7 @@ No package install is required for the dashboard itself.
 - Keyboard navigation
 - Share link (copies a canonical URL with selected state hash)
 - Print / PDF with a final-state print snapshot
+- Executive scan strip with policy, national, and trust cues
 - Selected-state summary near the map
 - Local map fallback summary if the map cannot load
 - Hash deep-links like `#state-PA`
@@ -90,7 +93,7 @@ No package install is required for the dashboard itself.
 If you are deciding where to be most careful, use this order:
 
 1. print/PDF preparation and page flow
-2. source dates and legal-status wording
+2. high-salience copy, source dates, and legal-status wording
 3. URL hash state and selection recovery
 4. share-link behavior and fallback copy
 5. map rendering and local vendor assets
@@ -119,14 +122,14 @@ Check these files in this order:
 
 1. `340b.html` — confirm the real intro cards still exist and there is no duplicate print-only copy.
 2. `340b.css` — check the `@media print` section for anything hiding content, causing page breaks, or making print-only summaries too large.
-3. `340b.js` — check `preparePrintSnapshot()`, `preparePrintSelectionState()`, and `finalizeCountUpValues()`.
+3. `340b.js` — check `preparePrintSnapshot()`, `preparePrintSelectionState()`, `updateExecutiveProofStrip()`, and `finalizeCountUpValues()`.
 
 ### If source guidance needs updating
 
 Check these files in this order:
 
 1. `340b.html` in the `About this data` section
-2. `state-data.js` for dates and legal-status notes
+2. `state-data.js` for dates, executive-scan copy, and legal-status notes
 3. `QA-CHECKLIST.md` for release verification wording
 
 ### If the map is missing

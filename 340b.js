@@ -15,6 +15,11 @@
     shareDescription: "340B contract pharmacy protection dashboard.",
     dataFreshness: "March 2025",
     lastUpdated: "March 2025",
+    printDefaultState: "PA",
+    printDefaultStateReason: "Pennsylvania remains the natural print context for HAP.",
+    copy: {
+      executiveStrip: {}
+    },
     mapAspectRatio: 0.55,
     mapMaxWidth: 960,
     countUpDuration: 1200,
@@ -72,6 +77,25 @@
       methodologyButton: document.getElementById("methodology-toggle"),
       methodologyContent: document.getElementById("methodology-content"),
       dataFreshness: document.getElementById("data-freshness-text"),
+      overviewLead: document.getElementById("overview-lead"),
+      hapPositionLead: document.getElementById("hap-position-lead"),
+      hapAskLabel: document.getElementById("hap-ask-label"),
+      hapAskText: document.getElementById("hap-ask-text"),
+      mapHeroSub: document.getElementById("map-hero-sub"),
+      sourcesSummary: document.getElementById("sources-summary"),
+      methodologyStateLawCopy: document.getElementById("methodology-state-law-copy"),
+      verificationOrderCopy: document.getElementById("verification-order-copy"),
+      printSourceSummary: document.getElementById("print-source-summary"),
+      printVerificationOrderCopy: document.getElementById("print-verification-order-copy"),
+      executivePriorityLabel: document.getElementById("executive-priority-label"),
+      executivePriorityValue: document.getElementById("executive-priority-value"),
+      executivePriorityNote: document.getElementById("executive-priority-note"),
+      executiveLandscapeLabel: document.getElementById("executive-landscape-label"),
+      executiveLandscapeValue: document.getElementById("executive-landscape-value"),
+      executiveLandscapeNote: document.getElementById("executive-landscape-note"),
+      executiveTrustLabel: document.getElementById("executive-trust-label"),
+      executiveTrustValue: document.getElementById("executive-trust-value"),
+      executiveTrustNote: document.getElementById("executive-trust-note"),
       methodologyLastUpdated: document.getElementById("methodology-last-updated"),
       // The print version reuses the live dashboard cards, but it still has a small print header
       // and a compact print-only source note that need current dates.
@@ -106,6 +130,12 @@
     if (className) element.className = className;
     if (typeof text === "string") element.textContent = text;
     return element;
+  }
+
+  function setElementText(element, text) {
+    if (element && typeof text === "string") {
+      element.textContent = text;
+    }
   }
 
   function appendBadge(parent, tone, text) {
@@ -222,6 +252,50 @@
     }
   }
 
+  function getDefaultPrintStateAbbr() {
+    var configured = typeof config.printDefaultState === "string" ? config.printDefaultState.toUpperCase() : "";
+    return configured && isKnownState(configured) ? configured : "PA";
+  }
+
+  function applyConfigCopy() {
+    // Keep the strongest factual and audience-facing copy in config where it reduces drift.
+    // This lets maintainers update metadata, intro copy, and trust cues together.
+    var copy = config.copy || {};
+    var executiveStrip = copy.executiveStrip || {};
+
+    setElementText(appState.dom.overviewLead, copy.overviewLead);
+    setElementText(appState.dom.hapPositionLead, copy.hapPositionLead);
+    setElementText(appState.dom.hapAskLabel, copy.hapAskLabel);
+    setElementText(appState.dom.hapAskText, copy.hapAskText);
+    setElementText(appState.dom.mapHeroSub, copy.mapHeroSub);
+    setElementText(appState.dom.sourcesSummary, copy.sourceSummary);
+    setElementText(appState.dom.methodologyStateLawCopy, copy.methodologyStateLaw);
+    setElementText(appState.dom.verificationOrderCopy, copy.verificationOrder);
+    setElementText(appState.dom.printSourceSummary, copy.printSourceSummary);
+    setElementText(appState.dom.printVerificationOrderCopy, copy.verificationOrder);
+    setElementText(appState.dom.executivePriorityLabel, executiveStrip.priorityLabel);
+    setElementText(appState.dom.executivePriorityValue, executiveStrip.priorityValue);
+    setElementText(appState.dom.executivePriorityNote, executiveStrip.priorityNote);
+    setElementText(appState.dom.executiveLandscapeLabel, executiveStrip.landscapeLabel);
+    setElementText(appState.dom.executiveLandscapeNote, executiveStrip.landscapeNote);
+    setElementText(appState.dom.executiveTrustLabel, executiveStrip.trustLabel);
+    setElementText(appState.dom.executiveTrustValue, executiveStrip.trustValue);
+    setElementText(appState.dom.executiveTrustNote, executiveStrip.trustNote);
+  }
+
+  function updateExecutiveProofStrip(withProtection, withoutProtection) {
+    var landscapeValue;
+
+    if (!appState.dom.executiveLandscapeValue) return;
+
+    // This strip gives decision-makers a fast evidence scan without forcing them
+    // to interpret the full map before they understand the national landscape.
+    landscapeValue = withProtection.length + " states have enacted contract pharmacy protection; " +
+      withoutProtection.length + " remain without enacted protection";
+
+    appState.dom.executiveLandscapeValue.textContent = landscapeValue;
+  }
+
   /* ---------- Data helpers ---------- */
 
   function getStateAbbr(feature) {
@@ -260,9 +334,63 @@
       return "No state law data is available.";
     }
 
-    return (data.cp ? "Contract pharmacy protected" : "No contract pharmacy law") +
-      " · " +
-      (data.pbm ? "PBM protections in place" : "No PBM protection law");
+    if (abbr === getDefaultPrintStateAbbr()) {
+      return "Pennsylvania remains the focal HAP context: contract pharmacy protection is still in progress while 340B participation remains significant across the state.";
+    }
+
+    if (data.cp && data.pbm) {
+      return "This state provides an enacted comparison point with both contract pharmacy and PBM protections in place.";
+    }
+
+    if (data.cp) {
+      return "This state shows enacted contract pharmacy protection, even though PBM protections remain more limited.";
+    }
+
+    if (data.pbm) {
+      return "This state shows partial protection: PBM safeguards exist, but contract pharmacy protection is not enacted.";
+    }
+
+    return "This state illustrates how exposed hospitals remain where neither contract pharmacy nor PBM protections are enacted.";
+  }
+
+  function buildStateDetailSummary(abbr, data) {
+    if (!data) {
+      return "No state law data is available for this state.";
+    }
+
+    if (abbr === getDefaultPrintStateAbbr()) {
+      return "Pennsylvania remains the HAP focal state. Contract pharmacy protection is still in progress, which makes the state useful as both a live dashboard example and the default print context.";
+    }
+
+    if (data.cp && data.pbm) {
+      return "This state is one of the stronger comparison points in the dashboard because both contract pharmacy and PBM protections are in place.";
+    }
+
+    if (data.cp) {
+      return "This state has enacted contract pharmacy protection, but its broader protection model is still more limited than states that also have PBM safeguards.";
+    }
+
+    if (data.pbm) {
+      return "This state shows that PBM safeguards can exist without enacted contract pharmacy protection, which is useful but still incomplete.";
+    }
+
+    return "This state highlights the operating environment hospitals face when contract pharmacy protection is not enacted.";
+  }
+
+  function buildStateImpactNote(abbr, data) {
+    if (!data) {
+      return "Why it matters: use the map, source notes, and selected-state context together before drawing policy conclusions.";
+    }
+
+    if (abbr === getDefaultPrintStateAbbr()) {
+      return config.printDefaultStateReason || "Pennsylvania remains the default print context because it is the HAP focal state.";
+    }
+
+    if (data.cp) {
+      return "Why it matters: enacted protection here gives lawmakers and hospital leaders a concrete comparison point when evaluating how contract pharmacy access can be preserved.";
+    }
+
+    return "Why it matters: the absence of enacted contract pharmacy protection here helps show the exposure hospitals can face when patient access depends on contract pharmacies.";
   }
 
   function buildSelectionAnnouncement(abbr) {
@@ -271,8 +399,8 @@
 
     if (!data) return summary;
 
-    summary += " " + (data.cp ? "Contract pharmacy protected." : "No contract pharmacy law.");
-    summary += " " + (data.pbm ? "PBM protections in place." : "No PBM protection law.");
+    summary += " " + (data.cp ? "Contract pharmacy protection is enacted." : "No contract pharmacy protection law is enacted.");
+    summary += " " + (data.pbm ? "PBM protections are in place." : "No PBM protection law is in place.");
     return summary;
   }
 
@@ -341,7 +469,7 @@
 
     if (!abbr) {
       appState.dom.selectionSummaryTitle.textContent = "No state selected yet";
-      appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to view dashboard details.";
+      appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to compare enacted protections, no-protection states, and Pennsylvania's current policy context.";
       if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
       return;
     }
@@ -431,7 +559,7 @@
 
     panel.classList.add("empty");
     clearElement(panel);
-    panel.appendChild(createElement("p", "", "No state selected. Choose a state to view dashboard details."));
+    panel.appendChild(createElement("p", "", "No state selected. Choose a state to compare legal-status details and policy context."));
   }
 
   function renderStateDetail(abbr) {
@@ -451,21 +579,24 @@
       return;
     }
 
+    panel.appendChild(createElement("p", "state-detail-summary", buildStateDetailSummary(abbr, data)));
+
     badgeRow = createElement("p", "state-detail-badges");
     appendBadge(badgeRow, data.cp ? "yes" : "no", data.cp ? "Contract pharmacy protected" : "No contract pharmacy law");
     appendBadge(badgeRow, data.pbm ? "yes" : "no", data.pbm ? "PBM protections in place" : "No PBM protection law");
     panel.appendChild(badgeRow);
 
     detailGrid = createElement("dl", "state-detail-grid");
-    detailGrid.appendChild(createElement("dt", "", "Contract pharmacy"));
-    detailGrid.appendChild(createElement("dd", "", data.cp ? "Yes" : "No"));
-    detailGrid.appendChild(createElement("dt", "", "PBM protections"));
-    detailGrid.appendChild(createElement("dd", "", data.pbm ? "Yes" : "No"));
+    detailGrid.appendChild(createElement("dt", "", "Contract pharmacy status"));
+    detailGrid.appendChild(createElement("dd", "", data.cp ? "Enacted protection in place" : "No enacted protection law"));
+    detailGrid.appendChild(createElement("dt", "", "PBM protection status"));
+    detailGrid.appendChild(createElement("dd", "", data.pbm ? "PBM protections in place" : "No PBM protection law"));
     detailGrid.appendChild(createElement("dt", "", "Law year"));
     detailGrid.appendChild(createElement("dd", "", data.y ? String(data.y) : "Not enacted"));
     detailGrid.appendChild(createElement("dt", "", "Notes"));
     detailGrid.appendChild(createElement("dd", "", data.notes || "No additional notes."));
     panel.appendChild(detailGrid);
+    panel.appendChild(createElement("p", "state-detail-impact", buildStateImpactNote(abbr, data)));
   }
 
   function updateNavCurrent(activeId) {
@@ -856,6 +987,7 @@
     if (appState.dom.protectionCount) appState.dom.protectionCount.textContent = String(withProtection.length);
     if (appState.dom.noProtectionCount) appState.dom.noProtectionCount.textContent = String(withoutProtection.length);
     buildPrintStateSummary(withProtection, withoutProtection);
+    updateExecutiveProofStrip(withProtection, withoutProtection);
 
     initStateChipTooltips();
     highlightStateChip(appState.selectedStateAbbr);
@@ -875,7 +1007,7 @@
     // Print should not show an empty state panel when no one has selected a state.
     // Use Pennsylvania as the temporary print-only context because this dashboard is
     // aimed at HAP and Pennsylvania hospital leaders. Do not change the live URL hash.
-    selectState("PA", {
+    selectState(getDefaultPrintStateAbbr(), {
       updateHash: false,
       announce: false,
       focusPanel: false,
@@ -1255,6 +1387,7 @@
     cacheDom();
     // Run each startup task independently so one broken feature does not take down the whole page.
     // Example: if the map fails, share/print/filter logic should still initialize.
+    runTaskSafely("apply config copy", applyConfigCopy);
     runTaskSafely("update metadata", updateMetadata);
     runTaskSafely("validate state data", validateStateData);
     runTaskSafely("render empty detail", renderEmptyStateDetail);

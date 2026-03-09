@@ -104,7 +104,7 @@
             </div>
             <div class="card-icon card-icon--pill" aria-hidden="true"><svg viewBox="0 0 48 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="8"/><rect x="26" y="4" width="20" height="16" rx="8"/></svg></div>
           </div>
-          <p>The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and enables providers to serve vulnerable and underserved populations.</p>
+          <p id="overview-lead">The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and enables providers to serve vulnerable and underserved populations.</p>
           <div class="stat-block">
             <div class="stat">
               <p class="stat-label">Market share</p>
@@ -121,13 +121,31 @@
             </div>
             <div class="card-icon card-icon--shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           </div>
-          <p>HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies to ensure patient access to affordable medications.</p>
+          <p id="hap-position-lead">HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies to ensure patient access to affordable medications.</p>
           <div class="hap-ask">
-            <strong>HAP asks lawmakers:</strong> Protect 340B integrity and preserve contract pharmacy access for patient medications.
+            <strong id="hap-ask-label">HAP asks lawmakers:</strong> <span id="hap-ask-text">Protect 340B integrity and preserve contract pharmacy access for patient medications.</span>
           </div>
         </article>
       </div>
     </div>
+
+    <section class="executive-proof-strip span-12 scroll-reveal" aria-label="Executive scan">
+      <article class="executive-proof-card">
+        <p class="executive-proof-label" id="executive-priority-label">Policy priority</p>
+        <h3 class="executive-proof-value" id="executive-priority-value">Protect 340B integrity and contract pharmacy access</h3>
+        <p class="executive-proof-note" id="executive-priority-note">HAP's argument is strongest when access, integrity, and patient medication continuity stay linked together.</p>
+      </article>
+      <article class="executive-proof-card executive-proof-card--accent">
+        <p class="executive-proof-label" id="executive-landscape-label">National landscape</p>
+        <h3 class="executive-proof-value" id="executive-landscape-value">Protection remains uneven across the country</h3>
+        <p class="executive-proof-note" id="executive-landscape-note">Use the state map and selected-state panel to compare enacted protections against states where hospitals remain exposed.</p>
+      </article>
+      <article class="executive-proof-card">
+        <p class="executive-proof-label" id="executive-trust-label">Why trust this view</p>
+        <h3 class="executive-proof-value" id="executive-trust-value">Legal status and recency are surfaced directly in the dashboard</h3>
+        <p class="executive-proof-note" id="executive-trust-note">Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals.</p>
+      </article>
+    </section>
 
     <!-- Map hero — centerpiece display -->
     <section id="state-laws" class="map-hero-section span-12 scroll-reveal">
@@ -135,12 +153,12 @@
         <article class="map-hero-card">
           <p class="map-hero-title">State-by-state analysis</p>
           <h2 class="map-hero-headline">340B contract pharmacy protection across the U.S.</h2>
-          <p class="map-hero-sub">Select a state for details. <strong>Pennsylvania is pursuing contract pharmacy protection, which remains central to HAP's policy case for patient medication access.</strong></p>
+          <p class="map-hero-sub" id="map-hero-sub">Select a state for details. <strong>Pennsylvania is pursuing contract pharmacy protection, which remains central to HAP's policy case for patient medication access.</strong></p>
       <div class="selection-summary" id="selection-summary">
         <div class="selection-summary-copy">
           <p class="selection-summary-label">State selection</p>
           <p class="selection-summary-title" id="selection-summary-title">No state selected yet</p>
-          <p class="selection-summary-text" id="selection-summary-text">Choose a state from the map or list to view dashboard details.</p>
+          <p class="selection-summary-text" id="selection-summary-text">Choose a state from the map or list to compare enacted protections, no-protection states, and Pennsylvania's current policy context.</p>
         </div>
         <button type="button" class="selection-clear" id="selection-clear" hidden>Clear selection</button>
       </div>
@@ -153,7 +171,7 @@
             <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
           </div>
         </div>
-        <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite" tabindex="-1"><p>No state selected. Choose a state to view dashboard details.</p></div>
+        <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite" tabindex="-1"><p>No state selected. Choose a state to compare legal-status details and policy context.</p></div>
       </div>
       <div class="state-lists-wrap" id="state-lists-wrap">
         <div class="state-filter-bar">
@@ -192,34 +210,34 @@
           </article>
         </div>
       </section>
-      <h3 class="section-subhead">Recent legal trends</h3>
+      <h3 class="section-subhead">Recent legal signals</h3>
       <div class="trends-grid">
         <div class="trends-card">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
-          <div><h4>Courts</h4><p>States (AR, LA, MO, MN, TN, RI) prevailed when manufacturers challenged laws.</p></div>
+          <div><h4>Courts</h4><p>States including AR, LA, MO, MN, TN, and RI prevailed when manufacturers challenged contract pharmacy protections.</p></div>
         </div>
         <div class="trends-card">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
-          <div><h4>2025 hybrid</h4><p>CO, ME, OH, RI, VT combined pharmacy protections with reporting.</p></div>
+          <div><h4>2025 hybrid</h4><p>CO, ME, OH, RI, and VT paired pharmacy protections with reporting requirements.</p></div>
         </div>
         <div class="trends-card">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
-          <div><h4>Vetoes</h4><p>Some governors vetoed 340B protection (e.g., Virginia).</p></div>
+          <div><h4>Vetoes</h4><p>Some governors vetoed proposed 340B protections, including in Virginia.</p></div>
         </div>
       </div>
-      <p class="sources">Primary legal tracking sources: MultiState, ASHP, and America's Essential Hospitals</p>
+      <p class="sources" id="sources-summary">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
       <details class="methodology-wrap" id="methodology-wrap">
         <summary class="methodology-toggle" id="methodology-toggle">About this data</summary>
         <div class="methodology-content" id="methodology-content">
-          <p><strong>State law data</strong> is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.</p>
+          <p id="methodology-state-law-copy"><strong>State law data</strong> is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.</p>
           <p><strong>Community benefit</strong> figures are from 340B Health and AHA survey data (2024).</p>
           <p><strong>HRSA oversight</strong> figures reflect federal audit activity in 2024.</p>
-          <p><strong>Recommended verification order:</strong> check MultiState first for current legislative status, use ASHP as the pharmacy-policy cross-check, and use America's Essential Hospitals as the final advocacy-reference confirmation.</p>
+          <p><strong>Recommended verification order:</strong> <span id="verification-order-copy">check MultiState first for current legislative status, use ASHP as the pharmacy-policy cross-check, and use America's Essential Hospitals as the final advocacy-reference confirmation.</span></p>
           <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2025</span></p>
           <ul class="source-links">
-            <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a></li>
-            <li><a href="https://www.ashp.org/" target="_blank" rel="noopener noreferrer">ASHP</a></li>
-            <li><a href="https://essentialhospitals.org/" target="_blank" rel="noopener noreferrer">America's Essential Hospitals</a></li>
+            <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a> - current legislative status</li>
+            <li><a href="https://www.ashp.org/" target="_blank" rel="noopener noreferrer">ASHP</a> - pharmacy-policy cross-check</li>
+            <li><a href="https://essentialhospitals.org/" target="_blank" rel="noopener noreferrer">America's Essential Hospitals</a> - advocacy-reference confirmation</li>
           </ul>
         </div>
       </details>
@@ -227,8 +245,8 @@
            after the interactive disclosure is hidden in print. -->
       <section class="print-sources print-only" aria-hidden="true">
         <h3>About this data</h3>
-        <p>State law data is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.</p>
-        <p><strong>Verification order:</strong> MultiState, then ASHP, then America's Essential Hospitals.</p>
+        <p id="print-source-summary">State law data is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.</p>
+        <p><strong>Verification order:</strong> <span id="print-verification-order-copy">MultiState, then ASHP, then America's Essential Hospitals.</span></p>
         <p><strong>Last updated:</strong> <span id="print-methodology-last-updated">March 2025</span></p>
       </section>
         </article>
@@ -298,7 +316,7 @@
             <p class="stat-desc">Audited</p>
           </div>
         </div>
-        <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight</strong>.</p>
+        <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight between covered entities and manufacturers</strong>.</p>
       </article>
       <article id="pa-impact" class="card card--compact">
         <div class="card-heading">
@@ -372,7 +390,7 @@
         </div>
         <div class="card-icon card-icon--rx" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 12h14"/><path d="m3 8 3-3 3 3"/><path d="m21 8-3-3-3 3"/><path d="m3 16 3 3 3-3"/><path d="m21 16-3 3-3-3"/></svg></div>
       </div>
-      <p>Federal guidance permits 340B dispensing through in-house or contract pharmacies. Manufacturer-imposed policies <strong>restrict hospitals to a single contract pharmacy</strong>. Rural and underserved hospitals depend on contract and specialty pharmacies for high-cost specialty medications.</p>
+      <p>Federal guidance permits 340B dispensing through in-house or contract pharmacies. Manufacturer-imposed policies can <strong>restrict hospitals to a single contract pharmacy</strong>, which puts rural, specialty, and underserved patient access at risk when hospitals depend on distributed pharmacy networks.</p>
     </article>
 
     <!-- PA Safeguards -->
@@ -380,14 +398,14 @@
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">Pennsylvania safeguards</p>
-          <h2>PA prevents duplicate discounts</h2>
+          <h2>PA already prevents duplicate discounts</h2>
         </div>
         <div class="card-icon card-icon--check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-2.09 2.09"/><path d="M22 4 12 14.01l-3-3"/></svg></div>
       </div>
       <ul>
-        <li>Manufacturers are not required to provide both 340B discount and Medicaid rebate for the same drug.</li>
-        <li>DHS administers the <strong>340B Drug Exclusion List</strong> and invoices manufacturers for Medicaid rebates; covered entities may not dispense 340B-priced drugs on this list.</li>
-        <li>Contract pharmacies dispense non-340B drugs to Medicare Advantage beneficiaries; DHS invoices manufacturers for rebates.</li>
+        <li>Manufacturers are not required to provide both a 340B discount and a Medicaid rebate for the same drug.</li>
+        <li>DHS administers the <strong>340B Drug Exclusion List</strong> and invoices manufacturers for Medicaid rebates, so covered entities may not dispense 340B-priced drugs on this list.</li>
+        <li>Contract pharmacies dispense non-340B drugs to Medicare Advantage beneficiaries, and DHS invoices manufacturers for rebates.</li>
       </ul>
     </article>
 

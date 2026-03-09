@@ -1690,3 +1690,1104 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 - `v15-v16` contributed to the current print continuity work: live intro cards preserved in print, compact print-only state summary, and print-only Pennsylvania default selection.
 - `v17-v18` contributed to clearer neutral-state wording, source-verification guidance, and explicit manual-review expectations around print and source credibility.
 - `v19-v20` contributed to stricter release discipline, smaller-system maintenance guidance, and tighter boundaries around what the audit can and cannot prove.
+- `v21-v30` contributed to a stronger executive scan layer, more forceful claim-to-evidence hierarchy, tighter selected-state storytelling, and a safer config-driven source of truth for high-salience copy.
+
+---
+
+## Prompts v26
+
+### V26.1 Section Footprint Pass
+
+> Reassess every major dashboard section and decide whether it truly changes reader understanding. If a section does not earn its footprint in a fast executive scan, compress it, demote it, or remove redundancy around it.
+
+### V26.2 Claim-to-Evidence Path Pass
+
+> For each major policy or impact claim on the page, make the proof path easier to see. Readers should not have to hunt for the supporting metric, source cue, or state example that justifies the statement.
+
+### V26.3 Selected-State Stress Test Pass
+
+> Check whether the dashboard still feels intentional when a reader selects a state other than Pennsylvania. The state-detail flow should still read like a coherent argument, not a Pennsylvania-only narrative with fallback behavior.
+
+### V26.4 Content Drift Control Pass
+
+> Reduce the risk that metadata, visible copy, print content, and source notes drift apart. Prefer a clearer source of truth for high-salience factual text and date-driven surfaces.
+
+### V26.5 Update-Risk Drill Pass
+
+> Simulate a future legal-status update and identify which surfaces must change together: state data, selection summaries, source notes, print context, and any claim that depends on the update. Improve the system where one missed edit could mislead readers.
+
+### V26.6 Map Value Proof Pass
+
+> Reconfirm that the map earns its central footprint by helping readers orient themselves faster than a text-only summary would. If nearby copy is doing the same work less effectively, tighten the copy rather than bloating the map section.
+
+### V26.7 KPI Label Honesty Pass
+
+> Re-check every KPI label and description for ambiguity. If a number sounds impressive but the label leaves room for misreading, tighten the wording until the metric is unmistakably clear in both live and print contexts.
+
+### V26.8 Evidence Layer Integration Pass
+
+> Strengthen how evidence appears in the dashboard itself. Dates, source cues, selected-state context, and policy framing should reinforce each other instead of reading like separate editorial and compliance layers.
+
+### V26.9 Policy Ask Compression Pass
+
+> State the HAP policy ask as clearly as possible in fewer words. Remove any extra phrase that does not sharpen what lawmakers are being asked to protect or why hospital leaders should care.
+
+### V26.10 Maintenance Contract Pass
+
+> Make the change boundaries more obvious for a novice maintainer. High-risk dashboard surfaces should be easy to locate, hard to misunderstand, and documented close to where the risk actually lives.
+
+---
+
+## Prompts v27
+
+### V27.1 Fast Executive Scan Pass
+
+> Improve the dashboard so a skeptical executive can answer three questions in under 30 seconds: What is 340B? What is HAP asking for? Why does it matter now?
+
+### V27.2 Proof-First Intro Pass
+
+> Rework the opening surfaces so evidence lands earlier. The first screen should not rely on later cards or the state map to justify why the issue matters.
+
+### V27.3 Redundancy Purge Pass
+
+> Identify where the same idea appears in the intro, HAP position, map context, KPI labels, and policy cards. Keep the strongest version and cut the weaker restatements.
+
+### V27.4 Print Story Compression Pass
+
+> Tighten the PDF story so it reads like a credible short brief instead of a direct export of a web interface. Preserve meaning while reducing page-filling repetition.
+
+### V27.5 Selection Summary Upgrade Pass
+
+> Make the selection summary more useful than a status label. It should quickly explain why the selected state matters without forcing readers to interpret the detail panel first.
+
+### V27.6 Source Role Clarity Pass
+
+> Clarify what each source contributes: legislative status, pharmacy-policy cross-check, advocacy confirmation, or metric support. Do not let source names float without purpose.
+
+### V27.7 Cross-State Story Pass
+
+> Ensure the dashboard communicates a national story and not just a list of state facts. The interaction between protected states, no-protection states, and Pennsylvania should feel intentional.
+
+### V27.8 Interaction Without Fragility Pass
+
+> Improve the dashboard only in ways that preserve resilience. New clarity should not depend on brittle selector chains, hidden duplication, or stateful behavior that is hard to restore.
+
+### V27.9 Print Appendix Discipline Pass
+
+> Reconfirm that print-only summary material behaves like a concise appendix. Keep it helpful, but do not let it outgrow the main narrative or steal a page again.
+
+### V27.10 Reader Confidence Pass
+
+> Review the dashboard for confidence leaks: vague tone, unsupported claims, hidden update assumptions, or print-only surprises. Tighten the surfaces that could make an informed reader doubt the product.
+
+---
+
+## Prompts v28
+
+### V28.1 Strongest Claim Wins Pass
+
+> Identify the strongest claim on the page and make sure it receives the clearest support. Demote or compress any weaker claim that competes for the same reader attention.
+
+### V28.2 Skeptical Reader Pass
+
+> Assume the reader doubts the stakes, doubts the source recency, and doubts whether the selected state matters. Improve only the surfaces that answer those doubts quickly and credibly.
+
+### V28.3 State Detail Economy Pass
+
+> Tighten the state detail panel so every field earns its place. Replace generic labels and repeated phrasing with concise legal-status meaning and why-it-matters context.
+
+### V28.4 Live-to-Print Continuity Pass
+
+> Re-check whether each important print surface is traceable to a live dashboard surface. Avoid letting the PDF carry any message that feels disconnected from the actual product.
+
+### V28.5 Update Surface Mapping Pass
+
+> Make it easier to see which files and text surfaces must move together when dates, legal statuses, or core narrative copy changes. The next update should not require guesswork.
+
+### V28.6 Contextual Metric Pass
+
+> Put every major number in context close to where it appears. A metric should not require a separate card or later paragraph to explain what it measures or why it matters.
+
+### V28.7 Board Packet Test Pass
+
+> Review the dashboard and PDF as if they were being placed in a board packet. Improve what supports decision-making and trim what reads like polished filler.
+
+### V28.8 Source Date Placement Pass
+
+> Reevaluate where date and freshness cues appear. Put them where a decision-maker expects trust signals, not only where a maintainer expects to edit them.
+
+### V28.9 Default State Justification Pass
+
+> Keep Pennsylvania as the default print state only if the product clearly explains why that is a meaningful context for HAP’s audience. The rationale should read as editorial intent, not a technical patch.
+
+### V28.10 Small-System Pressure Pass
+
+> Before adding another improvement, ask whether one novice maintainer could still debug it safely. Prefer fewer but stronger product surfaces over scattered enhancements that multiply risk.
+
+---
+
+## Prompts v29
+
+### V29.1 Hero Hierarchy Pass
+
+> Strengthen the hierarchy of the first visible content so readers immediately recognize the problem statement, the policy ask, and the proof anchors. Remove any opening signal that competes with those priorities.
+
+### V29.2 Footprint Justification Pass
+
+> Pressure-test whether each major card, metric block, and support section deserves its current size. If it does not change interpretation proportionally to its space, compress it.
+
+### V29.3 Claim Drift Audit Pass
+
+> Re-check the dashboard for any claim that could silently drift out of sync with state data, print defaults, or methodology notes. Tighten the content path before the next data update makes the risk real.
+
+### V29.4 Print Recovery Memory Pass
+
+> Treat the existing print pipeline as hard-earned reliability. Improve it only in ways that reduce future blank-page, duplicate-content, missing-map, or stale-state regressions.
+
+### V29.5 Map-and-Detail Cohesion Pass
+
+> Ensure the map, selection summary, and detail panel work as one decision surface. A reader should not have to mentally stitch together separate widgets to understand state context.
+
+### V29.6 Audience Precision Pass
+
+> Re-check the wording for lawmakers, CEOs, and administrators at the same time. Keep the copy precise enough for policy credibility and plain enough for operational readers.
+
+### V29.7 Print Density Without Fatigue Pass
+
+> Increase PDF density only where it improves scan speed. Avoid shrinking or packing content so aggressively that a reader resents the document by page three.
+
+### V29.8 Update Workflow Honesty Pass
+
+> Make the maintenance docs honest about where careful human judgment is still required. Do not let automation language imply that copy, law-status trust, or PDF quality can be fully delegated.
+
+### V29.9 Evidence Placement Pass
+
+> Move the most useful proof closer to the claims it supports. If supporting context is stranded too far from its claim, tighten the layout or copy so the evidence feels native.
+
+### V29.10 Demotion Discipline Pass
+
+> Practice demotion as a product skill. When content matters but does not belong in the first scan, move it lower or make it secondary rather than letting it compete at the top.
+
+---
+
+## Prompts v30
+
+### V30.1 Ruthless Scan Pass
+
+> Treat the current dashboard like it must survive an unforgiving 30-second scan by a skeptical decision-maker. Anything that delays comprehension of the issue, ask, evidence, or selected-state meaning should be compressed or removed.
+
+### V30.2 Strongest-Proof Pairing Pass
+
+> Pair the strongest product claim with the strongest nearby proof. Do not let high-value evidence sit in secondary areas while weaker framing dominates the first screen.
+
+### V30.3 Print Worthiness Pass
+
+> Reassess whether every printed block is worthy of ink, paper, and executive attention. If a block feels like a leftover web artifact, redesign, compress, or demote it.
+
+### V30.4 State Narrative Tough-Love Pass
+
+> Rewrite any selected-state language that reads like a neutral database output when it should read like a useful policy briefing. Keep it precise, but make it pull its narrative weight.
+
+### V30.5 Metric Skepticism Pass
+
+> Challenge every metric as if an informed reader asked, “Why is this here?” Keep only the numbers that advance understanding and label them so they can survive scrutiny in print.
+
+### V30.6 Section Survival Pass
+
+> Ask of every major surface: if this disappeared, would the dashboard become less convincing or just less busy? Use the answer to drive stronger hierarchy and cleaner pacing.
+
+### V30.7 Copy Severity Pass
+
+> Replace the next sentence that sounds generic, polite, or padded with language that is tighter, more exact, and more credible. Favor forceful clarity over decorous filler.
+
+### V30.8 Reader Task Completion Pass
+
+> Ensure the dashboard helps a reader complete the core tasks fast: understand 340B, grasp the HAP ask, inspect a state, judge the evidence, and trust the PDF. Tighten anything that slows that path.
+
+### V30.9 Structural Honesty Pass
+
+> Keep the product recognizable, but stop protecting weak structure out of habit. If a cleaner arrangement improves understanding without breaking the system, choose the cleaner arrangement.
+
+### V30.10 Overhaul Without Drift Pass
+
+> Push the dashboard hard on clarity, authority, and evidence while preserving its static-site constraints, local-asset posture, and novice-maintainable shape.
+
+---
+
+## Prompts v31
+
+### V31.1 Section Elimination Pass
+
+> Force each section to justify itself against an executive reader’s limited attention. If it does not materially change interpretation, demote it or cut its weight.
+
+### V31.2 Hero Compression Pass
+
+> Reduce the time it takes to understand the dashboard’s opening argument. The top surfaces should communicate the issue, the ask, and the evidence faster than they currently do.
+
+### V31.3 Redundancy Removal Pass
+
+> Hunt down repeated meaning across titles, subheads, labels, and explanatory copy. Keep the strongest instance and remove the softer duplicates.
+
+### V31.4 Surface Priority Pass
+
+> Re-rank every visible surface by real reader value rather than by design symmetry. Let the highest-value content dominate the hierarchy.
+
+### V31.5 High-Signal Copy Pass
+
+> Replace explanatory sentences that merely sound responsible with sentences that actually clarify stakes, evidence, or action.
+
+### V31.6 Scan Friction Pass
+
+> Identify every point where the reader must slow down to figure out what matters. Reduce that friction without flattening the product into generic summary copy.
+
+### V31.7 Print Echo Pass
+
+> Make sure the PDF still communicates the same priority order as the live dashboard. The print version should not accidentally promote lower-value material.
+
+### V31.8 Selection Relevance Pass
+
+> Make state selection feel strategically relevant, not just interactive. The chosen state should immediately feel like part of the dashboard’s argument.
+
+### V31.9 Proof Visibility Pass
+
+> Bring proof closer to prominence. The dashboard should not ask readers to trust a claim before it has shown why that claim is credible.
+
+### V31.10 Maintenance Restraint Pass
+
+> Improve the product aggressively without making it harder for one person to maintain. Reject elegant-looking complexity that increases update risk.
+
+---
+
+## Prompts v32
+
+### V32.1 Brutal Hero Discipline Pass
+
+> Treat the opening as if only one message can survive. Make the policy case unmistakable before any secondary context gets space.
+
+### V32.2 Intro Card Pressure Pass
+
+> Force the intro cards to compete for space and keep only what makes them stronger. Remove any sentence that merely softens or repeats what the card already says.
+
+### V32.3 Ask-First Precision Pass
+
+> Tighten the HAP ask until it feels like a decision prompt rather than a general position statement. Every word should help the reader understand the requested protection.
+
+### V32.4 Why-Now Pass
+
+> Clarify why contract pharmacy protection matters now, not in the abstract. Remove timeless advocacy phrasing where a sharper current-stakes framing would work better.
+
+### V32.5 Credibility Front-Loading Pass
+
+> Move the most important trust signals earlier in the reader journey. Dates, sources, and evidence cues should support the first impression, not only the last.
+
+### V32.6 Layout Severity Pass
+
+> Make layout decisions based on what deserves dominance, not on what fills a grid neatly. Unequal emphasis is acceptable when it improves understanding.
+
+### V32.7 Policy Card Toughening Pass
+
+> Force the policy cards to earn their space with concrete meaning. Replace broad descriptions with precise statements about risk, safeguards, or operational implications.
+
+### V32.8 Print Header Ruthlessness Pass
+
+> Keep the print header only as large as needed to orient the reader. Remove any header element that competes with the first block of real content.
+
+### V32.9 Metric Context Severity Pass
+
+> If a metric can be misunderstood in isolation, fix that immediately. Strong numbers do not excuse weak context.
+
+### V32.10 Narrative Continuity Pass
+
+> Ensure the dashboard reads as one argument from top to bottom rather than as a collection of individually polished cards.
+
+---
+
+## Prompts v33
+
+### V33.1 Evidence Purge Pass
+
+> Remove decorative or low-value evidence cues and keep only the proof elements that genuinely strengthen trust or interpretation.
+
+### V33.2 Claim Audit Pass
+
+> Challenge each claim on the page: what exactly is being asserted, and where is the nearest support? If the answer is weak, rewrite or demote the claim.
+
+### V33.3 Source Surface Hardening Pass
+
+> Make source roles and data dates harder to miss and easier to trust. Small trust cues should do more work, not just exist.
+
+### V33.4 Proof-to-Position Pass
+
+> Reconnect evidence directly to the HAP position. The dashboard should make it obvious why the proof supports the ask.
+
+### V33.5 State Example Force Pass
+
+> Use selected-state context as a proof surface, not just an interaction surface. A chosen state should strengthen the broader argument.
+
+### V33.6 Print Proof Retention Pass
+
+> Ensure the PDF keeps the strongest proof, not just the strongest layout. If print loses meaning while preserving structure, the structure is not good enough.
+
+### V33.7 Selection Summary Evidence Pass
+
+> Upgrade the selection summary so it signals why the state matters, not just what state is selected.
+
+### V33.8 Reader Doubt Pass
+
+> Assume the reader doubts both the narrative and the evidence. Tighten the surfaces that answer doubt fastest.
+
+### V33.9 Precision Over Breadth Pass
+
+> Prefer one exact statement over three broad supporting sentences. Breadth without precision weakens trust.
+
+### V33.10 Audit Honesty Reinforcement Pass
+
+> Keep the audit aligned to structural truth and let human review own visual/editorial truth. Do not blur those responsibilities.
+
+---
+
+## Prompts v34
+
+### V34.1 KPI Skepticism Pass
+
+> Treat every KPI as guilty until clearly justified. A number that lacks immediate meaning or support should be relabeled, relocated, or reduced.
+
+### V34.2 Metric Hierarchy Pass
+
+> Re-rank dashboard metrics by actual persuasive value. Let the most decision-relevant number lead and stop giving equal visual weight to weaker supporting metrics.
+
+### V34.3 Supporting Card Demotion Pass
+
+> If supporting cards do not change reader interpretation as much as they consume attention, compress them aggressively.
+
+### V34.4 Community Benefit Proof Pass
+
+> Make community benefit evidence feel less like a celebratory stat block and more like a concrete reason the policy debate matters.
+
+### V34.5 Oversight Clarity Pass
+
+> Tighten the oversight surface so readers understand what is being measured, why it matters, and how it supports the broader credibility argument.
+
+### V34.6 State Metric Alignment Pass
+
+> Make sure Pennsylvania-specific metrics do not visually compete with national signals unless they are deliberately framed as the focal state evidence.
+
+### V34.7 Print Metric Legibility Pass
+
+> Ensure every printed metric survives without hover, context, or color cues. If it cannot, change the label or surrounding copy.
+
+### V34.8 Number-to-Meaning Pass
+
+> Bring meaning closer to the number. Do not make the reader scan away from a metric to understand why it exists.
+
+### V34.9 Scale Honesty Pass
+
+> Re-check whether large numbers and percentages are framed in a way that is impressive but still honest. Keep scale cues precise and credible.
+
+### V34.10 Signal Density Pass
+
+> Increase information density by improving meaning per line, not by merely shrinking or packing the layout.
+
+---
+
+## Prompts v35
+
+### V35.1 Map Justification Pass
+
+> Force the map to justify its dominance every time. If the map is central, its surrounding copy and detail flow must make that centrality worthwhile.
+
+### V35.2 Map-to-Detail Speed Pass
+
+> Reduce the delay between clicking a state and understanding why it matters. The map interaction should feel like a fast path to meaning, not a scenic route.
+
+### V35.3 Non-PA State Credibility Pass
+
+> Ensure the dashboard still feels equally intentional when a reader explores a non-Pennsylvania state. The product should not collapse into a local-only narrative outside its default context.
+
+### V35.4 Legend Utility Pass
+
+> Make the legend and surrounding cues earn their space. If they are doing less work than nearby text, simplify and sharpen them.
+
+### V35.5 Detail Panel Authority Pass
+
+> Strengthen the state detail panel so it feels authoritative and useful, not just informative. It should help a decision-maker interpret the state immediately.
+
+### V35.6 Empty-State Quality Pass
+
+> Keep the neutral live state honest without making it feel unfinished. The dashboard should still look intentional before a state is chosen.
+
+### V35.7 Print State Story Pass
+
+> Ensure the printed selected-state context, state summary, and map highlight tell one unmistakable story. No reader should wonder why that state is there.
+
+### V35.8 State List Severity Pass
+
+> Keep the state lists only as large and prominent as their utility justifies. Abbreviations are reference material, not the product’s emotional center.
+
+### V35.9 Fallback Trust Pass
+
+> If the map fails, the fallback should still preserve the dashboard’s credibility. A degraded state should remain coherent, not just technically functional.
+
+### V35.10 Interaction Value Pass
+
+> Protect interactions that deepen understanding and challenge interactions that only add motion or novelty.
+
+---
+
+## Prompts v36
+
+### V36.1 Board Packet PDF Pass
+
+> Treat the PDF as if it were being circulated without the live site. Strengthen clarity, trim web-only artifacts, and keep the print narrative credible to a cold reader.
+
+### V36.2 Print Page Economy Pass
+
+> Make every printed page earn its place. Save pages through hierarchy and compression, not through hiding the most useful evidence.
+
+### V36.3 Appendix Brutality Pass
+
+> Compress any appendix-style material until it truly feels like reference support, not a competing chapter of the report.
+
+### V36.4 Header Subordination Pass
+
+> The print header must orient the reader and then get out of the way. Keep the emphasis on the argument, not the report chrome.
+
+### V36.5 Print Flow Pass
+
+> Tighten the transitions between intro, state evidence, metrics, and policy implications so the PDF reads like a deliberate brief rather than a frozen webpage.
+
+### V36.6 Selected-State Print Authority Pass
+
+> Make the default or user-selected print state feel like an intentional proof surface with clear meaning for HAP’s audience.
+
+### V36.7 Print Typography Severity Pass
+
+> Use typography in print to reinforce hierarchy, not to decorate. Stronger hierarchy should replace repeated words and repeated labels.
+
+### V36.8 Print Recovery Guardrail Pass
+
+> Improve print only in ways that reduce regression risk. Preserve the hard-won protections against blank pages, missing maps, and stale interaction state.
+
+### V36.9 PDF Reader Fatigue Pass
+
+> Reduce the points where a PDF-only reader might lose patience. Keep the document moving from insight to evidence to implication with less drag.
+
+### V36.10 Print-Only Honesty Pass
+
+> Any print-only content should exist only where it solves a real browser-print problem or improves document clarity. Avoid print-only embellishment.
+
+---
+
+## Prompts v37
+
+### V37.1 Lawmaker Precision Pass
+
+> Rewrite broad policy language until the lawmaker audience hears a clear ask, a clear risk, and a clear reason to care.
+
+### V37.2 Hospital-Leader Consequence Pass
+
+> Tighten executive-facing copy until operational consequences, patient-access implications, and oversight realities are unmistakable.
+
+### V37.3 Advocacy Without Haze Pass
+
+> Keep the dashboard persuasive without letting it become foggy. The strongest advocacy is the version that sounds specific and evidenced, not grand.
+
+### V37.4 Sentence Severity Pass
+
+> Remove one soft sentence at a time and replace it with language that carries clearer meaning under scrutiny.
+
+### V37.5 Section Title Force Pass
+
+> Review titles and headings for precision and force. A title should orient fast and not waste space on generic framing.
+
+### V37.6 Ask Repetition Pass
+
+> Repeat the HAP ask only where repetition strengthens recall. Eliminate duplicate ask phrasing where it merely fills space.
+
+### V37.7 Tone Discipline Pass
+
+> Balance authority and restraint. The dashboard should sound sharp and credible, not inflated, apologetic, or vague.
+
+### V37.8 Audience Drift Pass
+
+> Re-check whether any section has drifted toward speaking only to one audience. Pull it back so lawmakers, CEOs, and administrators can all use it.
+
+### V37.9 Print Tone Survival Pass
+
+> Ensure the copy still sounds strong when read as plain black text in print. Tone should not depend on interaction, color, or layout flourishes.
+
+### V37.10 Reader Respect Pass
+
+> Treat reader attention as expensive. Every sentence should reward it with clarity, evidence, or decision value.
+
+---
+
+## Prompts v38
+
+### V38.1 Default-State Stress Pass
+
+> Change the mental test state from Pennsylvania to a weaker, less favorable, or less familiar example and ask whether the dashboard still feels coherent. Improve the structure where it depends too heavily on the default narrative.
+
+### V38.2 Cross-State Consistency Pass
+
+> Ensure the selected-state experience stays structurally consistent across enacted, not-enacted, and hybrid/reporting states.
+
+### V38.3 Notes Field Quality Pass
+
+> Re-check whether state notes are doing enough interpretive work. A note should clarify what is special about the state, not merely exist as leftover metadata.
+
+### V38.4 Selection Language Precision Pass
+
+> Tighten state-specific language so it preserves legal-status precision: enacted protection, no protection law, hybrid/reporting, in progress, or vetoed.
+
+### V38.5 Map Story Balance Pass
+
+> Keep the national map story and the selected-state story in balance. Neither should overwhelm the other.
+
+### V38.6 Focal-State Integrity Pass
+
+> Make Pennsylvania’s focal role editorially credible without crowding out the rest of the national story.
+
+### V38.7 Stress-Print Pass
+
+> Re-check the PDF after imagining multiple different selected states. The print story should remain useful even when the live user path changes.
+
+### V38.8 State Comparison Value Pass
+
+> Help readers compare what a protected state means versus a no-protection state without turning the page into a spreadsheet.
+
+### V38.9 Selection Confidence Pass
+
+> When a state is selected, the product should immediately feel more informative and more specific, not just more active.
+
+### V38.10 Evidence Stability Pass
+
+> Make sure the evidence and interpretation do not feel custom-built for only one favored example state.
+
+---
+
+## Prompts v39
+
+### V39.1 Small-Team Under Pressure Pass
+
+> Assume a rushed novice maintainer must update this dashboard correctly in one sitting. Strengthen the structure where that task still feels risky or obscure.
+
+### V39.2 Change-Routing Pass
+
+> Make it even clearer which surfaces are content, data, print, behavior, and source trust. Wrong-file edits should become less likely.
+
+### V39.3 JS Boundary Pass
+
+> Improve the organization inside the JavaScript so high-risk behaviors like print, selection state, and share flow are easier to reason about without introducing a framework or build step.
+
+### V39.4 Config Surface Pass
+
+> Move more high-salience factual or repeated text toward a cleaner configuration boundary where that reduces drift and makes updates safer.
+
+### V39.5 Audit Value Pass
+
+> Expand audit checks only where they catch recurring structural failures. Avoid adding clever checks that will rot or mislead.
+
+### V39.6 Documentation Severity Pass
+
+> Make the docs shorter where they are padded and stronger where they are timid. A maintainer should see the hard requirements fast.
+
+### V39.7 Release Gate Force Pass
+
+> Treat release guidance as operational discipline, not advice. The next maintainer should know what blocks a publish without ambiguity.
+
+### V39.8 Drift Prevention Pass
+
+> Reduce the number of places where the same fact or message can drift out of sync over time.
+
+### V39.9 Print Debugging Pass
+
+> Keep print debugging obvious. The system should make it easier to understand whether a print failure comes from HTML structure, CSS page flow, JS preparation, or stale data.
+
+### V39.10 Sustainability Over Cleverness Pass
+
+> Prefer the version of every improvement that a small team can safely live with, not the version that looks smartest in isolation.
+
+---
+
+## Prompts v40
+
+### V40.1 Final Ruthless Release Candidate Pass
+
+> Review the dashboard as if it must survive skeptical executive distribution tomorrow. Improve only what raises authority, clarity, evidence, or maintainability under pressure.
+
+### V40.2 Survival-of-the-Fittest Surface Pass
+
+> Let the strongest surfaces dominate and the weakest ones shrink. Stop giving equal respect to content that delivers unequal value.
+
+### V40.3 Brutal Print Review Pass
+
+> Treat the PDF as a document that can embarrass the project if it looks bloated, vague, or fragile. Tighten whatever still feels soft.
+
+### V40.4 Claim Severity Pass
+
+> Any claim that cannot quickly prove itself should be weakened, clarified, or removed.
+
+### V40.5 Layout Honesty Pass
+
+> Use layout to reveal real priority, not to preserve symmetry for its own sake.
+
+### V40.6 Reader Conversion Pass
+
+> Increase the odds that a reader leaves understanding the 340B issue, the HAP ask, and the state-level stakes without a guided explanation.
+
+### V40.7 Trust Signal Dominance Pass
+
+> Keep small trust signals visible enough to matter: dates, sources, legal-status wording, and print context. They should quietly reinforce the whole product.
+
+### V40.8 Structural Severity Pass
+
+> Keep what works, but stop protecting weak arrangement simply because it is familiar. Preserve recognizability, not inertia.
+
+### V40.9 Maintenance Reality Pass
+
+> Assume this dashboard must continue evolving through many future edits. Favor the overhaul choices that reduce long-term confusion and regression risk.
+
+### V40.10 Overhaul Discipline Pass
+
+> A brutal pass should make the product clearer and stronger, not merely harsher in tone. Keep every forceful change tied to reader value or maintenance safety.
+
+---
+
+## Prompts v41
+
+### V41.1 Future Claim Map Pass
+
+> Build the next wave around an explicit map of which major claims still need better nearby proof, clearer state examples, or stronger source cues.
+
+### V41.2 Future Reader Task Pass
+
+> Design the next improvements around concrete reader tasks, not generic polish. Ask what still feels too slow or uncertain for lawmakers, CEOs, or administrators.
+
+### V41.3 Future Section Retirement Pass
+
+> Identify the next section, card, or label that could be retired entirely without losing meaning. Use deletion as a future design tool, not just compression.
+
+### V41.4 Future Drift Audit Pass
+
+> Search for the next places where metadata, print copy, state data, and on-page claims might drift apart after future updates.
+
+### V41.5 Future Update Drill Pass
+
+> Simulate a major legal-status change and plan the next improvements around the surfaces most likely to break or mislead during that update.
+
+### V41.6 Future Proof Layer Pass
+
+> Improve the next version so evidence becomes even more native to the product rather than appended as maintenance text.
+
+### V41.7 Future Print Compression Pass
+
+> Plan future print improvements that reduce page count through better hierarchy and smarter content ranking, not by hiding useful material.
+
+### V41.8 Future Fallback Strength Pass
+
+> Keep strengthening the dashboard’s degraded states so map, print, and share failures still leave a coherent product behind.
+
+### V41.9 Future Audience Split Pass
+
+> Identify where lawmakers, hospital leaders, and administrators still want slightly different cues, then plan changes that sharpen without fragmenting the dashboard.
+
+### V41.10 Future Outcome Filter Pass
+
+> Reject future work that adds prompt volume faster than product value. Keep the next wave grounded in visible outcomes.
+
+---
+
+## Prompts v42
+
+### V42.1 Cross-State Comparison Pass
+
+> Plan future improvements that make comparing state conditions easier without turning the dashboard into a dense legal reference sheet.
+
+### V42.2 Hybrid-State Clarity Pass
+
+> Improve future handling of hybrid, reporting, or vetoed states so the dashboard preserves legal precision even as state policy complexity grows.
+
+### V42.3 State Note Standardization Pass
+
+> Tighten the next version of state notes so they read like deliberate editorial context rather than uneven metadata leftovers.
+
+### V42.4 Selection Explanation Pass
+
+> Keep improving the selected-state narrative so it feels like a useful briefing layer, not only a data lookup surface.
+
+### V42.5 Future Neutral-State Pass
+
+> Re-check whether the neutral live state still feels intentional after future content additions or hierarchy changes.
+
+### V42.6 Proof Ranking Pass
+
+> Rank future evidence surfaces by persuasive value and decide which should move closer to the hero story versus which should remain supportive.
+
+### V42.7 Reader Confidence Recovery Pass
+
+> Plan the next changes around repairing any remaining moments where a skeptical reader could still lose confidence.
+
+### V42.8 Source Freshness Emphasis Pass
+
+> Improve future freshness cues so they stay visible and credible without cluttering the product with repeated dates.
+
+### V42.9 Future Print State Story Pass
+
+> Keep planning improvements that make the selected-state print story clearer even if the future layout evolves.
+
+### V42.10 Future Evidence Discipline Pass
+
+> Ensure every future evidence addition either sharpens trust or improves interpretation. Do not add proof surfaces that merely decorate the narrative.
+
+---
+
+## Prompts v43
+
+### V43.1 Low-Attention Reader Pass
+
+> Design future improvements for a reader who gives the dashboard less time than expected. Keep comprehension resilient under low attention.
+
+### V43.2 First-Impression Trust Pass
+
+> Improve the next version so the dashboard earns trust in the first few seconds through hierarchy, clarity, and evidence placement.
+
+### V43.3 Cold-PDF Reader Pass
+
+> Keep planning around readers who will only see the PDF. The future document should explain itself without the live experience.
+
+### V43.4 Executive Summary Toughening Pass
+
+> Identify the next places where summary copy still sounds soft or generic and plan sharper replacements.
+
+### V43.5 Policy Ask Recall Pass
+
+> Make future changes that improve whether readers can remember the HAP ask after a single pass through the dashboard.
+
+### V43.6 Section Recall Pass
+
+> Reduce the number of sections that are visible but not memorable. Future hierarchy should improve recall, not just appearance.
+
+### V43.7 Evidence Recall Pass
+
+> Plan future evidence changes around what readers are most likely to remember and cite back to others.
+
+### V43.8 Future Friction Pass
+
+> Identify the next small interaction, wording, or print friction that disproportionately slows comprehension.
+
+### V43.9 Future Skeptic Pass
+
+> Assume future readers will be more skeptical, not less. Use that standard to decide what future claims and layouts must improve.
+
+### V43.10 Outcome Memory Pass
+
+> Keep future prompt writing tied to what the dashboard still fails to do for real readers, not what an abstract prompt system wants to talk about.
+
+---
+
+## Prompts v44
+
+### V44.1 Appendix Redesign Pass
+
+> Reimagine future appendix-style material as a deliberately supportive reference layer with tighter structure and less chance of stealing attention.
+
+### V44.2 Source Reference Card Pass
+
+> Consider whether future source trust could be clarified through a stronger but still compact reference surface instead of scattered reminders.
+
+### V44.3 Print Navigation Pass
+
+> Explore future print cues that help readers orient themselves across pages without turning the PDF into a heavy formal report.
+
+### V44.4 Page Break Intelligence Pass
+
+> Improve future print page-break logic only where it clearly reduces wasted space or broken narrative flow.
+
+### V44.5 Trust Layer Balance Pass
+
+> Plan future trust improvements that strengthen credibility without burying readers in verification language.
+
+### V44.6 Hierarchy Durability Pass
+
+> Make future hierarchy choices durable enough to survive copy tweaks, data updates, and print revisions without collapsing.
+
+### V44.7 Appendix Entry Pass
+
+> If a dense support block remains necessary in the future, design a cleaner entry point so it feels invited rather than dumped onto the page.
+
+### V44.8 Print Reader Recovery Pass
+
+> Reduce the future chances that a reader loses the thread while moving from main argument to supporting reference material in print.
+
+### V44.9 Future Annotation Pass
+
+> Consider whether selected future annotations, labels, or reference cues could do more work than adding new cards or copy blocks.
+
+### V44.10 Future Compression Logic Pass
+
+> Keep compression decisions grounded in what slows or distracts readers, not in arbitrary page-count goals.
+
+---
+
+## Prompts v45
+
+### V45.1 Update Drill Expansion Pass
+
+> Expand future planning around real update scenarios: new law enacted, veto, hybrid state change, source date shift, or metric refresh.
+
+### V45.2 Change Impact Map Pass
+
+> Make future change-impact mapping clearer so maintainers know which content, metadata, print, and audit surfaces move together.
+
+### V45.3 Drift Alert Pass
+
+> Identify future structural signs that a claim or date is likely to drift before a human reviewer catches it.
+
+### V45.4 Maintainer Speed Pass
+
+> Optimize future maintenance for correct speed, not just speed. A hurried maintainer should still be guided toward safe edits.
+
+### V45.5 Release Gate Recovery Pass
+
+> Reassess whether the release gate is still strong enough after future dashboard growth. Tighten it before complexity outpaces discipline.
+
+### V45.6 Audit Expansion Restraint Pass
+
+> Add future audit checks only when the regression risk is proven recurrent and structurally detectable.
+
+### V45.7 Source Update Path Pass
+
+> Keep improving how source updates are verified, documented, and reflected in both live and print contexts.
+
+### V45.8 Print Update Safety Pass
+
+> Plan future print changes so date, state, and evidence updates do not quietly reopen past PDF regressions.
+
+### V45.9 Documentation Under Stress Pass
+
+> Make the future docs even more usable under rushed, real-world maintenance conditions.
+
+### V45.10 Future Safe-Change Pass
+
+> Prefer future improvements that increase confidence in safe iteration over changes that only increase visual novelty.
+
+---
+
+## Prompts v46
+
+### V46.1 Trust Signal Resilience Pass
+
+> Keep strengthening the trust signals that should survive every future revision: dates, source roles, legal-status precision, and print context.
+
+### V46.2 Metadata Resilience Pass
+
+> Improve future metadata handling so the shared preview stays tightly aligned with the actual dashboard story after major edits.
+
+### V46.3 Legal-Status Precision Pass
+
+> Continue tightening the future handling of enacted protections, no-law states, hybrids, reporting models, and in-progress efforts.
+
+### V46.4 Source Placement Resilience Pass
+
+> Make future source cues more resistant to being buried by layout or copy changes.
+
+### V46.5 Evidence Surface Durability Pass
+
+> Keep future evidence surfaces strong enough that they are not the first things weakened by later design changes.
+
+### V46.6 Reader Trust Recovery Pass
+
+> Target the next places where trust could be lost and recover it through tighter proof, better wording, or clearer structure.
+
+### V46.7 Print Trust Pass
+
+> Plan future print updates around helping a PDF-only reader believe the document is current, careful, and deliberate.
+
+### V46.8 Change Transparency Pass
+
+> Make future revisions easier to understand in terms of what changed, why it changed, and what new risks were avoided.
+
+### V46.9 Evidence Calm Pass
+
+> Keep future proof surfaces calm and credible. Avoid over-signaling trust in ways that look defensive or cluttered.
+
+### V46.10 Durable Credibility Pass
+
+> Choose future improvements that make the dashboard harder to doubt even after many subsequent edits.
+
+---
+
+## Prompts v47
+
+### V47.1 Skeptical Stakeholder Packet Pass
+
+> Imagine the dashboard is being circulated among skeptical stakeholders who will scrutinize both message and proof. Plan future changes that hold up under that distribution model.
+
+### V47.2 Objection Handling Pass
+
+> Identify the next reader objections the dashboard should answer faster: “Is this current?”, “What is the ask?”, “Why this state?”, “What proves this?”
+
+### V47.3 Decision-Maker Utility Pass
+
+> Improve future versions so each major surface answers a real decision-maker need instead of a generic content category.
+
+### V47.4 Evidence Challenge Pass
+
+> Assume future readers will challenge the strongest evidence blocks first. Strengthen those blocks before adding new ones.
+
+### V47.5 Tone Under Scrutiny Pass
+
+> Keep future language strong enough to advocate and precise enough to survive a hostile reread.
+
+### V47.6 Map Scrutiny Pass
+
+> Reassess the future map experience from the perspective of a skeptical user who wants proof that the interaction adds value.
+
+### V47.7 Print Packet Pass
+
+> Treat the future PDF like a skeptical packet, not a celebratory artifact. Keep tightening the surfaces that would draw doubt.
+
+### V47.8 Section Defense Pass
+
+> Require future sections to survive the question, “Why is this still here?” before they remain prominent.
+
+### V47.9 Signal Hierarchy Pass
+
+> Make future signal hierarchy so clear that even an impatient or doubtful reader knows where to focus first.
+
+### V47.10 Future Harshness Discipline Pass
+
+> Keep harsh prompt tone tied to product outcomes. Brutality is useful only when it sharpens the dashboard, not when it bloats the prompt library.
+
+---
+
+## Prompts v48
+
+### V48.1 Print Fallback Hardening Pass
+
+> Keep future print behavior resilient if browser timing, animation state, or cloned content handling changes.
+
+### V48.2 Share Fallback Hardening Pass
+
+> Re-check future share behavior across modern sharing, clipboard copy, and prompt fallback so each path stays honest and useful.
+
+### V48.3 Selection Restore Hardening Pass
+
+> Keep strengthening how temporary print behaviors restore the live dashboard state after export.
+
+### V48.4 Graceful Degradation Pass
+
+> Improve the dashboard’s future degraded states so readers still encounter a coherent product when an interaction surface fails.
+
+### V48.5 No-Surprise Print Pass
+
+> Future print improvements should reduce surprises, not add them. The document should feel increasingly predictable to generate and review.
+
+### V48.6 Failure Isolation Pass
+
+> Keep separating major behaviors so a problem in map rendering, selection state, or print does not quietly poison the rest of the page.
+
+### V48.7 Interaction Recovery Pass
+
+> Plan future interaction changes around how quickly and clearly the product recovers from failure or unexpected state.
+
+### V48.8 Browser Quirk Memory Pass
+
+> Preserve institutional memory of browser-print quirks and interaction regressions in ways that help future maintainers act faster.
+
+### V48.9 Audit-to-Manual Handoff Pass
+
+> Strengthen the future handoff from audit output to manual review so maintainers know what to inspect next when automation passes.
+
+### V48.10 Reliability Compounding Pass
+
+> Choose future changes that make reliability improvements compound over time instead of resetting the risk with every layout experiment.
+
+---
+
+## Prompts v49
+
+### V49.1 Prompt Quality Gate Pass
+
+> Make future prompt writing even less tolerant of abstraction. Every useful prompt should point to a surface, an audience, a risk, and a likely product outcome.
+
+### V49.2 Prompt Retirement Pass
+
+> Retire future prompt ideas that duplicate solved problems, solved structures, or already-saturated governance themes.
+
+### V49.3 Outcome Ledger Expansion Pass
+
+> Keep expanding the prompt-to-outcome trail so the library remains a maintenance artifact instead of a scroll of intentions.
+
+### V49.4 Future Non-Goal Pass
+
+> Require future prompts to name what they will not do so scope stays disciplined and the product does not drift into rewrite behavior.
+
+### V49.5 Product-First Prompt Pass
+
+> Judge future prompts by whether they improve the dashboard for a real reader or maintainer, not by how sophisticated the prompt sounds.
+
+### V49.6 Evidence-Based Backlog Pass
+
+> Build future prompt waves only from observed product weakness, manual review feedback, or update pain.
+
+### V49.7 Maintenance Cost Pass
+
+> Weigh the maintenance cost of future prompt ideas before accepting them as backlog. Do not let prompt ambition outrun maintainability.
+
+### V49.8 Structural Discipline Pass
+
+> Keep future prompts disciplined enough that they strengthen the existing static-site system instead of accidentally demanding a new architecture.
+
+### V49.9 Overhaul Memory Pass
+
+> Preserve what the brutal overhaul actually changed so future prompt waves do not slowly undo its best decisions.
+
+### V49.10 Prompt Restraint Pass
+
+> Stop future wave generation when the next set would mostly restate earlier lessons in new wording.
+
+---
+
+## Prompts v50
+
+### V50.1 Next-Horizon Discipline Pass
+
+> Generate the next horizon of work only from genuine remaining weaknesses after the overhaul, not from the habit of adding more waves.
+
+### V50.2 Product Maturity Pass
+
+> Treat future revisions as maturity work: fewer surprises, tighter trust signals, cleaner evidence, and safer maintenance.
+
+### V50.3 Evidence Leadership Pass
+
+> Keep pushing the product toward a state where evidence leads framing rather than following it.
+
+### V50.4 Reader Outcome Pass
+
+> Future changes should increase the chance that readers leave informed, persuaded, and clear on the ask after one pass.
+
+### V50.5 Maintenance Calm Pass
+
+> Improve future maintainability until the repo feels calm to update rather than merely documented.
+
+### V50.6 Print Confidence Pass
+
+> Keep raising confidence in the PDF as an executive deliverable that can stand alone without apology or explanation.
+
+### V50.7 Source Credibility Depth Pass
+
+> Plan future source and date improvements around depth of trust, not repetition of trust language.
+
+### V50.8 Structural Longevity Pass
+
+> Favor future structural choices that remain strong across years of edits instead of those that only look optimal in the current moment.
+
+### V50.9 Backlog Severity Pass
+
+> Keep the backlog severe about what deserves attention next. Good future prompts should be hard to earn.
+
+### V50.10 End-of-Wave Restraint Pass
+
+> When the product is stronger, let the prompt system become quieter. The best future wave may be the one that decides not to exist yet.

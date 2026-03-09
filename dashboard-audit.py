@@ -37,6 +37,8 @@ DASHBOARD_FILES = [
     ROOT / "SECURITY.md",
     ROOT / "QA-CHECKLIST.md",
     ROOT / "NOVICE-MAINTAINER.md",
+    ROOT / "THREAT-MODEL.md",
+    ROOT / "AI-HANDOFF.md",
 ]
 EXECUTABLE_FILES = [
     ROOT / "340b.html",
@@ -70,6 +72,7 @@ MANUAL_CHECKS = [
     "Open Print / PDF and confirm page 1 starts with the title and first dashboard card.",
     "Confirm Pennsylvania prints as the default state context when no live state is selected.",
     "Confirm the compact print state summary is readable and does not consume a full page.",
+    "Confirm the executive scan strip still matches the policy ask, national state counts, and trust cues.",
     "Verify source dates and source links still match the current law and reporting data.",
     "Re-read the PDF and dashboard copy for lawmakers, hospital CEOs, and administrators before release.",
 ]
@@ -192,6 +195,8 @@ def check_print_structure(results: list[str]) -> bool:
     required_snippets = [
         'class="print-report-header print-only"',
         'id="print-intro-snapshot"',
+        'class="executive-proof-strip span-12 scroll-reveal"',
+        'id="executive-landscape-value"',
         'id="print-state-summary"',
         'class="print-sources print-only"',
         'id="btn-print"',
@@ -235,6 +240,31 @@ def check_prompt_waves(results: list[str]) -> bool:
         "## Prompts v23",
         "## Prompts v24",
         "## Prompts v25",
+        "## Prompts v26",
+        "## Prompts v27",
+        "## Prompts v28",
+        "## Prompts v29",
+        "## Prompts v30",
+        "## Prompts v31",
+        "## Prompts v32",
+        "## Prompts v33",
+        "## Prompts v34",
+        "## Prompts v35",
+        "## Prompts v36",
+        "## Prompts v37",
+        "## Prompts v38",
+        "## Prompts v39",
+        "## Prompts v40",
+        "## Prompts v41",
+        "## Prompts v42",
+        "## Prompts v43",
+        "## Prompts v44",
+        "## Prompts v45",
+        "## Prompts v46",
+        "## Prompts v47",
+        "## Prompts v48",
+        "## Prompts v49",
+        "## Prompts v50",
     ]
     missing = [section for section in required_sections if section not in prompts]
 
@@ -243,7 +273,7 @@ def check_prompt_waves(results: list[str]) -> bool:
             record(results, False, f"Prompt library is missing section `{section}`")
         return False
 
-    record(results, True, "Prompt library contains v09 through v25 sections")
+    record(results, True, "Prompt library contains v09 through v50 sections")
     return True
 
 

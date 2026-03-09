@@ -5,6 +5,7 @@ This dashboard is a static site. Most of its security posture comes from:
 - safe DOM rendering in `340b.js`
 - safe DOM rendering in older dashboard scripts like `main.js` and inline legacy pages
 - keeping local vendor files trusted and documented
+- keeping high-salience copy, metadata, and print trust cues aligned
 - deploying with strong host-level headers
 - keeping the documented threat model honest for future AI and human edits
 - avoiding remote fonts, remote runtime data fetches, and unnecessary third-party scripts
@@ -30,10 +31,11 @@ Run these checks after meaningful edits:
 3. Verify all outbound links that open a new tab use `rel="noopener noreferrer"`.
 4. Confirm the Share button still copies a canonical URL.
 5. Confirm the map fallback still works if map assets fail.
-6. Re-check print/PDF output after layout changes, including the overview, HAP position, map visibility, and final metric values.
-7. Confirm the PDF still reads clearly for a lawmaker, hospital CEO, or hospital administrator who may never open the live dashboard.
-8. Run `python3 dashboard-audit.py` for the project’s lightweight built-in audit.
-9. Run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` for a deeper SAST scan when security-sensitive code changes.
+6. Confirm high-salience copy in `state-data.js`, `340b.html`, and metadata surfaces still agree after edits.
+7. Re-check print/PDF output after layout changes, including the overview, HAP position, executive scan strip, map visibility, and final metric values.
+8. Confirm the PDF still reads clearly for a lawmaker, hospital CEO, or hospital administrator who may never open the live dashboard.
+9. Run `python3 dashboard-audit.py` for the project’s lightweight built-in audit.
+10. Run `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` for a deeper SAST scan when security-sensitive code changes.
 
 ## Honesty note
 
@@ -52,6 +54,7 @@ Do not publish until a human has confirmed:
 2. the selected-state print context is acceptable
 3. the source dates and source links are current
 4. the wording still sounds precise for lawmakers, hospital CEOs, and administrators
+5. the executive scan strip and metadata still match the main dashboard story
 
 ## Things to avoid
 
