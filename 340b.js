@@ -549,24 +549,17 @@
 
   function preparePrintSnapshot(onReady) {
     var callback = typeof onReady === "function" ? onReady : function () {};
-    var mapSvgMissing = !appState.dom.mapContainer || !appState.dom.mapContainer.querySelector("svg");
 
     // Print/PDF should use the same cards the user sees on screen.
     // To make that reliable, we force the page into its final visual state:
     // 1. finish all count-up numbers
     // 2. reveal scroll-based sections
-    // 3. make sure the SVG map exists before print opens
+    // 3. redraw map so it renders cleanly for print (avoids clipping)
     finalizeCountUpValues();
     revealAllAnimatedSections();
     preparePrintSelectionState();
     buildPrintIntroSnapshot();
-
-    if (mapSvgMissing) {
-      runTaskSafely("draw map for print", drawMap);
-      revealAllAnimatedSections();
-      preparePrintSelectionState();
-      buildPrintIntroSnapshot();
-    }
+    runTaskSafely("draw map for print", drawMap);
 
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(callback);
