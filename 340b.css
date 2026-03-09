@@ -504,93 +504,155 @@ footer a:hover { color: var(--primary); }
 .footer-cta a { display: inline-block; padding: var(--space-2) var(--space-4); background: var(--primary); color: #fff !important; font-weight: 600; font-size: var(--text-sm); border-radius: var(--radius-sm); transition: background 0.2s var(--ease); }
 .footer-cta a:hover { background: var(--primary-hover); text-decoration: none !important; }
 .footer-cta a + a { margin-left: var(--space-2); }
-/* Print styles */
+/* Print styles — 2-page PDF, map is largest element */
 @media print {
-  @page { margin: 1.5cm; }
-  html { scroll-behavior: auto !important; }
+  @page { margin: 1cm; size: letter; }
+  html { scroll-behavior: auto !important; font-size: 12px !important; }
   body { background: #fff !important; }
   .dashboard { min-height: auto !important; padding-top: 0 !important; }
   .print-only { display: block !important; }
   .dashboard-inner { padding: 0 !important; }
   .dashboard-header { display: none !important; }
   .dashboard::before { display: none; }
-  .skip-link, .back-link, .utility-toolbar, .footer-cta, .methodology-wrap, .state-filter-bar, .state-filter-status, .state-no-results { display: none !important; }
+  .skip-link, .back-link, .utility-toolbar, .footer-cta, .site-footer, .methodology-wrap, .state-filter-bar, .state-filter-status, .state-no-results, .map-tooltip, .state-list-tooltip, .noscript-card { display: none !important; }
 
-  /* Print should reuse the real dashboard cards the user sees on screen.
-     Only the small print header and compact source note are print-only. */
+  /* Hide nonessential sections — keep only header, intro, map, KPIs, state summary, sources */
+  .executive-proof-strip,
+  .supporting-section,
+  #community-benefit,
+  #access,
+  #pa-safeguards,
+  .trends-grid,
+  .map-hero-section h3.section-subhead,
+  .map-hero-section .sources { display: none !important; }
+
   .dashboard-grid { display: block !important; }
   .intro-section-inner { display: block !important; }
-  .executive-proof-strip {
-    display: grid !important;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.55rem !important;
-    margin: 0 0 1rem !important;
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-  .executive-proof-card {
-    padding: 0.7rem !important;
-    border-radius: 10px !important;
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
-  .executive-proof-value {
-    font-size: 0.92rem !important;
-  }
-  .executive-proof-note {
-    font-size: 0.72rem !important;
-    line-height: 1.45 !important;
-  }
+  .dashboard-grid > .intro-section { display: none !important; }
+
+  /* Ultra-compact header */
   .print-report-header {
-    margin-bottom: 0.65rem !important;
+    margin-bottom: 0.4rem !important;
+    padding: 0.3rem 0 !important;
+    border-bottom: 1px solid #ddd !important;
   }
+  .print-report-brand { margin-bottom: 0.2rem !important; }
+  .print-report-logo { width: 32px !important; height: 32px !important; }
+  .print-report-header h2 { font-size: 1rem !important; margin: 0 !important; }
+  .print-report-meta { font-size: 0.65rem !important; margin: 0.15rem 0 0 !important; }
+  .print-report-org, .print-report-kicker { font-size: 0.6rem !important; }
+
+  /* Compact intro snapshot — 2 cards side by side */
   .print-intro-snapshot {
     display: block !important;
-    margin-bottom: 1.1rem !important;
-  }
-  .print-intro-snapshot .intro-section,
-  .print-intro-snapshot .intro-section-inner {
-    break-inside: auto;
-    page-break-inside: auto;
+    margin-bottom: 0.5rem !important;
   }
   .print-intro-snapshot .intro-section { margin: 0 !important; }
-  .print-intro-snapshot .intro-section-inner { display: block !important; }
+  .print-intro-snapshot .intro-section-inner {
+    display: grid !important;
+    grid-template-columns: 1fr 1fr !important;
+    gap: 0.5rem !important;
+  }
   .print-intro-snapshot .card {
+    padding: 0.5rem !important;
     break-inside: avoid;
     page-break-inside: avoid;
   }
-  .print-intro-snapshot .card + .card { margin-top: var(--space-4); }
-  .dashboard-grid > .intro-section { display: none !important; }
-  .selection-summary,
-  .state-detail-panel,
-  .map-hero-card,
-  .card,
-  .kpi-card {
-    padding: 0.85rem !important;
+  .print-intro-snapshot .card-heading { margin-bottom: 0.25rem !important; }
+  .print-intro-snapshot .card h2 { font-size: 0.8rem !important; margin: 0 !important; }
+  .print-intro-snapshot .card p, .print-intro-snapshot .card li { font-size: 0.65rem !important; margin: 0 0 0.2rem !important; }
+  .print-intro-snapshot .stat-block { margin-top: 0.3rem !important; }
+  .print-intro-snapshot .hap-ask { font-size: 0.65rem !important; padding: 0.3rem !important; margin-top: 0.3rem !important; }
+  .print-intro-snapshot .card-icon { width: 28px !important; height: 28px !important; }
+
+  /* Map hero — condense text, make map largest */
+  .map-hero-section { break-inside: avoid; page-break-inside: avoid; }
+  .map-hero-card { padding: 0.4rem 0 !important; }
+  .map-hero-title { font-size: 0.6rem !important; margin: 0 0 0.1rem !important; }
+  .map-hero-headline { font-size: 0.9rem !important; margin: 0 0 0.25rem !important; }
+  .map-hero-sub { font-size: 0.65rem !important; margin: 0 0 0.35rem !important; }
+  .selection-summary {
+    padding: 0.4rem !important;
+    margin: 0 0 0.4rem !important;
   }
-  .map-hero-section .map-container { min-height: auto !important; }
+  .selection-summary-label { font-size: 0.55rem !important; }
+  .selection-summary-title { font-size: 0.8rem !important; }
+  .selection-summary-text { font-size: 0.65rem !important; }
+  .selection-clear { display: none !important; }
+
+  /* Map — largest subject on page, fill available space */
+  .map-hero-section .map-container {
+    min-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .us-map-wrap {
+    min-height: 11.5cm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  .dashboard .us-map-wrap svg {
+    width: 100% !important;
+    min-height: 11cm !important;
+    height: auto !important;
+  }
+  .map-legend { font-size: 0.6rem !important; margin-top: 0.25rem !important; gap: 0.5rem !important; }
+  .state-detail-panel {
+    padding: 0.4rem !important;
+    margin-top: 0.35rem !important;
+    font-size: 0.65rem !important;
+  }
+  .state-detail-panel h4 { font-size: 0.75rem !important; margin: 0 0 0.2rem !important; }
+  .state-detail-panel p, .state-detail-panel dd { margin: 0.1rem 0 !important; font-size: 0.65rem !important; }
+
+  /* Force page 2: state summary and KPIs start on new page */
+  .print-state-summary { page-break-before: always !important; }
+
+  /* KPI strip — compact single row */
+  .kpi-strip {
+    display: grid !important;
+    grid-template-columns: repeat(4, 1fr) !important;
+    gap: 0.4rem !important;
+    padding: 0.5rem 0 !important;
+    margin-bottom: 0.4rem !important;
+    page-break-inside: avoid;
+  }
+  .kpi-card { padding: 0.4rem !important; }
+  .kpi-label { font-size: 0.55rem !important; margin: 0 0 0.1rem !important; }
+  .kpi-value { font-size: 1.1rem !important; }
+  .kpi-desc { font-size: 0.6rem !important; margin-top: 0.1rem !important; }
+  .data-freshness { font-size: 0.55rem !important; margin-top: 0.25rem !important; grid-column: 1 / -1; }
+
+  /* State summary — compact */
   .state-lists-wrap { display: none !important; }
   .print-state-summary {
     display: block !important;
-    margin-top: 0.75rem !important;
-    margin-bottom: 1rem !important;
-    break-inside: avoid;
-    page-break-inside: avoid;
+    margin-top: 0.4rem !important;
+    margin-bottom: 0.4rem !important;
   }
-  .print-state-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .print-state-summary-card { padding: 0.7rem !important; }
-  .print-state-summary-list { font-size: 0.7rem !important; }
-  .supporting-cards-row, #community-benefit { content-visibility: visible !important; contain: none !important; }
+  .print-state-summary-header h3 { font-size: 0.8rem !important; }
+  .print-state-summary-note { font-size: 0.55rem !important; margin-top: 0.1rem !important; }
+  .print-state-summary-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem !important; }
+  .print-state-summary-card { padding: 0.4rem !important; }
+  .print-state-summary-kicker { font-size: 0.55rem !important; }
+  .print-state-summary-count { font-size: 0.7rem !important; margin: 0 0 0.15rem !important; }
+  .print-state-summary-list { font-size: 0.6rem !important; line-height: 1.35 !important; }
+
+  /* Sources — one compact block */
+  .print-sources {
+    padding: 0.35rem 0 !important;
+    border-top: 1px solid #ddd !important;
+    margin-top: 0.35rem !important;
+  }
+  .print-sources h3 { font-size: 0.7rem !important; margin: 0 0 0.15rem !important; }
+  .print-sources p { font-size: 0.6rem !important; margin: 0 0 0.1rem !important; line-height: 1.4 !important; }
+
   .map-wrap { opacity: 1 !important; transform: none !important; }
   .map-loading-skeleton { display: none !important; }
   .dashboard .us-map-wrap .state.state-domino { opacity: 1 !important; transform: none !important; animation: none !important; }
   .scroll-reveal { opacity: 1 !important; transform: none !important; }
-  .selection-summary, .state-detail-panel, .state-list-block, .card, .kpi-card, .map-hero-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; backdrop-filter: none !important; background: #fff !important; }
-  .kpi-strip, .map-hero-section, .supporting-cards-row, .map-container { break-inside: avoid; }
-  .section-subhead--supporting { margin-top: 0.7rem !important; }
+  .selection-summary, .state-detail-panel, .card, .kpi-card, .map-hero-card { box-shadow: none; border: 1px solid #ddd; break-inside: avoid; backdrop-filter: none !important; background: #fff !important; }
   .kpi-value, .stat-value, .big-stat-value, .count-up { color: #111827 !important; }
-  .state-list-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-  .selection-clear { display: none !important; }
   .source-links a { color: #111827 !important; }
   a { color: #0066a1; }
 }
