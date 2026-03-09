@@ -4117,3 +4117,443 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 ### Alt V60.10 Prompt Library Final Pass
 
 > Library reflects current state. Retire obsolete. Document learnings.
+
+---
+
+## Prompts v61
+
+### V61.1 Two-Page Print Discipline Pass
+
+> The PDF must fit exactly two pages. Every element must justify its presence. Remove or compress until the document is polished and dense.
+
+### V61.2 White Space Elimination Pass
+
+> Treat print white space as waste. Use margins, padding, and font size to maximize information density without sacrificing readability.
+
+### V61.3 Print Hierarchy Pass
+
+> Page 1: issue, ask, map, selected state. Page 2: state summary, KPIs, sources. No other structure.
+
+### V61.4 Pharma Presentation Pass
+
+> The PDF should look like a document a pharma or hospital executive would circulate without apology.
+
+### V61.5 CEO Handoff Pass
+
+> A CEO could forward this PDF to a board member or lawmaker without adding context.
+
+### V61.6 Print Typography Pass
+
+> Print typography should reinforce hierarchy. Smaller fonts for supporting material, clear labels for key numbers.
+
+### V61.7 Map Print Value Pass
+
+> The map must render clearly in print and remain the visual centerpiece of page 1.
+
+### V61.8 Source Credibility Print Pass
+
+> Sources and dates must be visible in print without cluttering the narrative.
+
+### V61.9 State Summary Compression Pass
+
+> The print state list should be reference material, not a competing narrative. Compress aggressively.
+
+### V61.10 Print Regression Guard Pass
+
+> Any change to print CSS must preserve the 2-page constraint. Add comments to document the layout logic.
+
+---
+
+## Prompts v62
+
+### V62.1 Executive Scan Speed Pass
+
+> A 15-second scan should yield: what is 340B, what does HAP want, what is the national picture, what is the PA stake.
+
+### V62.2 Claim-to-Evidence Proximity Pass
+
+> No claim should be more than one glance away from its supporting evidence.
+
+### V62.3 Metric Meaning Pass
+
+> Every metric answers "so what?" immediately. No orphan numbers.
+
+### V62.4 State Selection Value Pass
+
+> Every state click should feel like a gain in understanding, not a UI exercise.
+
+### V62.5 Copy Brevity Pass
+
+> Cut every word that does not carry meaning. Brevity increases authority.
+
+### V62.6 Trust Signal Placement Pass
+
+> Dates and sources should appear where skeptical readers will look.
+
+### V62.7 Section Necessity Pass
+
+> If a section were removed, would the dashboard be less convincing? If not, compress or retire it.
+
+### V62.8 Print Flow Pass
+
+> Page 1 to page 2 should read as one coherent argument, not two disconnected screens.
+
+### V62.9 Maintenance Path Pass
+
+> A maintainer should know exactly which file to edit for each type of change.
+
+### V62.10 Product Calm Pass
+
+> The dashboard should feel finished, not in development. No half-implemented surfaces.
+
+---
+
+## Prompts v63
+
+### V63.1 Audience Balance Pass
+
+> Rebalance for lawmakers, hospital CEOs, and administrators. No single audience should dominate.
+
+### V63.2 Ask Prominence Pass
+
+> The HAP ask should be impossible to miss and easy to recall.
+
+### V63.3 Evidence Sufficiency Pass
+
+> Enough evidence to support claims. No over-claiming.
+
+### V63.4 Print Independence Pass
+
+> The PDF must stand alone. No "see the live site" required.
+
+### V63.5 State Note Utility Pass
+
+> Every state note should add interpretation, not restate data.
+
+### V63.6 Source Hierarchy Pass
+
+> Clarify which sources matter most. Avoid flat citation lists.
+
+### V63.7 Section Transition Pass
+
+> Transitions between sections should feel deliberate.
+
+### V63.8 Interaction Feedback Pass
+
+> Every interaction should give clear feedback.
+
+### V63.9 Update Safety Pass
+
+> Common updates (new law, date change) should be low-risk.
+
+### V63.10 Maturity Gate Pass
+
+> Before adding features, ensure existing ones are fully mature.
+
+---
+
+## Prompts v64
+
+### V64.1 Value Density Pass
+
+> Increase useful information per unit of surface area.
+
+### V64.2 Claim Precision Pass
+
+> Every claim precise enough to defend under scrutiny.
+
+### V64.3 Proof Proximity Pass
+
+> Proof as close as possible to the claim it supports.
+
+### V64.4 Reader Path Pass
+
+> Map the ideal path from first view to understanding. Remove obstacles.
+
+### V64.5 Print Credibility Pass
+
+> The PDF should look worth circulating, not a web dump.
+
+### V64.6 State Value Pass
+
+> Each state click should feel like a gain.
+
+### V64.7 Metric Clarity Pass
+
+> Every metric needs a clear "so what."
+
+### V64.8 Hierarchy Durability Pass
+
+> Hierarchy should survive copy, data, and layout changes.
+
+### V64.9 Maintenance Safety Pass
+
+> Reduce risk of errors from hurried maintainers.
+
+### V64.10 Overhaul Preservation Pass
+
+> Document key decisions so future maintainers do not undo them.
+
+---
+
+## Prompts v65
+
+### V65.1 Skeptical Reader Pass
+
+> Assume the next reader is skeptical. Strengthen trust-earning surfaces.
+
+### V65.2 Cold Start Pass
+
+> A reader with no context should understand the issue and ask in one pass.
+
+### V65.3 Evidence Ranking Pass
+
+> Rank evidence by persuasive value. Strongest gets most prominence.
+
+### V65.4 PDF Standalone Pass
+
+> The PDF should stand alone as an executive deliverable.
+
+### V65.5 State Consistency Pass
+
+> State narratives consistent in tone, depth, usefulness.
+
+### V65.6 Source Attribution Pass
+
+> Every claim needing a source has one. Every source attributable.
+
+### V65.7 Section Challenge Pass
+
+> Challenge each section: merge, shorten, or retire?
+
+### V65.8 Interaction Clarity Pass
+
+> Every interaction gives clear feedback.
+
+### V65.9 Maintenance Path Clarity Pass
+
+> Maintainers know exactly where and how to update each content type.
+
+### V65.10 Prompt Hygiene Pass
+
+> Retire solved, duplicated, or obsolete prompts.
+
+---
+
+## Prompts v66
+
+### V66.1 Executive Distribution Pass
+
+> Optimize for circulation upward without the creator present.
+
+### V66.2 Lawmaker Utility Pass
+
+> A lawmaker should find the policy case and state stakes immediately useful.
+
+### V66.3 Hospital Leader Relevance Pass
+
+> Hospital leaders should see their stakes clearly.
+
+### V66.4 Evidence Placement Pass
+
+> Strongest evidence where skeptics look first.
+
+### V66.5 Print Quality Pass
+
+> The PDF should meet professional standards for typography, spacing, and clarity.
+
+### V66.6 Share Context Pass
+
+> Shared links should preserve useful context when possible.
+
+### V66.7 State Note Quality Pass
+
+> State notes should answer "why does this matter?"
+
+### V66.8 Section Flow Pass
+
+> Sections should flow logically. Each sets up the next.
+
+### V66.9 Documentation Accuracy Pass
+
+> Documentation should be accurate, discoverable, and sufficient.
+
+### V66.10 Regression Prevention Pass
+
+> Protect surfaces most likely to regress.
+
+---
+
+## Prompts v67
+
+### V67.1 Value Retention Pass
+
+> Preserve the overhaul's best improvements.
+
+### V67.2 Claim Defensibility Pass
+
+> Every claim defensible under scrutiny.
+
+### V67.3 Proof Quality Pass
+
+> Prefer fewer, stronger proof surfaces.
+
+### V67.4 Reader Outcome Pass
+
+> Reader leaves informed, persuaded, clear on the ask.
+
+### V67.5 Print Independence Pass
+
+> The PDF explains itself.
+
+### V67.6 State Coherence Pass
+
+> State selection should feel like coherent exploration.
+
+### V67.7 Source Credibility Pass
+
+> Sources credible, current, clearly attributed.
+
+### V67.8 Section Purpose Pass
+
+> Every section has clear purpose.
+
+### V67.9 Maintenance Simplicity Pass
+
+> Keep the maintenance model simple.
+
+### V67.10 Prompt Restraint Pass
+
+> Add prompts only for genuine, unsolved weakness.
+
+---
+
+## Prompts v68
+
+### V68.1 Completion Gate Pass
+
+> Assess readiness for sustained use with minimal further change.
+
+### V68.2 Maturity Checklist Pass
+
+> What must be true for "done enough"?
+
+### V68.3 Handoff Readiness Pass
+
+> Product and docs support clean handoff.
+
+### V68.4 Evidence Completeness Pass
+
+> All major claims have adequate evidence.
+
+### V68.5 Print Final Pass
+
+> The PDF should be worthy of executive circulation.
+
+### V68.6 State Coverage Pass
+
+> State coverage complete and consistent.
+
+### V68.7 Source Maintenance Pass
+
+> Document how and when to update sources.
+
+### V68.8 Section Final Pass
+
+> Every section earns its place.
+
+### V68.9 Maintenance Sustainability Pass
+
+> The maintenance model should be sustainable for years.
+
+### V68.10 Prompt Library Final Pass
+
+> The library should reflect the product's current state. Retire obsolete prompts. Document learnings.
+
+---
+
+## Prompts v69
+
+### V69.1 Two-Page Enforcement Pass
+
+> Enforce the 2-page print constraint. No exceptions. Compress until it fits.
+
+### V69.2 Print Polish Pass
+
+> The PDF should look polished enough for a board packet or lawmaker briefing.
+
+### V69.3 Density Without Clutter Pass
+
+> Maximize information density without creating visual clutter.
+
+### V69.4 Executive First Impression Pass
+
+> The first 5 seconds of viewing the PDF should establish credibility.
+
+### V69.5 Source Visibility Pass
+
+> Sources and dates visible enough to matter, subtle enough not to distract.
+
+### V69.6 Map Clarity Pass
+
+> The map should be immediately interpretable in print.
+
+### V69.7 KPI Legibility Pass
+
+> Every KPI should be legible and meaningful in print.
+
+### V69.8 State Summary Utility Pass
+
+> The state summary should serve as reference, not narrative.
+
+### V69.9 Print Consistency Pass
+
+> Print layout should be consistent across browsers.
+
+### V69.10 Future Print Safety Pass
+
+> Document print layout decisions so future edits do not break the 2-page constraint.
+
+---
+
+## Prompts v70
+
+### V70.1 Product Maturity Pass
+
+> The dashboard should feel mature: few surprises, tight trust signals, clean evidence.
+
+### V70.2 Reader Outcome Pass
+
+> Future changes should increase the chance readers leave informed, persuaded, and clear on the ask.
+
+### V70.3 Maintenance Calm Pass
+
+> The repo should feel calm to update, not merely documented.
+
+### V70.4 Print Confidence Pass
+
+> Confidence in the PDF as an executive deliverable that can stand alone.
+
+### V70.5 Source Credibility Depth Pass
+
+> Source trust through depth and placement, not repetition.
+
+### V70.6 Structural Longevity Pass
+
+> Favor structures that remain strong across years of edits.
+
+### V70.7 Backlog Severity Pass
+
+> Keep the backlog severe about what deserves attention next.
+
+### V70.8 End-of-Wave Restraint Pass
+
+> When the product is stronger, let the prompt system become quieter.
+
+### V70.9 Two-Page Legacy Pass
+
+> The 2-page print constraint is a product commitment. Preserve it.
+
+### V70.10 Pharma CEO Presentable Pass
+
+> The dashboard and PDF should be presentable to pharma and hospital executives without caveats.

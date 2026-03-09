@@ -97,7 +97,7 @@ Follow this order after meaningful changes:
 1. Decide which file should change before editing anything.
 2. Update the content, style, or behavior in the correct file.
 3. Open the page through a local server and test the exact feature you changed.
-4. Open `Print / PDF` and confirm the print version still includes the real intro cards, the map, and final numbers.
+4. Open `Print / PDF` and confirm the document fits in 2 pages, includes the real intro cards, the map, and final numbers.
 5. Run `python3 dashboard-audit.py`.
 6. Use `QA-CHECKLIST.md`.
 7. Run Semgrep if you changed security-sensitive code.

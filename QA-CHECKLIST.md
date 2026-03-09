@@ -37,18 +37,17 @@ Check these before lower-risk polish:
 ## Print / PDF
 
 1. Open print preview from the `Print / PDF` button.
-2. Confirm the first page is not blank.
-3. Confirm the print version uses the real intro cards with icons, not a duplicated text-only summary.
-4. Confirm the `Overview` and `HAP Position` cards appear only once.
-5. Confirm the print version includes the `About this data` summary and last-updated date.
+2. Confirm the document fits in exactly 2 pages with no excessive white space.
+3. Confirm page 1: header, intro cards, executive strip, map, selection summary, state detail.
+4. Confirm page 2: state summary, trends, KPIs, supporting cards, community benefit, access, PA safeguards, methodology, sources.
+5. Confirm the print version uses the real intro cards with icons, not a duplicated text-only summary.
 6. Confirm KPI values show final numbers, not `0`.
 7. Confirm Pennsylvania is selected by default in print when no live state is selected.
 8. Confirm the map is visible.
-9. Confirm the compact print state summary is readable and does not consume a full page.
-10. Confirm there are no unexpected blank pages anywhere in the document.
-11. Confirm the selected state summary prints when a state is selected.
-12. Confirm the print header shows the title and last-updated date.
-13. Confirm the executive scan strip still reads clearly in print and does not bloat the opening pages.
+9. Confirm the compact print state summary is readable.
+10. Confirm there are no unexpected blank pages.
+11. Confirm the print header shows the title and last-updated date.
+12. Confirm the PDF looks polished and pharma/CEO presentable.
 
 ## Accessibility and fallback
 

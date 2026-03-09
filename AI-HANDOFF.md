@@ -42,7 +42,7 @@ These are the places most likely to create visible regressions or trust problems
 
 The current tooling helps, but it does not replace a human release pass.
 
-- Open the print preview and inspect the exported document visually.
+- Open the print preview and confirm the PDF fits in exactly 2 pages with no excessive white space.
 - Confirm the selected-state print context still makes sense.
 - Verify source dates and source links against the real legal-status sources.
 - Re-read audience-facing copy for lawmakers, hospital CEOs, and administrators.
@@ -56,6 +56,7 @@ Recent prompt waves mainly drove these outcomes:
 - `v19-v20`: stronger release discipline, prompt specificity, and small-system maintenance guidance
 - `v21-v30`: stronger executive scan hierarchy, tighter state-context storytelling, more config-driven high-salience copy, and clearer trust-signal placement
 - `v31-v40`: tighter executive-facing supporting copy, stronger selected-state map context, sharper section hierarchy, and an alternate self-improving prompt track after `v50`
+- `v50-v70`: 2-page print/PDF constraint, zero white space, pharma/CEO presentable layout; new v61-v70 self-improving prompts
 
 ## Important constraint
 

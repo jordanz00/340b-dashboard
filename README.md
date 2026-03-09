@@ -75,7 +75,7 @@ No package install is required for the dashboard itself.
 - Filter states by `All`, `Protection`, or `No protection`
 - Keyboard navigation
 - Share link (copies a canonical URL with selected state hash)
-- Print / PDF with a final-state print snapshot
+- Print / PDF: 2-page polished layout, final-state snapshot
 - Executive scan strip with policy, national, and trust cues
 - Selected-state summary near the map
 - Selected-state map context that tightens the story when a state is chosen

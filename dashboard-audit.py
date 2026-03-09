@@ -69,11 +69,11 @@ REMOTE_ASSET_PATTERN = re.compile(
 )
 RUNTIME_FETCH_PATTERN = re.compile(r"\b(fetch\s*\(|d3\.json\s*\(|XMLHttpRequest\b)", re.IGNORECASE)
 MANUAL_CHECKS = [
-    "Open Print / PDF and confirm page 1 starts with the title and first dashboard card.",
+    "Open Print / PDF and confirm the document fits in exactly 2 pages with no excessive white space.",
+    "Confirm page 1: header, intro cards, executive strip, map, selection summary, state detail.",
+    "Confirm page 2: state summary, trends, KPIs, supporting cards, community benefit, access, PA safeguards, methodology, sources.",
     "Confirm Pennsylvania prints as the default state context when no live state is selected.",
-    "Confirm the map context sentence updates when a state is selected and resets when the selection is cleared.",
-    "Confirm the compact print state summary is readable and does not consume a full page.",
-    "Confirm the executive scan strip still matches the policy ask, national state counts, and trust cues.",
+    "Confirm the PDF looks polished and pharma/CEO presentable.",
     "Verify source dates and source links still match the current law and reporting data.",
     "Re-read the PDF and dashboard copy for lawmakers, hospital CEOs, and administrators before release.",
 ]
@@ -266,6 +266,8 @@ def check_prompt_waves(results: list[str]) -> bool:
         "## Prompts v48",
         "## Prompts v49",
         "## Prompts v50",
+        "## Prompts v61",
+        "## Prompts v70",
         "## Alternate Prompts v40-v50",
     ]
     missing = [section for section in required_sections if section not in prompts]
@@ -275,7 +277,7 @@ def check_prompt_waves(results: list[str]) -> bool:
             record(results, False, f"Prompt library is missing section `{section}`")
         return False
 
-    record(results, True, "Prompt library contains v09 through v50 sections plus the alternate v40-v50 track")
+    record(results, True, "Prompt library contains v09 through v70 sections plus alternate track")
     return True
 
 
