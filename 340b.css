@@ -107,6 +107,7 @@ body { margin: 0; font-family: var(--font-sans); font-size: var(--text-base); li
 .dashboard a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; border-radius: 4px; }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
 .print-only { display: none; }
+.print-map-fallback { display: none; }
 
 .dashboard-inner { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-6); position: relative; z-index: 1; }
 
@@ -504,51 +505,98 @@ footer a:hover { color: var(--primary); }
 .footer-cta a { display: inline-block; padding: var(--space-2) var(--space-4); background: var(--primary); color: #fff !important; font-weight: 600; font-size: var(--text-sm); border-radius: var(--radius-sm); transition: background 0.2s var(--ease); }
 .footer-cta a:hover { background: var(--primary-hover); text-decoration: none !important; }
 .footer-cta a + a { margin-left: var(--space-2); }
-/* Print styles — scale 25% (html 75%), map max-height 14cm (~64% of original), fit 2–3 pages, no blank pages.
-   Key rules: intro min-height 0, tight margins, break-inside avoid on cards. See QA-CHECKLIST.md Print/PDF section. */
+/* Print/PDF: every section must render. Global content-visibility + overflow. Same data as live. */
 @media print {
-  @page { margin: 0.75cm; size: letter; }
-  html { scroll-behavior: auto !important; font-size: 75% !important; }
-  body { background: #fff !important; }
-  .dashboard { min-height: auto !important; }
+  @page { margin: 0.5cm; size: letter; }
+  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+  html { scroll-behavior: auto !important; font-size: 10px !important; }
+  body { background: #fff !important; overflow: visible !important; }
+  .dashboard { min-height: auto !important; overflow: visible !important; }
   .dashboard::before { display: none !important; }
 
-  /* Hide interactive/non-essential UI only */
+  /* 1) Global: nothing may skip painting in print; reset containment that can clip */
+  *, *::before, *::after {
+    content-visibility: visible !important;
+    contain-intrinsic-size: none !important;
+  }
+  [data-count-up] { contain: none !important; }
+
   .skip-link, .back-link, .utility-toolbar, .footer-cta, .site-footer,
   .state-filter-bar, .state-filter-status, .state-no-results,
   .map-tooltip, .state-list-tooltip, .noscript-card,
   .selection-clear { display: none !important; }
-
-  /* Keep print-only hidden — use real dashboard content */
   .print-only { display: none !important; }
 
-  /* Tighter layout for print */
-  .dashboard-inner { padding: 0 0.5rem !important; }
-  main { padding: 0.5rem 0 !important; }
+  main { padding: 0.25rem 0 !important; max-height: none !important; overflow: visible !important; }
+  .dashboard-inner { padding: 0 0.25rem !important; overflow: visible !important; }
+  .map-hero-section, .map-hero-inner, .map-hero-card,
+  .supporting-section, #community-benefit { overflow: visible !important; }
 
-  /* Remove white space: intro cards no min-height */
-  .intro-section .card { min-height: 0 !important; }
-  .intro-section, .executive-proof-strip { margin-bottom: 0.5rem !important; }
-  .map-hero-section { margin: 0.5rem 0 !important; }
-  .map-hero-card, .selection-summary { padding: 0.5rem 0 !important; margin-bottom: 0.5rem !important; }
-  .kpi-strip { padding: 0.5rem 0 !important; }
-  .supporting-section, #community-benefit, #access, #pa-safeguards { margin: 0.5rem 0 !important; }
+  /* 2) Dashboard grid and all sections: explicit display and visibility */
+  .dashboard-grid { display: block !important; visibility: visible !important; }
+  .intro-section { display: block !important; visibility: visible !important; margin-bottom: 0.35rem !important; }
+  .intro-section-inner { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.35rem !important; visibility: visible !important; }
+  .intro-section .card { min-height: 0 !important; margin-bottom: 0 !important; display: block !important; visibility: visible !important; }
 
-  /* Map: 25% shrink + 15% more = ~64% of original — use max-height to avoid blank space */
-  .map-hero-section .map-container { min-height: 0 !important; }
-  .us-map-wrap svg { max-height: 14cm !important; width: 100% !important; height: auto !important; }
-  .map-legend { padding: 0.25rem 0 !important; font-size: 0.7rem !important; }
+  .executive-proof-strip { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 0.25rem !important; margin-bottom: 0.35rem !important; visibility: visible !important; }
+  .executive-proof-card { display: block !important; visibility: visible !important; margin-bottom: 0 !important; }
 
-  /* Reveal content that may be hidden for animation */
-  .map-wrap { opacity: 1 !important; transform: none !important; }
+  .map-hero-section { display: block !important; visibility: visible !important; margin: 0.25rem 0 !important; }
+  .map-hero-inner { display: block !important; visibility: visible !important; }
+  .map-hero-card { display: block !important; visibility: visible !important; padding: 0.15rem 0 !important; margin-bottom: 0.15rem !important; }
+  .selection-summary { display: block !important; visibility: visible !important; padding: 0.15rem 0 !important; margin-bottom: 0.15rem !important; }
+  .map-hero-section .map-container { display: block !important; min-height: 0 !important; visibility: visible !important; }
+
+  .us-map-wrap.map-wrap { display: none !important; }
+  .print-map-fallback {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    overflow: visible !important;
+    min-height: 7cm !important;
+    margin-bottom: 0.15rem !important;
+  }
+  .dashboard .print-map-fallback svg, .print-map-fallback img { display: block !important; visibility: visible !important; width: 100% !important; height: auto !important; max-height: 9cm !important; }
   .map-loading-skeleton { display: none !important; }
-  .dashboard .us-map-wrap .state { opacity: 1 !important; transform: none !important; animation: none !important; }
-  .scroll-reveal { opacity: 1 !important; transform: none !important; }
 
-  /* Print-friendly card styling — flatten shadows */
+  .state-detail-panel { display: block !important; visibility: visible !important; margin-bottom: 0.15rem !important; }
+  .state-lists-wrap { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
+  .state-list-block { display: block !important; visibility: visible !important; margin-bottom: 0.15rem !important; }
+  .state-list-grid { display: flex !important; flex-wrap: wrap !important; gap: 0.15rem !important; visibility: visible !important; }
+
+  .section-subhead { display: block !important; visibility: visible !important; margin: 0.2rem 0 0.1rem !important; }
+  .trends-grid { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 0.2rem !important; visibility: visible !important; margin: 0.15rem 0 !important; }
+  .trends-card { display: flex !important; visibility: visible !important; }
+  .map-hero-section .sources { display: block !important; visibility: visible !important; margin: 0.1rem 0 !important; }
+
+  /* 3) Methodology: always open and visible in print */
+  .methodology-wrap { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
+  .methodology-wrap .methodology-content,
+  .methodology-content { display: block !important; visibility: visible !important; height: auto !important; overflow: visible !important; padding: 0.2rem !important; }
+  .methodology-toggle { display: block !important; visibility: visible !important; margin-bottom: 0.1rem !important; }
+  .methodology-content p, .methodology-content ul, .methodology-content .source-links { display: block !important; visibility: visible !important; }
+  .methodology-content li { display: list-item !important; }
+
+  .kpi-strip { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 0.2rem !important; padding: 0.25rem 0 !important; visibility: visible !important; margin: 0.2rem 0 !important; }
+  .kpi-card { display: block !important; visibility: visible !important; }
+  .data-freshness { display: block !important; visibility: visible !important; margin-top: 0.1rem !important; }
+
+  .supporting-section { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
+  .supporting-cards-row { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 0.2rem !important; visibility: visible !important; }
+  .supporting-section .card, .supporting-section .section-subhead { display: block !important; visibility: visible !important; }
+
+  #community-benefit { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
+  #community-benefit .card-heading, #community-benefit .benefit-grid, #community-benefit .benefit-item,
+  #community-benefit .community-benefit-hero { display: block !important; visibility: visible !important; }
+  #community-benefit .benefit-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 0.15rem !important; }
+
+  #access, #pa-safeguards { display: block !important; visibility: visible !important; margin: 0.15rem 0 !important; }
+
+  .scroll-reveal { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+
   .card, .kpi-card, .map-hero-card, .selection-summary, .state-detail-panel {
     box-shadow: none !important;
-    border: 1px solid #ddd !important;
+    border: 1px solid #ccc !important;
     break-inside: avoid !important;
     background: #fff !important;
   }

@@ -547,22 +547,43 @@
     return getCanonicalPageBase() + hash;
   }
 
+  function cloneMapForPrint() {
+    var mapContainer = appState.dom.mapContainer;
+    var fallback = document.getElementById("print-map-fallback");
+    var svg;
+    var legend;
+    if (!fallback || !mapContainer) return;
+    clearElement(fallback);
+    svg = mapContainer.querySelector("svg");
+    if (svg) {
+      fallback.appendChild(svg.cloneNode(true));
+    }
+    legend = document.querySelector(".us-map-wrap .map-legend");
+    if (legend) {
+      fallback.appendChild(legend.cloneNode(true));
+    }
+  }
+
   function preparePrintSnapshot(onReady) {
     var callback = typeof onReady === "function" ? onReady : function () {};
-    var mapSvgMissing = !appState.dom.mapContainer || !appState.dom.mapContainer.querySelector("svg");
+    var methodologyWrap = appState.dom.methodologyWrap;
 
-    // Print/PDF should use the same content the user sees on screen.
+    if (methodologyWrap) methodologyWrap.setAttribute("open", "");
     finalizeCountUpValues();
     revealAllAnimatedSections();
     preparePrintSelectionState();
     buildPrintIntroSnapshot();
-
-    if (mapSvgMissing) {
-      runTaskSafely("draw map for print", drawMap);
-    }
+    runTaskSafely("draw map for print", drawMap);
 
     window.requestAnimationFrame(function () {
-      window.requestAnimationFrame(callback);
+      window.requestAnimationFrame(function () {
+        cloneMapForPrint();
+        setTimeout(function () {
+          if (methodologyWrap && !methodologyWrap.hasAttribute("open")) methodologyWrap.setAttribute("open", "");
+          document.body.offsetHeight;
+          callback();
+        }, 500);
+      });
     });
   }
 
@@ -1167,6 +1188,45 @@
     });
   }
 
+  function exportMapAsSvg() {
+    var mapContainer = appState.dom.mapContainer;
+    var svgEl;
+    var serializer;
+    var svgString;
+    var blob;
+    var url;
+    var a;
+    if (!mapContainer) return;
+    svgEl = mapContainer.querySelector("svg");
+    if (!svgEl) {
+      setUtilityStatus("Map not ready. Wait for it to load, then try again.");
+      return;
+    }
+    serializer = new XMLSerializer();
+    svgString = serializer.serializeToString(svgEl);
+    svgString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + svgString;
+    blob = new Blob([svgString], { type: "image/svg+xml;charset=utf-8" });
+    url = URL.createObjectURL(blob);
+    a = document.createElement("a");
+    a.href = url;
+    a.download = "340b-us-map.svg";
+    a.setAttribute("aria-hidden", "true");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setUtilityStatus("Map saved as SVG.");
+    window.setTimeout(function () { setUtilityStatus(""); }, 2000);
+  }
+
+  function initExportMapSvg() {
+    var btn = document.getElementById("btn-export-svg");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      runTaskSafely("export map svg", exportMapAsSvg);
+    });
+  }
+
   function initShare() {
     if (!appState.dom.shareButton) return;
 
@@ -1425,6 +1485,7 @@
     runTaskSafely("initialize filters", initStateFilter);
     runTaskSafely("initialize print", initPrint);
     runTaskSafely("initialize share", initShare);
+    runTaskSafely("initialize export map svg", initExportMapSvg);
     runTaskSafely("initialize methodology toggle", initMethodologyToggle);
     runTaskSafely("initialize selection controls", initSelectionControls);
     runTaskSafely("draw map", drawMap);

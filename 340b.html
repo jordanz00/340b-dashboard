@@ -64,6 +64,7 @@
   <div class="utility-toolbar-actions">
     <button type="button" id="btn-print" class="utility-btn" aria-label="Print or save as PDF">Print / PDF</button>
     <button type="button" id="btn-share" class="utility-btn" aria-label="Copy link to clipboard">Share link</button>
+    <button type="button" id="btn-export-svg" class="utility-btn" aria-label="Download map as SVG">Export map SVG</button>
   </div>
   <p class="utility-toolbar-text">Page tools</p>
   <p id="utility-status" class="utility-status" aria-live="polite"></p>
@@ -171,6 +172,8 @@
             <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
           </div>
         </div>
+        <!-- Cloned map for print/PDF so the map reliably appears when printing -->
+        <div id="print-map-fallback" class="print-map-fallback" aria-hidden="true" style="display: none;"></div>
         <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite" tabindex="-1"><p>No state selected. Choose a state to compare legal-status details and policy context.</p></div>
       </div>
       <div class="state-lists-wrap" id="state-lists-wrap">
