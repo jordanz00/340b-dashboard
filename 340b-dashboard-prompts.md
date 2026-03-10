@@ -2,6 +2,8 @@
 
 Use these prompts with Cursor or any AI assistant to systematically elevate the HAP 340B dashboard. Each prompt is self-contained and references the project context (340b.html, 340b.css, 340b.js).
 
+> **Note:** For structured improvement waves (print view, page breaks, accessibility, layout), use [ULTRA-prompts.md](ULTRA-prompts.md) and the [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md) workflow. This file remains the master prompt library.
+
 ---
 
 ## Master Prompt (Run First)

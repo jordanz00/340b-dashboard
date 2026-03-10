@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title id="page-title">340B Drug Pricing Program | HAP Advocacy Dashboard</title>
   <meta name="description" id="meta-description" content="HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection map, $7.95B community benefits, 72 PA hospitals. Executive dashboard for lawmakers and hospital CEOs.">
@@ -63,6 +63,7 @@
 <section class="utility-toolbar scroll-reveal" aria-label="Page tools">
   <div class="utility-toolbar-actions">
     <button type="button" id="btn-print" class="utility-btn" aria-label="Print or save as PDF">Print / PDF</button>
+    <button type="button" id="btn-download-pdf" class="utility-btn" aria-label="Download dashboard as PDF image">Download PDF (image)</button>
     <button type="button" id="btn-share" class="utility-btn" aria-label="Copy link to clipboard">Share link</button>
     <button type="button" id="btn-export-svg" class="utility-btn" aria-label="Download map as SVG">Export map SVG</button>
   </div>
@@ -434,7 +435,9 @@
 </footer>
 </div>
 
-<!-- Optional analytics note: if analytics is ever added, prefer a vetted local asset or add SRI to any hosted script. -->
-<script src="340b.js"></script>
+<!-- Download PDF (image) uses html2canvas + jsPDF from CDN. For offline/local-only, replace with assets/vendor copies and remove unpkg from CSP. -->
+  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js" crossorigin="anonymous"></script>
+  <script src="340b.js"></script>
 </body>
 </html>

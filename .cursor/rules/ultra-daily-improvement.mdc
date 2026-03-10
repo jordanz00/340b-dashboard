@@ -1,0 +1,14 @@
+---
+description: Use ULTRA prompts and daily improvement workflow for 340B dashboard improvements
+alwaysApply: false
+globs: 340b*.{html,js,css}
+---
+
+# ULTRA Daily Improvement — 340B Dashboard
+
+When working on **improvement tasks** (design polish, print view, accessibility, layout, text clarity), prefer the structured ULTRA workflow over ad-hoc requests.
+
+1. **Primary source:** [ULTRA-prompts.md](ULTRA-prompts.md) — v03 (print map, page breaks), v04, v05, v06, v07.
+2. **Workflow:** [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md) — run next wave → update handoff → audit → commit.
+
+Use these prompts when the user asks for improvements, polish, or "run ULTRA" so changes align with prior waves and handoff stays current.

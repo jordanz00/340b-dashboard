@@ -191,6 +191,25 @@ def check_removed_feature_copy(results: list[str]) -> bool:
     return okay
 
 
+def check_print_css(results: list[str]) -> bool:
+    """Verify @media print exists and contains font-size and map max-height (structure only)."""
+    css_path = ROOT / "340b.css"
+    text = read_text(css_path)
+    if "@media print" not in text:
+        record(results, False, "340b.css does not contain @media print")
+        return False
+    print_start = text.find("@media print")
+    print_block = text[print_start : print_start + 8000]
+    if "font-size" not in print_block:
+        record(results, False, "340b.css @media print block should set font-size (e.g. 75% or 11px)")
+        return False
+    if "max-height" not in print_block:
+        record(results, False, "340b.css @media print block should set max-height for map SVG")
+        return False
+    record(results, True, "340b.css has @media print with font-size and map max-height")
+    return True
+
+
 def check_print_structure(results: list[str]) -> bool:
     html = read_text(ROOT / "340b.html")
     required_snippets = [
@@ -291,6 +310,7 @@ def main() -> int:
         check_page_hardening,
         check_remote_assets,
         check_removed_feature_copy,
+        check_print_css,
         check_print_structure,
         check_prompt_waves,
     ]

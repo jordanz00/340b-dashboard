@@ -548,41 +548,173 @@
   }
 
   function cloneMapForPrint() {
-    var mapContainer = appState.dom.mapContainer;
     var fallback = document.getElementById("print-map-fallback");
-    var svg;
-    var legend;
-    if (!fallback || !mapContainer) return;
+    if (!fallback) return;
     clearElement(fallback);
-    svg = mapContainer.querySelector("svg");
+    var svg = (appState.dom.mapContainer && appState.dom.mapContainer.querySelector("svg")) ||
+              document.querySelector("#us-map svg") ||
+              document.querySelector(".us-map-wrap svg");
     if (svg) {
       fallback.appendChild(svg.cloneNode(true));
     }
-    legend = document.querySelector(".us-map-wrap .map-legend");
+    var legend = document.querySelector(".us-map-wrap .map-legend");
     if (legend) {
       fallback.appendChild(legend.cloneNode(true));
     }
+  }
+
+  var PRINT_VIEW_STORAGE_KEY = "hap340bPrint";
+
+  function getMapSvgString() {
+    var svg = (appState.dom.mapContainer && appState.dom.mapContainer.querySelector("svg")) ||
+              document.querySelector("#us-map svg") ||
+              document.querySelector(".us-map-wrap svg");
+    if (!svg) return "";
+    try {
+      return new XMLSerializer().serializeToString(svg);
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function getPrintViewPayload() {
+    var selectionTitle = appState.dom.selectionSummaryTitle ? appState.dom.selectionSummaryTitle.textContent : "No state selected yet";
+    var selectionText = appState.dom.selectionSummaryText ? appState.dom.selectionSummaryText.textContent : "";
+    var protectionCount = 0;
+    var noProtectionCount = 0;
+    var statesWithList = "";
+    var statesWithoutList = "";
+
+    if (typeof STATES_WITH_PROTECTION !== "undefined" && Array.isArray(STATES_WITH_PROTECTION)) {
+      protectionCount = STATES_WITH_PROTECTION.length;
+      statesWithList = STATES_WITH_PROTECTION.join(", ");
+    }
+    if (typeof STATE_340B === "object" && STATE_340B !== null) {
+      var without = Object.keys(STATE_340B).filter(function (abbr) {
+        return STATE_340B[abbr] && !STATE_340B[abbr].cp;
+      });
+      noProtectionCount = without.length;
+      statesWithoutList = without.join(", ");
+    }
+
+    var kpiDrug = "7%";
+    var kpiBenefit = "$7.95B";
+    var kpiOversight = "200+";
+    var kpiPA = "72";
+    var drugEl = document.querySelector(".kpi-strip .kpi-card:nth-child(1) .kpi-value");
+    var benefitEl = document.querySelector(".kpi-strip .kpi-card:nth-child(2) .kpi-value");
+    var oversightEl = document.querySelector(".kpi-strip .kpi-card:nth-child(3) .kpi-value");
+    var paEl = document.querySelector(".kpi-strip .kpi-card:nth-child(4) .kpi-value");
+    if (drugEl) kpiDrug = drugEl.textContent.trim();
+    if (benefitEl) kpiBenefit = benefitEl.textContent.trim();
+    if (oversightEl) kpiOversight = oversightEl.textContent.trim();
+    if (paEl) kpiPA = paEl.textContent.trim();
+
+    var dataFreshness = "Data as of " + (config.dataFreshness || "March 2025") + " - Last updated " + (config.lastUpdated || "March 2025");
+    if (appState.dom.dataFreshness) {
+      dataFreshness = appState.dom.dataFreshness.textContent;
+    }
+
+    var mapSvg = getMapSvgString();
+    return {
+      mapSvg: mapSvg,
+      mapSvgFallback: !mapSvg || mapSvg.length < 100,
+      selectionTitle: selectionTitle,
+      selectionText: selectionText,
+      protectionCount: protectionCount,
+      noProtectionCount: noProtectionCount,
+      statesWithList: statesWithList,
+      statesWithoutList: statesWithoutList,
+      kpiDrug: kpiDrug,
+      kpiBenefit: kpiBenefit,
+      kpiOversight: kpiOversight,
+      kpiPA: kpiPA,
+      dataFreshness: dataFreshness,
+      methodologyDate: config.lastUpdated || "March 2025"
+    };
+  }
+
+  function openPrintView() {
+    setUtilityStatus("Preparing print view...");
+    finalizeCountUpValues();
+    preparePrintSelectionState();
+    runTaskSafely("show map for print", showMapWrapImmediately);
+    revealAllAnimatedSections();
+
+    runTaskSafely("draw map for print view", drawMap);
+
+    function doOpen() {
+      var payload = getPrintViewPayload();
+      try {
+        sessionStorage.setItem(PRINT_VIEW_STORAGE_KEY, JSON.stringify(payload));
+      } catch (e) {
+        setUtilityStatus("Print data too large. Try closing other tabs.");
+        return;
+      }
+      var printUrl = "print.html?auto=1";
+      var win = window.open(printUrl, "_blank", "noopener");
+      if (win) {
+        setUtilityStatus("Print view opened. Use the browser print dialog to save as PDF.");
+      } else {
+        setUtilityStatus("Popup blocked. Allow popups for this site and try again.");
+      }
+      setTimeout(function () {
+        setUtilityStatus("");
+      }, 3000);
+    }
+
+    function waitForMapThenOpen(attemptsLeft) {
+      var svg = document.querySelector("#us-map svg") || document.querySelector(".us-map-wrap svg");
+      if (svg && svg.querySelector("path[data-state]")) {
+        doOpen();
+        return;
+      }
+      if (attemptsLeft <= 0) {
+        doOpen();
+        return;
+      }
+      window.setTimeout(function () {
+        waitForMapThenOpen(attemptsLeft - 1);
+      }, 250);
+    }
+
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        window.setTimeout(function () {
+          waitForMapThenOpen(25);
+        }, 1000);
+      });
+    });
   }
 
   function preparePrintSnapshot(onReady) {
     var callback = typeof onReady === "function" ? onReady : function () {};
     var methodologyWrap = appState.dom.methodologyWrap;
 
+    document.body.classList.add("print-ready");
     if (methodologyWrap) methodologyWrap.setAttribute("open", "");
+    // Order: open methodology first so it is visible when print runs.
     finalizeCountUpValues();
+    // Finalize count-up so printed numbers show final values, not 0.
     revealAllAnimatedSections();
+    // Ensure scroll-reveal sections are visible in print.
     preparePrintSelectionState();
+    // Set PA default for print if no state selected; update selection summary text.
     buildPrintIntroSnapshot();
+    // Populate print-only intro snapshot if used.
     runTaskSafely("draw map for print", drawMap);
+    // Ensure map is drawn before we print (live map is shown in print).
 
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
         cloneMapForPrint();
         setTimeout(function () {
           if (methodologyWrap && !methodologyWrap.hasAttribute("open")) methodologyWrap.setAttribute("open", "");
+          cloneMapForPrint();
+          document.body.classList.add("print-ready");
           document.body.offsetHeight;
           callback();
-        }, 500);
+        }, 1000);
       });
     });
   }
@@ -1159,32 +1291,10 @@
     if (!appState.dom.printButton) return;
 
     appState.dom.printButton.addEventListener("click", function () {
-      if (typeof window.print !== "function") {
-        setUtilityStatus("Print is not available in this browser.");
-        return;
-      }
-
-      appState.printPreparationPending = true;
-      setUtilityStatus("Preparing print preview...");
-
-      // Do not call window.print() until the DOM has had time to apply the final-state changes.
-      // This avoids blank pages, duplicated print-only content, missing maps, and 0-value metrics.
-      preparePrintSnapshot(function () {
-        try {
-          setUtilityStatus("Opening print dialog...");
-          window.print();
-        } catch (error) {
-          setUtilityStatus("Print could not open automatically.");
-          if (typeof console !== "undefined" && console.warn) {
-            console.warn("Print failed", error);
-          }
-          return;
-        }
-
-        window.setTimeout(function () {
-          setUtilityStatus("");
-        }, 1500);
-      });
+      // Use dedicated print view (print.html) for reliable PDF output. The live @media print
+      // path has been replaced by this flow: open print.html in a new tab with state in
+      // sessionStorage; that page injects map and data, then triggers the print dialog.
+      openPrintView();
     });
   }
 
@@ -1224,6 +1334,64 @@
     if (!btn) return;
     btn.addEventListener("click", function () {
       runTaskSafely("export map svg", exportMapAsSvg);
+    });
+  }
+
+  function downloadPdfAsImage() {
+    var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
+    var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
+    if (!html2canvasLib || !jsPDFLib) {
+      setUtilityStatus("Download PDF (image) requires html2canvas and jsPDF. Check script loading or add to assets/vendor/.");
+      setTimeout(function () { setUtilityStatus(""); }, 4000);
+      return;
+    }
+    runTaskSafely("reveal for pdf", revealAllAnimatedSections);
+    runTaskSafely("show map for pdf", showMapWrapImmediately);
+    var mapSection = document.querySelector("#state-laws");
+    if (mapSection) {
+      mapSection.scrollIntoView({ behavior: "auto", block: "start" });
+    }
+    var target = document.querySelector("main") || document.querySelector(".dashboard-inner") || document.body;
+    setUtilityStatus("Creating PDF...");
+    function capture() {
+    html2canvasLib(target, {
+      scale: 1.5,
+      useCORS: true,
+      allowTaint: true,
+      logging: false
+    }).then(function (canvas) {
+      var imgData = canvas.toDataURL("image/jpeg", 0.92);
+      var JsPDF = jsPDFLib;
+      var pdf = new JsPDF("p", "mm", "a4");
+      var pdfWidth = pdf.internal.pageSize.getWidth();
+      var pdfHeight = pdf.internal.pageSize.getHeight();
+      var imgWidth = pdfWidth;
+      var imgHeight = (canvas.height * pdfWidth) / canvas.width;
+      var position = 0;
+      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+      var heightLeft = imgHeight;
+      while (heightLeft > 0) {
+        position = heightLeft - pdfHeight;
+        pdf.addPage();
+        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
+        heightLeft -= pdfHeight;
+      }
+      pdf.save("340b-dashboard.pdf");
+      setUtilityStatus("PDF saved.");
+      setTimeout(function () { setUtilityStatus(""); }, 2500);
+    }).catch(function () {
+      setUtilityStatus("PDF capture failed. Try Print / PDF instead.");
+      setTimeout(function () { setUtilityStatus(""); }, 3000);
+    });
+    }
+    setTimeout(capture, 600);
+  }
+
+  function initDownloadPdf() {
+    var btn = document.getElementById("btn-download-pdf");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      runTaskSafely("download pdf image", downloadPdfAsImage);
     });
   }
 
@@ -1269,18 +1437,18 @@
                 showTemporaryUtilityStatus("Link copied.");
               } else {
                 window.prompt("Copy this link:", url);
-                showTemporaryUtilityStatus("Use the prompt to copy the link.");
+                showTemporaryUtilityStatus("Copy the link from the dialog above.");
               }
             } catch (error) {
               window.prompt("Copy this link:", url);
-              showTemporaryUtilityStatus("Use the prompt to copy the link.");
+              showTemporaryUtilityStatus("Copy the link from the dialog above.");
             }
 
             document.body.removeChild(fallbackField);
           });
       } else {
         window.prompt("Copy this link:", url);
-        showTemporaryUtilityStatus("Use the prompt to copy the link.");
+        showTemporaryUtilityStatus("Copy the link from the dialog above.");
       }
 
       window.setTimeout(function () {
@@ -1456,6 +1624,7 @@
 
   function handleAfterPrint() {
     appState.printPreparationPending = false;
+    document.body.classList.remove("print-ready");
     setUtilityStatus("");
     clearElement(appState.dom.printIntroSnapshot);
 
@@ -1486,6 +1655,7 @@
     runTaskSafely("initialize print", initPrint);
     runTaskSafely("initialize share", initShare);
     runTaskSafely("initialize export map svg", initExportMapSvg);
+    runTaskSafely("initialize download pdf", initDownloadPdf);
     runTaskSafely("initialize methodology toggle", initMethodologyToggle);
     runTaskSafely("initialize selection controls", initSelectionControls);
     runTaskSafely("draw map", drawMap);

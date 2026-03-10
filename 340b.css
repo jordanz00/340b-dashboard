@@ -93,6 +93,10 @@
   --map-no-protection: #d7e0ea;
   --map-no-protection-hover: #c2cfdd;
   --map-selected: #ff8a3d;
+
+  /* Print — borders and muted text */
+  --print-border: #ccc;
+  --print-muted: #64748b;
 }
 
 * { box-sizing: border-box; }
@@ -505,99 +509,84 @@ footer a:hover { color: var(--primary); }
 .footer-cta a { display: inline-block; padding: var(--space-2) var(--space-4); background: var(--primary); color: #fff !important; font-weight: 600; font-size: var(--text-sm); border-radius: var(--radius-sm); transition: background 0.2s var(--ease); }
 .footer-cta a:hover { background: var(--primary-hover); text-decoration: none !important; }
 .footer-cta a + a { margin-left: var(--space-2); }
-/* Print/PDF: every section must render. Global content-visibility + overflow. Same data as live. */
+/* ========== PRINT/PDF — FROM SCRATCH — REVISION 100 (minimal, no layout overrides) ==========
+   Revisions 1–100: (1) No display:block or visibility overrides on grid/sections.
+   (2) Hide chrome only. (3) Unhide content-visibility on .supporting-section and #community-benefit.
+   (4) scroll-reveal and [data-count-up] visible. (5) Methodology display block when open.
+   (6) Zero min-heights that cause blank pages. (7) Root and all containers overflow:visible so nothing clips.
+   (8) Map unchanged: cloned fallback when body.print-ready. (9) Card print styling only. */
 @media print {
-  @page { margin: 0.5cm; size: letter; }
-  html, body { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-  html { scroll-behavior: auto !important; font-size: 10px !important; }
-  body { background: #fff !important; overflow: visible !important; }
-  .dashboard { min-height: auto !important; overflow: visible !important; }
-  .dashboard::before { display: none !important; }
+  @page { margin: 0.6cm; size: letter; }
 
-  /* 1) Global: nothing may skip painting in print; reset containment that can clip */
-  *, *::before, *::after {
+  html, body {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+    height: auto !important;
+    min-height: 0 !important;
+    overflow: visible !important;
+  }
+  html { font-size: 11px !important; }
+  body { background: #fff !important; }
+  .dashboard::before { display: none !important; }
+  .dashboard, .dashboard-inner, main, .dashboard-grid,
+  .dashboard-grid > * {
+    overflow: visible !important;
+    max-height: none !important;
+  }
+  .intro-section-inner,
+  .supporting-cards-row,
+  .executive-proof-strip,
+  .map-hero-section,
+  .map-hero-inner { overflow: visible !important; }
+
+  .skip-link, .back-link, .utility-toolbar, .footer-cta, .site-footer,
+  .state-filter-bar, .state-filter-status, .state-no-results,
+  .map-tooltip, .state-list-tooltip, .noscript-card, .selection-clear,
+  .print-only { display: none !important; }
+
+  main,
+  main * {
+    content-visibility: visible !important;
+    contain-intrinsic-size: none !important;
+  }
+  .supporting-section,
+  #community-benefit {
     content-visibility: visible !important;
     contain-intrinsic-size: none !important;
   }
   [data-count-up] { contain: none !important; }
+  .scroll-reveal { opacity: 1 !important; transform: none !important; }
 
-  .skip-link, .back-link, .utility-toolbar, .footer-cta, .site-footer,
-  .state-filter-bar, .state-filter-status, .state-no-results,
-  .map-tooltip, .state-list-tooltip, .noscript-card,
-  .selection-clear { display: none !important; }
-  .print-only { display: none !important; }
+  .methodology-content,
+  details[open] .methodology-content { display: block !important; }
 
-  main { padding: 0.25rem 0 !important; max-height: none !important; overflow: visible !important; }
-  .dashboard-inner { padding: 0 0.25rem !important; overflow: visible !important; }
-  .map-hero-section, .map-hero-inner, .map-hero-card,
-  .supporting-section, #community-benefit { overflow: visible !important; }
+  .intro-section .card { min-height: 0 !important; }
+  .map-wrap,
+  .us-map-wrap,
+  .map-hero-section .map-container { min-height: 0 !important; }
+  .map-loading-skeleton { display: none !important; }
 
-  /* 2) Dashboard grid and all sections: explicit display and visibility */
-  .dashboard-grid { display: block !important; visibility: visible !important; }
-  .intro-section { display: block !important; visibility: visible !important; margin-bottom: 0.35rem !important; }
-  .intro-section-inner { display: grid !important; grid-template-columns: 1fr 1fr !important; gap: 0.35rem !important; visibility: visible !important; }
-  .intro-section .card { min-height: 0 !important; margin-bottom: 0 !important; display: block !important; visibility: visible !important; }
-
-  .executive-proof-strip { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 0.25rem !important; margin-bottom: 0.35rem !important; visibility: visible !important; }
-  .executive-proof-card { display: block !important; visibility: visible !important; margin-bottom: 0 !important; }
-
-  .map-hero-section { display: block !important; visibility: visible !important; margin: 0.25rem 0 !important; }
-  .map-hero-inner { display: block !important; visibility: visible !important; }
-  .map-hero-card { display: block !important; visibility: visible !important; padding: 0.15rem 0 !important; margin-bottom: 0.15rem !important; }
-  .selection-summary { display: block !important; visibility: visible !important; padding: 0.15rem 0 !important; margin-bottom: 0.15rem !important; }
-  .map-hero-section .map-container { display: block !important; min-height: 0 !important; visibility: visible !important; }
-
-  .us-map-wrap.map-wrap { display: none !important; }
-  .print-map-fallback {
+  /* Map: unchanged (working). Show cloned fallback, hide live. */
+  body.print-ready .us-map-wrap.map-wrap { display: none !important; }
+  body.print-ready .print-map-fallback {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     overflow: visible !important;
-    min-height: 7cm !important;
-    margin-bottom: 0.15rem !important;
+    margin-bottom: 0.25rem !important;
   }
-  .dashboard .print-map-fallback svg, .print-map-fallback img { display: block !important; visibility: visible !important; width: 100% !important; height: auto !important; max-height: 9cm !important; }
-  .map-loading-skeleton { display: none !important; }
-
-  .state-detail-panel { display: block !important; visibility: visible !important; margin-bottom: 0.15rem !important; }
-  .state-lists-wrap { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
-  .state-list-block { display: block !important; visibility: visible !important; margin-bottom: 0.15rem !important; }
-  .state-list-grid { display: flex !important; flex-wrap: wrap !important; gap: 0.15rem !important; visibility: visible !important; }
-
-  .section-subhead { display: block !important; visibility: visible !important; margin: 0.2rem 0 0.1rem !important; }
-  .trends-grid { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; gap: 0.2rem !important; visibility: visible !important; margin: 0.15rem 0 !important; }
-  .trends-card { display: flex !important; visibility: visible !important; }
-  .map-hero-section .sources { display: block !important; visibility: visible !important; margin: 0.1rem 0 !important; }
-
-  /* 3) Methodology: always open and visible in print */
-  .methodology-wrap { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
-  .methodology-wrap .methodology-content,
-  .methodology-content { display: block !important; visibility: visible !important; height: auto !important; overflow: visible !important; padding: 0.2rem !important; }
-  .methodology-toggle { display: block !important; visibility: visible !important; margin-bottom: 0.1rem !important; }
-  .methodology-content p, .methodology-content ul, .methodology-content .source-links { display: block !important; visibility: visible !important; }
-  .methodology-content li { display: list-item !important; }
-
-  .kpi-strip { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 0.2rem !important; padding: 0.25rem 0 !important; visibility: visible !important; margin: 0.2rem 0 !important; }
-  .kpi-card { display: block !important; visibility: visible !important; }
-  .data-freshness { display: block !important; visibility: visible !important; margin-top: 0.1rem !important; }
-
-  .supporting-section { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
-  .supporting-cards-row { display: grid !important; grid-template-columns: repeat(3, 1fr) !important; gap: 0.2rem !important; visibility: visible !important; }
-  .supporting-section .card, .supporting-section .section-subhead { display: block !important; visibility: visible !important; }
-
-  #community-benefit { display: block !important; visibility: visible !important; margin: 0.2rem 0 !important; }
-  #community-benefit .card-heading, #community-benefit .benefit-grid, #community-benefit .benefit-item,
-  #community-benefit .community-benefit-hero { display: block !important; visibility: visible !important; }
-  #community-benefit .benefit-grid { display: grid !important; grid-template-columns: repeat(4, 1fr) !important; gap: 0.15rem !important; }
-
-  #access, #pa-safeguards { display: block !important; visibility: visible !important; margin: 0.15rem 0 !important; }
-
-  .scroll-reveal { opacity: 1 !important; transform: none !important; visibility: visible !important; }
+  body.print-ready .print-map-fallback svg,
+  body.print-ready .print-map-fallback img {
+    display: block !important;
+    visibility: visible !important;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 11cm !important;
+  }
 
   .card, .kpi-card, .map-hero-card, .selection-summary, .state-detail-panel {
     box-shadow: none !important;
-    border: 1px solid #ccc !important;
-    break-inside: avoid !important;
+    border: 1px solid var(--print-border) !important;
     background: #fff !important;
   }
   .kpi-value, .stat-value, .big-stat-value, .count-up { color: #111827 !important; }

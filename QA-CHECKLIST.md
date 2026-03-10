@@ -30,27 +30,25 @@ Check these before lower-risk polish:
 6. Toggle `All`, `Protection`, and `No protection`.
 7. Open and close `About this data`.
 8. Test `Share link`.
-9. Test `Print / PDF`.
+9. Test `Print / PDF` (opens print view in new tab; use that tab’s print dialog to save as PDF).
 10. Confirm the executive scan strip updates correctly with the national state counts.
 11. Confirm the map context sentence changes appropriately when a state is selected and resets when cleared.
 
 ## Print / PDF (mandatory release gate)
 
-**Before any layout or print CSS change:** Run Print/PDF preview and confirm no regressions.
+**Current approach (dedicated print view):** The `Print / PDF` button opens `print.html` in a new tab. That page is a block-only, print-optimized copy of the dashboard. State (map SVG, selection, KPI values, state lists) is passed via sessionStorage. The print view injects the map and data, then triggers the browser print dialog (`?auto=1`). Do not rely on `@media print` on the live dashboard for the primary PDF path—that path was replaced after repeated failures (blank pages, missing sections).
 
-1. Open print preview from the `Print / PDF` button.
-2. Confirm the document fits in **2–3 pages max** with no excessive white space.
-3. Confirm **no blank pages** and **no half-empty pages**.
-4. Confirm the map is **fully visible** (not cut off at bottom or sides).
-5. Confirm page 1: header, intro cards, executive strip, map, selection summary, state detail.
-6. Confirm page 2+: state lists, trends, KPIs, supporting cards, community benefit, access, PA safeguards, methodology, sources.
-7. Confirm the print version uses the real intro cards with icons.
-8. Confirm KPI values show final numbers, not `0`.
-9. Confirm Pennsylvania is selected by default in print when no live state is selected.
-10. Confirm the print header shows the title and last-updated date.
-11. Confirm the PDF looks polished and pharma/CEO presentable.
+**Priority: PDF must contain the same content as the live dashboard. Nothing may be omitted or cut off.**
 
-**If regressions occur (blank pages, cut-off map, wrong scaling):** revert or fix before committing.
+1. Click `Print / PDF` on the dashboard. Confirm a new tab opens with `print.html` and the print dialog appears (or appears after a short delay).
+2. In the print view / Print Preview, confirm **all sections appear**: header (HAP, 340B title); Overview (What is 340B); HAP Position; executive strip (3 cards); State-by-state analysis (title, selection summary, **map visible**, state lists with counts, Recent legal signals, About this data); KPI strip (4 KPIs + data freshness); Why this matters; Eligible providers; Oversight credibility; Pennsylvania operating stakes; Community benefit; Access to care; Pennsylvania safeguards.
+3. Confirm the **map is fully visible** (not cut off); it is injected from the main page’s live map SVG.
+4. Confirm **no blank pages**; content flows across pages in a reasonable page count (e.g. 2–5 pages).
+5. Confirm KPI values show final numbers (7%, $7.95B, 200+, 72), not `0`.
+6. Confirm Pennsylvania is selected by default when no state was selected on the dashboard (selection title/text in print view match PA context).
+7. Confirm the PDF looks professional and presentable for lawmakers/CEOs.
+
+**If the print view is missing sections or the map:** Check that the dashboard map has finished loading before clicking Print; allow popups for the site if the new tab does not open.
 
 ## Accessibility and fallback
 

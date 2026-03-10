@@ -88,6 +88,7 @@ Important print note:
 - If the map fails, other buttons should still work. Keep that behavior.
 - Use `QA-CHECKLIST.md` before pushing changes.
 - Run `python3 dashboard-audit.py` after meaningful edits so the project checks for common regressions.
+- **Print preview is a mandatory release gate.** Do not publish if the PDF has blank pages, cut-off map, or wrong scaling—fix or revert before committing.
 - Read `THREAT-MODEL.md` before making security-related changes or adding any remote service, auth flow, or external script.
 
 ## Simple release order

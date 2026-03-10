@@ -48,9 +48,9 @@ ULTRA prompts synthesize and improve upon all prior prompt waves (v01–v60). Ea
 
 ---
 
-## ULTRA v02 — 10 Prompts (Do Not Run Until Instructed)
+## ULTRA v02 — 10 Prompts (Run Completed)
 
-*Await user instructions before running these prompts.*
+*ULTRA v02 has been run. Summary: print CSS audit check in dashboard-audit.py, share fallback copy clarified, preparePrintSnapshot order documented, release gate in NOVICE-MAINTAINER, print tokens and prep comments applied.*
 
 ### ULTRA-02.1 Print Scaling Verification Pass
 
@@ -97,7 +97,238 @@ ULTRA prompts synthesize and improve upon all prior prompt waves (v01–v60). Ea
 ## Usage
 
 1. **ULTRA v01** has been run.
+2. **ULTRA v02** has been run.
+3. **ULTRA v03** — rewritten for print view + map visibility + page breaks. Do not run until instructed.
+4. **ULTRA v04** — do not run until instructed.
+5. **ULTRA v05, v06, v07** — ready for improvement cycles. See [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md).
+6. Run waves in order. After each wave: update handoff, run audit, optionally commit.
 
-2. **ULTRA v02** — await user instructions before running.
+---
 
-3. Each ULTRA wave improves on prior waves and targets the highest-impact areas.
+## ULTRA v03 — 10 Prompts (Print View and Map Visibility)
+
+*Do not run until instructed. Primary PDF path is print.html; this wave ensures map visible in print view and Download PDF (image), professional page breaks, and design parity.*
+
+### ULTRA-03.1 Map Visible in Print View and Download PDF
+
+> **Print view:** In `openPrintView()`, call `showMapWrapImmediately()` and `revealAllAnimatedSections()` before waiting; poll for `#us-map svg` with `path[data-state]`; use 1000ms initial delay and up to 25 attempts. In print.html, if no SVG is injected, show fallback message. Ensure `.print-view-map-wrap` and svg use `visibility: visible` and `opacity: 1`. **Download PDF (image):** Call `revealAllAnimatedSections()` and `showMapWrapImmediately()`; scroll map into view; use 600ms delay before html2canvas so map paints. Map must appear in both outputs.
+
+### ULTRA-03.2 Print Page Breaks and Layout Contract
+
+> **Page breaks:** In `print-view.css` `@media print`, use `page-break-inside: avoid` on blocks, executive cards, KPI strip, map wrap, details. Use `page-break-after: avoid` on blocks and section heads so sections are not cut mid-content. **Min-heights:** Document in 340b.css `@media print` which screen min-heights are overridden. Ensure no new rule creates blank pages.
+
+### ULTRA-03.3 State List Print Density
+
+> Ensure the state chips/list below the map are visible and readable in print. If they overflow or are cut off, add print-specific font-size and gap rules so the full list fits below the map without removing states. Prefer scaling down over hiding.
+
+### ULTRA-03.4 Methodology Always Open in Print
+
+> Verify that when the user clicks Print/PDF, the "About this data" (methodology) section is open and its full content (including source links and verification order) is visible in the PDF. Confirm both JS (`setAttribute("open")`) and CSS (`display: block` for `.methodology-content`) are in place and that no print rule hides it.
+
+### ULTRA-03.5 Share and Print Button Accessibility
+
+> Verify that the Share link and Print/PDF buttons have clear aria-labels, are reachable by keyboard, and that focus order is logical. Ensure the utility status message after share or print is announced to screen readers (e.g. via aria-live or role="status").
+
+### ULTRA-03.6 Data Freshness and Last Updated Consistency
+
+> Ensure "Last updated" and "Data as of" appear in both the live dashboard (e.g. header or KPI strip) and in the print/PDF. Confirm a single source (e.g. CONFIG.lastUpdated in state-data.js) drives all visible date strings and that print-specific copy is synced from the same source.
+
+### ULTRA-03.7 Audit Script and Print Checklist Alignment
+
+> Align the manual print checks in `dashboard-audit.py` (MANUAL_CHECKS) with the print gate in `QA-CHECKLIST.md` and `NOVICE-MAINTAINER.md`. Ensure the same criteria (no blank pages, map visible, content present) are stated consistently and that the audit script’s check_print_css and check_print_structure cover the intended structure.
+
+### ULTRA-03.8 Error Recovery and Empty States
+
+> Verify that if the map fails to load, the user sees a clear fallback (e.g. state list or message) and that Print/PDF and Share still work. Verify empty states (e.g. "No state selected") are clear and that filter "No states match" is handled. No dead ends.
+
+### ULTRA-03.9 Performance and Print Timing
+
+> Ensure the 700ms (or current) delay before `window.print()` in `preparePrintSnapshot` is sufficient for the map to paint and for methodology to open. If print still shows missing content, consider increasing the delay or adding a second reflow trigger. Document the chosen delay and reason in a comment.
+
+### ULTRA-03.10 ULTRA Wave Handoff
+
+> After running ULTRA v03, update this file to note "ULTRA v03 has been run" and add a short summary of changes (e.g. print overrides documented, methodology verified, audit aligned). Keep ULTRA v04 prompts ready for the next wave (do not run v04 until instructed).
+
+---
+
+## ULTRA v04 — 10 Prompts (Print Design, Layman Terms, Abbreviations, Showcase)
+
+*Do not run until instructed.*
+
+### ULTRA-04.1 Print View as Primary PDF Path
+
+> Ensure all docs describe the print view flow; map serialized with PA default. Verify wait-for-map before opening print tab.
+
+### ULTRA-04.2 Print View Design Parity with Dashboard
+
+> Audit print-view.css and print.html: cards with shadow and accent; header branding; KPI strip; map container; About this data compact. Executive-ready look.
+
+### ULTRA-04.3 Layman's Terms Pass
+
+> Audit user-facing copy for technical terms; add plain-language where needed. Clarity for non-specialists.
+
+### ULTRA-04.4 Abbreviation Expansion (Non-State)
+
+> Expand HRSA, ASHP, AHA, FQHC, CAH, DSH, PBM on first use in smaller muted text. State abbreviations excluded. Apply in 340b.html and print.html.
+
+### ULTRA-04.5 Showcase Key Stats and Highlights
+
+> Highlight 7%, $7.95B, 200+, 72 PA hospitals, no cost to taxpayers, HAP ask. Typography and accent borders in live and print.
+
+### ULTRA-04.6 Print View About This Data Compact
+
+> Methodology in print: smaller font, indentation, abbreviation expansions. Last updated visible.
+
+### ULTRA-04.7 Download PDF (Image) Working and Tested
+
+> Button works with CDN or vendor; CSP allows script; multi-page capture; clear feedback. Document local vendor in NOVICE-MAINTAINER.
+
+### ULTRA-04.8 Map Visible in Print View with PA Default
+
+> openPrintView waits for map SVG; PA selected; print view injects SVG; fallback if mapSvg empty.
+
+### ULTRA-04.9 Consistent Terminology and Labels
+
+> Consistent terms across live, print, docs: Print/PDF, About this data, Contract pharmacy protection, Data as of.
+
+### ULTRA-04.10 ULTRA v04 Handoff
+
+> After running v04, note run and add summary. Update Usage section.
+
+---
+
+## ULTRA v05 — 10 Prompts (Print Polish, Accessibility, Data Consistency)
+
+*Do not run until instructed. Run after v04.*
+
+### ULTRA-05.1 Map Visibility Regression Check
+
+> After v04, verify map remains visible in both print view (print.html) and Download PDF (image). No regressions.
+
+### ULTRA-05.2 Print View Accessibility
+
+> Ensure print.html and print-view.css support screen readers (heading hierarchy, alt text for images). Print output should be navigable.
+
+### ULTRA-05.3 Keyboard and Focus in Live Dashboard
+
+> Verify Share, Print/PDF, Download PDF (image), Export SVG, and filter buttons are reachable by Tab and have visible focus. Logical focus order.
+
+### ULTRA-05.4 Reduced Motion Parity
+
+> With `prefers-reduced-motion: reduce`, print and Download PDF (image) still show all content. No hidden scroll-reveal or animated sections.
+
+### ULTRA-05.5 Single Source for Dates
+
+> CONFIG.lastUpdated and dataFreshness drive all visible dates. Print view, methodology, and KPI strip use same source. No drift.
+
+### ULTRA-05.6 Source Links and Verification Order
+
+> Methodology "About this data" lists MultiState, ASHP, America's Essential Hospitals in verification order. Links valid and use rel="noopener noreferrer".
+
+### ULTRA-05.7 Print Checklist and Audit Alignment
+
+> QA-CHECKLIST.md, NOVICE-MAINTAINER.md, and dashboard-audit.py MANUAL_CHECKS state same criteria: map visible, no blank pages, content present.
+
+### ULTRA-05.8 Error Recovery
+
+> Map failure: fallback message; Print/PDF and Share still work. Empty states clear. No dead ends.
+
+### ULTRA-05.9 Print View Load and Auto-Print
+
+> print.html with ?auto=1 triggers window.print() after content injects. 600ms delay sufficient. Document in DAILY-IMPROVEMENT.md if needed.
+
+### ULTRA-05.10 ULTRA v05 Handoff
+
+> After running v05, note run and add summary. Keep v06 ready.
+
+---
+
+## ULTRA v06 — 10 Prompts (Performance, Maintainability, Regressions)
+
+*Do not run until instructed. Run after v05.*
+
+### ULTRA-06.1 Map Render Time
+
+> Map draws within 2s on typical hardware. No blocking main thread. Consider lazy-load if needed.
+
+### ULTRA-06.2 Script Size and Dependencies
+
+> Vendor scripts (d3, topojson, html2canvas, jspdf) documented. Local copies preferred for offline; CDN with CSP for online.
+
+### ULTRA-06.3 File Roles Documentation
+
+> NOVICE-MAINTAINER.md: which files for content vs layout vs behavior. Single place for "where to edit" guidance.
+
+### ULTRA-06.4 Print Regressions Guard
+
+> Before any layout or print-related change, run Print/PDF and Download PDF (image). Confirm map visible, no blank pages. Revert if regressions.
+
+### ULTRA-06.5 Share Regressions Guard
+
+> Share link copies canonical URL. Hash state preserved. Test clipboard and fallback.
+
+### ULTRA-06.6 Filter and Selection Sync
+
+> Filter All/Protection/No protection works. Selection summary and map stay in sync. PA default for print when no selection.
+
+### ULTRA-06.7 Audit Script Coverage
+
+> dashboard-audit.py catches: unsafe DOM, hidden chars, link hardening, print CSS structure. Add checks when new surfaces added.
+
+### ULTRA-06.8 Copy Stale-Feature Removal
+
+> No references to removed features (search, dark mode, presentation mode). UI copy matches behavior.
+
+### ULTRA-06.9 Semgrep and Security Scan
+
+> Run Semgrep on security-sensitive changes. Document in SECURITY.md. No secrets or eval in source.
+
+### ULTRA-06.10 ULTRA v06 Handoff
+
+> After running v06, note run and add summary. Keep v07 ready.
+
+---
+
+## ULTRA v07 — 10 Prompts (Scalability, Layman Language, Showcase)
+
+*Do not run until instructed. Run after v06.*
+
+### ULTRA-07.1 Design Token Consolidation
+
+> Hardcoded colors, radii, shadows in print-view.css and 340b.css consolidated into :root or existing vars. No one-off #ddd, #ccc.
+
+### ULTRA-07.2 Layman Language Second Pass
+
+> User-facing copy uses plain language. Technical terms (e.g. "covered entities", "PBM") explained on first use. Clarity for lawmakers and CEOs.
+
+### ULTRA-07.3 Abbreviation Expansion Second Pass
+
+> HRSA, ASHP, AHA, FQHC, CAH, DSH, PBM expanded in smaller text. State abbreviations excluded. Consistent in live and print.
+
+### ULTRA-07.4 Key Stats Visual Hierarchy
+
+> 7%, $7.95B, 200+, 72 PA hospitals, "no cost to taxpayers", HAP ask stand out. Typography and accent borders. Same in print view.
+
+### ULTRA-07.5 Scalability of Layout
+
+> Grid and flex patterns reusable. New sections follow same card/block structure. No brittle selectors.
+
+### ULTRA-07.6 Text Readability
+
+> Font sizes, line heights, contrast meet WCAG AA. Print view readable at 100% zoom.
+
+### ULTRA-07.7 Executive Readiness
+
+> PDF (print view and Download PDF image) looks professional. No debug text, broken layout, or low-contrast elements.
+
+### ULTRA-07.8 Maintainability Score
+
+> NOVICE-MAINTAINER answers: what to edit, what to check, where print prep happens. One maintainer can own the project.
+
+### ULTRA-07.9 DAILY-IMPROVEMENT Integration
+
+> DAILY-IMPROVEMENT.md workflow references ULTRA prompts. After each wave: run audit, update handoff, optionally commit. Level-up notification concept documented.
+
+### ULTRA-07.10 ULTRA v07 Handoff
+
+> After running v07, note run and add summary. Next waves (v08+) follow same pattern. See DAILY-IMPROVEMENT.md for continuous improvement.

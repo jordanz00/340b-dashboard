@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>340B Drug Pricing Program — Print View | HAP Advocacy Dashboard</title>
+  <link rel="stylesheet" href="print-view.css">
+</head>
+<body class="print-view">
+  <div id="print-view-root">
+    <header class="print-view-header">
+      <img src="haplogo_box_blue.jpeg" alt="" class="print-view-logo" width="52" height="52">
+      <div>
+        <p class="print-view-org">The Hospital and Healthsystem Association of Pennsylvania</p>
+        <h1>340B Drug Pricing Program</h1>
+        <p class="print-view-badge">ADVOCACY DASHBOARD</p>
+      </div>
+    </header>
+
+    <main class="print-view-main">
+      <section class="print-view-block">
+        <p class="print-view-card-title">Overview</p>
+        <h2>What is 340B?</h2>
+        <p>The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and enables providers to serve vulnerable and underserved populations.</p>
+        <p class="print-view-stat"><span class="print-view-stat-label">Market share</span> <strong id="pv-kpi-market">7%</strong> 340B purchases</p>
+      </section>
+
+      <section class="print-view-block">
+        <p class="print-view-card-title">HAP Position</p>
+        <h2>Protect 340B integrity and contract pharmacy access.</h2>
+        <p>HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies to ensure patient access to affordable medications.</p>
+        <p><strong>HAP asks lawmakers:</strong> Protect 340B integrity and preserve contract pharmacy access for patient medications.</p>
+      </section>
+
+      <section class="print-view-block print-view-executive">
+        <div class="print-view-executive-card">
+          <p class="print-view-card-title">Policy priority</p>
+          <h3>Protect 340B integrity and contract pharmacy access</h3>
+          <p>HAP's argument is strongest when access, integrity, and patient medication continuity stay linked together.</p>
+        </div>
+        <div class="print-view-executive-card">
+          <p class="print-view-card-title">National landscape</p>
+          <h3>Protection remains uneven across the country</h3>
+          <p>Use the state map and selected-state panel to compare enacted protections against states where hospitals remain exposed.</p>
+        </div>
+        <div class="print-view-executive-card">
+          <p class="print-view-card-title">Why trust this view</p>
+          <h3>Legal status and recency are surfaced directly in the dashboard</h3>
+          <p>Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals.</p>
+        </div>
+      </section>
+
+      <section class="print-view-block">
+        <p class="print-view-card-title">State-by-state analysis</p>
+        <h2>340B contract pharmacy protection across the U.S.</h2>
+        <p id="pv-map-hero-sub">Select a state for details. 72 Pennsylvania hospitals participate in 340B.</p>
+        <div class="print-view-selection">
+          <p class="print-view-card-title">State selection</p>
+          <p class="print-view-selection-title" id="pv-selection-title">No state selected yet</p>
+          <p class="print-view-selection-text" id="pv-selection-text">Choose a state from the map or list to compare enacted protections and no-protection states.</p>
+        </div>
+        <div id="pv-map-container" class="print-view-map-wrap"></div>
+        <div class="print-view-legend">
+          <span><span class="print-view-swatch protection"></span> Contract pharmacy protection</span>
+          <span><span class="print-view-swatch no-protection"></span> No protection law</span>
+        </div>
+        <h3 class="print-view-subhead">States with protection (<span id="pv-protection-count">0</span>)</h3>
+        <p id="pv-states-with-list" class="print-view-state-list"></p>
+        <h3 class="print-view-subhead">No protection law (<span id="pv-no-protection-count">0</span>)</h3>
+        <p id="pv-states-without-list" class="print-view-state-list"></p>
+        <h3 class="print-view-subhead">Recent legal signals</h3>
+        <div class="print-view-trends">
+          <p><strong>Courts:</strong> States including AR, LA, MO, MN, TN, and RI prevailed when manufacturers challenged contract pharmacy protections.</p>
+          <p><strong>2025 hybrid:</strong> CO, ME, OH, RI, and VT paired pharmacy protections with reporting requirements.</p>
+          <p><strong>Vetoes:</strong> Some governors vetoed proposed 340B protections, including in Virginia.</p>
+        </div>
+        <p class="print-view-sources">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
+        <details class="print-view-details print-view-details--compact" open>
+          <summary>About this data</summary>
+          <div class="print-view-methodology">
+            <p><strong>State law data</strong> — MultiState, ASHP, America's Essential Hospitals. Enacted state laws as of March 2025.</p>
+            <p><strong>Community benefit</strong> — 340B Health and AHA survey (2024).</p>
+            <p><strong>HRSA oversight</strong> <span class="print-view-abbr">(Health Resources and Services Administration)</span> — federal audit activity 2024.</p>
+            <p><strong>Verification order:</strong> MultiState → ASHP → America's Essential Hospitals. <strong>Last updated:</strong> <span id="pv-methodology-date">March 2025</span></p>
+            <ul class="print-view-methodology-links">
+              <li>MultiState — legislative status</li>
+              <li>ASHP <span class="print-view-abbr">(American Society of Health-System Pharmacists)</span> — pharmacy-policy cross-check</li>
+              <li>America's Essential Hospitals — advocacy confirmation</li>
+            </ul>
+          </div>
+        </details>
+      </section>
+
+      <section class="print-view-kpi-strip">
+        <div class="print-view-kpi-card">
+          <p class="print-view-kpi-label">U.S. Drug Market</p>
+          <p class="print-view-kpi-value" id="pv-kpi-drug">7%</p>
+          <p class="print-view-kpi-desc">Share of total U.S. outpatient drug market</p>
+        </div>
+        <div class="print-view-kpi-card">
+          <p class="print-view-kpi-label">Community Benefit</p>
+          <p class="print-view-kpi-value" id="pv-kpi-benefit">$7.95B</p>
+          <p class="print-view-kpi-desc">Total community benefits from 340B hospitals (2024)</p>
+        </div>
+        <div class="print-view-kpi-card">
+          <p class="print-view-kpi-label">Oversight</p>
+          <p class="print-view-kpi-value" id="pv-kpi-oversight">200+</p>
+          <p class="print-view-kpi-desc">Covered entities audited by HRSA in 2024</p>
+        </div>
+        <div class="print-view-kpi-card">
+          <p class="print-view-kpi-label">Pennsylvania</p>
+          <p class="print-view-kpi-value" id="pv-kpi-pa">72</p>
+          <p class="print-view-kpi-desc">Pennsylvania hospitals participating in 340B</p>
+        </div>
+        <p class="print-view-freshness" id="pv-data-freshness">Data as of March 2025 — Last updated March 2025</p>
+      </section>
+
+      <h3 class="print-view-section-head">Why this matters to health system leaders</h3>
+
+      <section class="print-view-block">
+        <p class="print-view-card-title">Eligible providers</p>
+        <h2>Who depends on 340B</h2>
+        <p>340B supports safety-net providers in both rural and urban markets, including:</p>
+        <ul>
+          <li>Children's and cancer hospitals</li>
+          <li>CAHs and DSHs</li>
+          <li>FQHCs</li>
+        </ul>
+      </section>
+
+      <section class="print-view-block">
+        <p class="print-view-card-title">Oversight credibility</p>
+        <h2>Federal oversight remains real</h2>
+        <p>In 2024 federal oversight still included meaningful review activity:</p>
+        <p><strong>Hospitals</strong> 200+ Audited · <strong>Manufacturers</strong> 6% Audited</p>
+        <p>HAP supports <strong>parity in oversight between covered entities and manufacturers</strong>, not a one-sided accountability standard.</p>
+      </section>
+
+      <section class="print-view-block">
+        <p class="print-view-card-title">Pennsylvania operating stakes</p>
+        <h2>340B remains materially relevant in PA</h2>
+        <p><strong>72 hospitals (30%)</strong> participate, making Pennsylvania a serious operating and policy example for this dashboard:</p>
+        <p>Rural 49% · Negative margin 53% · L&amp;D 49%</p>
+      </section>
+
+      <section class="print-view-block print-view-community-benefit">
+        <p class="print-view-card-title">Community benefit</p>
+        <h2>Reinvesting savings</h2>
+        <p><strong>23%</strong> average savings on pharma purchases · Free or reduced-price prescriptions · Mobile mammography &amp; cancer screening · Dental care &amp; preventive services</p>
+        <p class="print-view-big-stat">Total community benefits (2024) <strong>$7.95B</strong></p>
+        <p>9% increase over 2023 — reinvested in community health</p>
+      </section>
+
+      <section class="print-view-block">
+        <p class="print-view-card-title">Access to care</p>
+        <h2>Contract pharmacy restrictions hit patient access</h2>
+        <p>Federal guidance permits 340B dispensing through in-house or contract pharmacies. Manufacturer-imposed policies can <strong>restrict hospitals to a single contract pharmacy</strong>, which puts rural, specialty, and underserved patient access at risk when hospitals depend on distributed pharmacy networks.</p>
+      </section>
+
+      <section class="print-view-block">
+        <p class="print-view-card-title">Pennsylvania safeguards</p>
+        <h2>PA already prevents duplicate discounts</h2>
+        <ul>
+          <li>Manufacturers are not required to provide both a 340B discount and a Medicaid rebate for the same drug.</li>
+          <li>DHS administers the <strong>340B Drug Exclusion List</strong> and invoices manufacturers for Medicaid rebates, so covered entities may not dispense 340B-priced drugs on this list.</li>
+          <li>Contract pharmacies dispense non-340B drugs to Medicare Advantage beneficiaries, and DHS invoices manufacturers for rebates.</li>
+        </ul>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    (function () {
+      var KEY = "hap340bPrint";
+      var root = document.getElementById("print-view-root");
+      var mapContainer = document.getElementById("pv-map-container");
+
+      function getPayload() {
+        try {
+          var raw = sessionStorage.getItem(KEY);
+          return raw ? JSON.parse(raw) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      function applyPayload(payload) {
+        if (!payload) return;
+
+        if (payload.selectionTitle) {
+          var el = document.getElementById("pv-selection-title");
+          if (el) el.textContent = payload.selectionTitle;
+        }
+        if (payload.selectionText) {
+          var el = document.getElementById("pv-selection-text");
+          if (el) el.textContent = payload.selectionText;
+        }
+        if (payload.mapSvg && mapContainer && payload.mapSvg.trim().length > 50) {
+          try {
+            var parser = new DOMParser();
+            var doc = parser.parseFromString(payload.mapSvg, "image/svg+xml");
+            var svg = doc.documentElement;
+            if (svg && svg.tagName && svg.tagName.toLowerCase() === "svg") {
+              mapContainer.appendChild(svg);
+              svg.setAttribute("width", "100%");
+              svg.setAttribute("height", "auto");
+              svg.style.maxHeight = "11cm";
+              svg.style.display = "block";
+              svg.style.visibility = "visible";
+              svg.style.opacity = "1";
+            } else {
+              mapContainer.innerHTML = payload.mapSvg;
+              var innerSvg = mapContainer.querySelector("svg");
+              if (innerSvg) {
+                innerSvg.setAttribute("width", "100%");
+                innerSvg.setAttribute("height", "auto");
+                innerSvg.style.maxHeight = "11cm";
+                innerSvg.style.display = "block";
+                innerSvg.style.visibility = "visible";
+                innerSvg.style.opacity = "1";
+              }
+            }
+          } catch (e) {
+            mapContainer.innerHTML = payload.mapSvg;
+          }
+        }
+        if (mapContainer && !mapContainer.querySelector("svg")) {
+          var fallback = document.createElement("p");
+          fallback.className = "print-view-map-fallback";
+          fallback.textContent = "Map not available. Load the dashboard and use Print / PDF to include the map.";
+          mapContainer.appendChild(fallback);
+        }
+        if (payload.protectionCount != null) {
+          var el = document.getElementById("pv-protection-count");
+          if (el) el.textContent = String(payload.protectionCount);
+        }
+        if (payload.noProtectionCount != null) {
+          var el = document.getElementById("pv-no-protection-count");
+          if (el) el.textContent = String(payload.noProtectionCount);
+        }
+        if (payload.statesWithList) {
+          var el = document.getElementById("pv-states-with-list");
+          if (el) el.textContent = payload.statesWithList;
+        }
+        if (payload.statesWithoutList) {
+          var el = document.getElementById("pv-states-without-list");
+          if (el) el.textContent = payload.statesWithoutList;
+        }
+        if (payload.kpiDrug != null) {
+          var el = document.getElementById("pv-kpi-drug");
+          if (el) el.textContent = payload.kpiDrug;
+        }
+        if (payload.kpiBenefit != null) {
+          var el = document.getElementById("pv-kpi-benefit");
+          if (el) el.textContent = payload.kpiBenefit;
+        }
+        if (payload.kpiOversight != null) {
+          var el = document.getElementById("pv-kpi-oversight");
+          if (el) el.textContent = payload.kpiOversight;
+        }
+        if (payload.kpiPA != null) {
+          var el = document.getElementById("pv-kpi-pa");
+          if (el) el.textContent = payload.kpiPA;
+        }
+        if (payload.dataFreshness) {
+          var el = document.getElementById("pv-data-freshness");
+          if (el) el.textContent = payload.dataFreshness;
+        }
+        if (payload.methodologyDate) {
+          var el = document.getElementById("pv-methodology-date");
+          if (el) el.textContent = payload.methodologyDate;
+        }
+      }
+
+      function runPrint() {
+        window.print();
+      }
+
+      function init() {
+        var payload = getPayload();
+        applyPayload(payload);
+        try {
+          sessionStorage.removeItem(KEY);
+        } catch (e) {}
+
+        var params = new URLSearchParams(window.location.search);
+        if (params.get("auto") === "1") {
+          setTimeout(runPrint, 600);
+        }
+      }
+
+      if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
