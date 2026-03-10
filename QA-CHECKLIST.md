@@ -34,20 +34,23 @@ Check these before lower-risk polish:
 10. Confirm the executive scan strip updates correctly with the national state counts.
 11. Confirm the map context sentence changes appropriately when a state is selected and resets when cleared.
 
-## Print / PDF
+## Print / PDF (mandatory release gate)
+
+**Before any layout or print CSS change:** Run Print/PDF preview and confirm no regressions.
 
 1. Open print preview from the `Print / PDF` button.
-2. Confirm the document fits in exactly 2 pages with no excessive white space.
-3. Confirm page 1: header, intro cards, executive strip, map, selection summary, state detail.
-4. Confirm page 2: state summary, trends, KPIs, supporting cards, community benefit, access, PA safeguards, methodology, sources.
-5. Confirm the print version uses the real intro cards with icons, not a duplicated text-only summary.
-6. Confirm KPI values show final numbers, not `0`.
-7. Confirm Pennsylvania is selected by default in print when no live state is selected.
-8. Confirm the map is visible.
-9. Confirm the compact print state summary is readable.
-10. Confirm there are no unexpected blank pages.
-11. Confirm the print header shows the title and last-updated date.
-12. Confirm the PDF looks polished and pharma/CEO presentable.
+2. Confirm the document fits in **2–3 pages max** with no excessive white space.
+3. Confirm **no blank pages** and **no half-empty pages**.
+4. Confirm the map is **fully visible** (not cut off at bottom or sides).
+5. Confirm page 1: header, intro cards, executive strip, map, selection summary, state detail.
+6. Confirm page 2+: state lists, trends, KPIs, supporting cards, community benefit, access, PA safeguards, methodology, sources.
+7. Confirm the print version uses the real intro cards with icons.
+8. Confirm KPI values show final numbers, not `0`.
+9. Confirm Pennsylvania is selected by default in print when no live state is selected.
+10. Confirm the print header shows the title and last-updated date.
+11. Confirm the PDF looks polished and pharma/CEO presentable.
+
+**If regressions occur (blank pages, cut-off map, wrong scaling):** revert or fix before committing.
 
 ## Accessibility and fallback
 

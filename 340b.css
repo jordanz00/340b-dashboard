@@ -504,10 +504,11 @@ footer a:hover { color: var(--primary); }
 .footer-cta a { display: inline-block; padding: var(--space-2) var(--space-4); background: var(--primary); color: #fff !important; font-weight: 600; font-size: var(--text-sm); border-radius: var(--radius-sm); transition: background 0.2s var(--ease); }
 .footer-cta a:hover { background: var(--primary-hover); text-decoration: none !important; }
 .footer-cta a + a { margin-left: var(--space-2); }
-/* Print styles — dashboard as-is, minimal changes to fit */
+/* Print styles — scale 25% (html 75%), map max-height 14cm (~64% of original), fit 2–3 pages, no blank pages.
+   Key rules: intro min-height 0, tight margins, break-inside avoid on cards. See QA-CHECKLIST.md Print/PDF section. */
 @media print {
-  @page { margin: 1.25cm; size: letter; }
-  html { scroll-behavior: auto !important; }
+  @page { margin: 0.75cm; size: letter; }
+  html { scroll-behavior: auto !important; font-size: 75% !important; }
   body { background: #fff !important; }
   .dashboard { min-height: auto !important; }
   .dashboard::before { display: none !important; }
@@ -521,13 +522,30 @@ footer a:hover { color: var(--primary); }
   /* Keep print-only hidden — use real dashboard content */
   .print-only { display: none !important; }
 
+  /* Tighter layout for print */
+  .dashboard-inner { padding: 0 0.5rem !important; }
+  main { padding: 0.5rem 0 !important; }
+
+  /* Remove white space: intro cards no min-height */
+  .intro-section .card { min-height: 0 !important; }
+  .intro-section, .executive-proof-strip { margin-bottom: 0.5rem !important; }
+  .map-hero-section { margin: 0.5rem 0 !important; }
+  .map-hero-card, .selection-summary { padding: 0.5rem 0 !important; margin-bottom: 0.5rem !important; }
+  .kpi-strip { padding: 0.5rem 0 !important; }
+  .supporting-section, #community-benefit, #access, #pa-safeguards { margin: 0.5rem 0 !important; }
+
+  /* Map: 25% shrink + 15% more = ~64% of original — use max-height to avoid blank space */
+  .map-hero-section .map-container { min-height: 0 !important; }
+  .us-map-wrap svg { max-height: 14cm !important; width: 100% !important; height: auto !important; }
+  .map-legend { padding: 0.25rem 0 !important; font-size: 0.7rem !important; }
+
   /* Reveal content that may be hidden for animation */
   .map-wrap { opacity: 1 !important; transform: none !important; }
   .map-loading-skeleton { display: none !important; }
   .dashboard .us-map-wrap .state { opacity: 1 !important; transform: none !important; animation: none !important; }
   .scroll-reveal { opacity: 1 !important; transform: none !important; }
 
-  /* Print-friendly card styling — keep layout, flatten shadows */
+  /* Print-friendly card styling — flatten shadows */
   .card, .kpi-card, .map-hero-card, .selection-summary, .state-detail-panel {
     box-shadow: none !important;
     border: 1px solid #ddd !important;
