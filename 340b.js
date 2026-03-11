@@ -1,7 +1,27 @@
 /**
  * HAP 340B Advocacy Dashboard — Main Script
- * Keep this file simple: data lives in `state-data.js`, and this file
- * handles rendering, accessibility, and user interactions.
+ *
+ * WHAT THIS FILE DOES
+ * - Renders the interactive US map and state lists from state-data.js
+ * - Handles filters (All / Protection / No protection), state selection, share, print, PDF image
+ * - Keeps the live dashboard and print/PDF output in sync
+ *
+ * WHERE TO EDIT
+ * - Data (dates, states, copy): state-data.js
+ * - Structure and labels: 340b.html
+ * - Layout and print styles: 340b.css
+ * - Map logic, buttons, print/PDF/share: this file (340b.js)
+ *
+ * CODE MAP (top to bottom)
+ * - Config & app state
+ * - DOM cache & small helpers
+ * - Print prep (snapshot, count-up, reveal, openPrintView)
+ * - Map (draw, resize, click, tooltips, state lists)
+ * - Hash sync & filters
+ * - Utility buttons (print, download PDF image, share, export SVG)
+ * - Init (DOMContentLoaded)
+ *
+ * LEARNING: Count-up = numbers that animate from 0 to their final value when they scroll into view; see finalizeCountUpValues() and elements with [data-count-up]. preparePrintSnapshot = runs before the print dialog; it finalizes numbers, reveals sections, sets PA default, builds intro snapshot, and draws the map so the PDF is complete; see openPrintView() which calls it.
  */
 
 (function () {
@@ -44,7 +64,7 @@
   };
 
   /* ---------- DOM cache ---------- */
-
+  // Stores references to all elements the script needs (buttons, map container, status text) so we don't search the DOM repeatedly.
   function cacheDom() {
     appState.dom = {
       utilityStatus: document.getElementById("utility-status"),
@@ -162,6 +182,7 @@
   }
 
   function setUtilityStatus(message) {
+    // Updates the small status text near the toolbar (e.g. "PDF saved." or "Copying link...") so the user gets feedback after an action.
     if (appState.dom.utilityStatus) appState.dom.utilityStatus.textContent = message || "";
   }
 
@@ -185,17 +206,15 @@
   }
 
   function finalizeCountUpValues() {
+    // Sets every count-up number to its final value (e.g. 7, 72) so print/PDF does not show 0 or half-animated values.
     // Count-up elements start at 0 on the live page and animate only after they enter view.
-    // Print preview must not capture those starting values, so this helper forces every
-    // number to its finished state before the browser builds the print snapshot.
     document.querySelectorAll("[data-count-up]").forEach(function (element) {
       setCountUpValue(element);
     });
   }
 
   function revealAllAnimatedSections() {
-    // The live page hides some sections until the user scrolls to them.
-    // Print preview needs the final fully revealed layout immediately.
+    // Makes all scroll-reveal sections visible immediately so print and PDF capture see the full page, not hidden blocks.
     document.querySelectorAll(".scroll-reveal").forEach(function (element) {
       element.classList.add("revealed");
     });
@@ -206,6 +225,7 @@
   }
 
   function buildPrintIntroSnapshot() {
+    // Clones the intro cards into the print-only snapshot block so the first print page shows the same content as the live dashboard.
     var snapshotRoot = appState.dom.printIntroSnapshot;
     var introSection = appState.dom.introSection;
     var introClone;
@@ -242,6 +262,7 @@
     }
   }
 
+  // Runs a function and catches any error so one failing part (e.g. map) does not break the rest of the app.
   function runTaskSafely(taskName, taskFn) {
     try {
       taskFn();
@@ -528,6 +549,7 @@
   }
 
   function getHashState() {
+    // Invalid or unknown #state-XX hashes are ignored; selection stays empty.
     var rawHash = (location.hash || "").replace(/^#state-/, "").toUpperCase();
     return rawHash && rawHash.length === 2 && isKnownState(rawHash) ? rawHash : null;
   }
@@ -564,6 +586,13 @@
   }
 
   var PRINT_VIEW_STORAGE_KEY = "hap340bPrint";
+  // Fallback map width in pixels when container has no offsetWidth (e.g. before layout).
+  var DEFAULT_MAP_WIDTH_PX = 800;
+  // Wait-for-map: used by openPrintView and downloadPdfAsImage so payload/capture includes the SVG.
+  var WAIT_FOR_MAP_INITIAL_MS = 1200;
+  var WAIT_FOR_MAP_INTERVAL_MS = 250;
+  var WAIT_FOR_MAP_MAX_ATTEMPTS = 30;
+  var PDF_CAPTURE_TIMEOUT_MS = 18000;
 
   function getMapSvgString() {
     var svg = (appState.dom.mapContainer && appState.dom.mapContainer.querySelector("svg")) ||
@@ -577,7 +606,8 @@
     }
   }
 
-  function getPrintViewPayload() {
+  // Gathers selection text, protection counts, state lists, KPI values, and data freshness from the live page for the print payload.
+  function gatherPrintPayloadSummaryAndKpis() {
     var selectionTitle = appState.dom.selectionSummaryTitle ? appState.dom.selectionSummaryTitle.textContent : "No state selected yet";
     var selectionText = appState.dom.selectionSummaryText ? appState.dom.selectionSummaryText.textContent : "";
     var protectionCount = 0;
@@ -585,6 +615,7 @@
     var statesWithList = "";
     var statesWithoutList = "";
 
+    /* Gather protection counts and comma-separated state lists from global state data for the print payload. */
     if (typeof STATES_WITH_PROTECTION !== "undefined" && Array.isArray(STATES_WITH_PROTECTION)) {
       protectionCount = STATES_WITH_PROTECTION.length;
       statesWithList = STATES_WITH_PROTECTION.join(", ");
@@ -615,10 +646,7 @@
       dataFreshness = appState.dom.dataFreshness.textContent;
     }
 
-    var mapSvg = getMapSvgString();
     return {
-      mapSvg: mapSvg,
-      mapSvgFallback: !mapSvg || mapSvg.length < 100,
       selectionTitle: selectionTitle,
       selectionText: selectionText,
       protectionCount: protectionCount,
@@ -629,13 +657,36 @@
       kpiBenefit: kpiBenefit,
       kpiOversight: kpiOversight,
       kpiPA: kpiPA,
-      dataFreshness: dataFreshness,
+      dataFreshness: dataFreshness
+    };
+  }
+
+  // Assembles the full print view payload (summary, KPIs, map SVG) for print.html to read from sessionStorage.
+  function getPrintViewPayload() {
+    var summary = gatherPrintPayloadSummaryAndKpis();
+    var mapSvg = getMapSvgString();
+    return {
+      mapSvg: mapSvg,
+      mapSvgFallback: !mapSvg || mapSvg.length < 100,
+      selectionTitle: summary.selectionTitle,
+      selectionText: summary.selectionText,
+      protectionCount: summary.protectionCount,
+      noProtectionCount: summary.noProtectionCount,
+      statesWithList: summary.statesWithList,
+      statesWithoutList: summary.statesWithoutList,
+      kpiDrug: summary.kpiDrug,
+      kpiBenefit: summary.kpiBenefit,
+      kpiOversight: summary.kpiOversight,
+      kpiPA: summary.kpiPA,
+      dataFreshness: summary.dataFreshness,
       methodologyDate: config.lastUpdated || "March 2025"
     };
   }
 
+  // Opens the print view tab and injects the map and snapshot data from sessionStorage so the user can save as PDF from the browser.
   function openPrintView() {
     setUtilityStatus("Preparing print view...");
+    // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
     finalizeCountUpValues();
     preparePrintSelectionState();
     runTaskSafely("show map for print", showMapWrapImmediately);
@@ -664,6 +715,7 @@
     }
 
     function waitForMapThenOpen(attemptsLeft) {
+      // We poll because the map is drawn asynchronously; capture must wait until the SVG exists so the PDF includes it.
       var svg = document.querySelector("#us-map svg") || document.querySelector(".us-map-wrap svg");
       if (svg && svg.querySelector("path[data-state]")) {
         doOpen();
@@ -675,18 +727,20 @@
       }
       window.setTimeout(function () {
         waitForMapThenOpen(attemptsLeft - 1);
-      }, 250);
+      }, WAIT_FOR_MAP_INTERVAL_MS);
     }
 
+    // Yield to layout/paint, then wait for map draw to finish, so the print tab receives a payload that includes the map SVG.
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
         window.setTimeout(function () {
-          waitForMapThenOpen(25);
-        }, 1000);
+          waitForMapThenOpen(WAIT_FOR_MAP_MAX_ATTEMPTS);
+        }, WAIT_FOR_MAP_INITIAL_MS);
       });
     });
   }
 
+  // Runs when the user clicks Print/PDF; prepares the page (final numbers, revealed sections, PA default, intro snapshot, map) then calls onReady (e.g. to open the print dialog).
   function preparePrintSnapshot(onReady) {
     var callback = typeof onReady === "function" ? onReady : function () {};
     var methodologyWrap = appState.dom.methodologyWrap;
@@ -694,14 +748,15 @@
     document.body.classList.add("print-ready");
     if (methodologyWrap) methodologyWrap.setAttribute("open", "");
     // Order: open methodology first so it is visible when print runs.
+    // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
     finalizeCountUpValues();
-    // Finalize count-up so printed numbers show final values, not 0.
     revealAllAnimatedSections();
     // Ensure scroll-reveal sections are visible in print.
     preparePrintSelectionState();
     // Set PA default for print if no state selected; update selection summary text.
     buildPrintIntroSnapshot();
     // Populate print-only intro snapshot if used.
+    runTaskSafely("show map for print", showMapWrapImmediately);
     runTaskSafely("draw map for print", drawMap);
     // Ensure map is drawn before we print (live map is shown in print).
 
@@ -918,6 +973,7 @@
     setMapBusy(false);
   }
 
+  // Makes the map container visible without waiting for scroll; used before print and PDF capture so the map is in the output.
   function showMapWrapImmediately() {
     if (!appState.dom.mapWrap) return;
     appState.dom.mapWrap.classList.add("visible", "map-visible");
@@ -1054,7 +1110,7 @@
 
     if (!container) return;
 
-    width = Math.min(container.offsetWidth || 800, config.mapMaxWidth);
+    width = Math.min(container.offsetWidth || DEFAULT_MAP_WIDTH_PX, config.mapMaxWidth);
     height = Math.round(width * config.mapAspectRatio);
     appState.lastMapWidth = width;
 
@@ -1262,7 +1318,7 @@
 
     updateListBlockVisibility();
 
-    if (visibleCount === 0) setFilterStatus("No states match the current filter.");
+    if (visibleCount === 0) setFilterStatus("No states match this filter. Choose 'All' to see every state.");
     else if (appState.currentFilter === "all") setFilterStatus("Showing all states.");
     else setFilterStatus("Showing " + visibleCount + " states in this view.");
   }
@@ -1312,6 +1368,7 @@
       setUtilityStatus("Map not ready. Wait for it to load, then try again.");
       return;
     }
+    setUtilityStatus("Preparing map download…");
     serializer = new XMLSerializer();
     svgString = serializer.serializeToString(svgEl);
     svgString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" + svgString;
@@ -1337,54 +1394,145 @@
     });
   }
 
+  // Runs when the user clicks Download PDF (image); captures the main content with html2canvas and builds a multi-page PDF with breaks after map and before community benefit.
   function downloadPdfAsImage() {
     var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
     var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
     if (!html2canvasLib || !jsPDFLib) {
-      setUtilityStatus("Download PDF (image) requires html2canvas and jsPDF. Check script loading or add to assets/vendor/.");
+      setUtilityStatus("PDF download isn't available right now. Use 'Print / PDF' and choose Save as PDF in the print dialog.");
       setTimeout(function () { setUtilityStatus(""); }, 4000);
       return;
     }
     runTaskSafely("reveal for pdf", revealAllAnimatedSections);
     runTaskSafely("show map for pdf", showMapWrapImmediately);
+    var methodologyWrap = document.getElementById("methodology-wrap");
+    if (methodologyWrap) methodologyWrap.setAttribute("open", "");
     var mapSection = document.querySelector("#state-laws");
     if (mapSection) {
       mapSection.scrollIntoView({ behavior: "auto", block: "start" });
     }
     var target = document.querySelector("main") || document.querySelector(".dashboard-inner") || document.body;
-    setUtilityStatus("Creating PDF...");
-    function capture() {
-    html2canvasLib(target, {
-      scale: 1.5,
-      useCORS: true,
-      allowTaint: true,
-      logging: false
-    }).then(function (canvas) {
-      var imgData = canvas.toDataURL("image/jpeg", 0.92);
-      var JsPDF = jsPDFLib;
-      var pdf = new JsPDF("p", "mm", "a4");
-      var pdfWidth = pdf.internal.pageSize.getWidth();
-      var pdfHeight = pdf.internal.pageSize.getHeight();
-      var imgWidth = pdfWidth;
-      var imgHeight = (canvas.height * pdfWidth) / canvas.width;
-      var position = 0;
-      pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-      var heightLeft = imgHeight;
-      while (heightLeft > 0) {
-        position = heightLeft - pdfHeight;
-        pdf.addPage();
-        pdf.addImage(imgData, "JPEG", 0, position, imgWidth, imgHeight);
-        heightLeft -= pdfHeight;
-      }
-      pdf.save("340b-dashboard.pdf");
-      setUtilityStatus("PDF saved.");
-      setTimeout(function () { setUtilityStatus(""); }, 2500);
-    }).catch(function () {
-      setUtilityStatus("PDF capture failed. Try Print / PDF instead.");
-      setTimeout(function () { setUtilityStatus(""); }, 3000);
-    });
+    var pdfStyleEl = null;
+    function injectPdfStyle() {
+      if (pdfStyleEl) return;
+      pdfStyleEl = document.createElement("style");
+      pdfStyleEl.id = "pdf-capture-style";
+      pdfStyleEl.textContent = "body.pdf-capture #state-laws { margin-top: -10px; } " +
+        "body.pdf-capture .map-wrap, body.pdf-capture .us-map-wrap { overflow: visible !important; opacity: 1 !important; } " +
+        "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; }";
+      document.head.appendChild(pdfStyleEl);
     }
-    setTimeout(capture, 600);
+    function removePdfStyle() {
+      if (pdfStyleEl && pdfStyleEl.parentNode) {
+        pdfStyleEl.parentNode.removeChild(pdfStyleEl);
+        pdfStyleEl = null;
+      }
+      document.body.classList.remove("pdf-capture");
+    }
+    var mapSvgEl = null;
+    var mapImgEl = null;
+    function restoreMapSvg() {
+      if (mapImgEl && mapImgEl.parentNode) mapImgEl.parentNode.removeChild(mapImgEl);
+      if (mapSvgEl) mapSvgEl.style.display = "";
+      mapSvgEl = null;
+      mapImgEl = null;
+    }
+    setUtilityStatus("Creating PDF...");
+    // Page breaks: (1) after map/state lists, (2) right before community benefit. Page 3 starts with community benefit + policy cards.
+    function capture() {
+      injectPdfStyle();
+      document.body.classList.add("pdf-capture");
+      // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
+      finalizeCountUpValues();
+      // Scale 2 gives a sharper image when the canvas is scaled down to fit the PDF page.
+      var capturePromise = html2canvasLib(target, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: false,
+        logging: false
+      });
+      var timeoutPromise = new Promise(function (_, reject) {
+        setTimeout(function () { reject(new Error("timeout")); }, PDF_CAPTURE_TIMEOUT_MS);
+      });
+      Promise.race([capturePromise, timeoutPromise]).then(function (canvas) {
+        var scale = 2;
+        var mainRect = target.getBoundingClientRect();
+        var stateListsWrap = document.getElementById("state-lists-wrap");
+        var communityBenefit = document.getElementById("community-benefit");
+        // Page 1: through state lists. Page 2: through supporting cards. Page 3: community benefit and policy cards. Breaks use getBoundingClientRect of #state-lists-wrap and #community-benefit.
+        var break1Y = stateListsWrap ? (stateListsWrap.getBoundingClientRect().bottom - mainRect.top) * scale : canvas.height * 0.5;
+        var break2Y = communityBenefit ? (communityBenefit.getBoundingClientRect().top - mainRect.top) * scale : canvas.height * 0.8;
+        break1Y = Math.max(0, Math.min(break1Y, canvas.height));
+        break2Y = Math.max(break1Y, Math.min(break2Y, canvas.height));
+        restoreMapSvg();
+        removePdfStyle();
+        try {
+          var pdf = new jsPDFLib("p", "mm", "a4");
+          var pdfW = pdf.internal.pageSize.getWidth();
+          var pdfH = pdf.internal.pageSize.getHeight();
+          function addCanvasSlice(sliceCanvas) {
+            var imgData = sliceCanvas.toDataURL("image/png", 0.95);
+            var imgW = pdfW;
+            var imgH = (sliceCanvas.height * pdfW) / sliceCanvas.width;
+            if (imgH > pdfH) {
+              imgH = pdfH;
+              imgW = (sliceCanvas.width * pdfH) / sliceCanvas.height;
+            }
+            pdf.addImage(imgData, "PNG", 0, 0, imgW, imgH);
+          }
+          var slice1 = document.createElement("canvas");
+          slice1.width = canvas.width;
+          slice1.height = break1Y;
+          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, break1Y, 0, 0, canvas.width, break1Y);
+          addCanvasSlice(slice1);
+          var slice2 = document.createElement("canvas");
+          slice2.width = canvas.width;
+          slice2.height = break2Y - break1Y;
+          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, break2Y - break1Y, 0, 0, canvas.width, break2Y - break1Y);
+          pdf.addPage();
+          addCanvasSlice(slice2);
+          if (break2Y < canvas.height) {
+            var slice3 = document.createElement("canvas");
+            slice3.width = canvas.width;
+            slice3.height = canvas.height - break2Y;
+            slice3.getContext("2d").drawImage(canvas, 0, break2Y, canvas.width, canvas.height - break2Y, 0, 0, canvas.width, canvas.height - break2Y);
+            pdf.addPage();
+            addCanvasSlice(slice3);
+          }
+          pdf.save("340b-dashboard.pdf");
+          setUtilityStatus("PDF saved.");
+          setTimeout(function () { setUtilityStatus(""); }, 2500);
+        } catch (e) {
+          setUtilityStatus("PDF capture failed. Try Print / PDF instead.");
+          setTimeout(function () { setUtilityStatus(""); }, 3000);
+        }
+      }).catch(function (err) {
+        restoreMapSvg();
+        removePdfStyle();
+        setUtilityStatus("PDF capture failed. Try Print / PDF instead.");
+        setTimeout(function () { setUtilityStatus(""); }, 3000);
+      });
+    }
+    function waitForMapThenCapture() {
+      // We poll because the map is drawn asynchronously; capture must wait until the SVG exists so the PDF includes it.
+      var attempts = 0;
+      function check() {
+        var mapSvg = document.querySelector("#us-map svg");
+        var hasPaths = mapSvg && mapSvg.querySelector("path[data-state]");
+        if (hasPaths) {
+          setTimeout(function () { capture(); }, 250);
+          return;
+        }
+        attempts += 1;
+        if (attempts < WAIT_FOR_MAP_MAX_ATTEMPTS) {
+          setTimeout(check, WAIT_FOR_MAP_INTERVAL_MS);
+        } else {
+          capture();
+        }
+      }
+      setTimeout(check, 500);
+    }
+    waitForMapThenCapture();
   }
 
   function initDownloadPdf() {
@@ -1412,7 +1560,7 @@
         }).then(function () {
           setUtilityStatus("Link shared.");
         }).catch(function () {
-          setUtilityStatus("");
+          setUtilityStatus("Share cancelled. Try Copy link below if you need the URL.");
         });
         return;
       }

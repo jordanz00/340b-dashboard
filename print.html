@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>340B Drug Pricing Program — Print View | HAP Advocacy Dashboard</title>
+  <link rel="stylesheet" href="340b.css">
   <link rel="stylesheet" href="print-view.css">
 </head>
 <body class="print-view">
@@ -18,6 +19,7 @@
     </header>
 
     <main class="print-view-main">
+      <div class="print-view-intro">
       <section class="print-view-block">
         <p class="print-view-card-title">Overview</p>
         <h2>What is 340B?</h2>
@@ -49,8 +51,9 @@
           <p>Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals.</p>
         </div>
       </section>
+      </div>
 
-      <section class="print-view-block">
+      <section class="print-view-block print-view-map-hero">
         <p class="print-view-card-title">State-by-state analysis</p>
         <h2>340B contract pharmacy protection across the U.S.</h2>
         <p id="pv-map-hero-sub">Select a state for details. 72 Pennsylvania hospitals participate in 340B.</p>
@@ -201,27 +204,25 @@
             var doc = parser.parseFromString(payload.mapSvg, "image/svg+xml");
             var svg = doc.documentElement;
             if (svg && svg.tagName && svg.tagName.toLowerCase() === "svg") {
-              mapContainer.appendChild(svg);
-              svg.setAttribute("width", "100%");
-              svg.setAttribute("height", "auto");
-              svg.style.maxHeight = "11cm";
-              svg.style.display = "block";
-              svg.style.visibility = "visible";
-              svg.style.opacity = "1";
+              var adoptSvg = document.importNode ? document.importNode(svg, true) : svg;
+              mapContainer.appendChild(adoptSvg);
+              adoptSvg.setAttribute("width", "100%");
+              adoptSvg.setAttribute("height", "auto");
+              adoptSvg.setAttribute("aria-hidden", "false");
+              adoptSvg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important;";
             } else {
               mapContainer.innerHTML = payload.mapSvg;
               var innerSvg = mapContainer.querySelector("svg");
               if (innerSvg) {
                 innerSvg.setAttribute("width", "100%");
                 innerSvg.setAttribute("height", "auto");
-                innerSvg.style.maxHeight = "11cm";
-                innerSvg.style.display = "block";
-                innerSvg.style.visibility = "visible";
-                innerSvg.style.opacity = "1";
+                innerSvg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important;";
               }
             }
+            mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; overflow: visible !important;";
           } catch (e) {
             mapContainer.innerHTML = payload.mapSvg;
+            mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important;";
           }
         }
         if (mapContainer && !mapContainer.querySelector("svg")) {
@@ -279,9 +280,11 @@
       function init() {
         var payload = getPayload();
         applyPayload(payload);
-        try {
-          sessionStorage.removeItem(KEY);
-        } catch (e) {}
+        setTimeout(function () {
+          try {
+            sessionStorage.removeItem(KEY);
+          } catch (e) {}
+        }, 200);
 
         var params = new URLSearchParams(window.location.search);
         if (params.get("auto") === "1") {

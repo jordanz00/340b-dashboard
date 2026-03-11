@@ -5,10 +5,17 @@
  * - Dashboard title, dates, and metadata (CONFIG)
  * - State law data when new laws pass (STATE_340B)
  *
+ * CODE MAP:
+ * - CONFIG: titles, dates, share URL, copy, map/animation settings
+ * - FIPS_TO_ABBR / STATE_NAMES: lookup tables for map and labels
+ * - STATE_340B: one object per state (y, pbm, cp, notes)
+ * - STATES_WITH_PROTECTION: derived list for filters
+ *
  * See DATA-UPDATE.md for instructions.
  */
 
 /* ========== CONFIGURATION ========== */
+// CONFIG: titles, dates, share URL, and copy used by 340b.js and 340b.html. Edit here when you change the dashboard name or last-updated date.
 var CONFIG = {
   dashboardTitle: "340B Drug Pricing Program",
   dashboardSubtitle: "HAP Advocacy Dashboard",
@@ -55,6 +62,7 @@ var CONFIG = {
 };
 
 /* ========== STATE LOOKUP TABLES ========== */
+// FIPS_TO_ABBR: maps numeric FIPS codes (from the map data) to two-letter state codes (e.g. 42 → PA). Used when drawing the map and looking up state data.
 var FIPS_TO_ABBR = {
   1: "AL", 2: "AK", 4: "AZ", 5: "AR", 6: "CA", 8: "CO", 9: "CT", 10: "DE",
   11: "DC", 12: "FL", 13: "GA", 15: "HI", 16: "ID", 17: "IL", 18: "IN", 19: "IA",
@@ -65,6 +73,7 @@ var FIPS_TO_ABBR = {
   54: "WV", 55: "WI", 56: "WY",
 };
 
+// STATE_NAMES: full state names (e.g. Pennsylvania) for labels and tooltips. Keyed by two-letter code.
 var STATE_NAMES = {
   AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
   CO: "Colorado", CT: "Connecticut", DE: "Delaware", DC: "D.C.", FL: "Florida",
@@ -81,7 +90,7 @@ var STATE_NAMES = {
 };
 
 /**
- * State 340B data — UPDATE WHEN NEW STATE LAWS PASS
+ * STATE_340B: state-by-state 340B data (y, pbm, cp, notes). Update when new state laws pass; used by the map and state lists.
  * Each state: { y: year (or null), pbm: boolean, cp: boolean (contract pharmacy), notes: string }
  */
 var STATE_340B = {
@@ -138,7 +147,7 @@ var STATE_340B = {
   AK: { y: null, pbm: false, cp: false, notes: "" },
 };
 
-/* Derived: states with contract pharmacy protection (computed from STATE_340B) */
+// STATES_WITH_PROTECTION: list of state codes with contract pharmacy protection (cp === true). Computed from STATE_340B; used for filters and counts.
 var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   return STATE_340B[abbr] && STATE_340B[abbr].cp === true;
 });
