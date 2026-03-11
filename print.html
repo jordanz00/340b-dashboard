@@ -10,7 +10,7 @@
 <body class="print-view">
   <div id="print-view-root">
     <header class="print-view-header">
-      <img src="haplogo_box_blue.jpeg" alt="" class="print-view-logo" width="52" height="52">
+      <img src="haplogo_box_blue.jpeg" alt="" class="print-view-logo" width="40" height="40">
       <div>
         <p class="print-view-org">The Hospital and Healthsystem Association of Pennsylvania</p>
         <h1>340B Drug Pricing Program</h1>
@@ -23,7 +23,7 @@
       <section class="print-view-block">
         <p class="print-view-card-title">Overview</p>
         <h2>What is 340B?</h2>
-        <p>The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at <strong>no cost to taxpayers</strong> and enables providers to serve vulnerable and underserved populations.</p>
+        <p>The 340B Drug Pricing Program allows eligible hospitals and clinics to purchase outpatient drugs at discounted prices to serve low-income and underserved populations. It operates at <strong>no cost to taxpayers</strong> and helps safety-net providers sustain medication access.</p>
         <p class="print-view-stat"><span class="print-view-stat-label">Market share</span> <strong id="pv-kpi-market">7%</strong> 340B purchases</p>
       </section>
 
@@ -52,6 +52,11 @@
         </div>
       </section>
       </div>
+
+      <section class="print-view-block print-view-key-findings">
+        <p class="print-view-card-title">Key findings</p>
+        <p class="print-view-key-findings-list"><span id="pv-key-finding-count">0</span> states with contract pharmacy protection · <strong id="pv-key-benefit">$7.95B</strong> community benefits (2024) · <strong>72</strong> PA hospitals · <strong>7%</strong> U.S. drug market</p>
+      </section>
 
       <section class="print-view-block print-view-map-hero">
         <p class="print-view-card-title">State-by-state analysis</p>
@@ -209,7 +214,7 @@
                 svg.setAttribute("width", "100%");
                 svg.setAttribute("height", "auto");
                 svg.setAttribute("aria-hidden", "false");
-                svg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important;";
+                svg.style.cssText = "max-height: 6.5cm; display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important;";
               }
             } else {
               var parser = new DOMParser();
@@ -221,7 +226,7 @@
                 adoptSvg.setAttribute("width", "100%");
                 adoptSvg.setAttribute("height", "auto");
                 adoptSvg.setAttribute("aria-hidden", "false");
-                adoptSvg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important;";
+                adoptSvg.style.cssText = "max-height: 6.5cm; display: block !important; visibility: visible !important; opacity: 1 !important;";
               } else {
                 mapContainer.innerHTML = svgString;
               }
@@ -240,6 +245,8 @@
         }
         if (payload.protectionCount != null) {
           var el = document.getElementById("pv-protection-count");
+          if (el) el.textContent = String(payload.protectionCount);
+          el = document.getElementById("pv-key-finding-count");
           if (el) el.textContent = String(payload.protectionCount);
         }
         if (payload.noProtectionCount != null) {
@@ -260,6 +267,8 @@
         }
         if (payload.kpiBenefit != null) {
           var el = document.getElementById("pv-kpi-benefit");
+          if (el) el.textContent = payload.kpiBenefit;
+          el = document.getElementById("pv-key-benefit");
           if (el) el.textContent = payload.kpiBenefit;
         }
         if (payload.kpiOversight != null) {

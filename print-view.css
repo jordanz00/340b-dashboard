@@ -23,8 +23,9 @@
 /* Header compact so first overview block sits directly under it (no blank first page). */
 .print-view-header {
   display: block;
-  margin-bottom: 0.5rem;
-  padding: 0.6rem 1rem 0.5rem 0;
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+  padding: 0.4rem 0.75rem 0.4rem 0;
   border-bottom: 1px solid rgba(11, 103, 194, 0.15);
   background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(244,247,251,0.98) 100%);
   border-radius: 0 0 12px 12px;
@@ -49,8 +50,8 @@
 }
 
 .print-view-header h1 {
-  margin: 0 0 0.25rem;
-  font-size: 1.35rem;
+  margin: 0 0 0.2rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: #0b67c2;
   letter-spacing: -0.02em;
@@ -95,6 +96,7 @@
 .print-view-block:first-of-type { border-left: 3px solid #ff8a3d; }
 .print-view-block:nth-of-type(2) { border-left: 3px solid #0b67c2; }
 .print-view-block.print-view-community-benefit { border-left: 3px solid #ff8a3d; }
+.print-view-key-findings .print-view-key-findings-list { font-size: 0.85rem; margin: 0; }
 
 .print-view-card-title {
   margin: 0 0 0.25rem;
@@ -191,7 +193,7 @@
   opacity: 1 !important;
   width: 100% !important;
   height: auto !important;
-  max-height: 11cm;
+  max-height: 6.5cm;
 }
 
 .print-view-map-fallback {
@@ -384,15 +386,28 @@
   color: #ff8a3d;
 }
 
-/* Print: first page = header + overview; no mid-content or mid-map breaks; tight spacing. */
+/* Print: first page = header + overview; no blank page; tight spacing. */
 @media print {
   @page {
     size: letter;
-    margin: 0.5cm;
+    margin: 0.35cm;
+  }
+  @page :first {
+    margin-top: 0.15cm;
+    margin-bottom: 0.35cm;
+    margin-left: 0.35cm;
+    margin-right: 0.35cm;
   }
 
   .print-view {
     background: #fff;
+    min-height: 0 !important;
+  }
+
+  html, body {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 0 !important;
   }
 
   #print-view-root {
@@ -401,27 +416,48 @@
     margin: 0;
   }
 
+  /* Keep header + first overview block on page 1; avoid blank first page */
   .print-view-header {
-    margin-top: 0;
-    margin-bottom: 0.25rem;
-    padding-top: 0.35rem;
-    padding-bottom: 0.35rem;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    margin-top: 0 !important;
+    margin-bottom: 0.25rem !important;
+    padding: 0.2rem 0 !important;
     box-shadow: none;
     background: #fff;
     border-bottom: 1px solid #ddd;
+    page-break-after: avoid;
+    float: none !important;
+  }
+
+  .print-view-header .print-view-logo {
+    flex-shrink: 0;
+    width: 28px !important;
+    height: 28px !important;
+  }
+
+  .print-view-header h1 {
+    font-size: 1rem !important;
   }
 
   .print-view-main {
-    margin-top: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    break-before: avoid;
+    page-break-before: avoid;
   }
 
   .print-view-intro {
-    margin-top: 0;
+    margin-top: 0 !important;
+    padding-top: 0 !important;
   }
 
   .print-view-intro .print-view-block:first-of-type {
-    margin-top: 0;
-    padding-top: 0.25rem;
+    margin-top: 0 !important;
+    margin-bottom: 0.4rem !important;
+    padding-top: 0.15rem !important;
+    page-break-before: avoid !important;
   }
 
   .print-view-block {
@@ -484,7 +520,7 @@
   .print-view-map-wrap svg {
     visibility: visible !important;
     opacity: 1 !important;
-    max-height: 10cm;
+    max-height: 6.5cm;
   }
 
   .print-view-map-fallback {

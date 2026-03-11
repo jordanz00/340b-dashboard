@@ -30,7 +30,7 @@ var CONFIG = {
 
   /* High-salience copy */
   copy: {
-    overviewLead: "The 340B program requires pharmaceutical manufacturers participating in Medicaid to sell outpatient drugs at discounted rates to eligible health care providers. It operates at no cost to taxpayers and helps hospitals, clinics, and safety-net providers sustain medication access for vulnerable and underserved patients.",
+    overviewLead: "The 340B Drug Pricing Program allows eligible hospitals and clinics to purchase outpatient drugs at discounted prices to serve low-income and underserved populations. It operates at no cost to taxpayers and helps safety-net providers sustain medication access.",
     hapPositionLead: "HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies so patients can keep accessing affordable medications close to home, including when care depends on distributed pharmacy networks.",
     hapAskLabel: "HAP asks lawmakers:",
     hapAskText: "Protect 340B integrity and preserve contract pharmacy access for patient medications.",

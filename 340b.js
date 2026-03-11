@@ -84,6 +84,7 @@
       printStateListWith: document.getElementById("print-states-with-list"),
       printStateListWithout: document.getElementById("print-states-without-list"),
       protectionCount: document.getElementById("protection-count"),
+      keyFindingProtectionCount: document.getElementById("key-finding-protection-count"),
       noProtectionCount: document.getElementById("no-protection-count"),
       printProtectionCount: document.getElementById("print-protection-count"),
       printNoProtectionCount: document.getElementById("print-no-protection-count"),
@@ -1221,6 +1222,7 @@
     });
 
     if (appState.dom.protectionCount) appState.dom.protectionCount.textContent = String(withProtection.length);
+    if (appState.dom.keyFindingProtectionCount) appState.dom.keyFindingProtectionCount.textContent = String(withProtection.length);
     if (appState.dom.noProtectionCount) appState.dom.noProtectionCount.textContent = String(withoutProtection.length);
     buildPrintStateSummary(withProtection, withoutProtection);
     updateExecutiveProofStrip(withProtection, withoutProtection);
@@ -1424,9 +1426,16 @@
         "body.pdf-capture .executive-proof-strip { margin-bottom: 1.25rem; } " +
         "body.pdf-capture .kpi-strip { margin-top: 1rem; margin-bottom: 2rem; } " +
         "body.pdf-capture .supporting-section { margin-top: 0.5rem; margin-bottom: 2.5rem; } " +
-        "body.pdf-capture #community-benefit { margin-top: 2.5rem; margin-bottom: 1.5rem; } " +
-        "body.pdf-capture #access { margin-top: 1rem; } " +
-        "body.pdf-capture #pa-safeguards { margin-top: 1rem; margin-bottom: 1rem; } ";
+        "body.pdf-capture #community-benefit { margin-top: calc(3rem + 10px); margin-bottom: 2rem; padding: 1em 1.25em !important; font-size: 0.9em; overflow: visible !important; } " +
+        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.5rem; } " +
+        "body.pdf-capture #community-benefit .benefit-item { padding: 0.4em 0.6em; } " +
+        "body.pdf-capture .community-benefit-hero { padding: 1rem 1.25rem !important; margin-top: 0.75rem !important; overflow: visible !important; min-height: auto !important; border-radius: 12px; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.35rem !important; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-value { margin: 0 !important; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.35rem 0 0 !important; } " +
+        "body.pdf-capture #community-benefit { content-visibility: visible !important; contain: none !important; } " +
+        "body.pdf-capture #access { margin-top: 2.5rem; padding: 0.6em 0.9em !important; font-size: 0.85em; } " +
+        "body.pdf-capture #pa-safeguards { margin-top: 2rem; padding: 0.6em 0.9em !important; font-size: 0.85em; margin-bottom: 1rem; } ";
       document.head.appendChild(pdfStyleEl);
     }
     function removePdfStyle() {
@@ -1515,7 +1524,7 @@
         var mapSvg = document.querySelector("#us-map svg");
         var hasPaths = mapSvg && mapSvg.querySelector("path[data-state]");
         if (hasPaths) {
-          setTimeout(function () { capture(); }, 250);
+          setTimeout(function () { capture(); }, 900);
           return;
         }
         attempts += 1;
