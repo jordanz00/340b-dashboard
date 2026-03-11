@@ -661,7 +661,7 @@
     };
   }
 
-  // Assembles the full print view payload (summary, KPIs, map SVG) for print.html to read from sessionStorage.
+  // Assembles the full print view payload (summary, KPIs, map SVG) for print.html to read from localStorage (new tab cannot read sessionStorage).
   function getPrintViewPayload() {
     var summary = gatherPrintPayloadSummaryAndKpis();
     var mapSvg = getMapSvgString();
@@ -683,7 +683,7 @@
     };
   }
 
-  // Opens the print view tab and injects the map and snapshot data from sessionStorage so the user can save as PDF from the browser.
+  // Opens the print view tab and injects the map and snapshot data from localStorage so the user can save as PDF from the browser.
   function openPrintView() {
     setUtilityStatus("Preparing print view...");
     // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
@@ -697,7 +697,7 @@
     function doOpen() {
       var payload = getPrintViewPayload();
       try {
-        sessionStorage.setItem(PRINT_VIEW_STORAGE_KEY, JSON.stringify(payload));
+        localStorage.setItem(PRINT_VIEW_STORAGE_KEY, JSON.stringify(payload));
       } catch (e) {
         setUtilityStatus("Print data too large. Try closing other tabs.");
         return;
@@ -1394,7 +1394,7 @@
     });
   }
 
-  // Runs when the user clicks Download PDF (image); captures the main content with html2canvas and builds a multi-page PDF with breaks after map and before community benefit.
+  // Runs when the user clicks Download PDF (image); captures the main content with html2canvas. Exactly 2 pages: Page 1 = intro through map. Page 2 = KPI row through end (no page break in community benefit; no blank page 4). Spacing above community benefit keeps it clear of cards above.
   function downloadPdfAsImage() {
     var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
     var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
@@ -1417,9 +1417,16 @@
       if (pdfStyleEl) return;
       pdfStyleEl = document.createElement("style");
       pdfStyleEl.id = "pdf-capture-style";
-      pdfStyleEl.textContent = "body.pdf-capture #state-laws { margin-top: -10px; } " +
+      pdfStyleEl.textContent = "body.pdf-capture #state-laws { margin-top: -10px; margin-bottom: 1.25rem; } " +
         "body.pdf-capture .map-wrap, body.pdf-capture .us-map-wrap { overflow: visible !important; opacity: 1 !important; } " +
-        "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; }";
+        "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; } " +
+        "body.pdf-capture #state-lists-wrap { display: none !important; } " +
+        "body.pdf-capture .executive-proof-strip { margin-bottom: 1.25rem; } " +
+        "body.pdf-capture .kpi-strip { margin-top: 1rem; margin-bottom: 2rem; } " +
+        "body.pdf-capture .supporting-section { margin-top: 0.5rem; margin-bottom: 2.5rem; } " +
+        "body.pdf-capture #community-benefit { margin-top: 2.5rem; margin-bottom: 1.5rem; } " +
+        "body.pdf-capture #access { margin-top: 1rem; } " +
+        "body.pdf-capture #pa-safeguards { margin-top: 1rem; margin-bottom: 1rem; } ";
       document.head.appendChild(pdfStyleEl);
     }
     function removePdfStyle() {
@@ -1438,7 +1445,6 @@
       mapImgEl = null;
     }
     setUtilityStatus("Creating PDF...");
-    // Page breaks: (1) after map/state lists, (2) right before community benefit. Page 3 starts with community benefit + policy cards.
     function capture() {
       injectPdfStyle();
       document.body.classList.add("pdf-capture");
@@ -1457,13 +1463,10 @@
       Promise.race([capturePromise, timeoutPromise]).then(function (canvas) {
         var scale = 2;
         var mainRect = target.getBoundingClientRect();
-        var stateListsWrap = document.getElementById("state-lists-wrap");
-        var communityBenefit = document.getElementById("community-benefit");
-        // Page 1: through state lists. Page 2: through supporting cards. Page 3: community benefit and policy cards. Breaks use getBoundingClientRect of #state-lists-wrap and #community-benefit.
-        var break1Y = stateListsWrap ? (stateListsWrap.getBoundingClientRect().bottom - mainRect.top) * scale : canvas.height * 0.5;
-        var break2Y = communityBenefit ? (communityBenefit.getBoundingClientRect().top - mainRect.top) * scale : canvas.height * 0.8;
+        // Exactly 2 pages only. Do not add page 3 or 4. Page 1 = intro through map; Page 2 = KPI through end (no break inside community benefit).
+        var kpiStrip = document.querySelector(".kpi-strip");
+        var break1Y = kpiStrip ? (kpiStrip.getBoundingClientRect().top - mainRect.top) * scale : canvas.height * 0.5;
         break1Y = Math.max(0, Math.min(break1Y, canvas.height));
-        break2Y = Math.max(break1Y, Math.min(break2Y, canvas.height));
         restoreMapSvg();
         removePdfStyle();
         try {
@@ -1485,20 +1488,12 @@
           slice1.height = break1Y;
           slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, break1Y, 0, 0, canvas.width, break1Y);
           addCanvasSlice(slice1);
+          pdf.addPage();
           var slice2 = document.createElement("canvas");
           slice2.width = canvas.width;
-          slice2.height = break2Y - break1Y;
-          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, break2Y - break1Y, 0, 0, canvas.width, break2Y - break1Y);
-          pdf.addPage();
+          slice2.height = canvas.height - break1Y;
+          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, canvas.height - break1Y, 0, 0, canvas.width, canvas.height - break1Y);
           addCanvasSlice(slice2);
-          if (break2Y < canvas.height) {
-            var slice3 = document.createElement("canvas");
-            slice3.width = canvas.width;
-            slice3.height = canvas.height - break2Y;
-            slice3.getContext("2d").drawImage(canvas, 0, break2Y, canvas.width, canvas.height - break2Y, 0, 0, canvas.width, canvas.height - break2Y);
-            pdf.addPage();
-            addCanvasSlice(slice3);
-          }
           pdf.save("340b-dashboard.pdf");
           setUtilityStatus("PDF saved.");
           setTimeout(function () { setUtilityStatus(""); }, 2500);

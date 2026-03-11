@@ -20,10 +20,11 @@
   padding: 0.6cm;
 }
 
+/* Header compact so first overview block sits directly under it (no blank first page). */
 .print-view-header {
   display: block;
-  margin-bottom: 1.25rem;
-  padding: 1rem 1rem 1rem 0;
+  margin-bottom: 0.5rem;
+  padding: 0.6rem 1rem 0.5rem 0;
   border-bottom: 1px solid rgba(11, 103, 194, 0.15);
   background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(244,247,251,0.98) 100%);
   border-radius: 0 0 12px 12px;
@@ -72,10 +73,18 @@
   display: block;
 }
 
+/* First overview block directly under header; no gap that would push it to page 2. */
+.print-view-intro {
+  margin-top: 0;
+}
+.print-view-intro .print-view-block:first-of-type {
+  margin-top: 0;
+}
+
 .print-view-block {
   display: block;
-  margin-bottom: 1rem;
-  padding: 1rem 1.1rem;
+  margin-bottom: 0.75rem;
+  padding: 0.75rem 1rem;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.92);
@@ -375,8 +384,13 @@
   color: #ff8a3d;
 }
 
-/* Print layout: page breaks keep sections intact; avoid mid-block splits */
+/* Print: first page = header + overview; no mid-content or mid-map breaks; tight spacing. */
 @media print {
+  @page {
+    size: letter;
+    margin: 0.5cm;
+  }
+
   .print-view {
     background: #fff;
   }
@@ -384,9 +398,34 @@
   #print-view-root {
     padding: 0;
     max-width: none;
+    margin: 0;
+  }
+
+  .print-view-header {
+    margin-top: 0;
+    margin-bottom: 0.25rem;
+    padding-top: 0.35rem;
+    padding-bottom: 0.35rem;
+    box-shadow: none;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .print-view-main {
+    margin-top: 0;
+  }
+
+  .print-view-intro {
+    margin-top: 0;
+  }
+
+  .print-view-intro .print-view-block:first-of-type {
+    margin-top: 0;
+    padding-top: 0.25rem;
   }
 
   .print-view-block {
+    margin-bottom: 0.5rem;
     page-break-inside: avoid;
     page-break-after: avoid;
     box-shadow: none;
@@ -416,6 +455,7 @@
   }
 
   .print-view-kpi-strip {
+    margin-bottom: 0.5rem;
     page-break-inside: avoid;
     page-break-before: auto;
     box-shadow: none;
@@ -425,6 +465,11 @@
 
   .print-view-kpi-card {
     page-break-inside: avoid;
+  }
+
+  .print-view-map-hero {
+    page-break-inside: avoid;
+    page-break-after: avoid;
   }
 
   .print-view-map-wrap {
@@ -452,11 +497,5 @@
 
   .print-view-details {
     page-break-inside: avoid;
-  }
-
-  .print-view-header {
-    box-shadow: none;
-    background: #fff;
-    border-bottom: 1px solid #ddd;
   }
 }

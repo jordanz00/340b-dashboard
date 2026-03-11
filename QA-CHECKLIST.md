@@ -28,6 +28,7 @@ Check these before lower-risk polish:
 4. Select a state from the state list.
 5. Use `Clear selection` and confirm the page returns to the neutral state.
 6. Toggle `All`, `Protection`, and `No protection`.
+7. Confirm invalid `#state-XX` in URL (e.g. `#state-XY`) shows empty selection and no error.
 7. Open and close `About this data`.
 8. Test `Share link`.
 9. Test `Print / PDF` (opens print view in new tab; use that tab’s print dialog to save as PDF).
@@ -36,19 +37,31 @@ Check these before lower-risk polish:
 
 ## Print / PDF (mandatory release gate)
 
-**Current approach (dedicated print view):** The `Print / PDF` button opens `print.html` in a new tab. That page is a block-only, print-optimized copy of the dashboard. State (map SVG, selection, KPI values, state lists) is passed via sessionStorage. The print view injects the map and data, then triggers the browser print dialog (`?auto=1`). Do not rely on `@media print` on the live dashboard for the primary PDF path—that path was replaced after repeated failures (blank pages, missing sections).
+**Current approach (dedicated print view):** The `Print / PDF` button opens `print.html` in a new tab. That page is a block-only, print-optimized copy of the dashboard. State (map SVG, selection, KPI values, state lists) is passed via localStorage. The print view injects the map and data, then triggers the browser print dialog (`?auto=1`). Do not rely on `@media print` on the live dashboard for the primary PDF path—that path was replaced after repeated failures (blank pages, missing sections).
 
 **Priority: PDF must contain the same content as the live dashboard. Nothing may be omitted or cut off.**
 
+**Regression guards (do not reintroduce):**
+- **First page must show content:** The first printed page must show the header and the first Overview block (What is 340B) directly under the header. No blank first page with only the header. See `print-view.css`: header uses compact margin/padding; `.print-view-intro` and first `.print-view-block` have no top margin so content starts immediately.
+- **No mid-content or mid-map breaks:** No page break in the middle of a content block or through the map. Use `page-break-inside: avoid` on `.print-view-block`, `.print-view-map-hero`, `.print-view-map-wrap`.
+- **Tight professional spacing:** Content blocks use modest margins (e.g. `margin-bottom: 0.5rem` in print) so the PDF looks tight and professional.
+
 1. Click `Print / PDF` on the dashboard. Confirm a new tab opens with `print.html` and the print dialog appears (or appears after a short delay).
-2. In the print view / Print Preview, confirm **all sections appear**: header (HAP, 340B title); Overview (What is 340B); HAP Position; executive strip (3 cards); State-by-state analysis (title, selection summary, **map visible**, state lists with counts, Recent legal signals, About this data); KPI strip (4 KPIs + data freshness); Why this matters; Eligible providers; Oversight credibility; Pennsylvania operating stakes; Community benefit; Access to care; Pennsylvania safeguards.
-3. Confirm the **map is fully visible** (not cut off); it is injected from the main page’s live map SVG.
-4. Confirm **no blank pages**; content flows across pages in a reasonable page count (e.g. 2–5 pages).
-5. Confirm KPI values show final numbers (7%, $7.95B, 200+, 72), not `0`.
-6. Confirm Pennsylvania is selected by default when no state was selected on the dashboard (selection title/text in print view match PA context).
-7. Confirm the PDF looks professional and presentable for lawmakers/CEOs.
+2. In the print view / Print Preview, confirm **first page**: header (HAP, 340B title) and **Overview (What is 340B) block visible on the same page**—no blank first page.
+3. Confirm **all sections appear**: HAP Position; executive strip (3 cards); State-by-state analysis (title, selection summary, **map visible**, state lists with counts, Recent legal signals, About this data); KPI strip (4 KPIs + data freshness); Why this matters; Eligible providers; Oversight credibility; Pennsylvania operating stakes; Community benefit; Access to care; Pennsylvania safeguards.
+4. Confirm the **map is fully visible** and **no page break cuts through the map or through the middle of a block**.
+5. Confirm **no blank pages**; content flows with tight, professional spacing.
+6. Confirm KPI values show final numbers (7%, $7.95B, 200+, 72), not `0`.
+7. Confirm Pennsylvania is selected by default when no state was selected on the dashboard (selection title/text in print view match PA context).
 
 **If the print view is missing sections or the map:** Check that the dashboard map has finished loading before clicking Print; allow popups for the site if the new tab does not open.
+
+## Download PDF (image) — regression guards
+
+**Do not reintroduce:**
+- **Exactly 2 pages:** PDF image must be exactly 2 pages. Page 1 = intro through map section. Page 2 = KPI row through end (supporting section, community benefit, access, pa-safeguards). No page 3 or 4. No page break in the middle of community benefit.
+- **Adequate spacing above community benefit:** In `340b.js` `injectPdfStyle()`, `.supporting-section` has `margin-bottom: 2.5rem` and `#community-benefit` has `margin-top: 2.5rem` so the community benefit block does not overlap the cards above.
+- **No blank page 4:** The PDF image logic must only add slice1 (page 1) and slice2 (page 2); no additional pages.
 
 ## Accessibility and fallback
 

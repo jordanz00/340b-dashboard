@@ -180,7 +180,7 @@
 
       function getPayload() {
         try {
-          var raw = sessionStorage.getItem(KEY);
+          var raw = localStorage.getItem(KEY);
           return raw ? JSON.parse(raw) : null;
         } catch (e) {
           return null;
@@ -200,29 +200,36 @@
         }
         if (payload.mapSvg && mapContainer && payload.mapSvg.trim().length > 50) {
           try {
-            var parser = new DOMParser();
-            var doc = parser.parseFromString(payload.mapSvg, "image/svg+xml");
-            var svg = doc.documentElement;
-            if (svg && svg.tagName && svg.tagName.toLowerCase() === "svg") {
-              var adoptSvg = document.importNode ? document.importNode(svg, true) : svg;
-              mapContainer.appendChild(adoptSvg);
-              adoptSvg.setAttribute("width", "100%");
-              adoptSvg.setAttribute("height", "auto");
-              adoptSvg.setAttribute("aria-hidden", "false");
-              adoptSvg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important;";
+            // Prefer innerHTML so SVG always renders (DOMParser can fail on some SVG content).
+            var svgString = payload.mapSvg.trim();
+            if (/<svg[\s>]/i.test(svgString)) {
+              mapContainer.innerHTML = svgString;
+              var svg = mapContainer.querySelector("svg");
+              if (svg) {
+                svg.setAttribute("width", "100%");
+                svg.setAttribute("height", "auto");
+                svg.setAttribute("aria-hidden", "false");
+                svg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important;";
+              }
             } else {
-              mapContainer.innerHTML = payload.mapSvg;
-              var innerSvg = mapContainer.querySelector("svg");
-              if (innerSvg) {
-                innerSvg.setAttribute("width", "100%");
-                innerSvg.setAttribute("height", "auto");
-                innerSvg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important;";
+              var parser = new DOMParser();
+              var doc = parser.parseFromString(svgString, "image/svg+xml");
+              var svg = doc.documentElement;
+              if (svg && svg.tagName && svg.tagName.toLowerCase() === "svg") {
+                var adoptSvg = document.importNode ? document.importNode(svg, true) : svg;
+                mapContainer.appendChild(adoptSvg);
+                adoptSvg.setAttribute("width", "100%");
+                adoptSvg.setAttribute("height", "auto");
+                adoptSvg.setAttribute("aria-hidden", "false");
+                adoptSvg.style.cssText = "max-height: 11cm; display: block !important; visibility: visible !important; opacity: 1 !important;";
+              } else {
+                mapContainer.innerHTML = svgString;
               }
             }
-            mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; overflow: visible !important;";
+            mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; overflow: visible !important; min-height: 200px !important;";
           } catch (e) {
             mapContainer.innerHTML = payload.mapSvg;
-            mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important;";
+            mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; min-height: 200px !important;";
           }
         }
         if (mapContainer && !mapContainer.querySelector("svg")) {
@@ -280,15 +287,16 @@
       function init() {
         var payload = getPayload();
         applyPayload(payload);
+        // Clear payload after a delay so the map has time to render and print can capture it.
         setTimeout(function () {
           try {
-            sessionStorage.removeItem(KEY);
+            localStorage.removeItem(KEY);
           } catch (e) {}
-        }, 200);
+        }, 2000);
 
         var params = new URLSearchParams(window.location.search);
         if (params.get("auto") === "1") {
-          setTimeout(runPrint, 600);
+          setTimeout(runPrint, 800);
         }
       }
 
