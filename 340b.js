@@ -1672,18 +1672,19 @@
         "body.pdf-capture .map-wrap, body.pdf-capture .us-map-wrap { overflow: visible !important; opacity: 1 !important; } " +
         "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; } " +
         "body.pdf-capture #state-lists-wrap { display: none !important; } " +
-        "body.pdf-capture .kpi-strip { margin-top: 1rem; margin-bottom: 2rem; } " +
-        "body.pdf-capture .supporting-section { margin-top: 0.5rem; margin-bottom: 2.5rem; } " +
-        "body.pdf-capture #community-benefit { margin-top: calc(3rem + 80px); margin-bottom: 2rem; padding: 1em 1.25em !important; font-size: 0.9em; overflow: visible !important; } " +
-        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.5rem; } " +
-        "body.pdf-capture #community-benefit .benefit-item { padding: 0.4em 0.6em; } " +
-        "body.pdf-capture .community-benefit-hero { padding: 1rem 1.25rem !important; margin-top: 0.75rem !important; overflow: visible !important; min-height: auto !important; border-radius: 12px; } " +
-        "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.35rem !important; } " +
+        "body.pdf-capture .kpi-strip { margin-top: 0.75rem; margin-bottom: 1.25rem; padding: 0.5rem 0; } " +
+        "body.pdf-capture .kpi-strip .kpi-card { padding: 0.5rem 0.65rem; } " +
+        "body.pdf-capture .supporting-section { margin-top: 0.35rem; margin-bottom: 1.5rem; } " +
+        "body.pdf-capture #community-benefit { margin-top: 1.5rem; margin-bottom: 1rem; padding: 0.6em 1em !important; font-size: 0.85em; overflow: visible !important; } " +
+        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.4rem; } " +
+        "body.pdf-capture #community-benefit .benefit-item { padding: 0.35em 0.5em; } " +
+        "body.pdf-capture .community-benefit-hero { padding: 0.75rem 1rem !important; margin-top: 0.5rem !important; overflow: visible !important; min-height: auto !important; border-radius: 12px; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.25rem !important; } " +
         "body.pdf-capture .community-benefit-hero .big-stat-value { margin: 0 !important; } " +
-        "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.35rem 0 0 !important; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.25rem 0 0 !important; } " +
         "body.pdf-capture #community-benefit { content-visibility: visible !important; contain: none !important; } " +
-        "body.pdf-capture #access { margin-top: 2.5rem; padding: 0.6em 0.9em !important; font-size: 0.85em; } " +
-        "body.pdf-capture #pa-safeguards { margin-top: 2rem; padding: 0.6em 0.9em !important; font-size: 0.85em; margin-bottom: 1rem; } ";
+        "body.pdf-capture #access { margin-top: 1.25rem; padding: 0.5em 0.75em !important; font-size: 0.82em; } " +
+        "body.pdf-capture #pa-safeguards { margin-top: 1rem; padding: 0.5em 0.75em !important; font-size: 0.82em; margin-bottom: 0.75rem; } ";
       document.head.appendChild(pdfStyleEl);
     }
     function removePdfStyle() {
