@@ -1655,18 +1655,23 @@
       pdfStyleEl = document.createElement("style");
       pdfStyleEl.id = "pdf-capture-style";
       pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; } " +
-        "body.pdf-capture .intro-section .card { margin-bottom: 1.25rem; } " +
-        "body.pdf-capture .key-findings-strip { margin: 1rem 0; } " +
-        "body.pdf-capture .executive-proof-strip { margin: 1rem 0; padding: 0.75rem 0; } " +
-        "body.pdf-capture .executive-proof-strip .executive-proof-card { margin-bottom: 0.85rem; } " +
-        "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap { display: none !important; } " +
-        "body.pdf-capture .print-sources { display: none !important; } " +
-        "body.pdf-capture .sources, body.pdf-capture #sources-summary { display: none !important; } " +
+        "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap, body.pdf-capture .methodology-content, body.pdf-capture .methodology-sources-header, body.pdf-capture .source-links, body.pdf-capture .methodology-toggle { display: none !important; } " +
+        "body.pdf-capture .print-sources, body.pdf-capture .sources, body.pdf-capture #sources-summary { display: none !important; } " +
+        "body.pdf-capture .intro-section { padding: 0.25rem 0; } " +
+        "body.pdf-capture .intro-section .card { padding: 0.65rem 0.9rem; margin-bottom: 0.6rem; } " +
+        "body.pdf-capture .intro-section .card h2 { font-size: 1.05rem; line-height: 1.25; } " +
+        "body.pdf-capture .intro-section .card p, body.pdf-capture .intro-section .stat-block { font-size: 0.82rem; } " +
+        "body.pdf-capture .key-findings-strip { margin: 0.4rem 0; padding: 0.4rem 0; } " +
+        "body.pdf-capture .key-findings-strip h3 { font-size: 0.9rem; } " +
+        "body.pdf-capture .key-findings-strip ul { font-size: 0.82rem; line-height: 1.4; } " +
+        "body.pdf-capture .executive-proof-strip { margin: 0.4rem 0; padding: 0.4rem 0; } " +
+        "body.pdf-capture .executive-proof-strip .executive-proof-card { padding: 0.45rem 0.65rem; margin-bottom: 0.4rem; } " +
+        "body.pdf-capture .executive-proof-strip h3 { font-size: 0.9rem; line-height: 1.3; } " +
+        "body.pdf-capture .executive-proof-strip p { font-size: 0.8rem; } " +
         "body.pdf-capture #state-laws { margin-top: 0.5rem; margin-bottom: 1rem; } " +
         "body.pdf-capture .map-wrap, body.pdf-capture .us-map-wrap { overflow: visible !important; opacity: 1 !important; } " +
         "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; } " +
         "body.pdf-capture #state-lists-wrap { display: none !important; } " +
-        "body.pdf-capture .executive-proof-strip { margin-bottom: 1.25rem; } " +
         "body.pdf-capture .kpi-strip { margin-top: 1rem; margin-bottom: 2rem; } " +
         "body.pdf-capture .supporting-section { margin-top: 0.5rem; margin-bottom: 2.5rem; } " +
         "body.pdf-capture #community-benefit { margin-top: calc(3rem + 80px); margin-bottom: 2rem; padding: 1em 1.25em !important; font-size: 0.9em; overflow: visible !important; } " +
