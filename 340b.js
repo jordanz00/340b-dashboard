@@ -12,16 +12,25 @@
  * - Layout and print styles: 340b.css
  * - Map logic, buttons, print/PDF/share: this file (340b.js)
  *
+ * SECURITY (Wave 4): Use textContent for all dynamic content—never innerHTML with data.
+ * If you add user input or external data, sanitize before display (see docs/SECURITY.md).
+ *
  * CODE MAP (top to bottom)
  * - Config & app state
  * - DOM cache & small helpers
  * - Print prep (snapshot, count-up, reveal, openPrintView)
- * - Map (draw, resize, click, tooltips, state lists)
+ * - Map (draw, resize, click, tooltips, state lists) — modular: drawMap() and map lifecycle
+ * - Chart: fillAdoptionsChart() uses analytics/policy-insights.js; modular reuse in analytics/
  * - Hash sync & filters
  * - Utility buttons (print, download PDF image, share, export SVG)
  * - Init (DOMContentLoaded)
  *
  * LEARNING: Count-up = numbers that animate from 0 to their final value when they scroll into view; see finalizeCountUpValues() and elements with [data-count-up]. preparePrintSnapshot = runs before the print dialog; it finalizes numbers, reveals sections, sets PA default, builds intro snapshot, and draws the map so the PDF is complete; see openPrintView() which calls it.
+ *
+ * WAVE 1 (Data Credibility): Metadata, versioning, timestamps in data/dataset-metadata.js and applyAboutDataPanel(); dataset download CSV/JSON in buildDatasetCsv(), buildDatasetJson(), initDatasetDownload().
+ * WAVE 2 (Policy Analytics): POLICY_INSIGHTS in analytics/policy-insights.js; applyPolicyInsights(); fillAdoptionsChart(); data/historical-trends.js for YoY trends.
+ * WAVE 3 (Interactivity): State filters, map hover/click, tooltips, ranked table with initRankedTableSort(), chart bar tooltips.
+ * WAVE 4 (Engineering): config.json and config/settings.js; safeText() and textContent-only rendering; runTaskSafely() for isolated task execution; print/print.html compatible.
  */
 
 (function () {
@@ -127,6 +136,16 @@
   }
 
   /* ---------- Small helpers ---------- */
+
+  /**
+   * Returns a string safe for textContent: non-strings become empty string;
+   * control characters are stripped. Use for any dynamic text from external or user input.
+   * Our own STATE_340B/STATE_NAMES are trusted; this guards future data sources.
+   */
+  function safeText(value) {
+    if (value == null || typeof value !== "string") return "";
+    return value.replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
+  }
 
   function clearElement(element) {
     if (element) {
@@ -489,6 +508,36 @@
         console.warn("State notes should be a string for", abbr);
       }
     });
+  }
+
+  /** Populate the About Data panel from data/dataset-metadata.js when available. */
+  function applyAboutDataPanel() {
+    var meta = typeof DATASET_METADATA !== "undefined" ? DATASET_METADATA : null;
+    if (!meta) return;
+    var setText = function (id, text) {
+      var el = document.getElementById(id);
+      if (el && typeof text === "string") el.textContent = text;
+    };
+    setText("about-data-name", meta.name || "");
+    setText("about-data-updated", meta.lastUpdated || "");
+    setText("about-data-version", meta.datasetVersion || "");
+    setText("about-data-methodology", meta.methodology || "");
+  }
+
+  /** Populate Policy insights section from analytics/policy-insights.js (Wave 2). */
+  function applyPolicyInsights() {
+    var insights = typeof POLICY_INSIGHTS !== "undefined" ? POLICY_INSIGHTS : null;
+    if (!insights) return;
+    var bench = insights.getNationalBenchmark();
+    var summary = insights.getPolicyAdoptionSummary();
+    var recent = insights.getRecentAdopters(2025, 2);
+    var setText = function (id, text) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = text;
+    };
+    setText("policy-insights-summary", summary);
+    setText("policy-insights-benchmark-value", bench.percent + "%");
+    setText("policy-insights-recent-count", String(recent.length));
   }
 
   /* ---------- Metadata and summary text ---------- */
@@ -1327,19 +1376,130 @@
 
   function initStateFilter() {
     var filterButtons = document.querySelectorAll(".state-filter-btn");
+    var filterSelect = document.getElementById("state-filter-select");
+
+    function syncFilterToUI(filterValue) {
+      appState.currentFilter = filterValue || "all";
+      filterButtons.forEach(function (item) {
+        var isActive = (item.getAttribute("data-filter") || "all") === appState.currentFilter;
+        item.classList.toggle("active", isActive);
+        item.setAttribute("aria-pressed", isActive ? "true" : "false");
+      });
+      if (filterSelect) filterSelect.value = appState.currentFilter;
+      applyStateFilter();
+    }
 
     filterButtons.forEach(function (button) {
       button.addEventListener("click", function () {
-        appState.currentFilter = button.getAttribute("data-filter") || "all";
-
-        filterButtons.forEach(function (item) {
-          var isActive = item === button;
-          item.classList.toggle("active", isActive);
-          item.setAttribute("aria-pressed", isActive ? "true" : "false");
-        });
-
-        applyStateFilter();
+        syncFilterToUI(button.getAttribute("data-filter") || "all");
       });
+    });
+
+    if (filterSelect) {
+      filterSelect.addEventListener("change", function () {
+        syncFilterToUI(filterSelect.value || "all");
+      });
+    }
+  }
+
+  /** Fill ranked state table (Wave 3): states with contract pharmacy protection, sorted by year enacted desc. Stores rows for sortable headers (next-level). */
+  function fillRankedStateTable() {
+    var tbody = document.getElementById("ranked-state-tbody");
+    var table = document.getElementById("ranked-state-table");
+    if (!tbody || !table || typeof STATE_340B !== "object" || typeof STATE_NAMES !== "object") return;
+    var rows = [];
+    Object.keys(STATE_340B).forEach(function (abbr) {
+      var row = STATE_340B[abbr];
+      if (!row || !row.cp) return;
+      rows.push({
+        abbr: abbr,
+        name: STATE_NAMES[abbr] || abbr,
+        year: row.y != null ? String(row.y) : "—"
+      });
+    });
+    rows.sort(function (a, b) {
+      var yA = a.year === "—" ? 0 : parseInt(a.year, 10);
+      var yB = b.year === "—" ? 0 : parseInt(b.year, 10);
+      if (yB !== yA) return yB - yA;
+      return (a.name || "").localeCompare(b.name || "");
+    });
+    table._rankedRows = rows;
+    renderRankedTableBody(tbody, rows);
+  }
+
+  /** Render tbody of ranked table from rows array (used by fillRankedStateTable and sort). */
+  function renderRankedTableBody(tbody, rows) {
+    if (!tbody || !Array.isArray(rows)) return;
+    tbody.textContent = "";
+    rows.forEach(function (r) {
+      var tr = document.createElement("tr");
+      var tdState = document.createElement("td");
+      tdState.textContent = safeText(r.name);
+      var tdYear = document.createElement("td");
+      tdYear.textContent = safeText(r.year);
+      var tdCP = document.createElement("td");
+      tdCP.textContent = "Yes";
+      tr.appendChild(tdState);
+      tr.appendChild(tdYear);
+      tr.appendChild(tdCP);
+      tbody.appendChild(tr);
+    });
+  }
+
+  /** Sortable ranked table (next-level): click State or Year enacted to sort. */
+  function initRankedTableSort() {
+    var table = document.getElementById("ranked-state-table");
+    var tbody = document.getElementById("ranked-state-tbody");
+    if (!table || !tbody || !table._rankedRows) return;
+    var headers = table.querySelectorAll(".ranked-th[data-sort]");
+    var currentSort = { key: "year", dir: "desc" };
+    function applySort(key) {
+      var dir = currentSort.key === key && currentSort.dir === "asc" ? "desc" : "asc";
+      currentSort = { key: key, dir: dir };
+      var rows = table._rankedRows.slice();
+      rows.sort(function (a, b) {
+        if (key === "year") {
+          var yA = a.year === "—" ? 0 : parseInt(a.year, 10);
+          var yB = b.year === "—" ? 0 : parseInt(b.year, 10);
+          var cmp = yB - yA;
+          return dir === "asc" ? -cmp : cmp;
+        }
+        var cmp = (a.name || "").localeCompare(b.name || "");
+        return dir === "asc" ? cmp : -cmp;
+      });
+      renderRankedTableBody(tbody, rows);
+      headers.forEach(function (th) {
+        var k = th.getAttribute("data-sort");
+        th.setAttribute("aria-sort", k === key ? (dir === "asc" ? "ascending" : "descending") : "none");
+      });
+    }
+    headers.forEach(function (th) {
+      th.addEventListener("click", function () {
+        var k = th.getAttribute("data-sort");
+        if (k) applySort(k);
+      });
+    });
+  }
+
+  /** Fill adoptions-by-year bar chart from POLICY_INSIGHTS (next-level CEO dashboard). */
+  function fillAdoptionsChart() {
+    var container = document.getElementById("adoptions-chart");
+    if (!container || typeof POLICY_INSIGHTS !== "object" || !POLICY_INSIGHTS.getAdoptionTimelineArray) return;
+    var arr = POLICY_INSIGHTS.getAdoptionTimelineArray();
+    if (!arr || arr.length === 0) return;
+    var maxCount = Math.max.apply(null, arr.map(function (d) { return d.count; })) || 1;
+    var heightPx = 80;
+    container.textContent = "";
+    container.setAttribute("aria-label", "Bar chart: " + arr.map(function (d) { return d.year + " " + d.count + " states"; }).join(", "));
+    arr.forEach(function (d) {
+      var bar = document.createElement("div");
+      bar.className = "adoptions-chart-bar";
+      var pct = maxCount > 0 ? (d.count / maxCount) * heightPx : 0;
+      bar.style.height = Math.max(4, pct) + "px";
+      bar.setAttribute("title", d.year + ": " + d.count + " state(s) enacted");
+      bar.setAttribute("role", "img");
+      bar.setAttribute("aria-label", d.year + " " + d.count + " states");
+      container.appendChild(bar);
     });
   }
 
@@ -1396,7 +1556,82 @@
     });
   }
 
-  // Runs when the user clicks Download PDF (image); captures the main content with html2canvas. Exactly 2 pages: Page 1 = intro through map. Page 2 = KPI row through end (no page break in community benefit; no blank page 4). Spacing above community benefit keeps it clear of cards above.
+  /* ---------- Dataset download (Wave 1 — Data Credibility Agent) ---------- */
+  /** Build CSV from STATE_340B/STATE_NAMES. Sanitizes values for safe output. */
+  function buildDatasetCsv() {
+    if (typeof STATE_340B !== "object" || !STATE_340B || typeof STATE_NAMES !== "object") return "";
+    var rows = ["State,Abbr,Contract Pharmacy,Year Enacted,PBM,Notes"];
+    Object.keys(STATE_340B).sort().forEach(function (abbr) {
+      var row = STATE_340B[abbr];
+      var name = (STATE_NAMES[abbr] || abbr).replace(/"/g, '""');
+      var cp = row && row.cp === true ? "Yes" : "No";
+      var y = row && row.y != null ? String(row.y) : "";
+      var pbm = row && row.pbm === true ? "Yes" : "No";
+      var notes = (row && row.notes ? String(row.notes) : "").replace(/"/g, '""');
+      rows.push('"' + name + '",' + abbr + ',"' + cp + '","' + y + '","' + pbm + '","' + notes + '"');
+    });
+    return rows.join("\r\n");
+  }
+
+  /** Build JSON from STATE_340B with STATE_NAMES. Safe for download (no script). */
+  function buildDatasetJson() {
+    if (typeof STATE_340B !== "object" || !STATE_340B || typeof STATE_NAMES !== "object") return "{}";
+    var out = { meta: { lastUpdated: (typeof DATASET_METADATA !== "undefined" && DATASET_METADATA && DATASET_METADATA.lastUpdated) ? DATASET_METADATA.lastUpdated : (config.lastUpdated || "March 2025"), version: (typeof DATASET_METADATA !== "undefined" && DATASET_METADATA && DATASET_METADATA.datasetVersion) ? DATASET_METADATA.datasetVersion : "2.0" }, states: {} };
+    Object.keys(STATE_340B).forEach(function (abbr) {
+      var row = STATE_340B[abbr];
+      out.states[abbr] = {
+        name: STATE_NAMES[abbr] || abbr,
+        contractPharmacy: !!(row && row.cp),
+        yearEnacted: row && row.y != null ? row.y : null,
+        pbm: !!(row && row.pbm),
+        notes: row && row.notes ? String(row.notes) : ""
+      };
+    });
+    return JSON.stringify(out, null, 2);
+  }
+
+  function downloadDatasetAsCsv() {
+    var csv = buildDatasetCsv();
+    if (!csv) return;
+    var blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "340b-state-law-data.csv";
+    a.setAttribute("aria-hidden", "true");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setUtilityStatus("CSV downloaded.");
+    setTimeout(function () { setUtilityStatus(""); }, 2000);
+  }
+
+  function downloadDatasetAsJson() {
+    var json = buildDatasetJson();
+    if (!json) return;
+    var blob = new Blob([json], { type: "application/json;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = "340b-state-law-data.json";
+    a.setAttribute("aria-hidden", "true");
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    setUtilityStatus("JSON downloaded.");
+    setTimeout(function () { setUtilityStatus(""); }, 2000);
+  }
+
+  function initDatasetDownload() {
+    var btnCsv = document.getElementById("btn-download-csv");
+    var btnJson = document.getElementById("btn-download-json");
+    if (btnCsv) btnCsv.addEventListener("click", function () { runTaskSafely("download csv", downloadDatasetAsCsv); });
+    if (btnJson) btnJson.addEventListener("click", function () { runTaskSafely("download json", downloadDatasetAsJson); });
+  }
+
+  // Runs when the user clicks Download PDF (image); captures the main content with html2canvas. Three pages: Page 1 = intro through executive strip. Page 2 = state-by-state analysis and map. Page 3 = KPI strip through end. Each page fitted to A4 with 10mm margins.
   function downloadPdfAsImage() {
     var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
     var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
@@ -1413,20 +1648,23 @@
     if (mapSection) {
       mapSection.scrollIntoView({ behavior: "auto", block: "start" });
     }
-    var target = document.querySelector("main") || document.querySelector(".dashboard-inner") || document.body;
+    var target = document.getElementById("pdf-capture-root") || document.querySelector("main") || document.querySelector(".dashboard-inner") || document.body;
     var pdfStyleEl = null;
     function injectPdfStyle() {
       if (pdfStyleEl) return;
       pdfStyleEl = document.createElement("style");
       pdfStyleEl.id = "pdf-capture-style";
-      pdfStyleEl.textContent = "body.pdf-capture #state-laws { margin-top: -10px; margin-bottom: 1.25rem; } " +
+      pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; } " +
+        "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap { display: none !important; } " +
+        "body.pdf-capture .print-sources { display: none !important; } " +
+        "body.pdf-capture #state-laws { margin-top: -10px; margin-bottom: 1.25rem; } " +
         "body.pdf-capture .map-wrap, body.pdf-capture .us-map-wrap { overflow: visible !important; opacity: 1 !important; } " +
         "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; } " +
         "body.pdf-capture #state-lists-wrap { display: none !important; } " +
         "body.pdf-capture .executive-proof-strip { margin-bottom: 1.25rem; } " +
         "body.pdf-capture .kpi-strip { margin-top: 1rem; margin-bottom: 2rem; } " +
         "body.pdf-capture .supporting-section { margin-top: 0.5rem; margin-bottom: 2.5rem; } " +
-        "body.pdf-capture #community-benefit { margin-top: calc(3rem + 10px); margin-bottom: 2rem; padding: 1em 1.25em !important; font-size: 0.9em; overflow: visible !important; } " +
+        "body.pdf-capture #community-benefit { margin-top: calc(3rem + 80px); margin-bottom: 2rem; padding: 1em 1.25em !important; font-size: 0.9em; overflow: visible !important; } " +
         "body.pdf-capture #community-benefit .benefit-grid { gap: 0.5rem; } " +
         "body.pdf-capture #community-benefit .benefit-item { padding: 0.4em 0.6em; } " +
         "body.pdf-capture .community-benefit-hero { padding: 1rem 1.25rem !important; margin-top: 0.75rem !important; overflow: visible !important; min-height: auto !important; border-radius: 12px; } " +
@@ -1472,37 +1710,52 @@
       Promise.race([capturePromise, timeoutPromise]).then(function (canvas) {
         var scale = 2;
         var mainRect = target.getBoundingClientRect();
-        // Exactly 2 pages only. Do not add page 3 or 4. Page 1 = intro through map; Page 2 = KPI through end (no break inside community benefit).
-        var kpiStrip = document.querySelector(".kpi-strip");
-        var break1Y = kpiStrip ? (kpiStrip.getBoundingClientRect().top - mainRect.top) * scale : canvas.height * 0.5;
-        break1Y = Math.max(0, Math.min(break1Y, canvas.height));
+        var stateLawsEl = document.getElementById("state-laws");
+        var kpiStripEl = document.querySelector(".kpi-strip");
+        // Page 1: intro through executive strip. Page 2: state-by-state + map + about this data. Page 3: KPI strip through end.
+        var break1Y = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * 0.4;
+        var break2Y = kpiStripEl ? Math.max(break1Y, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * 0.75;
+        break1Y = Math.min(break1Y, canvas.height);
+        break2Y = Math.min(break2Y, canvas.height);
+        if (break2Y <= break1Y) break2Y = canvas.height;
         restoreMapSvg();
         removePdfStyle();
         try {
           var pdf = new jsPDFLib("p", "mm", "a4");
           var pdfW = pdf.internal.pageSize.getWidth();
           var pdfH = pdf.internal.pageSize.getHeight();
-          function addCanvasSlice(sliceCanvas) {
+          var marginMm = 10;
+          var innerW = pdfW - marginMm * 2;
+          var innerH = pdfH - marginMm * 2;
+          function addCanvasSliceWithMargins(sliceCanvas) {
             var imgData = sliceCanvas.toDataURL("image/png", 0.95);
-            var imgW = pdfW;
-            var imgH = (sliceCanvas.height * pdfW) / sliceCanvas.width;
-            if (imgH > pdfH) {
-              imgH = pdfH;
-              imgW = (sliceCanvas.width * pdfH) / sliceCanvas.height;
+            var imgW = innerW;
+            var imgH = (sliceCanvas.height * innerW) / sliceCanvas.width;
+            if (imgH > innerH) {
+              imgH = innerH;
+              imgW = (sliceCanvas.width * innerH) / sliceCanvas.height;
             }
-            pdf.addImage(imgData, "PNG", 0, 0, imgW, imgH);
+            var x = marginMm + (innerW - imgW) / 2;
+            var y = marginMm + (innerH - imgH) / 2;
+            pdf.addImage(imgData, "PNG", x, y, imgW, imgH);
           }
           var slice1 = document.createElement("canvas");
           slice1.width = canvas.width;
           slice1.height = break1Y;
           slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, break1Y, 0, 0, canvas.width, break1Y);
-          addCanvasSlice(slice1);
+          addCanvasSliceWithMargins(slice1);
           pdf.addPage();
           var slice2 = document.createElement("canvas");
           slice2.width = canvas.width;
-          slice2.height = canvas.height - break1Y;
-          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, canvas.height - break1Y, 0, 0, canvas.width, canvas.height - break1Y);
-          addCanvasSlice(slice2);
+          slice2.height = break2Y - break1Y;
+          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, break2Y - break1Y, 0, 0, canvas.width, break2Y - break1Y);
+          addCanvasSliceWithMargins(slice2);
+          pdf.addPage();
+          var slice3 = document.createElement("canvas");
+          slice3.width = canvas.width;
+          slice3.height = canvas.height - break2Y;
+          slice3.getContext("2d").drawImage(canvas, 0, break2Y, canvas.width, canvas.height - break2Y, 0, 0, canvas.width, canvas.height - break2Y);
+          addCanvasSliceWithMargins(slice3);
           pdf.save("340b-dashboard.pdf");
           setUtilityStatus("PDF saved.");
           setTimeout(function () { setUtilityStatus(""); }, 2500);
@@ -1673,6 +1926,7 @@
   }
 
   function initScrollReveal() {
+    document.body.classList.add("scroll-reveal-js");
     var items = document.querySelectorAll(".scroll-reveal");
 
     if (prefersReducedMotion() || typeof IntersectionObserver === "undefined") {
@@ -1793,11 +2047,45 @@
 
   function init() {
     cacheDom();
+
+    /* If core data did not load (e.g. script order or missing inline data), show message and stop. */
+    if (typeof STATE_340B === "undefined" || typeof STATE_NAMES === "undefined" || typeof FIPS_TO_ABBR === "undefined") {
+      var msg = "Dashboard data didn't load.";
+      if (appState.dom.mapSkeleton) {
+        appState.dom.mapSkeleton.classList.remove("map-loading-skeleton");
+        var p = document.createElement("p");
+        p.className = "map-error-msg";
+        p.textContent = msg;
+        appState.dom.mapSkeleton.replaceChildren(p);
+        if (appState.dom.mapWrap) appState.dom.mapWrap.setAttribute("aria-busy", "false");
+      }
+      if (appState.dom.utilityStatus) appState.dom.utilityStatus.textContent = "Data not loaded.";
+      return;
+    }
+
     // Run each startup task independently so one broken feature does not take down the whole page.
     // Example: if the map fails, share/print/filter logic should still initialize.
     runTaskSafely("apply config copy", applyConfigCopy);
     runTaskSafely("update metadata", updateMetadata);
     runTaskSafely("validate state data", validateStateData);
+    (function runSecondaryPanels() {
+      var defer = typeof DASHBOARD_SETTINGS !== "undefined" && DASHBOARD_SETTINGS.performance && DASHBOARD_SETTINGS.performance.deferSecondaryPanels;
+      if (defer) {
+        requestAnimationFrame(function () {
+          runTaskSafely("apply about data panel", applyAboutDataPanel);
+          runTaskSafely("apply policy insights", applyPolicyInsights);
+          runTaskSafely("fill ranked state table", fillRankedStateTable);
+          runTaskSafely("fill adoptions chart", fillAdoptionsChart);
+          runTaskSafely("init ranked table sort", initRankedTableSort);
+        });
+      } else {
+        runTaskSafely("apply about data panel", applyAboutDataPanel);
+        runTaskSafely("apply policy insights", applyPolicyInsights);
+        runTaskSafely("fill ranked state table", fillRankedStateTable);
+        runTaskSafely("fill adoptions chart", fillAdoptionsChart);
+        runTaskSafely("init ranked table sort", initRankedTableSort);
+      }
+    })();
     runTaskSafely("render empty detail", renderEmptyStateDetail);
     runTaskSafely("update selection summary", function () {
       updateSelectionSummary(null);
@@ -1807,6 +2095,7 @@
     runTaskSafely("initialize print", initPrint);
     runTaskSafely("initialize share", initShare);
     runTaskSafely("initialize export map svg", initExportMapSvg);
+    runTaskSafely("initialize dataset download", initDatasetDownload);
     runTaskSafely("initialize download pdf", initDownloadPdf);
     runTaskSafely("initialize methodology toggle", initMethodologyToggle);
     runTaskSafely("initialize selection controls", initSelectionControls);

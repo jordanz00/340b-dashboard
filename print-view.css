@@ -17,15 +17,15 @@
 #print-view-root {
   max-width: 820px;
   margin: 0 auto;
-  padding: 0.6cm;
+  padding: 0.5cm;
 }
 
 /* Header compact so first overview block sits directly under it (no blank first page). */
 .print-view-header {
   display: block;
   overflow: hidden;
-  margin-bottom: 0.4rem;
-  padding: 0.4rem 0.75rem 0.4rem 0;
+  margin-bottom: 0.3rem;
+  padding: 0.3rem 0.6rem 0.3rem 0;
   border-bottom: 1px solid rgba(11, 103, 194, 0.15);
   background: linear-gradient(180deg, rgba(255,255,255,0.95) 0%, rgba(244,247,251,0.98) 100%);
   border-radius: 0 0 12px 12px;
@@ -84,8 +84,8 @@
 
 .print-view-block {
   display: block;
-  margin-bottom: 0.75rem;
-  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.85rem;
   border: 1px solid rgba(148, 163, 184, 0.22);
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.92);
@@ -176,24 +176,38 @@
   color: #475569;
 }
 
-.print-view-map-wrap {
+.print-view-map-and-legend {
   display: block;
-  margin: 0.5rem 0;
+  margin: 0.35rem 0;
+}
+
+.print-view-map-and-legend .print-view-legend {
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+.print-view-map-wrap,
+#print-view-root #pv-map-container {
+  display: block !important;
+  margin: 0;
   overflow: visible;
-  min-height: 0;
-  padding: 0.5rem;
+  min-height: 160px;
+  padding: 0.35rem;
   border-radius: 10px;
   background: rgba(248, 250, 252, 0.9);
   border: 1px solid rgba(148, 163, 184, 0.18);
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
-.print-view-map-wrap svg {
+.print-view-map-wrap svg,
+.print-view-map-wrap img {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
   width: 100% !important;
   height: auto !important;
-  max-height: 6.5cm;
+  max-height: 4.5cm;
 }
 
 .print-view-map-fallback {
@@ -492,6 +506,7 @@
 
   .print-view-kpi-strip {
     margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
     page-break-inside: avoid;
     page-break-before: auto;
     box-shadow: none;
@@ -506,21 +521,49 @@
   .print-view-map-hero {
     page-break-inside: avoid;
     page-break-after: avoid;
+    margin-bottom: 0.5rem;
+  }
+  .print-view-map-hero .print-view-subhead {
+    margin: 0.5rem 0 0.2rem;
+    font-size: 0.8rem;
+  }
+  .print-view-map-hero .print-view-state-list {
+    margin: 0 0 0.35rem;
+    font-size: 0.7rem;
+  }
+  .print-view-map-hero .print-view-trends p {
+    margin: 0 0 0.25rem;
+    font-size: 0.75rem;
+  }
+  .print-view-map-hero .print-view-sources {
+    margin-top: 0.4rem;
+    font-size: 0.7rem;
+  }
+
+  .print-view-map-and-legend {
+    page-break-inside: avoid;
+    page-break-after: avoid;
   }
 
   .print-view-map-wrap {
+    display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
     page-break-inside: avoid;
     page-break-before: avoid;
     border: 1px solid #e5e7eb;
     background: #fff;
+    min-height: 150px !important;
   }
 
-  .print-view-map-wrap svg {
+  .print-view-map-wrap svg,
+  .print-view-map-wrap img {
+    display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    max-height: 6.5cm;
+    width: 100% !important;
+    height: auto !important;
+    max-height: 4.5cm !important;
   }
 
   .print-view-map-fallback {
@@ -528,10 +571,6 @@
   }
 
   .print-view-trends {
-    page-break-inside: avoid;
-  }
-
-  .print-view-details {
     page-break-inside: avoid;
   }
 }
