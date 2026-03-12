@@ -1655,9 +1655,14 @@
       pdfStyleEl = document.createElement("style");
       pdfStyleEl.id = "pdf-capture-style";
       pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; } " +
+        "body.pdf-capture .intro-section .card { margin-bottom: 1.25rem; } " +
+        "body.pdf-capture .key-findings-strip { margin: 1rem 0; } " +
+        "body.pdf-capture .executive-proof-strip { margin: 1rem 0; padding: 0.75rem 0; } " +
+        "body.pdf-capture .executive-proof-strip .executive-proof-card { margin-bottom: 0.85rem; } " +
         "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap { display: none !important; } " +
         "body.pdf-capture .print-sources { display: none !important; } " +
-        "body.pdf-capture #state-laws { margin-top: -10px; margin-bottom: 1.25rem; } " +
+        "body.pdf-capture .sources, body.pdf-capture #sources-summary { display: none !important; } " +
+        "body.pdf-capture #state-laws { margin-top: 0.5rem; margin-bottom: 1rem; } " +
         "body.pdf-capture .map-wrap, body.pdf-capture .us-map-wrap { overflow: visible !important; opacity: 1 !important; } " +
         "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; } " +
         "body.pdf-capture #state-lists-wrap { display: none !important; } " +
@@ -1712,7 +1717,7 @@
         var mainRect = target.getBoundingClientRect();
         var stateLawsEl = document.getElementById("state-laws");
         var kpiStripEl = document.querySelector(".kpi-strip");
-        // Page 1: intro through executive strip. Page 2: state-by-state + map + about this data. Page 3: KPI strip through end.
+        // Page 1: overview to why trust (intro + key findings + executive strip). Page 2: state-by-state + map + recent legal signals. Page 3: KPI strip through end. Method/sources hidden. 10mm margins all sides.
         var break1Y = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * 0.4;
         var break2Y = kpiStripEl ? Math.max(break1Y, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * 0.75;
         break1Y = Math.min(break1Y, canvas.height);
