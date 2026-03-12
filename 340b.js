@@ -36,6 +36,12 @@
 (function () {
   "use strict";
 
+  /* ==================================================
+     CONFIGURATION & CONSTANTS
+     ==================================================
+     CONFIG comes from state-data.js (inlined in 340b.html).
+     Fallback below is used only when CONFIG is undefined (e.g. local file open).
+     */
   var config = typeof CONFIG !== "undefined" ? CONFIG : {
     dashboardTitle: "340B Drug Pricing Program",
     dashboardSubtitle: "HAP Advocacy Dashboard",
@@ -72,8 +78,12 @@
     dom: {}
   };
 
-  /* ---------- DOM cache ---------- */
-  // Stores references to all elements the script needs (buttons, map container, status text) so we don't search the DOM repeatedly.
+  /* ==================================================
+     DOM REFERENCES
+     ==================================================
+     Caches element references to avoid repeated DOM queries.
+     Call cacheDom() once during init.
+     */
   function cacheDom() {
     appState.dom = {
       utilityStatus: document.getElementById("utility-status"),
@@ -131,11 +141,20 @@
       // and a compact print-only source note that need current dates.
       printLastUpdated: document.getElementById("print-last-updated"),
       printIntroSnapshot: document.getElementById("print-intro-snapshot"),
-      printMethodologyLastUpdated: document.getElementById("print-methodology-last-updated")
+      printMethodologyLastUpdated: document.getElementById("print-methodology-last-updated"),
+      /* Performance: cached repeated selectors (not used in print/PDF/map logic) */
+      stateLawsSection: document.getElementById("state-laws"),
+      navLinks: document.querySelectorAll(".dashboard-nav a[href^='#']"),
+      filterButtons: document.querySelectorAll(".state-filter-btn"),
+      filterSelect: document.getElementById("state-filter-select")
     };
   }
 
-  /* ---------- Small helpers ---------- */
+  /* ==================================================
+     UTILITY HELPERS
+     ==================================================
+     safeText, clearElement, setElementText, etc.
+     */
 
   /**
    * Returns a string safe for textContent: non-strings become empty string;
@@ -153,6 +172,7 @@
     }
   }
 
+  /** Removes id attributes from a cloned subtree so print snapshot has no duplicate IDs in the DOM. */
   function removeIdsFromClone(root) {
     if (!root) return;
 
@@ -369,7 +389,12 @@
     appState.dom.mapHeroSub.textContent = buildMapContextText(abbr, data);
   }
 
-  /* ---------- Data helpers ---------- */
+  /* ==================================================
+     STATE DATA HELPERS
+     ==================================================
+     Read from STATE_340B, STATE_NAMES (state-data.js).
+     Do not modify these structures; only read.
+     */
 
   function getStateAbbr(feature) {
     var id = feature && (feature.id != null ? feature.id : (feature.properties && (feature.properties.FIPS || feature.properties.STATE)));
@@ -584,7 +609,12 @@
     if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = false;
   }
 
-  /* ---------- Share and hash helpers ---------- */
+  /* ==================================================
+     SHARE LINK & URL HASH
+     ==================================================
+     Hash sync: #state-PA in URL keeps selection in sync on load/back.
+     buildShareUrl() produces a shareable link with state context.
+     */
 
   function updateUrlHash(abbr) {
     var nextHash = abbr ? "#state-" + abbr : "";
@@ -598,8 +628,8 @@
     }
   }
 
+  /** Parses #state-XX from the URL hash; returns the state abbr if valid and known, otherwise null. Invalid/unknown hashes are ignored. */
   function getHashState() {
-    // Invalid or unknown #state-XX hashes are ignored; selection stays empty.
     var rawHash = (location.hash || "").replace(/^#state-/, "").toUpperCase();
     return rawHash && rawHash.length === 2 && isKnownState(rawHash) ? rawHash : null;
   }
@@ -636,13 +666,26 @@
   }
 
   var PRINT_VIEW_STORAGE_KEY = "hap340bPrint";
-  // Fallback map width in pixels when container has no offsetWidth (e.g. before layout).
+  /** Fallback map width (px) when container has no offsetWidth (e.g. before layout). */
   var DEFAULT_MAP_WIDTH_PX = 800;
-  // Wait-for-map: used by openPrintView and downloadPdfAsImage so payload/capture includes the SVG.
+  /** Wait-for-map: used by openPrintView and downloadPdfAsImage so payload/capture includes the SVG. */
   var WAIT_FOR_MAP_INITIAL_MS = 1200;
   var WAIT_FOR_MAP_INTERVAL_MS = 250;
   var WAIT_FOR_MAP_MAX_ATTEMPTS = 30;
   var PDF_CAPTURE_TIMEOUT_MS = 18000;
+  /** Canvas Y-ratio fallbacks when #state-laws or .kpi-strip are missing. PAGE_1_END_RATIO: Page 1 ends at 40%; Page 2 at 75% of canvas height. */
+  var PDF_PAGE1_FALLBACK_RATIO = 0.4; // PAGE_1_END_RATIO equivalent when #state-laws is missing
+  var PDF_PAGE2_FALLBACK_RATIO = 0.75;
+  /** Tooltip vertical offset (px) below cursor for map hover. */
+  var TOOLTIP_OFFSET_Y = 14;
+  /** Tooltip vertical offset (px) above cursor for state chip hover. */
+  var TOOLTIP_OFFSET_CHIP_Y = -12;
+  /** Minimum map width change (px) before redraw on resize. */
+  var RESIZE_WIDTH_THRESHOLD_PX = 40;
+  /** Debounce delay (ms) for resize handler. */
+  var RESIZE_DEBOUNCE_MS = 300;
+  /** Minimum inset (px) from viewport edges when positioning tooltips. */
+  var TOOLTIP_VIEWPORT_INSET_PX = 12;
 
   function getMapSvgString() {
     var svg = (appState.dom.mapContainer && appState.dom.mapContainer.querySelector("svg")) ||
@@ -711,6 +754,14 @@
     };
   }
 
+  /* ==================================================
+     PRINT PREPARATION (PROTECTED)
+     ==================================================
+     ⚠ DO NOT MODIFY
+     This section controls the Print/PDF system and must remain unchanged.
+     Changes here can break the print pipeline and PDF output.
+     Key: hap340bPrint in localStorage; print.html reads it.
+     */
   // Assembles the full print view payload (summary, KPIs, map SVG) for print.html to read from localStorage (new tab cannot read sessionStorage).
   function getPrintViewPayload() {
     var summary = gatherPrintPayloadSummaryAndKpis();
@@ -825,7 +876,7 @@
   }
 
   function scrollToMapSection() {
-    var mapSection = document.getElementById("state-laws");
+    var mapSection = appState.dom.stateLawsSection;
 
     if (!mapSection) return;
 
@@ -835,7 +886,12 @@
     });
   }
 
-  /* ---------- Detail panel and selection ---------- */
+  /* ==================================================
+     STATE SELECTION LOGIC
+     ==================================================
+     Handles selectState(), clearSelection(), renderStateDetail().
+     Updates map highlight, state list, detail panel.
+     */
 
   function renderEmptyStateDetail() {
     var panel = appState.dom.stateDetailPanel;
@@ -885,9 +941,10 @@
   }
 
   function updateNavCurrent(activeId) {
-    var navLinks = document.querySelectorAll(".dashboard-nav a[href^='#']");
+    var navLinks = appState.dom.navLinks;
     var policySections = ["oversight", "pa-impact", "community-benefit", "access", "pa-safeguards"];
 
+    if (!navLinks || !navLinks.length) return;
     navLinks.forEach(function (link) {
       var href = link.getAttribute("href");
       var isActive = href === "#" + activeId || (href === "#policy" && policySections.indexOf(activeId) >= 0);
@@ -966,12 +1023,13 @@
 
   /* ---------- Tooltip helpers ---------- */
 
+  /** Keeps tooltip within viewport by clamping left/top to a minimum inset from edges. */
   function clampTooltip(tooltip, left, top) {
-    var maxLeft = window.innerWidth - tooltip.offsetWidth - 12;
-    var maxTop = window.innerHeight - tooltip.offsetHeight - 12;
+    var maxLeft = window.innerWidth - tooltip.offsetWidth - TOOLTIP_VIEWPORT_INSET_PX;
+    var maxTop = window.innerHeight - tooltip.offsetHeight - TOOLTIP_VIEWPORT_INSET_PX;
 
-    tooltip.style.left = Math.max(12, Math.min(left, maxLeft)) + "px";
-    tooltip.style.top = Math.max(12, Math.min(top, maxTop)) + "px";
+    tooltip.style.left = Math.max(TOOLTIP_VIEWPORT_INSET_PX, Math.min(left, maxLeft)) + "px";
+    tooltip.style.top = Math.max(TOOLTIP_VIEWPORT_INSET_PX, Math.min(top, maxTop)) + "px";
   }
 
   function showTooltip(tooltip, left, top) {
@@ -1006,7 +1064,12 @@
     if (data.notes) tooltip.appendChild(createElement("div", "", data.notes));
   }
 
-  /* ---------- Map lifecycle ---------- */
+  /* ==================================================
+     MAP INITIALIZATION & LIFECYCLE
+     ==================================================
+     Draws US map from TopoJSON; handles resize, click, tooltips.
+     Do not add overflow:hidden to .map-wrap or .us-map-wrap.
+     */
 
   function setMapBusy(isBusy) {
     if (appState.dom.mapWrap) appState.dom.mapWrap.setAttribute("aria-busy", isBusy ? "true" : "false");
@@ -1097,11 +1160,11 @@
       .on("mouseenter", function (event, feature) {
         if (!appState.hoverCapable) return;
         buildMapTooltip(appState.dom.mapTooltip, getStateAbbr(feature));
-        showTooltip(appState.dom.mapTooltip, event.clientX, event.clientY + 14);
+        showTooltip(appState.dom.mapTooltip, event.clientX, event.clientY + TOOLTIP_OFFSET_Y);
       })
       .on("mousemove", function (event) {
         if (!appState.hoverCapable) return;
-        clampTooltip(appState.dom.mapTooltip, event.clientX, event.clientY + 14);
+        clampTooltip(appState.dom.mapTooltip, event.clientX, event.clientY + TOOLTIP_OFFSET_Y);
       })
       .on("mouseleave", function () {
         hideTooltip(appState.dom.mapTooltip);
@@ -1183,6 +1246,7 @@
     projection = d3.geoAlbersUsa().fitSize([width, height], states);
     pathGenerator = d3.geoPath(projection);
     group = svg.append("g");
+    /* Sort states left-to-right by centroid X so the domino animation flows west-to-east. */
     orderedStates = states.features.map(function (feature, index) {
       return { feature: feature, index: index };
     });
@@ -1281,6 +1345,7 @@
     applyStateFilter();
   }
 
+  /** Sets PA as temporary print-only selection when none exists, so the print view shows a state panel instead of empty. Does not update URL hash. */
   function preparePrintSelectionState() {
     if (appState.printAppliedDefaultSelection) {
       return;
@@ -1322,11 +1387,11 @@
 
       chip.addEventListener("mouseenter", function (event) {
         buildStateChipTooltip(appState.dom.chipTooltip, abbr);
-        showTooltip(appState.dom.chipTooltip, event.clientX, event.clientY - 12);
+        showTooltip(appState.dom.chipTooltip, event.clientX, event.clientY + TOOLTIP_OFFSET_CHIP_Y);
       });
 
       chip.addEventListener("mousemove", function (event) {
-        clampTooltip(appState.dom.chipTooltip, event.clientX, event.clientY - 12);
+        clampTooltip(appState.dom.chipTooltip, event.clientX, event.clientY + TOOLTIP_OFFSET_CHIP_Y);
       });
 
       chip.addEventListener("mouseleave", function () {
@@ -1375,9 +1440,10 @@
   }
 
   function initStateFilter() {
-    var filterButtons = document.querySelectorAll(".state-filter-btn");
-    var filterSelect = document.getElementById("state-filter-select");
+    var filterButtons = appState.dom.filterButtons;
+    var filterSelect = appState.dom.filterSelect;
 
+    if (!filterButtons || !filterButtons.length) return;
     function syncFilterToUI(filterValue) {
       appState.currentFilter = filterValue || "all";
       filterButtons.forEach(function (item) {
@@ -1556,6 +1622,15 @@
     });
   }
 
+  function initExecutiveMode() {
+    var btn = document.getElementById("btn-executive-mode");
+    if (!btn) return;
+    btn.addEventListener("click", function () {
+      var active = document.body.classList.toggle("executive-mode");
+      btn.setAttribute("aria-pressed", active ? "true" : "false");
+    });
+  }
+
   /* ---------- Dataset download (Wave 1 — Data Credibility Agent) ---------- */
   /** Build CSV from STATE_340B/STATE_NAMES. Sanitizes values for safe output. */
   function buildDatasetCsv() {
@@ -1631,7 +1706,14 @@
     if (btnJson) btnJson.addEventListener("click", function () { runTaskSafely("download json", downloadDatasetAsJson); });
   }
 
-  // Runs when the user clicks Download PDF (image); captures the main content with html2canvas. Three pages: Page 1 = intro through executive strip. Page 2 = state-by-state analysis and map. Page 3 = KPI strip through end. Each page fitted to A4 with 10mm margins.
+  /* ==================================================
+     PDF IMAGE EXPORT (PROTECTED)
+     ==================================================
+     ⚠ DO NOT MODIFY
+     Captures 3-page A4 PDF via html2canvas + jsPDF.
+     Page 1: intro through executive strip. Page 2: map + state analysis.
+     Page 3: KPI strip through end. Changes can break layout.
+     */
   function downloadPdfAsImage() {
     var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
     var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
@@ -1745,11 +1827,12 @@
         var stateLawsEl = document.getElementById("state-laws");
         var kpiStripEl = document.querySelector(".kpi-strip");
         // Page 1: overview to why trust (intro + key findings + executive strip). Page 2: state-by-state + map + recent legal signals. Page 3: KPI strip through end. Method/sources hidden. 10mm margins all sides.
-        var break1Y = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * 0.4;
-        var break2Y = kpiStripEl ? Math.max(break1Y, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * 0.75;
-        break1Y = Math.min(break1Y, canvas.height);
-        break2Y = Math.min(break2Y, canvas.height);
-        if (break2Y <= break1Y) break2Y = canvas.height;
+        /* page1EndY = end of Page 1 (intro through state-laws); page2EndY = end of Page 2 (through kpi-strip). Fallbacks when DOM landmarks are missing. */
+        var page1EndY = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE1_FALLBACK_RATIO;
+        var page2EndY = kpiStripEl ? Math.max(page1EndY, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE2_FALLBACK_RATIO;
+        page1EndY = Math.min(page1EndY, canvas.height);
+        page2EndY = Math.min(page2EndY, canvas.height);
+        if (page2EndY <= page1EndY) page2EndY = canvas.height;
         restoreMapSvg();
         removePdfStyle();
         try {
@@ -1783,20 +1866,20 @@
           }
           var slice1 = document.createElement("canvas");
           slice1.width = canvas.width;
-          slice1.height = break1Y;
-          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, break1Y, 0, 0, canvas.width, break1Y);
+          slice1.height = page1EndY;
+          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, page1EndY, 0, 0, canvas.width, page1EndY);
           addCanvasSliceWithMargins(slice1, { topAlign: true });
           pdf.addPage();
           var slice2 = document.createElement("canvas");
           slice2.width = canvas.width;
-          slice2.height = break2Y - break1Y;
-          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, break2Y - break1Y, 0, 0, canvas.width, break2Y - break1Y);
+          slice2.height = page2EndY - page1EndY;
+          slice2.getContext("2d").drawImage(canvas, 0, page1EndY, canvas.width, page2EndY - page1EndY, 0, 0, canvas.width, page2EndY - page1EndY);
           addCanvasSliceWithMargins(slice2);
           pdf.addPage();
           var slice3 = document.createElement("canvas");
           slice3.width = canvas.width;
-          slice3.height = canvas.height - break2Y;
-          slice3.getContext("2d").drawImage(canvas, 0, break2Y, canvas.width, canvas.height - break2Y, 0, 0, canvas.width, canvas.height - break2Y);
+          slice3.height = canvas.height - page2EndY;
+          slice3.getContext("2d").drawImage(canvas, 0, page2EndY, canvas.width, canvas.height - page2EndY, 0, 0, canvas.width, canvas.height - page2EndY);
           addCanvasSliceWithMargins(slice3, { fitWidth: true });
           pdf.save("340b-dashboard.pdf");
           if (appState.printAppliedDefaultSelection) {
@@ -2022,6 +2105,12 @@
 
   /* ---------- Event handlers ---------- */
 
+  /**
+   * Syncs the selected state from the URL hash (#state-XX). Called on init and hashchange.
+   * - Valid known state: select it and scroll to map.
+   * - Invalid/unknown hash (e.g. #state-XX where XX is bad): clear hash and selection.
+   * - No hash but something selected: clear selection (e.g. user navigated away via back button).
+   */
   function syncSelectionFromHash() {
     var hashState = getHashState();
     var hasStateHash = /^#state-/i.test(location.hash || "");
@@ -2072,7 +2161,7 @@
     if (appState.touchDevice || !appState.dom.mapContainer) return;
 
     width = appState.dom.mapContainer.offsetWidth;
-    if (Math.abs(width - appState.lastMapWidth) < 40 && appState.lastMapWidth) return;
+    if (Math.abs(width - appState.lastMapWidth) < RESIZE_WIDTH_THRESHOLD_PX && appState.lastMapWidth) return;
 
     appState.lastMapWidth = width;
     drawMap();
@@ -2151,6 +2240,7 @@
     runTaskSafely("initialize print", initPrint);
     runTaskSafely("initialize share", initShare);
     runTaskSafely("initialize export map svg", initExportMapSvg);
+    runTaskSafely("initialize executive mode", initExecutiveMode);
     runTaskSafely("initialize dataset download", initDatasetDownload);
     runTaskSafely("initialize download pdf", initDownloadPdf);
     runTaskSafely("initialize methodology toggle", initMethodologyToggle);
@@ -2170,7 +2260,7 @@
     if (!appState.touchDevice) {
       window.addEventListener("resize", function () {
         clearTimeout(appState.resizeTimer);
-        appState.resizeTimer = window.setTimeout(handleResize, 300);
+        appState.resizeTimer = window.setTimeout(handleResize, RESIZE_DEBOUNCE_MS);
       });
     }
   }

@@ -7,9 +7,10 @@
   <meta name="color-scheme" content="light">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title id="page-title">340B Drug Pricing Program | HAP Advocacy Dashboard</title>
-  <meta name="description" id="meta-description" content="HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection map, $7.95B community benefits, 72 PA hospitals. Executive dashboard for lawmakers and hospital CEOs.">
+  <meta name="description" id="meta-description" content="HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection, $7.95B community benefits, 72 PA hospitals. For lawmakers and hospital CEOs.">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Hospital and Healthsystem Association of Pennsylvania">
+  <link rel="canonical" href="https://jordanz00.github.io/340b-dashboard/340b.html">
   <!-- Open Graph / Social sharing -->
   <meta property="og:type" content="website">
   <meta property="og:title" id="meta-og-title" content="340B Drug Pricing Program | HAP Advocacy Dashboard">
@@ -26,6 +27,26 @@
   <meta name="twitter:description" id="meta-twitter-description" content="72 PA hospitals • $7.95B community benefits • No cost to taxpayers. State-by-state contract pharmacy protection map.">
   <meta name="twitter:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
   <link rel="stylesheet" href="340b.css">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.haponline.org/#organization",
+      "name": "Hospital and Healthsystem Association of Pennsylvania",
+      "url": "https://www.haponline.org"
+    },
+    {
+      "@type": "WebPage",
+      "name": "340B Drug Pricing Program | HAP Advocacy Dashboard",
+      "description": "HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection, $7.95B community benefits, 72 PA hospitals. For lawmakers and hospital CEOs.",
+      "url": "https://jordanz00.github.io/340b-dashboard/340b.html",
+      "publisher": { "@id": "https://www.haponline.org/#organization" }
+    }
+  ]
+}
+  </script>
   <script>
 // Inlined from state-data.js so the dashboard works when opened locally (file://).
 var CONFIG = {
@@ -155,6 +176,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
 <div id="state-list-tooltip" class="state-list-tooltip" aria-hidden="true"></div>
 <p id="state-selection-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+<p id="map-keyboard-hint" class="sr-only">Tab to move between states. Press Enter or Space to select a state.</p>
 <a href="#main-content" class="skip-link">Skip to main content</a>
 <header class="dashboard-header">
   <div class="header-left">
@@ -172,6 +194,8 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <a href="#what-is-340b" class="active" aria-current="page">Overview</a>
     <a href="#overview">HAP Position</a>
     <a href="#state-laws">State Map</a>
+    <a href="#pa-impact-mode">PA Impact</a>
+    <a href="#policy-impact-simulator">Impact Simulator</a>
     <a href="#policy">Policy</a>
     <a href="static.html">PA Dashboard</a>
   </nav>
@@ -180,6 +204,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <div class="dashboard-inner">
 <section class="utility-toolbar scroll-reveal" aria-label="Page tools">
   <div class="utility-toolbar-actions">
+    <button type="button" id="btn-executive-mode" class="utility-btn" aria-label="Toggle executive mode" aria-pressed="false">Executive Mode</button>
     <button type="button" id="btn-print" class="utility-btn" aria-label="Print or save as PDF">Print / PDF</button>
     <button type="button" id="btn-download-pdf" class="utility-btn" aria-label="Download dashboard as PDF image">Download PDF (image)</button>
     <button type="button" id="btn-share" class="utility-btn" aria-label="Copy link to clipboard">Share link</button>
@@ -199,7 +224,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
        so the PDF matches the live dashboard instead of showing duplicated summary copy. -->
   <section class="print-report-header print-only" aria-hidden="true">
     <div class="print-report-brand">
-      <img src="haplogo_box_blue.jpeg" alt="" class="print-report-logo" width="52" height="52">
+      <img src="haplogo_box_blue.jpeg" alt="" class="print-report-logo" width="52" height="52" loading="lazy">
       <div class="print-report-brand-copy">
         <p class="print-report-org">The Hospital and Healthsystem Association of Pennsylvania</p>
         <p class="print-report-kicker">HAP Advocacy Dashboard</p>
@@ -292,12 +317,12 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <p class="selection-summary-title" id="selection-summary-title">No state selected yet</p>
           <p class="selection-summary-text" id="selection-summary-text">Choose a state from the map or list to compare enacted protections and no-protection states.</p>
         </div>
-        <button type="button" class="selection-clear" id="selection-clear" hidden>Clear selection</button>
+        <button type="button" class="selection-clear" id="selection-clear" hidden aria-label="Clear selected state" aria-describedby="selection-summary-title">Clear selection</button>
       </div>
       <div class="map-container" id="map-container">
         <div class="us-map-wrap map-wrap" id="us-map-wrap" aria-busy="true">
           <div class="map-loading-skeleton" id="map-loading-skeleton"><span class="map-loading-text">Loading map...</span></div>
-          <div id="us-map" role="img" aria-label="Interactive US map showing states with and without 340B contract pharmacy protection. Blue states have protection, gray states do not. Click a state for details."></div>
+          <div id="us-map" role="img" aria-label="Interactive US map showing states with and without 340B contract pharmacy protection. Blue states have protection, gray states do not. Click or select a state for details." aria-describedby="map-hero-sub map-keyboard-hint"></div>
           <div class="map-legend">
             <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection</span>
             <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
@@ -305,24 +330,24 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
         <!-- Cloned map for print/PDF so the map reliably appears when printing -->
         <div id="print-map-fallback" class="print-map-fallback" aria-hidden="true" style="display: none;"></div>
-        <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite" tabindex="-1"><p>No state selected. Choose a state to compare legal-status details and policy context.</p></div>
+        <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite" tabindex="-1" role="region" aria-label="Selected state details"><p>No state selected. Choose a state to compare legal-status details and policy context.</p></div>
       </div>
       <div class="state-lists-wrap" id="state-lists-wrap">
         <div class="state-filter-bar">
           <div class="state-filter-toggles" role="group" aria-label="Filter by protection status">
-            <button type="button" class="state-filter-btn active" data-filter="all" aria-pressed="true">All</button>
-            <button type="button" class="state-filter-btn" data-filter="protection" aria-pressed="false">Protection</button>
-            <button type="button" class="state-filter-btn" data-filter="no-protection" aria-pressed="false">No protection</button>
+            <button type="button" class="state-filter-btn active" data-filter="all" aria-pressed="true" aria-label="Show all states">All</button>
+            <button type="button" class="state-filter-btn" data-filter="protection" aria-pressed="false" aria-label="Show only states with 340B contract pharmacy protection">Protection</button>
+            <button type="button" class="state-filter-btn" data-filter="no-protection" aria-pressed="false" aria-label="Show only states with no protection law">No protection</button>
           </div>
         </div>
         <p id="state-filter-status" class="state-filter-status" aria-live="polite"></p>
-        <div class="state-list-block protection" id="state-list-block-protection">
+        <div class="state-list-block protection" id="state-list-block-protection" role="region" aria-label="States with 340B contract pharmacy protection. Click a state chip to view details.">
           <h3>States with protection (<span id="protection-count">0</span>)</h3>
-          <div class="state-list-grid" id="states-with-list"></div>
+          <div class="state-list-grid" id="states-with-list" role="list"></div>
         </div>
-        <div class="state-list-block no-protection" id="state-list-block-no-protection">
+        <div class="state-list-block no-protection" id="state-list-block-no-protection" role="region" aria-label="States with no 340B protection law. Click a state chip to view details.">
           <h3>No protection law (<span id="no-protection-count">0</span>)</h3>
-          <div class="state-list-grid" id="states-without-list"></div>
+          <div class="state-list-grid" id="states-without-list" role="list"></div>
         </div>
         <p id="state-no-results" class="state-no-results" aria-live="polite" hidden>No states match the current filter.</p>
       </div>
@@ -361,7 +386,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
       <p class="sources" id="sources-summary">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
       <details class="methodology-wrap" id="methodology-wrap">
-        <summary class="methodology-toggle" id="methodology-toggle">About this data</summary>
+        <summary class="methodology-toggle" id="methodology-toggle" aria-label="Expand about this data section">About this data</summary>
         <div class="methodology-content" id="methodology-content">
           <p class="methodology-sources-header"><strong>Data sources:</strong> MultiState (legislative status), ASHP (pharmacy-policy cross-check), America's Essential Hospitals (advocacy confirmation), 340B Health and AHA (community benefit), HRSA (federal oversight).</p>
           <p id="methodology-state-law-copy"><strong>State law data</strong> is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.</p>
@@ -516,6 +541,20 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
     </article>
 
+    <!-- Pennsylvania Impact Mode — PA-specific policy scenarios, isolated from core dashboard -->
+    <section id="pa-impact-mode" class="pa-impact-mode-section span-12 scroll-reveal" aria-label="Pennsylvania Impact Mode">
+      <article class="card pa-impact-mode-card">
+        <div id="pa-impact-mode-root"></div>
+      </article>
+    </section>
+
+    <!-- Policy Impact Simulator — modular, isolated from core dashboard -->
+    <section id="policy-impact-simulator" class="impact-simulator-section span-12 scroll-reveal" aria-label="Policy Impact Simulator">
+      <article class="card impact-simulator-card">
+        <div id="policy-impact-simulator-root"></div>
+      </article>
+    </section>
+
     <!-- Policy anchor (for nav) -->
     <div id="policy" class="span-12" style="height:0;margin:0;padding:0;" aria-hidden="true"></div>
 
@@ -571,5 +610,13 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js" crossorigin="anonymous"></script>
   <script src="340b.js"></script>
+  <!-- Pennsylvania Impact Mode — loads after main dashboard; fully isolated -->
+  <script src="modules/pa-impact-data.js"></script>
+  <script src="modules/pa-impact-engine.js"></script>
+  <script src="modules/pa-impact-ui.js" defer></script>
+  <!-- Policy Impact Simulator — loads after main dashboard; fully isolated -->
+  <script src="modules/impact-data.js"></script>
+  <script src="modules/impact-simulator.js"></script>
+  <script src="modules/impact-ui.js" defer></script>
 </body>
 </html>
