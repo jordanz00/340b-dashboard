@@ -1654,10 +1654,10 @@
       if (pdfStyleEl) return;
       pdfStyleEl = document.createElement("style");
       pdfStyleEl.id = "pdf-capture-style";
-      pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; } " +
+      pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; padding-top: 0 !important; margin-top: 0 !important; } " +
         "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap, body.pdf-capture .methodology-content, body.pdf-capture .methodology-sources-header, body.pdf-capture .source-links, body.pdf-capture .methodology-toggle { display: none !important; } " +
         "body.pdf-capture .print-sources, body.pdf-capture .sources, body.pdf-capture #sources-summary { display: none !important; } " +
-        "body.pdf-capture .intro-section { padding: 0.25rem 0; } " +
+        "body.pdf-capture .intro-section { padding: 0.25rem 0; margin-top: 0 !important; padding-top: 0 !important; } " +
         "body.pdf-capture .intro-section .card { padding: 0.65rem 0.9rem; margin-bottom: 0.6rem; } " +
         "body.pdf-capture .intro-section .card h2 { font-size: 1.05rem; line-height: 1.25; } " +
         "body.pdf-capture .intro-section .card p, body.pdf-capture .intro-section .stat-block { font-size: 0.82rem; } " +
@@ -1738,23 +1738,33 @@
           var marginMm = 10;
           var innerW = pdfW - marginMm * 2;
           var innerH = pdfH - marginMm * 2;
-          function addCanvasSliceWithMargins(sliceCanvas) {
-            var imgData = sliceCanvas.toDataURL("image/png", 0.95);
+          function addCanvasSliceWithMargins(sliceCanvas, opts) {
+            opts = opts || {};
             var imgW = innerW;
             var imgH = (sliceCanvas.height * innerW) / sliceCanvas.width;
-            if (imgH > innerH) {
+            var drawCanvas = sliceCanvas;
+            if (opts.fitWidth && imgH > innerH) {
+              var cropH = Math.floor(innerH * sliceCanvas.width / innerW);
+              var cropped = document.createElement("canvas");
+              cropped.width = sliceCanvas.width;
+              cropped.height = cropH;
+              cropped.getContext("2d").drawImage(sliceCanvas, 0, 0, sliceCanvas.width, cropH, 0, 0, sliceCanvas.width, cropH);
+              drawCanvas = cropped;
+              imgH = innerH;
+            } else if (imgH > innerH) {
               imgH = innerH;
               imgW = (sliceCanvas.width * innerH) / sliceCanvas.height;
             }
+            var imgData = drawCanvas.toDataURL("image/png", 0.95);
             var x = marginMm + (innerW - imgW) / 2;
-            var y = marginMm + (innerH - imgH) / 2;
+            var y = opts.topAlign ? marginMm : marginMm + (innerH - imgH) / 2;
             pdf.addImage(imgData, "PNG", x, y, imgW, imgH);
           }
           var slice1 = document.createElement("canvas");
           slice1.width = canvas.width;
           slice1.height = break1Y;
           slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, break1Y, 0, 0, canvas.width, break1Y);
-          addCanvasSliceWithMargins(slice1);
+          addCanvasSliceWithMargins(slice1, { topAlign: true });
           pdf.addPage();
           var slice2 = document.createElement("canvas");
           slice2.width = canvas.width;
@@ -1766,7 +1776,7 @@
           slice3.width = canvas.width;
           slice3.height = canvas.height - break2Y;
           slice3.getContext("2d").drawImage(canvas, 0, break2Y, canvas.width, canvas.height - break2Y, 0, 0, canvas.width, canvas.height - break2Y);
-          addCanvasSliceWithMargins(slice3);
+          addCanvasSliceWithMargins(slice3, { fitWidth: true });
           pdf.save("340b-dashboard.pdf");
           setUtilityStatus("PDF saved.");
           setTimeout(function () { setUtilityStatus(""); }, 2500);
