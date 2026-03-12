@@ -28,7 +28,7 @@
     var anchors = PA.PA_ANCHORS;
     return {
       scenarioId: scenarioId,
-      hospitalsImpacted: estimates.hospitalsImpacted,
+      hospitalProgramStatus: estimates.hospitalProgramStatus,
       hospitalsNote: estimates.hospitalsNote,
       pharmaciesAffected: estimates.pharmaciesAffected,
       pharmaciesNote: estimates.pharmaciesNote,

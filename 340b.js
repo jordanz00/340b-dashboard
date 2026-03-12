@@ -673,8 +673,8 @@
   var WAIT_FOR_MAP_INTERVAL_MS = 250;
   var WAIT_FOR_MAP_MAX_ATTEMPTS = 30;
   var PDF_CAPTURE_TIMEOUT_MS = 18000;
-  /** Canvas Y-ratio fallbacks when #state-laws or .kpi-strip are missing. PAGE_1_END_RATIO: Page 1 ends at 40%; Page 2 at 75% of canvas height. */
-  var PDF_PAGE1_FALLBACK_RATIO = 0.4; // PAGE_1_END_RATIO equivalent when #state-laws is missing
+  /** Canvas Y-ratio fallbacks when #state-laws or .kpi-strip are missing: Page 1 ends at 40%, Page 2 at 75% of canvas height. */
+  var PDF_PAGE1_FALLBACK_RATIO = 0.4;
   var PDF_PAGE2_FALLBACK_RATIO = 0.75;
   /** Tooltip vertical offset (px) below cursor for map hover. */
   var TOOLTIP_OFFSET_Y = 14;
@@ -1628,6 +1628,8 @@
     btn.addEventListener("click", function () {
       var active = document.body.classList.toggle("executive-mode");
       btn.setAttribute("aria-pressed", active ? "true" : "false");
+      setUtilityStatus(active ? "Executive mode on — focused presentation view" : "Executive mode off");
+      setTimeout(function () { setUtilityStatus(""); }, 2000);
     });
   }
 
@@ -1709,7 +1711,7 @@
   /* ==================================================
      PDF IMAGE EXPORT (PROTECTED)
      ==================================================
-     ⚠ DO NOT MODIFY
+     ⚠ DO NOT MODIFY — User requested no changes without explicit permission.
      Captures 3-page A4 PDF via html2canvas + jsPDF.
      Page 1: intro through executive strip. Page 2: map + state analysis.
      Page 3: KPI strip through end. Changes can break layout.
@@ -1827,12 +1829,12 @@
         var stateLawsEl = document.getElementById("state-laws");
         var kpiStripEl = document.querySelector(".kpi-strip");
         // Page 1: overview to why trust (intro + key findings + executive strip). Page 2: state-by-state + map + recent legal signals. Page 3: KPI strip through end. Method/sources hidden. 10mm margins all sides.
-        /* page1EndY = end of Page 1 (intro through state-laws); page2EndY = end of Page 2 (through kpi-strip). Fallbacks when DOM landmarks are missing. */
-        var page1EndY = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE1_FALLBACK_RATIO;
-        var page2EndY = kpiStripEl ? Math.max(page1EndY, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE2_FALLBACK_RATIO;
-        page1EndY = Math.min(page1EndY, canvas.height);
-        page2EndY = Math.min(page2EndY, canvas.height);
-        if (page2EndY <= page1EndY) page2EndY = canvas.height;
+        /* break1Y = end of Page 1 (intro through state-laws); break2Y = end of Page 2 (through kpi-strip). Fallbacks when DOM landmarks are missing. */
+        var break1Y = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE1_FALLBACK_RATIO;
+        var break2Y = kpiStripEl ? Math.max(break1Y, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE2_FALLBACK_RATIO;
+        break1Y = Math.min(break1Y, canvas.height);
+        break2Y = Math.min(break2Y, canvas.height);
+        if (break2Y <= break1Y) break2Y = canvas.height;
         restoreMapSvg();
         removePdfStyle();
         try {
@@ -1866,20 +1868,20 @@
           }
           var slice1 = document.createElement("canvas");
           slice1.width = canvas.width;
-          slice1.height = page1EndY;
-          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, page1EndY, 0, 0, canvas.width, page1EndY);
+          slice1.height = break1Y;
+          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, break1Y, 0, 0, canvas.width, break1Y);
           addCanvasSliceWithMargins(slice1, { topAlign: true });
           pdf.addPage();
           var slice2 = document.createElement("canvas");
           slice2.width = canvas.width;
-          slice2.height = page2EndY - page1EndY;
-          slice2.getContext("2d").drawImage(canvas, 0, page1EndY, canvas.width, page2EndY - page1EndY, 0, 0, canvas.width, page2EndY - page1EndY);
+          slice2.height = break2Y - break1Y;
+          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, break2Y - break1Y, 0, 0, canvas.width, break2Y - break1Y);
           addCanvasSliceWithMargins(slice2);
           pdf.addPage();
           var slice3 = document.createElement("canvas");
           slice3.width = canvas.width;
-          slice3.height = canvas.height - page2EndY;
-          slice3.getContext("2d").drawImage(canvas, 0, page2EndY, canvas.width, canvas.height - page2EndY, 0, 0, canvas.width, canvas.height - page2EndY);
+          slice3.height = canvas.height - break2Y;
+          slice3.getContext("2d").drawImage(canvas, 0, break2Y, canvas.width, canvas.height - break2Y, 0, 0, canvas.width, canvas.height - break2Y);
           addCanvasSliceWithMargins(slice3, { fitWidth: true });
           pdf.save("340b-dashboard.pdf");
           if (appState.printAppliedDefaultSelection) {

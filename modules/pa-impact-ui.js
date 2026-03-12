@@ -85,7 +85,7 @@
     grid.className = "pa-impact-grid";
 
     var metrics = [
-      { label: "PA hospitals", value: String(data.hospitalsImpacted), note: data.hospitalsNote },
+      { label: "72 PA hospitals — program status", value: safeText(data.hospitalProgramStatus), note: data.hospitalsNote },
       { label: "Pharmacies affected", value: String(data.pharmaciesAffected), note: data.pharmaciesNote },
       { label: "Patient access", value: data.patientAccessChange, note: data.patientAccessNote },
       { label: "Community benefit", value: data.communityBenefitImpact, note: data.communityBenefitNote },

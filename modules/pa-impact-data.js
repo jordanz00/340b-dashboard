@@ -43,8 +43,8 @@
      */
   PA_NS.PA_SCENARIO_ESTIMATES = {
     EXPAND_PROTECTIONS: {
-      hospitalsImpacted: 72,
-      hospitalsNote: "All 72 PA hospitals would gain contract pharmacy protection",
+      hospitalProgramStatus: "Protected",
+      hospitalsNote: "72 PA hospitals would gain contract pharmacy protection and operate with predictable pharmacy networks",
       pharmaciesAffected: 420,
       pharmaciesNote: "Estimated PA contract pharmacy network expansion",
       patientAccessChange: "High",
@@ -54,8 +54,8 @@
       narrative: "If Pennsylvania enacted contract pharmacy protection, all 72 participating hospitals would operate with predictable pharmacy networks. Patient access and community benefit programs would strengthen.",
     },
     CURRENT_STATUS: {
-      hospitalsImpacted: 72,
-      hospitalsNote: "72 PA hospitals participate; PA has no state protection law",
+      hospitalProgramStatus: "Exposed",
+      hospitalsNote: "72 PA hospitals participate today; PA has no state protection law — programs rely on manufacturer policies",
       pharmaciesAffected: 180,
       pharmaciesNote: "Limited by manufacturer restrictions; single-pharmacy or narrow networks",
       patientAccessChange: "Constrained",
@@ -65,8 +65,8 @@
       narrative: "Pennsylvania has no 340B contract pharmacy protection. Hospital programs operate under manufacturer restrictions. Community benefit and patient access remain vulnerable.",
     },
     REMOVE_PROTECTIONS: {
-      hospitalsImpacted: 72,
-      hospitalsNote: "PA hospitals would face stricter manufacturer limits if protections erode nationally",
+      hospitalProgramStatus: "At risk",
+      hospitalsNote: "72 PA hospitals would face harsher manufacturer limits; pharmacy networks would shrink",
       pharmaciesAffected: 60,
       pharmaciesNote: "Pharmacy network would shrink; more single-pharmacy constraints",
       patientAccessChange: "Low",

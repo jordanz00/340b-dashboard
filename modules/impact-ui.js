@@ -64,8 +64,8 @@
     var header = document.createElement("header");
     header.className = "impact-simulator-header";
     header.appendChild(makeEl("p", "impact-simulator-title", "Policy Impact Simulator"));
-    header.appendChild(makeEl("h2", "impact-simulator-headline", "Explore policy scenarios"));
-    header.appendChild(makeEl("p", "impact-simulator-sub", "Estimated impact on pharmacies, patient access, and hospital program funding. Values are illustrative for advocacy storytelling."));
+    header.appendChild(makeEl("h2", "impact-simulator-headline", "Model the impact of policy choices"));
+    header.appendChild(makeEl("p", "impact-simulator-sub", "Compare three scenarios: expand protections nationwide, maintain current status, or roll back. Estimated impact on pharmacies, patient access, and hospital funding."));
     root.appendChild(header);
 
     var scenarioIds = IMPACT.getScenarioIds();
