@@ -28,26 +28,26 @@ var CONFIG = {
   printDefaultState: "PA",
   printDefaultStateReason: "HAP focal state for print.",
 
-  /* High-salience copy */
+  /* High-salience copy — CEO-scannable, benefit-first */
   copy: {
-    overviewLead: "The 340B Drug Pricing Program allows eligible hospitals and clinics to purchase outpatient drugs at discounted prices to serve low-income and underserved populations. It operates at no cost to taxpayers and helps safety-net providers sustain medication access.",
-    hapPositionLead: "HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies so patients can keep accessing affordable medications close to home, including when care depends on distributed pharmacy networks.",
+    overviewLead: "340B lets eligible hospitals buy drugs at discount to serve low-income patients. No cost to taxpayers; sustains medication access.",
+    hapPositionLead: "HAP supports protecting 340B integrity and contract pharmacy access so patients keep affordable medications close to home.",
     hapAskLabel: "HAP asks lawmakers:",
-    hapAskText: "Protect 340B integrity and preserve contract pharmacy access for patient medications.",
-    mapHeroSub: "Select a state for details. 72 Pennsylvania hospitals participate in 340B.",
+    hapAskText: "Protect 340B integrity and preserve contract pharmacy access.",
+    mapHeroSub: "Select a state for details. 72 PA hospitals participate in 340B.",
     sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
-    methodologyStateLaw: "State law data is compiled from MultiState, ASHP, and America's Essential Hospitals. Contract pharmacy protection status reflects enacted state laws as of March 2025. Update this data when new state laws pass.",
+    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2025.",
     printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.",
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
       priorityLabel: "Policy priority",
       priorityValue: "Protect 340B integrity and contract pharmacy access",
-      priorityNote: "The dashboard is strongest when access, program integrity, and patient medication continuity are treated as one policy story.",
+      priorityNote: "Access, integrity, and patient continuity—one policy story.",
       landscapeLabel: "National landscape",
-      landscapeNote: "Use the map and selected-state panel to compare enacted protections against states where hospitals remain exposed.",
+      landscapeNote: "Map and state panel show enacted vs. exposed states.",
       trustLabel: "Why trust this view",
-      trustValue: "Legal status and recency are surfaced directly in the dashboard",
-      trustNote: "Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals."
+      trustValue: "Legal status and sources visible in dashboard",
+      trustNote: "Verified: MultiState, ASHP, America's Essential Hospitals."
     }
   },
 

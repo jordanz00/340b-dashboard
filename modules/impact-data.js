@@ -36,20 +36,20 @@
     EXPAND_PROTECTIONS: {
       id: "EXPAND_PROTECTIONS",
       label: "Expand protections nationwide",
-      description: "If all states enacted contract pharmacy protection laws.",
-      narrative: "More patients would access affordable medications. Hospital programs would operate with predictable pharmacy networks.",
+      description: "All states enact contract pharmacy protection.",
+      narrative: "Patient access up. Predictable pharmacy networks. Programs grow.",
     },
     CURRENT_STATUS: {
       id: "CURRENT_STATUS",
       label: "Current status",
       description: "Today's mix of protected and unprotected states.",
-      narrative: "Patchwork of state laws. Some patients and hospitals benefit; others remain exposed to manufacturer restrictions.",
+      narrative: "Some benefit; many exposed. Patchwork of state laws.",
     },
     REMOVE_PROTECTIONS: {
       id: "REMOVE_PROTECTIONS",
       label: "Remove existing protections",
-      description: "If enacted state protections were rolled back.",
-      narrative: "Contract pharmacy access would decline. Patient medication continuity and hospital program sustainability would be at risk.",
+      description: "Rollback enacted state protections.",
+      narrative: "Access down. Programs at risk. Patient continuity threatened.",
     },
   };
 
@@ -63,25 +63,25 @@
       pharmaciesImpacted: 12000,
       pharmaciesLabel: "pharmacies",
       patientAccessImpact: "High",
-      patientAccessNote: "Nationwide access to contract pharmacy networks",
+      patientAccessNote: "Nationwide contract pharmacy access",
       hospitalFundingImpact: "Stable",
-      hospitalFundingNote: "Programs could expand with predictable networks",
+      hospitalFundingNote: "Predictable networks; programs expand",
     },
     CURRENT_STATUS: {
       pharmaciesImpacted: 4500,
       pharmaciesLabel: "pharmacies",
       patientAccessImpact: "Mixed",
-      patientAccessNote: "~25 states with protection; many remain exposed",
+      patientAccessNote: "~25 states protected; many exposed",
       hospitalFundingImpact: "Variable",
-      hospitalFundingNote: "Protected states have more predictable revenue",
+      hospitalFundingNote: "Protected states have steadier revenue",
     },
     REMOVE_PROTECTIONS: {
       pharmaciesImpacted: 0,
       pharmaciesLabel: "pharmacies",
       patientAccessImpact: "Low",
-      patientAccessNote: "Contract pharmacy access would shrink significantly",
+      patientAccessNote: "Access would shrink significantly",
       hospitalFundingImpact: "At risk",
-      hospitalFundingNote: "Program sustainability would be threatened",
+      hospitalFundingNote: "Program sustainability threatened",
     },
   };
 

@@ -209,7 +209,7 @@
 
     window.setTimeout(function () {
       setUtilityStatus("");
-    }, delayMs || 2500);
+    }, delayMs || UTILITY_STATUS_DEFAULT_MS);
   }
 
   function prefersReducedMotion() {
@@ -686,6 +686,12 @@
   var RESIZE_DEBOUNCE_MS = 300;
   /** Minimum inset (px) from viewport edges when positioning tooltips. */
   var TOOLTIP_VIEWPORT_INSET_PX = 12;
+  /** How long (ms) to show utility status messages (e.g. "PDF saved", "Link copied") before clearing. */
+  var UTILITY_STATUS_DISMISS_MS = 2000;
+  /** Default delay (ms) for showTemporaryUtilityStatus when none specified. */
+  var UTILITY_STATUS_DEFAULT_MS = 2500;
+  /** Max height (px) for tallest bar in adoptions chart. */
+  var CHART_BAR_MAX_HEIGHT_PX = 80;
 
   function getMapSvgString() {
     var svg = (appState.dom.mapContainer && appState.dom.mapContainer.querySelector("svg")) ||
@@ -1417,6 +1423,10 @@
     if (appState.dom.noResults) appState.dom.noResults.hidden = visibleProtection + visibleNoProtection > 0;
   }
 
+  /* === FILTER INIT ===
+     applyStateFilter: show/hide state chips by protection status.
+     initStateFilter: wire filter buttons and select to syncFilterToUI.
+     */
   function applyStateFilter() {
     var visibleCount = 0;
 
@@ -1554,13 +1564,12 @@
     var arr = POLICY_INSIGHTS.getAdoptionTimelineArray();
     if (!arr || arr.length === 0) return;
     var maxCount = Math.max.apply(null, arr.map(function (d) { return d.count; })) || 1;
-    var heightPx = 80;
     container.textContent = "";
     container.setAttribute("aria-label", "Bar chart: " + arr.map(function (d) { return d.year + " " + d.count + " states"; }).join(", "));
     arr.forEach(function (d) {
       var bar = document.createElement("div");
       bar.className = "adoptions-chart-bar";
-      var pct = maxCount > 0 ? (d.count / maxCount) * heightPx : 0;
+      var pct = maxCount > 0 ? (d.count / maxCount) * CHART_BAR_MAX_HEIGHT_PX : 0;
       bar.style.height = Math.max(4, pct) + "px";
       bar.setAttribute("title", d.year + ": " + d.count + " state(s) enacted");
       bar.setAttribute("role", "img");
@@ -1611,7 +1620,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     setUtilityStatus("Map saved as SVG.");
-    window.setTimeout(function () { setUtilityStatus(""); }, 2000);
+    window.setTimeout(function () { setUtilityStatus(""); }, UTILITY_STATUS_DISMISS_MS);
   }
 
   function initExportMapSvg() {
@@ -1619,17 +1628,6 @@
     if (!btn) return;
     btn.addEventListener("click", function () {
       runTaskSafely("export map svg", exportMapAsSvg);
-    });
-  }
-
-  function initExecutiveMode() {
-    var btn = document.getElementById("btn-executive-mode");
-    if (!btn) return;
-    btn.addEventListener("click", function () {
-      var active = document.body.classList.toggle("executive-mode");
-      btn.setAttribute("aria-pressed", active ? "true" : "false");
-      setUtilityStatus(active ? "Executive mode on — focused presentation view" : "Executive mode off");
-      setTimeout(function () { setUtilityStatus(""); }, 2000);
     });
   }
 
@@ -1681,7 +1679,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     setUtilityStatus("CSV downloaded.");
-    setTimeout(function () { setUtilityStatus(""); }, 2000);
+    setTimeout(function () { setUtilityStatus(""); }, UTILITY_STATUS_DISMISS_MS);
   }
 
   function downloadDatasetAsJson() {
@@ -1698,7 +1696,7 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     setUtilityStatus("JSON downloaded.");
-    setTimeout(function () { setUtilityStatus(""); }, 2000);
+    setTimeout(function () { setUtilityStatus(""); }, UTILITY_STATUS_DISMISS_MS);
   }
 
   function initDatasetDownload() {
@@ -1829,7 +1827,7 @@
         var stateLawsEl = document.getElementById("state-laws");
         var kpiStripEl = document.querySelector(".kpi-strip");
         // Page 1: overview to why trust (intro + key findings + executive strip). Page 2: state-by-state + map + recent legal signals. Page 3: KPI strip through end. Method/sources hidden. 10mm margins all sides.
-        /* break1Y = end of Page 1 (intro through state-laws); break2Y = end of Page 2 (through kpi-strip). Fallbacks when DOM landmarks are missing. */
+        /* break1Y/break2Y: Y-coordinates where the captured canvas splits into 3 PDF pages. break1Y = end of Page 1 (intro through #state-laws); break2Y = end of Page 2 (through .kpi-strip). DOM landmarks give pixel positions; fallbacks use ratios when elements are missing. */
         var break1Y = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE1_FALLBACK_RATIO;
         var break2Y = kpiStripEl ? Math.max(break1Y, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE2_FALLBACK_RATIO;
         break1Y = Math.min(break1Y, canvas.height);
@@ -2242,7 +2240,6 @@
     runTaskSafely("initialize print", initPrint);
     runTaskSafely("initialize share", initShare);
     runTaskSafely("initialize export map svg", initExportMapSvg);
-    runTaskSafely("initialize executive mode", initExecutiveMode);
     runTaskSafely("initialize dataset download", initDatasetDownload);
     runTaskSafely("initialize download pdf", initDownloadPdf);
     runTaskSafely("initialize methodology toggle", initMethodologyToggle);

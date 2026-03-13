@@ -81,11 +81,11 @@ The dashboard is organized in logical layers. **File locations are kept at repo 
 3. Call that function from `init()` — either directly or inside the deferred "secondary panels" block if it's below the fold (see **config/settings.js** `performance.deferSecondaryPanels`).
 4. Add styles in **340b.css** if needed.
 
-### 2.3b Pennsylvania Impact Mode
+### 2.3b Pennsylvania Impact Mode (PA Impact)
 
-PA Impact Mode is in `modules/pa-impact-*`. Edit **pa-impact-data.js** — `PA_ANCHORS` and `PA_SCENARIO_ESTIMATES` — to change scenario labels or PA-specific estimates. The engine and UI should not be edited unless fixing a bug.
+PA Impact Mode is in `modules/pa-impact-*`. It is fully isolated from 340b.js, map, and print/PDF. Edit **pa-impact-data.js** — `PA_ANCHORS` and `PA_SCENARIO_ESTIMATES` — to change scenario labels or PA-specific estimates. The engine and UI should not be edited unless fixing a bug. Scenario keys must match impact-data.js: `EXPAND_PROTECTIONS`, `CURRENT_STATUS`, `REMOVE_PROTECTIONS`.
 
-### 2.3c Policy Impact Simulator
+### 2.3c Policy Impact Simulator (national)
 
 The national simulator is in `modules/impact-*` and is fully isolated from core dashboard logic:
 
@@ -93,7 +93,7 @@ The national simulator is in `modules/impact-*` and is fully isolated from core 
 - **impact-simulator.js** — Pure logic; returns scenario impact. Do not edit unless fixing a bug.
 - **impact-ui.js** — Renders the panel and scenario buttons. Do not edit unless fixing a bug.
 
-Values are illustrative for advocacy storytelling, not predictive. To add a scenario: add an entry to `SCENARIOS` and `SCENARIO_ESTIMATES` in impact-data.js, and add the ID to `getScenarioIds()` in impact-simulator.js.
+Values are illustrative for advocacy storytelling, not predictive. **Safe-edit workflow for scenarios:** (1) Edit `SCENARIOS` and `SCENARIO_ESTIMATES` in impact-data.js; (2) Keep scenario IDs stable (`EXPAND_PROTECTIONS`, `CURRENT_STATUS`, `REMOVE_PROTECTIONS`); (3) Update pa-impact-data.js `PA_SCENARIO_ESTIMATES` to match narrative tone. Do not change `getScenarioIds()` or the engine/UI unless fixing a bug.
 
 ### 2.4 Policy insights (national benchmark, adoption summary)
 
