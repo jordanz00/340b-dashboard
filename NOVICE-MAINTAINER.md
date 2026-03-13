@@ -101,6 +101,8 @@ Both simulators are modular and do not modify 340b.js, the map, or print/PDF.
 
 To change PA scenario data, edit **pa-impact-data.js** — `PA_ANCHORS` and `PA_SCENARIO_ESTIMATES`. To change national scenario data, edit **impact-data.js**.
 
+**Executive strip and tooltips:** The three executive proof cards (policy priority, national landscape, why trust) are populated from `CONFIG.copy.executiveStrip` in state-data.js. Each card has a `title` attribute for hover tooltips; edit 340b.html if you change tooltip text.
+
 ## 6. `340b.css`
 
 This is the layout and print file.

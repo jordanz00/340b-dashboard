@@ -59,7 +59,7 @@
   function renderSimulator(root) {
     if (!root) return;
 
-    root.innerHTML = "";
+    root.replaceChildren();
 
     var header = document.createElement("header");
     header.className = "impact-simulator-header";

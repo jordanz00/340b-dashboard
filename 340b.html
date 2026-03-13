@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self';">
   <title id="page-title">340B Drug Pricing Program | HAP Advocacy Dashboard</title>
   <meta name="description" id="meta-description" content="HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection, $7.95B community benefits, 72 PA hospitals. For lawmakers and hospital CEOs.">
   <meta name="robots" content="index, follow">
@@ -286,17 +287,17 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </section>
 
     <section class="executive-proof-strip span-12 scroll-reveal" aria-label="Executive scan">
-      <article class="executive-proof-card">
+      <article class="executive-proof-card" title="HAP's core advocacy focus for 340B">
         <p class="executive-proof-label" id="executive-priority-label">Policy priority</p>
         <h3 class="executive-proof-value" id="executive-priority-value">Protect 340B integrity and contract pharmacy access</h3>
         <p class="executive-proof-note" id="executive-priority-note">HAP's argument is strongest when access, integrity, and patient medication continuity stay linked together.</p>
       </article>
-      <article class="executive-proof-card executive-proof-card--accent">
+      <article class="executive-proof-card executive-proof-card--accent" title="State-by-state protection status across the U.S.">
         <p class="executive-proof-label" id="executive-landscape-label">National landscape</p>
         <h3 class="executive-proof-value" id="executive-landscape-value">Protection remains uneven across the country</h3>
         <p class="executive-proof-note" id="executive-landscape-note">Use the state map and selected-state panel to compare enacted protections against states where hospitals remain exposed.</p>
       </article>
-      <article class="executive-proof-card">
+      <article class="executive-proof-card" title="Data sources and verification order">
         <p class="executive-proof-label" id="executive-trust-label">Why trust this view</p>
         <h3 class="executive-proof-value" id="executive-trust-value">Legal status and recency are surfaced directly in the dashboard</h3>
         <p class="executive-proof-note" id="executive-trust-note">Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals.</p>

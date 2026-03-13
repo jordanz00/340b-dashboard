@@ -203,7 +203,7 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-4); align-items: start; }
 .supporting-section, #community-benefit { content-visibility: auto; contain-intrinsic-size: auto 300px; }
 /* Below-fold sections: defer layout/paint until near viewport (print overrides in @media print) */
-.kpi-strip, #access, #pa-safeguards, .methodology-wrap, .site-footer { content-visibility: auto; contain-intrinsic-size: auto 200px; }
+.kpi-strip, #access, #pa-safeguards, .pa-impact-mode-section, .impact-simulator-section, .methodology-wrap, .site-footer { content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .card { border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid rgba(255,255,255,0.78); padding: var(--space-5); box-shadow: var(--shadow-xs); position: relative; align-self: start; transition: transform 0.24s var(--ease), box-shadow 0.24s var(--ease), border-color 0.24s var(--ease), background 0.24s var(--ease); backdrop-filter: blur(18px); }
 .card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); background: rgba(255,255,255,0.9); }
 .card-heading { display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: row; gap: var(--space-4); margin-bottom: var(--space-4); }
@@ -241,7 +241,7 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 .executive-proof-card--accent { background: linear-gradient(180deg, rgba(255,255,255,0.85) 0%, var(--accent-muted) 100%); border-color: var(--accent-border); }
 .executive-proof-label { margin: 0 0 var(--space-2); font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--text-muted); }
 .executive-proof-value { margin: 0 0 var(--space-2); font-size: var(--text-xl); font-weight: 600; line-height: var(--leading-tight); letter-spacing: var(--tracking-tight); color: var(--text); }
-.executive-proof-note { margin: 0; font-size: var(--text-sm); line-height: var(--leading-relaxed); color: var(--text-secondary); }
+.executive-proof-note { margin: 0; font-size: var(--text-sm); line-height: 1.6; color: var(--text-secondary); }
 .executive-proof-card--accent .executive-proof-label,
 .executive-proof-card--accent .executive-proof-value { color: var(--accent-hover); }
 .span-4 { grid-column: span 4; }
@@ -343,7 +343,7 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 .community-benefit-hero .big-stat-desc { font-size: var(--text-base); margin-top: var(--space-2); color: var(--text-secondary); }
 
 /* Pennsylvania Impact Mode — PA-specific scenarios, matches design system */
-.pa-impact-mode-section { margin-top: var(--space-6); }
+.pa-impact-mode-section { margin-top: var(--space-8); }
 .pa-impact-mode-card { padding: var(--space-6); border-color: var(--accent-border); background: linear-gradient(180deg, var(--bg-card) 0%, var(--accent-muted) 6%); }
 .pa-impact-header { margin-bottom: var(--space-5); }
 .pa-impact-title { font-size: var(--text-xs); font-weight: 700; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--accent-hover); margin: 0 0 var(--space-1); }
@@ -438,7 +438,7 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
   background: rgba(255,255,255,1);
   color: var(--primary);
   border-color: var(--primary-border);
-  transform: translateY(-2px);
+  transform: translateY(-2px) scale(1.02);
   box-shadow: var(--shadow-sm);
 }
 .impact-scenario-btn.active {
@@ -464,7 +464,7 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
   transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
 }
 .impact-result-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-3px) scale(1.02);
   box-shadow: var(--shadow);
 }
 .impact-result-label {

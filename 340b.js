@@ -12,7 +12,7 @@
  * - Layout and print styles: 340b.css
  * - Map logic, buttons, print/PDF/share: this file (340b.js)
  *
- * SECURITY (Wave 4): Use textContent for all dynamic content—never innerHTML with data.
+ * SECURITY (Wave 4): Use textContent for all dynamic content—avoid raw HTML insertion with user/external data.
  * If you add user input or external data, sanitize before display (see docs/SECURITY.md).
  *
  * CODE MAP (top to bottom)
@@ -1827,12 +1827,12 @@
         var stateLawsEl = document.getElementById("state-laws");
         var kpiStripEl = document.querySelector(".kpi-strip");
         // Page 1: overview to why trust (intro + key findings + executive strip). Page 2: state-by-state + map + recent legal signals. Page 3: KPI strip through end. Method/sources hidden. 10mm margins all sides.
-        /* break1Y/break2Y: Y-coordinates where the captured canvas splits into 3 PDF pages. break1Y = end of Page 1 (intro through #state-laws); break2Y = end of Page 2 (through .kpi-strip). DOM landmarks give pixel positions; fallbacks use ratios when elements are missing. */
-        var break1Y = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE1_FALLBACK_RATIO;
-        var break2Y = kpiStripEl ? Math.max(break1Y, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE2_FALLBACK_RATIO;
-        break1Y = Math.min(break1Y, canvas.height);
-        break2Y = Math.min(break2Y, canvas.height);
-        if (break2Y <= break1Y) break2Y = canvas.height;
+        /* page1EndY = end of Page 1 (intro through state-laws); page2EndY = end of Page 2 (through kpi-strip). Fallbacks when DOM landmarks are missing. */
+        var page1EndY = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE1_FALLBACK_RATIO;
+        var page2EndY = kpiStripEl ? Math.max(page1EndY, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE2_FALLBACK_RATIO;
+        page1EndY = Math.min(page1EndY, canvas.height);
+        page2EndY = Math.min(page2EndY, canvas.height);
+        if (page2EndY <= page1EndY) page2EndY = canvas.height;
         restoreMapSvg();
         removePdfStyle();
         try {
@@ -1866,20 +1866,20 @@
           }
           var slice1 = document.createElement("canvas");
           slice1.width = canvas.width;
-          slice1.height = break1Y;
-          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, break1Y, 0, 0, canvas.width, break1Y);
+          slice1.height = page1EndY;
+          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, page1EndY, 0, 0, canvas.width, page1EndY);
           addCanvasSliceWithMargins(slice1, { topAlign: true });
           pdf.addPage();
           var slice2 = document.createElement("canvas");
           slice2.width = canvas.width;
-          slice2.height = break2Y - break1Y;
-          slice2.getContext("2d").drawImage(canvas, 0, break1Y, canvas.width, break2Y - break1Y, 0, 0, canvas.width, break2Y - break1Y);
+          slice2.height = page2EndY - page1EndY;
+          slice2.getContext("2d").drawImage(canvas, 0, page1EndY, canvas.width, page2EndY - page1EndY, 0, 0, canvas.width, page2EndY - page1EndY);
           addCanvasSliceWithMargins(slice2);
           pdf.addPage();
           var slice3 = document.createElement("canvas");
           slice3.width = canvas.width;
-          slice3.height = canvas.height - break2Y;
-          slice3.getContext("2d").drawImage(canvas, 0, break2Y, canvas.width, canvas.height - break2Y, 0, 0, canvas.width, canvas.height - break2Y);
+          slice3.height = canvas.height - page2EndY;
+          slice3.getContext("2d").drawImage(canvas, 0, page2EndY, canvas.width, canvas.height - page2EndY, 0, 0, canvas.width, canvas.height - page2EndY);
           addCanvasSliceWithMargins(slice3, { fitWidth: true });
           pdf.save("340b-dashboard.pdf");
           if (appState.printAppliedDefaultSelection) {

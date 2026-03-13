@@ -110,7 +110,7 @@ Values are illustrative for advocacy storytelling, not predictive. **Safe-edit w
 
 ### Optional pre-publish checklist
 
-- Run **dashboard-audit.py** if available.
+- Run **dashboard-audit.py** to verify: no unsafe innerHTML, CSP present, noopener on external links, remote asset status.
 - Confirm all external links use `rel="noopener noreferrer"`.
 - Confirm PDF/print view shows correct counts and selected state.
 - See **SECURITY.md** (root) or **docs/SECURITY.md** for the full static audit checklist.
