@@ -1787,7 +1787,8 @@
         "body.pdf-capture #pa-safeguards { margin-top: 0.4rem; padding: 0.3em 0.5em !important; font-size: 0.65em; line-height: 1.22; margin-bottom: 0.4rem; } " +
         "body.pdf-capture #pa-safeguards .card-heading h2, body.pdf-capture #pa-safeguards .card-title { font-size: 0.92em; } " +
         "body.pdf-capture #pa-safeguards ul { margin: 0.1em 0 0; padding-left: 0.85rem; } " +
-        "body.pdf-capture #pa-safeguards li { margin-bottom: 0.08em; } ";
+        "body.pdf-capture #pa-safeguards li { margin-bottom: 0.08em; } " +
+        "body.pdf-capture .pa-impact-mode-section, body.pdf-capture .impact-simulator-section { display: none !important; } ";
       document.head.appendChild(pdfStyleEl);
     }
     function removePdfStyle() {
