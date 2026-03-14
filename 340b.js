@@ -146,7 +146,10 @@
       stateLawsSection: document.getElementById("state-laws"),
       navLinks: document.querySelectorAll(".dashboard-nav a[href^='#']"),
       filterButtons: document.querySelectorAll(".state-filter-btn"),
-      filterSelect: document.getElementById("state-filter-select")
+      filterSelect: document.getElementById("state-filter-select"),
+      kpiStrip: document.querySelector(".kpi-strip"),
+      impactSimulatorRoot: document.getElementById("policy-impact-simulator-root"),
+      paImpactRoot: document.getElementById("pa-impact-mode-root")
     };
   }
 
@@ -597,7 +600,7 @@
 
     if (!abbr) {
       appState.dom.selectionSummaryTitle.textContent = "No state selected yet";
-      appState.dom.selectionSummaryText.textContent = "Choose a state from the map or list to compare enacted protections and no-protection states.";
+      appState.dom.selectionSummaryText.textContent = "Click a state on the map or in the list below to see the details.";
       updateMapContext(null);
       if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
       return;
@@ -745,9 +748,12 @@
       dataFreshness = appState.dom.dataFreshness.textContent;
     }
 
+    var landscapeValue = protectionCount + " states have enacted contract pharmacy protection; " + noProtectionCount + " remain without enacted protection";
+
     return {
       selectionTitle: selectionTitle,
       selectionText: selectionText,
+      landscapeValue: landscapeValue,
       protectionCount: protectionCount,
       noProtectionCount: noProtectionCount,
       statesWithList: statesWithList,
@@ -777,6 +783,8 @@
       mapSvgFallback: !mapSvg || mapSvg.length < 100,
       selectionTitle: summary.selectionTitle,
       selectionText: summary.selectionText,
+      mapHeroSub: (config.copy && config.copy.mapHeroSub) || "",
+      landscapeValue: summary.landscapeValue || "",
       protectionCount: summary.protectionCount,
       noProtectionCount: summary.noProtectionCount,
       statesWithList: summary.statesWithList,
@@ -1737,57 +1745,59 @@
       if (pdfStyleEl) return;
       pdfStyleEl = document.createElement("style");
       pdfStyleEl.id = "pdf-capture-style";
-      pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; padding-top: 0 !important; margin-top: 0 !important; } " +
+      pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; padding: 0.75rem 1rem !important; padding-top: 0 !important; margin-top: 0 !important; } " +
         "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap, body.pdf-capture .methodology-content, body.pdf-capture .methodology-sources-header, body.pdf-capture .source-links, body.pdf-capture .methodology-toggle { display: none !important; } " +
         "body.pdf-capture .print-sources, body.pdf-capture .sources, body.pdf-capture #sources-summary { display: none !important; } " +
-        "body.pdf-capture .intro-section { padding: 0.25rem 0; margin-top: 0 !important; padding-top: 0 !important; } " +
-        "body.pdf-capture .intro-section .card { padding: 0.65rem 0.9rem; margin-bottom: 0.6rem; } " +
+        "body.pdf-capture .intro-section { padding: 0.4rem 0; margin-top: 0 !important; padding-top: 0 !important; margin-bottom: 0.5rem; } " +
+        "body.pdf-capture .intro-section .card { padding: 0.7rem 1rem; margin-bottom: 0.65rem; } " +
         "body.pdf-capture .intro-section .card h2 { font-size: 1.05rem; line-height: 1.25; } " +
         "body.pdf-capture .intro-section .card p, body.pdf-capture .intro-section .stat-block { font-size: 0.82rem; } " +
-        "body.pdf-capture .key-findings-strip { margin: 0.85rem 0 0.4rem; padding: 0.5rem 0.9rem; } " +
+        "body.pdf-capture .exec-takeaway { margin: 0.5rem 0; padding: 0.55rem 0.85rem; font-size: 0.82rem; line-height: 1.35; } " +
+        "body.pdf-capture .key-findings-strip { margin: 0.6rem 0 0.5rem; padding: 0.6rem 1rem; } " +
         "body.pdf-capture .key-findings-strip h3 { font-size: 0.9rem; } " +
         "body.pdf-capture .key-findings-strip ul { font-size: 0.82rem; line-height: 1.4; } " +
-        "body.pdf-capture .executive-proof-strip { margin: 0.4rem 0; padding: 0.4rem 0; } " +
-        "body.pdf-capture .executive-proof-strip .executive-proof-card { padding: 0.45rem 0.65rem; margin-bottom: 0.4rem; } " +
+        "body.pdf-capture .executive-proof-strip { margin: 0.55rem 0; padding: 0.5rem 0; } " +
+        "body.pdf-capture .executive-proof-strip .executive-proof-card { padding: 0.55rem 0.75rem; margin-bottom: 0.5rem; } " +
         "body.pdf-capture .executive-proof-strip h3 { font-size: 0.9rem; line-height: 1.3; } " +
         "body.pdf-capture .executive-proof-strip p { font-size: 0.8rem; } " +
-        "body.pdf-capture #state-laws { margin-top: 0.5rem; margin-bottom: 1rem; } " +
+        "body.pdf-capture #state-laws { margin-top: 0.6rem; margin-bottom: 1rem; padding: 0 0.25rem; } " +
         "body.pdf-capture .map-wrap, body.pdf-capture .us-map-wrap { overflow: visible !important; opacity: 1 !important; } " +
         "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; } " +
         "body.pdf-capture #state-lists-wrap { display: none !important; } " +
-        "body.pdf-capture .kpi-strip { margin-top: 0.4rem; margin-bottom: 0.4rem; padding: 0.3rem 0; font-size: 0.65em; } " +
-        "body.pdf-capture .kpi-strip .kpi-card { padding: 0.3em 0.4em; } " +
-        "body.pdf-capture .supporting-section { margin-top: 0.4rem; margin-bottom: 0.4rem; font-size: 0.65em; line-height: 1.25; } " +
-        "body.pdf-capture .supporting-section .section-subhead { font-size: 0.92em; margin-bottom: 0.25rem; padding: 0.1rem 0; } " +
-        "body.pdf-capture .supporting-cards-row { gap: 0.4rem; } " +
-        "body.pdf-capture .supporting-section .card--compact { padding: 0.3em 0.45em !important; margin-bottom: 0.25rem; } " +
+        "body.pdf-capture .data-freshness { display: none !important; } " +
+        "body.pdf-capture .kpi-strip { margin-top: 0.6rem; margin-bottom: 0.6rem; padding: 0.5rem 0.5rem; font-size: 0.65em; } " +
+        "body.pdf-capture .kpi-strip .kpi-card { padding: 0.4em 0.5em; } " +
+        "body.pdf-capture .supporting-section { margin-top: 0.55rem; margin-bottom: 0.55rem; font-size: 0.65em; line-height: 1.25; padding: 0 0.15rem; } " +
+        "body.pdf-capture .supporting-section .section-subhead { font-size: 0.92em; margin-bottom: 0.3rem; padding: 0.15rem 0; } " +
+        "body.pdf-capture .supporting-cards-row { gap: 0.5rem; } " +
+        "body.pdf-capture .supporting-section .card--compact { padding: 0.35em 0.5em !important; margin-bottom: 0.3rem; } " +
         "body.pdf-capture .supporting-section .card-heading h2, body.pdf-capture .supporting-section .card-title { font-size: 0.92em; } " +
-        "body.pdf-capture .supporting-section p { margin: 0.1em 0; } " +
-        "body.pdf-capture .supporting-section ul { margin: 0.1em 0; padding-left: 0.85rem; } " +
-        "body.pdf-capture .supporting-section li { margin-bottom: 0.08em; } " +
-        "body.pdf-capture .supporting-section .stat-block { margin-top: 0.15em; gap: 0.2rem; } " +
-        "body.pdf-capture .supporting-section .stat { padding: 0.18em 0.28em; } " +
+        "body.pdf-capture .supporting-section p { margin: 0.15em 0; } " +
+        "body.pdf-capture .supporting-section ul { margin: 0.15em 0; padding-left: 0.85rem; } " +
+        "body.pdf-capture .supporting-section li { margin-bottom: 0.1em; } " +
+        "body.pdf-capture .supporting-section .stat-block { margin-top: 0.2em; gap: 0.25rem; } " +
+        "body.pdf-capture .supporting-section .stat { padding: 0.2em 0.3em; } " +
         "body.pdf-capture .supporting-section .stat-label, body.pdf-capture .supporting-section .stat-desc { font-size: 0.88em; } " +
         "body.pdf-capture .supporting-section .stat-value { font-size: 0.92em; } " +
-        "body.pdf-capture #community-benefit { margin-top: 0.6rem; margin-bottom: 0.5rem; padding: 0.4em 0.65em !important; font-size: 0.65em; line-height: 1.3; overflow: visible !important; } " +
-        "body.pdf-capture #community-benefit .card-heading h2, body.pdf-capture #community-benefit .card-title { font-size: 0.92em; } " +
-        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.2rem; } " +
-        "body.pdf-capture #community-benefit .benefit-item { padding: 0.18em 0.35em; } " +
+        "body.pdf-capture #community-benefit { margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.4em 0.6em !important; font-size: 0.58em; line-height: 1.25; overflow: visible !important; } " +
+        "body.pdf-capture #community-benefit .card-heading h2, body.pdf-capture #community-benefit .card-title { font-size: 0.88em; } " +
+        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.25rem; } " +
+        "body.pdf-capture #community-benefit .benefit-item { padding: 0.22em 0.4em; } " +
         "body.pdf-capture #community-benefit .benefit-item-icon { width: 22px; height: 22px; } " +
         "body.pdf-capture #community-benefit .benefit-item-icon svg { width: 11px; height: 11px; } " +
         "body.pdf-capture #community-benefit .benefit-item-text { font-size: 0.92em; } " +
-        "body.pdf-capture .community-benefit-hero { padding: 0.35rem 0.55rem !important; margin-top: 0.25rem !important; overflow: visible !important; min-height: auto !important; border-radius: 6px; } " +
-        "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.1rem !important; font-size: 0.85em; } " +
+        "body.pdf-capture .community-benefit-hero { padding: 0.45rem 0.65rem !important; margin-top: 0.3rem !important; overflow: visible !important; min-height: auto !important; border-radius: 6px; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.15rem !important; font-size: 0.85em; } " +
         "body.pdf-capture .community-benefit-hero .big-stat-value { margin: 0 !important; font-size: 1.2em !important; } " +
-        "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.1rem 0 0 !important; font-size: 0.85em; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.15rem 0 0 !important; font-size: 0.85em; } " +
         "body.pdf-capture #community-benefit { content-visibility: visible !important; contain: none !important; } " +
-        "body.pdf-capture #access { margin-top: 0.4rem; padding: 0.3em 0.5em !important; font-size: 0.65em; line-height: 1.22; } " +
-        "body.pdf-capture #access .card-heading h2, body.pdf-capture #access .card-title { font-size: 0.92em; } " +
+        "body.pdf-capture #access { margin-top: 0.4rem; padding: 0.35em 0.5em !important; font-size: 0.52em; line-height: 1.18; } " +
+        "body.pdf-capture #access .card-heading h2, body.pdf-capture #access .card-title { font-size: 0.9em; } " +
         "body.pdf-capture #access p { margin: 0.1em 0 0; } " +
-        "body.pdf-capture #pa-safeguards { margin-top: 0.4rem; padding: 0.3em 0.5em !important; font-size: 0.65em; line-height: 1.22; margin-bottom: 0.4rem; } " +
-        "body.pdf-capture #pa-safeguards .card-heading h2, body.pdf-capture #pa-safeguards .card-title { font-size: 0.92em; } " +
+        "body.pdf-capture #pa-safeguards { margin-top: 0.4rem; padding: 0.35em 0.5em !important; font-size: 0.52em; line-height: 1.18; margin-bottom: 0.4rem; } " +
+        "body.pdf-capture #pa-safeguards .card-heading h2, body.pdf-capture #pa-safeguards .card-title { font-size: 0.9em; } " +
         "body.pdf-capture #pa-safeguards ul { margin: 0.1em 0 0; padding-left: 0.85rem; } " +
-        "body.pdf-capture #pa-safeguards li { margin-bottom: 0.08em; } " +
+        "body.pdf-capture #pa-safeguards li { margin-bottom: 0.06em; } " +
         "body.pdf-capture .pa-impact-mode-section, body.pdf-capture .impact-simulator-section { display: none !important; } ";
       document.head.appendChild(pdfStyleEl);
     }

@@ -1,6 +1,8 @@
 /* ========== HAP 340B DASHBOARD — Design System ========== */
 /* Edit state-data.js to update dates and state law data. See DATA-UPDATE.md */
 
+html { scroll-behavior: smooth; }
+
 :root {
  /* Brand — HAP blue, Pennsylvania-focused */
  --primary: #0b67c2;
@@ -190,6 +192,7 @@ body { margin: 0; font-family: var(--font-sans); font-size: var(--text-base); li
 @media (min-width: 768px) { .kpi-value { font-size: clamp(2.5rem, 5vw, 3.25rem); } }
 .kpi-value.primary { color: var(--primary); }
 .kpi-card:has(.kpi-value.primary) { border-left: 3px solid var(--primary); }
+.kpi-number { font-size: var(--text-2xl); font-weight: 700; }
 .kpi-desc { font-size: var(--text-sm); color: var(--text-secondary); margin-top: var(--space-2); line-height: var(--leading-snug); max-width: 14em; }
 
 /* Key findings — narrative summary, executive emphasis */
@@ -198,6 +201,14 @@ body { margin: 0; font-family: var(--font-sans); font-size: var(--text-base); li
 .key-findings-list { margin: 0; padding-left: var(--space-6); display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-3); font-size: var(--text-base); color: var(--text-secondary); line-height: var(--leading-relaxed); font-weight: 500; }
 .key-findings-list li { margin: 0; }
 
+.exec-takeaway {
+  padding: var(--space-4);
+  background: var(--primary-muted);
+  border-radius: var(--radius);
+  font-size: var(--text-sm);
+  margin-bottom: var(--space-6);
+}
+
 /* Main grid — aligned content width with map */
 main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--content-max); margin-left: auto; margin-right: auto; }
 .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: var(--space-4); align-items: start; }
@@ -205,9 +216,10 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 /* Below-fold sections: defer layout/paint until near viewport (print overrides in @media print) */
 .kpi-strip, #access, #pa-safeguards, .pa-impact-mode-section, .impact-simulator-section, .methodology-wrap, .site-footer { content-visibility: auto; contain-intrinsic-size: auto 200px; }
 .card { border-radius: var(--radius-lg); background: var(--bg-card); border: 1px solid rgba(255,255,255,0.78); padding: var(--space-5); box-shadow: var(--shadow-xs); position: relative; align-self: start; transition: transform 0.24s var(--ease), box-shadow 0.24s var(--ease), border-color 0.24s var(--ease), background 0.24s var(--ease); backdrop-filter: blur(18px); }
-.card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); border-color: var(--border-hover); background: rgba(255,255,255,0.9); }
+.card:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--border-hover); background: rgba(255,255,255,0.9); }
 .card-heading { display: flex; align-items: flex-start; justify-content: flex-start; flex-direction: row; gap: var(--space-4); margin-bottom: var(--space-4); }
 .card-heading-text { flex: 1; min-width: 0; }
+.card-subtitle { font-size: var(--text-sm); color: var(--text-secondary); margin: var(--space-1) 0 0; font-weight: 500; }
 .card-title { font-size: var(--text-xs); font-weight: 600; letter-spacing: var(--tracking-wider); text-transform: uppercase; color: var(--accent); margin: 0 0 var(--space-1); }
 .card h2 { font-size: var(--text-xl); font-weight: 600; color: var(--text); margin: 0 0 var(--space-2); letter-spacing: var(--tracking-tight); line-height: var(--leading-tight); }
 .card p, .card li { font-size: var(--text-base); line-height: var(--leading-relaxed); color: var(--text-secondary); margin: 0 0 var(--space-2); }
@@ -364,25 +376,39 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 @media (max-width: 900px) { .pa-impact-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 500px) { .pa-impact-grid { grid-template-columns: 1fr; } .pa-impact-buttons { flex-direction: column; } }
 
-/* Policy Impact Simulator — executive WOW design */
-.impact-simulator-section { margin-top: var(--space-8); }
+/* Policy Impact Simulator — advocacy tool, stands out */
+.impact-simulator-section { margin-top: var(--space-10); }
 .impact-simulator-card {
   padding: var(--space-8);
   border: none;
-  background: linear-gradient(145deg, rgba(11,103,194,0.06) 0%, rgba(255,255,255,0.98) 20%, rgba(255,138,61,0.04) 100%);
-  box-shadow: var(--shadow), 0 0 0 1px rgba(11,103,194,0.06);
+  background: linear-gradient(160deg, rgba(11,103,194,0.08) 0%, rgba(255,255,255,0.99) 25%, rgba(255,138,61,0.05) 100%);
+  box-shadow: var(--shadow-lg), 0 0 0 1px rgba(11,103,194,0.1);
   border-radius: var(--radius-xl);
   position: relative;
   overflow: hidden;
+  transition: transform 0.3s var(--ease), box-shadow 0.3s var(--ease);
 }
+.impact-simulator-card:hover { transform: scale(1.01); box-shadow: var(--shadow-xl), 0 0 0 1px rgba(11,103,194,0.12); }
 .impact-simulator-card::before {
   content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
+  height: 5px;
   background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
+}
+.impact-simulator-badge {
+  display: inline-block;
+  font-size: var(--text-2xs);
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: var(--primary-muted);
+  padding: var(--space-1) var(--space-3);
+  border-radius: 999px;
+  margin-bottom: var(--space-3);
 }
 .impact-simulator-header {
   margin-bottom: var(--space-6);
@@ -391,27 +417,30 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 .impact-simulator-title {
   font-size: var(--text-xs);
   font-weight: 800;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   color: var(--primary);
   margin: 0 0 var(--space-2);
 }
 .impact-simulator-headline {
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-size: clamp(1.35rem, 3.5vw, 2rem);
   font-weight: 700;
   color: var(--text);
   margin: 0 0 var(--space-3);
   letter-spacing: var(--tracking-tight);
-  line-height: 1.2;
+  line-height: 1.25;
+  max-width: 20em;
+  margin-left: auto;
+  margin-right: auto;
 }
 .impact-simulator-sub {
   font-size: var(--text-base);
   color: var(--text-secondary);
   margin: 0;
   line-height: var(--leading-relaxed);
-  max-width: 36em;
-  margin-left: auto;
-  margin-right: auto;
+  width: 100%;
+  max-width: 100%;
+  text-align: center;
 }
 .impact-simulator-buttons {
   display: flex;
@@ -448,7 +477,27 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
   box-shadow: var(--shadow-sm), 0 4px 12px rgba(11,103,194,0.3);
   transform: translateY(-2px);
 }
+.impact-scenario-btn--rollback.active {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-hover) 100%);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: var(--shadow-sm), 0 4px 12px rgba(255,138,61,0.25);
+}
 .impact-scenario-btn:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.impact-takeaway {
+  font-size: var(--text-base);
+  font-weight: 600;
+  color: var(--text);
+  margin: 0 0 var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius);
+  text-align: center;
+  background: var(--neutral-50);
+  border: 1px solid var(--border);
+}
+.impact-simulator-results[data-scenario="expand"] .impact-takeaway { border-color: var(--primary-border); background: var(--primary-muted); color: var(--primary); }
+.impact-simulator-results[data-scenario="rollback"] .impact-result-card { border-left: 3px solid var(--accent); }
+.impact-simulator-results[data-scenario="rollback"] .impact-takeaway { border-color: rgba(255,138,61,0.25); background: rgba(255,138,61,0.06); color: var(--text); }
 .impact-results-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -533,6 +582,7 @@ main { padding: var(--space-3) var(--space-4) var(--space-6); max-width: var(--c
 @media (min-width: 700px) { .map-container { grid-template-columns: 1fr 260px; } }
 .map-hero-section .map-container { min-height: 420px; }
 .map-hero-section .map-container > * { min-width: 0; }
+.map-legend-context { margin: 0 0 var(--space-2); font-size: var(--text-sm); color: var(--text-secondary); }
 .map-legend { display: flex; flex-wrap: wrap; gap: var(--space-5); justify-content: center; padding: var(--space-4) 0; font-size: var(--text-sm); font-weight: 500; color: var(--text-secondary); }
 .map-legend-item { display: flex; align-items: center; gap: var(--space-3); }
 .map-legend-swatch { width: 18px; height: 18px; border-radius: 6px; flex-shrink: 0; border: 2px solid rgba(255,255,255,0.9); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }

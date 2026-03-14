@@ -28,26 +28,26 @@ var CONFIG = {
   printDefaultState: "PA",
   printDefaultStateReason: "HAP focal state for print.",
 
-  /* High-salience copy — CEO-scannable, benefit-first */
+  /* Plain-language copy for advocates and lay audiences */
   copy: {
-    overviewLead: "340B lets eligible hospitals buy drugs at discount to serve low-income patients. No cost to taxpayers; sustains medication access.",
-    hapPositionLead: "HAP supports protecting 340B integrity and contract pharmacy access so patients keep affordable medications close to home.",
-    hapAskLabel: "HAP asks lawmakers:",
-    hapAskText: "Protect 340B integrity and preserve contract pharmacy access.",
-    mapHeroSub: "Select a state for details. 72 PA hospitals participate in 340B.",
+    overviewLead: "340B empowers Pennsylvania hospitals to provide care and affordable medicines to all communities—at no extra cost to taxpayers.",
+    hapPositionLead: "HAP calls on lawmakers to defend 340B, ensuring hospital programs and patients remain protected.",
+    hapAskLabel: "Ask leaders:",
+    hapAskText: "Protect 340B so hospitals can continue serving Pennsylvanians.",
+    mapHeroSub: "Click a state to see whether it protects the discount—and what that means for hospitals and patients.",
     sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
-    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2025.",
-    printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.",
+    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2025.",
+    printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures from 340B Health and AHA (2024). Federal oversight from HRSA (2024).",
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
-      priorityLabel: "Policy priority",
-      priorityValue: "Protect 340B integrity and contract pharmacy access",
-      priorityNote: "Access, integrity, and patient continuity—one policy story.",
-      landscapeLabel: "National landscape",
-      landscapeNote: "Map and state panel show enacted vs. exposed states.",
-      trustLabel: "Why trust this view",
-      trustValue: "Legal status and sources visible in dashboard",
-      trustNote: "Verified: MultiState, ASHP, America's Essential Hospitals."
+      priorityLabel: "What we're fighting for",
+      priorityValue: "Protect the 340B discount and hospital–pharmacy partnerships",
+      priorityNote: "One clear story: access, fairness, and continuity for patients.",
+      landscapeLabel: "Where things stand",
+      landscapeNote: "Map and state panel show who’s protected and who’s not.",
+      trustLabel: "Why trust this",
+      trustValue: "Sources and dates are right here",
+      trustNote: "MultiState, ASHP, America's Essential Hospitals."
     }
   },
 

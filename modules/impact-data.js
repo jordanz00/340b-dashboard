@@ -2,15 +2,13 @@
  * HAP 340B Policy Impact Simulator — Scenario Data
  * ==================================================
  *
- * Defines the three policy scenarios and their estimated impact values.
- * Values are for executive storytelling and advocacy—not predictive modeling.
+ * Plain-language scenarios for advocates and lay audiences.
+ * Values are for storytelling—not predictive modeling.
  *
  * HOW TO MODIFY
  * - Edit scenario labels and copy in SCENARIOS
  * - Edit estimated values in SCENARIO_ESTIMATES
  * - Keep keys (EXPAND_PROTECTIONS, CURRENT_STATUS, REMOVE_PROTECTIONS) stable
- *
- * This file is read by impact-simulator.js and impact-ui.js.
  */
 
 (function (global) {
@@ -18,70 +16,64 @@
 
   var IMPACT_NS = global.HAP340B_IMPACT = global.HAP340B_IMPACT || {};
 
-  /* ==========================================
-     SCENARIO KEYS
-     ==========================================
-     Used by simulator logic. Do not rename without updating impact-simulator.js.
-     */
   IMPACT_NS.SCENARIO_EXPAND = "EXPAND_PROTECTIONS";
   IMPACT_NS.SCENARIO_CURRENT = "CURRENT_STATUS";
   IMPACT_NS.SCENARIO_REMOVE = "REMOVE_PROTECTIONS";
 
-  /* ==========================================
-     SCENARIO DEFINITIONS
-     ==========================================
-     Labels and narrative copy for each policy scenario.
-     */
   IMPACT_NS.SCENARIOS = {
     EXPAND_PROTECTIONS: {
       id: "EXPAND_PROTECTIONS",
-      label: "Expand protections nationwide",
-      description: "All states enact contract pharmacy protection.",
-      narrative: "Patient access up. Predictable pharmacy networks. Programs grow.",
+      label: "Protect the discount everywhere",
+      description: "Every state protects hospitals’ ability to use the 340B discount with community pharmacies.",
+      narrative: "More patients get affordable meds. Hospitals and pharmacies work together in every state. Programs grow.",
+      takeaway: "Maximum stability for hospitals and patients.",
     },
     CURRENT_STATUS: {
       id: "CURRENT_STATUS",
-      label: "Current status",
-      description: "Today's mix of protected and unprotected states.",
-      narrative: "Some benefit; many exposed. Patchwork of state laws.",
+      label: "Keep today’s mix",
+      description: "Some states protect the discount; many don’t.",
+      narrative: "Patchwork: some hospitals and patients benefit; many stay exposed.",
+      takeaway: "Programs continue with moderate risk.",
     },
     REMOVE_PROTECTIONS: {
       id: "REMOVE_PROTECTIONS",
-      label: "Remove existing protections",
-      description: "Rollback enacted state protections.",
-      narrative: "Access down. Programs at risk. Patient continuity threatened.",
+      label: "Weaken or remove protections",
+      description: "States roll back laws that protect the discount.",
+      narrative: "Fewer patients get the benefit. Hospital programs at risk. Harder to serve our communities.",
+      takeaway: "Access and hospital programs at high risk.",
     },
   };
 
-  /* ==========================================
-     ESTIMATED IMPACT VALUES
-     ==========================================
-     Used for storytelling. Not predictive—align with advocacy messaging.
-     */
   IMPACT_NS.SCENARIO_ESTIMATES = {
     EXPAND_PROTECTIONS: {
       pharmaciesImpacted: 12000,
+      pharmaciesDisplayValue: null,
       pharmaciesLabel: "pharmacies",
-      patientAccessImpact: "High",
-      patientAccessNote: "Nationwide contract pharmacy access",
+      pharmaciesNote: "Hospitals could partner with this many pharmacies to get discount meds to patients.",
+      patientAccessImpact: "Strong",
+      patientAccessNote: "More patients can get affordable medications close to home.",
       hospitalFundingImpact: "Stable",
-      hospitalFundingNote: "Predictable networks; programs expand",
+      hospitalFundingNote: "Predictable rules; programs can grow.",
     },
     CURRENT_STATUS: {
       pharmaciesImpacted: 4500,
+      pharmaciesDisplayValue: null,
       pharmaciesLabel: "pharmacies",
+      pharmaciesNote: "Roughly this many pharmacy partnerships today; many states lack protection.",
       patientAccessImpact: "Mixed",
-      patientAccessNote: "~25 states protected; many exposed",
-      hospitalFundingImpact: "Variable",
-      hospitalFundingNote: "Protected states have steadier revenue",
+      patientAccessNote: "Depends on the state—some protected, many not.",
+      hospitalFundingImpact: "Uneven",
+      hospitalFundingNote: "Protected states are on firmer ground.",
     },
     REMOVE_PROTECTIONS: {
       pharmaciesImpacted: 0,
-      pharmaciesLabel: "pharmacies",
-      patientAccessImpact: "Low",
-      patientAccessNote: "Access would shrink significantly",
+      pharmaciesDisplayValue: "At risk",
+      pharmaciesLabel: "partnerships",
+      pharmaciesNote: "Existing hospital–pharmacy partnerships would be threatened.",
+      patientAccessImpact: "Weak",
+      patientAccessNote: "Fewer patients would get the discount; access shrinks.",
       hospitalFundingImpact: "At risk",
-      hospitalFundingNote: "Program sustainability threatened",
+      hospitalFundingNote: "Programs that serve our communities would be at risk.",
     },
   };
 

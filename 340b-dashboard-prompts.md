@@ -2,7 +2,7 @@
 
 Use these prompts with Cursor or any AI assistant to systematically elevate the HAP 340B dashboard. Each prompt is self-contained and references the project context (340b.html, 340b.css, 340b.js).
 
-> **Note:** For structured improvement waves (print view, page breaks, accessibility, layout), use [ULTRA-prompts.md](ULTRA-prompts.md) and the [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md) workflow. This file remains the master prompt library.
+> **Note:** For structured improvement waves (print view, page breaks, accessibility, layout), use [ULTRA-prompts.md](ULTRA-prompts.md) and the [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md) workflow. For the 50-improvement agent batches (A–E), use [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md). This file remains the master prompt library.
 
 ---
 
@@ -232,6 +232,78 @@ Use these prompts with Cursor or any AI assistant to systematically elevate the 
 2. **Apply prompts in order** within each category (Design → Functionality → Interactivity → etc.) for coherent improvements.
 3. **Re-run M1–M4** periodically to catch regressions and find new polish opportunities.
 4. **Combine prompts** when it makes sense (e.g., D2 + I1 for card polish and micro-interactions).
+5. **50 Improvements:** Run via [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) in agent mode for batch execution (batches A–E).
+
+---
+
+## 50 Improvements — Agent Batches (Run via AGENT-TEMPLATE)
+
+Run via [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) in agent mode. Each batch has 10 prompts. Execution order: A → B → C → D → E.
+
+### Agent A: SEO & Discoverability
+
+1. Add canonical URL in 340b.html head.
+2. Fix og:image dimensions (1200×630 or correct meta).
+3. Add JSON-LD structured data (WebPage/Organization).
+4. Add og:locale for social sharing.
+5. Add robots: noindex, nofollow to print.html.
+6. Add breadcrumb schema.
+7. Add FAQ schema if methodology has Q&A.
+8. Extend theme-color for mobile.
+9. Add apple-touch-icon and favicon sizes (192×192, 512×512).
+10. Remove or hide meta generator in production.
+
+### Agent B: Performance & Security
+
+1. Add defer to D3/TopoJSON/states scripts.
+2. Add preload for LCP image (header logo).
+3. Reserve map space (aspect-ratio/min-height) to avoid CLS.
+4. Add SRI for html2canvas and jsPDF.
+5. Prefer local vendor copies.
+6. Add font-display: swap for custom fonts.
+7. Add width/height to all images.
+8. Wrap print flow localStorage in try/catch.
+9. Sanitize or use DOMParser for print.html map SVG.
+10. Restrict CSP script-src if using local scripts.
+
+### Agent C: UX & Loading States
+
+1. Add loading state for Print/PDF ("Preparing…").
+2. Verify Download PDF loading feedback.
+3. Verify Share loading feedback.
+4. Add Export SVG loading feedback.
+5. Add viewport-fit=cover to print.html.
+6. Verify utility toolbar wrap at 320px.
+7. Validate state chips at 320px.
+8. Add intermediate breakpoint for executive strip.
+9. Validate map at 320px.
+10. Optional count-up skeleton.
+
+### Agent D: Accessibility & Robustness
+
+1. Add window.onerror handler.
+2. Add window.onunhandledrejection handler.
+3. Ensure Share .catch() always runs.
+4. Add aria-busy on map container.
+5. Verify skip-link focus visibility.
+6. Add link underline on focus.
+7. Disable hover tooltips on touch devices.
+8. Ensure navigator.share fallback is robust.
+9. Add PDF capture timeout.
+10. Dispose observers on teardown.
+
+### Agent E: Analytics & Data
+
+1. Add data-event on utility buttons.
+2. Add window.HAP340B?.track stub.
+3. Fire events for state, filter, share, print, export.
+4. Create central event catalog.
+5. Document payload schema.
+6. Add i18n strings object in state-data.js.
+7. Use data-i18n/config for copy.
+8. Add state validation (cp, pbm, y, notes).
+9. Document network vs offline in NOVICE-MAINTAINER.
+10. Use if (window.HAP340B?.analytics) before firing.
 
 ---
 

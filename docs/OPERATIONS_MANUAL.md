@@ -2,6 +2,12 @@
 
 Step-by-step instructions for maintainers. For architecture and data flow, see [README.md](../README.md).
 
+**⚠ DO NOT MODIFY**
+- `print.html`
+- `downloadPdfAsImage()` in 340b.js
+- `preparePrintSnapshot()`
+- `openPrintView()`
+
 ---
 
 ## 0. Project structure (CEO-ready layers)

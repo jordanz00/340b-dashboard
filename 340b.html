@@ -62,24 +62,24 @@ var CONFIG = {
   printDefaultState: "PA",
   printDefaultStateReason: "HAP focal state for print.",
     copy: {
-    overviewLead: "340B lets eligible hospitals buy drugs at discount to serve low-income patients. No cost to taxpayers; sustains medication access.",
-    hapPositionLead: "HAP supports protecting 340B integrity and contract pharmacy access so patients keep affordable medications close to home.",
-    hapAskLabel: "HAP asks lawmakers:",
-    hapAskText: "Protect 340B integrity and preserve contract pharmacy access.",
-    mapHeroSub: "Select a state for details. 72 PA hospitals participate in 340B.",
+    overviewLead: "340B empowers Pennsylvania hospitals to provide care and affordable medicines to all communities—at no extra cost to taxpayers.",
+    hapPositionLead: "HAP calls on lawmakers to defend 340B, ensuring hospital programs and patients remain protected.",
+    hapAskLabel: "Ask leaders:",
+    hapAskText: "Protect 340B so hospitals can continue serving Pennsylvanians.",
+    mapHeroSub: "Click a state to see whether it protects the discount—and what that means for hospitals and patients.",
     sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
-    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2025.",
-    printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.",
+    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2025.",
+    printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures from 340B Health and AHA (2024). Federal oversight from HRSA (2024).",
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
-      priorityLabel: "Policy priority",
-      priorityValue: "Protect 340B integrity and contract pharmacy access",
-      priorityNote: "Access, integrity, and patient continuity—one policy story.",
-      landscapeLabel: "National landscape",
-      landscapeNote: "Map and state panel show enacted vs. exposed states.",
-      trustLabel: "Why trust this view",
-      trustValue: "Legal status and sources visible in dashboard",
-      trustNote: "Verified: MultiState, ASHP, America's Essential Hospitals."
+      priorityLabel: "What we're fighting for",
+      priorityValue: "Protect the 340B discount and hospital–pharmacy partnerships",
+      priorityNote: "One clear story: access, fairness, and continuity for patients.",
+      landscapeLabel: "Where things stand",
+      landscapeNote: "Map and state panel show who's protected and who's not.",
+      trustLabel: "Why trust this",
+      trustValue: "Sources and dates are right here",
+      trustNote: "MultiState, ASHP, America's Essential Hospitals."
     }
   },
   mapAspectRatio: 0.55,
@@ -247,14 +247,15 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
             <div class="card-heading-text">
               <p class="card-title">Overview</p>
               <h2>What is 340B?</h2>
+              <p class="card-subtitle">A federal discount drug program that helps hospitals serve more patients.</p>
             </div>
             <div class="card-icon card-icon--pill" aria-hidden="true"><svg viewBox="0 0 48 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="8"/><rect x="26" y="4" width="20" height="16" rx="8"/></svg></div>
           </div>
-          <p id="overview-lead">The 340B Drug Pricing Program allows eligible hospitals and clinics to purchase outpatient drugs at discounted prices to serve low-income and underserved populations. It operates at <strong>no cost to taxpayers</strong> and helps safety-net providers sustain medication access.</p>
+          <p id="overview-lead">340B empowers Pennsylvania hospitals to provide care and affordable medicines to all communities—at no extra cost to taxpayers.</p>
           <div class="stat-block">
             <div class="stat">
               <p class="stat-label">Market share</p>
-              <p class="stat-value count-up" data-count-up="7" data-suffix="%">0</p>
+              <p class="stat-value count-up" data-count-up="7" data-suffix="%">7%</p>
               <p class="stat-desc">340B purchases</p>
             </div>
           </div>
@@ -263,13 +264,13 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <div class="card-heading">
             <div class="card-heading-text">
               <p class="card-title">HAP Position</p>
-              <h2>Protect 340B integrity and contract pharmacy access.</h2>
+              <h2>Protect the 340B discount and hospital–pharmacy partnerships.</h2>
             </div>
             <div class="card-icon card-icon--shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           </div>
-          <p id="hap-position-lead">HAP supports policies that protect 340B program integrity and preserve hospitals' ability to use contract pharmacies to ensure patient access to affordable medications.</p>
+          <p id="hap-position-lead">HAP calls on lawmakers to defend 340B, ensuring hospital programs and patients remain protected.</p>
           <div class="hap-ask">
-            <strong id="hap-ask-label">HAP asks lawmakers:</strong> <span id="hap-ask-text">Protect 340B integrity and preserve contract pharmacy access for patient medications.</span>
+            <strong id="hap-ask-label">Ask leaders:</strong> <span id="hap-ask-text">Protect 340B so hospitals can continue serving Pennsylvanians.</span>
           </div>
         </article>
       </div>
@@ -277,30 +278,34 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 
     <!-- Key findings — narrative that answers: which states, how much benefit, who participates -->
     <section class="key-findings-strip span-12 scroll-reveal" aria-label="Key findings">
-      <h3 class="key-findings-title">Key findings</h3>
+      <h3 class="key-findings-title">The numbers that matter</h3>
       <ul class="key-findings-list">
-        <li><span id="key-finding-protection-count">0</span> states have enacted contract pharmacy protection</li>
+        <li><span id="key-finding-protection-count">21</span> states protect the discount; <strong>29</strong> don’t yet</li>
         <li><strong>$7.95B</strong> in community benefits from 340B hospitals (2024)</li>
-        <li><strong>72</strong> Pennsylvania hospitals participate in 340B</li>
-        <li><strong>7%</strong> of U.S. outpatient drug market — 340B purchases</li>
+        <li><strong>72</strong> Pennsylvania hospitals use 340B to serve patients</li>
+        <li><strong>7%</strong> of U.S. outpatient drug spending uses the 340B discount</li>
       </ul>
+    </section>
+
+    <section class="exec-takeaway span-12 scroll-reveal" aria-label="Key takeaway">
+      <strong>Bottom line:</strong> What happens to 340B in the states directly affects whether hospitals can keep getting discount meds to patients—including 72 hospitals in Pennsylvania.
     </section>
 
     <section class="executive-proof-strip span-12 scroll-reveal" aria-label="Executive scan">
       <article class="executive-proof-card" title="HAP's core advocacy focus for 340B">
-        <p class="executive-proof-label" id="executive-priority-label">Policy priority</p>
-        <h3 class="executive-proof-value" id="executive-priority-value">Protect 340B integrity and contract pharmacy access</h3>
-        <p class="executive-proof-note" id="executive-priority-note">HAP's argument is strongest when access, integrity, and patient medication continuity stay linked together.</p>
+        <p class="executive-proof-label" id="executive-priority-label">What we're fighting for</p>
+        <h3 class="executive-proof-value" id="executive-priority-value">Protect the 340B discount and hospital–pharmacy partnerships</h3>
+        <p class="executive-proof-note" id="executive-priority-note">One clear story: access, fairness, and continuity for patients.</p>
       </article>
       <article class="executive-proof-card executive-proof-card--accent" title="State-by-state protection status across the U.S.">
-        <p class="executive-proof-label" id="executive-landscape-label">National landscape</p>
-        <h3 class="executive-proof-value" id="executive-landscape-value">Protection remains uneven across the country</h3>
-        <p class="executive-proof-note" id="executive-landscape-note">Use the state map and selected-state panel to compare enacted protections against states where hospitals remain exposed.</p>
+        <p class="executive-proof-label" id="executive-landscape-label">Where things stand</p>
+        <h3 class="executive-proof-value" id="executive-landscape-value">21 states have enacted contract pharmacy protection; 29 remain without enacted protection</h3>
+        <p class="executive-proof-note" id="executive-landscape-note">Map and state panel show who’s protected and who’s not.</p>
       </article>
       <article class="executive-proof-card" title="Data sources and verification order">
-        <p class="executive-proof-label" id="executive-trust-label">Why trust this view</p>
-        <h3 class="executive-proof-value" id="executive-trust-value">Legal status and recency are surfaced directly in the dashboard</h3>
-        <p class="executive-proof-note" id="executive-trust-note">Legislative status is verified in sequence through MultiState, ASHP, and America's Essential Hospitals.</p>
+        <p class="executive-proof-label" id="executive-trust-label">Why trust this</p>
+        <h3 class="executive-proof-value" id="executive-trust-value">Sources and dates are right here</h3>
+        <p class="executive-proof-note" id="executive-trust-note">MultiState, ASHP, America's Essential Hospitals.</p>
       </article>
     </section>
 
@@ -308,14 +313,14 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <section id="state-laws" class="map-hero-section span-12 scroll-reveal">
       <div class="map-hero-inner">
         <article class="map-hero-card">
-          <p class="map-hero-title">State-by-state analysis</p>
-          <h2 class="map-hero-headline">340B contract pharmacy protection across the U.S.</h2>
-          <p class="map-hero-sub" id="map-hero-sub">Select a state for details. 72 Pennsylvania hospitals participate in 340B.</p>
+          <p class="map-hero-title">State-by-state</p>
+          <h2 class="map-hero-headline">Who protects the 340B discount—and who doesn’t</h2>
+          <p class="map-hero-sub" id="map-hero-sub">Click a state to see whether it protects the discount—and what that means for hospitals and patients.</p>
       <div class="selection-summary" id="selection-summary">
         <div class="selection-summary-copy">
-          <p class="selection-summary-label">State selection</p>
+          <p class="selection-summary-label">State</p>
           <p class="selection-summary-title" id="selection-summary-title">No state selected yet</p>
-          <p class="selection-summary-text" id="selection-summary-text">Choose a state from the map or list to compare enacted protections and no-protection states.</p>
+          <p class="selection-summary-text" id="selection-summary-text">Click a state on the map or in the list below to see the details.</p>
         </div>
         <button type="button" class="selection-clear" id="selection-clear" hidden aria-label="Clear selected state" aria-describedby="selection-summary-title">Clear selection</button>
       </div>
@@ -323,6 +328,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <div class="us-map-wrap map-wrap" id="us-map-wrap" aria-busy="true">
           <div class="map-loading-skeleton" id="map-loading-skeleton"><span class="map-loading-text">Loading map...</span></div>
           <div id="us-map" role="img" aria-label="Interactive US map showing states with and without 340B contract pharmacy protection. Blue states have protection, gray states do not. Click or select a state for details." aria-describedby="map-hero-sub map-keyboard-hint"></div>
+          <p class="map-legend-context">Blue = state protects the discount. Gray = no state law protecting it yet.</p>
           <div class="map-legend">
             <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection</span>
             <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
@@ -342,11 +348,11 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
         <p id="state-filter-status" class="state-filter-status" aria-live="polite"></p>
         <div class="state-list-block protection" id="state-list-block-protection" role="region" aria-label="States with 340B contract pharmacy protection. Click a state chip to view details.">
-          <h3>States with protection (<span id="protection-count">0</span>)</h3>
+          <h3>States with protection (<span id="protection-count">21</span>)</h3>
           <div class="state-list-grid" id="states-with-list" role="list"></div>
         </div>
         <div class="state-list-block no-protection" id="state-list-block-no-protection" role="region" aria-label="States with no 340B protection law. Click a state chip to view details.">
-          <h3>No protection law (<span id="no-protection-count">0</span>)</h3>
+          <h3>No protection law (<span id="no-protection-count">29</span>)</h3>
           <div class="state-list-grid" id="states-without-list" role="list"></div>
         </div>
         <p id="state-no-results" class="state-no-results" aria-live="polite" hidden>No states match the current filter.</p>
@@ -359,12 +365,12 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <div class="print-state-summary-grid">
           <article class="print-state-summary-card">
             <p class="print-state-summary-kicker">States with protection</p>
-            <p class="print-state-summary-count"><span id="print-protection-count">0</span> states</p>
+            <p class="print-state-summary-count"><span id="print-protection-count">21</span> states</p>
             <p class="print-state-summary-list" id="print-states-with-list"></p>
           </article>
           <article class="print-state-summary-card">
             <p class="print-state-summary-kicker">No protection law</p>
-            <p class="print-state-summary-count"><span id="print-no-protection-count">0</span> states</p>
+            <p class="print-state-summary-count"><span id="print-no-protection-count">29</span> states</p>
             <p class="print-state-summary-list" id="print-states-without-list"></p>
           </article>
         </div>
@@ -389,10 +395,10 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <summary class="methodology-toggle" id="methodology-toggle" aria-label="Expand about this data section">About this data</summary>
         <div class="methodology-content" id="methodology-content">
           <p class="methodology-sources-header"><strong>Data sources:</strong> MultiState, ASHP, America's Essential Hospitals (state law); 340B Health, AHA (community benefit); HRSA (oversight).</p>
-          <p id="methodology-state-law-copy"><strong>State law:</strong> MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2025.</p>
+          <p id="methodology-state-law-copy">State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2025.</p>
           <p><strong>Community benefit</strong> figures are from 340B Health and AHA survey data (2024).</p>
           <p><strong>HRSA oversight</strong> figures reflect federal audit activity in 2024.</p>
-          <p><strong>Recommended verification order:</strong> <span id="verification-order-copy">check MultiState first for current legislative status, use ASHP as the pharmacy-policy cross-check, and use America's Essential Hospitals as the final advocacy-reference confirmation.</span></p>
+          <p><strong>Recommended verification order:</strong> <span id="verification-order-copy">MultiState, then ASHP, then America's Essential Hospitals.</span></p>
           <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2025</span></p>
           <ul class="source-links">
             <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a> - current legislative status</li>
@@ -405,7 +411,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
            after the interactive disclosure is hidden in print. -->
       <section class="print-sources print-only" aria-hidden="true">
         <h3>About this data</h3>
-        <p id="print-source-summary">State law data is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.</p>
+        <p id="print-source-summary">State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.</p>
         <p><strong>Verification order:</strong> <span id="print-verification-order-copy">MultiState, then ASHP, then America's Essential Hospitals.</span></p>
         <p><strong>Last updated:</strong> <span id="print-methodology-last-updated">March 2025</span></p>
       </section>
@@ -417,17 +423,17 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <section class="kpi-strip span-12 scroll-reveal" aria-label="Key metrics">
       <div class="kpi-card">
         <p class="kpi-label">U.S. Drug Market</p>
-        <p class="kpi-value count-up" data-count-up="7" data-suffix="%">0</p>
+        <p class="kpi-value count-up" data-count-up="7" data-suffix="%">7%</p>
         <p class="kpi-desc">340B share of U.S. outpatient drug market</p>
       </div>
       <div class="kpi-card">
         <p class="kpi-label">Community Benefit</p>
-        <p class="kpi-value">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">0</span></p>
+        <p class="kpi-value">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">7.95B</span></p>
         <p class="kpi-desc">340B community benefits (2024)</p>
       </div>
       <div class="kpi-card">
         <p class="kpi-label">Oversight</p>
-        <p class="kpi-value primary count-up" data-count-up="200" data-suffix="+">0</p>
+        <p class="kpi-value primary count-up" data-count-up="200" data-suffix="+">200+</p>
         <p class="kpi-desc">HRSA audits in 2024</p>
       </div>
       <div class="kpi-card">
@@ -453,8 +459,8 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <p>340B supports safety-net providers in both rural and urban markets, including:</p>
         <ul>
           <li>Children's and cancer hospitals</li>
-          <li>CAHs and DSHs</li>
-          <li>FQHCs</li>
+          <li>Rural critical-access hospitals and safety-net hospitals</li>
+          <li>Federally qualified health centers</li>
         </ul>
       </article>
       <article id="oversight" class="card card--compact">
@@ -469,16 +475,16 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <div class="stat-block">
           <div class="stat">
             <p class="stat-label">Hospitals</p>
-            <p class="stat-value count-up" data-count-up="200" data-suffix="+">0</p>
+            <p class="stat-value count-up" data-count-up="200" data-suffix="+">200+</p>
             <p class="stat-desc">Audited</p>
           </div>
           <div class="stat">
             <p class="stat-label">Manufacturers</p>
-            <p class="stat-value count-up" data-count-up="6" data-suffix="%">0</p>
+            <p class="stat-value count-up" data-count-up="6" data-suffix="%">6%</p>
             <p class="stat-desc">Audited</p>
           </div>
         </div>
-        <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight between covered entities and manufacturers</strong>, not a one-sided accountability standard.</p>
+        <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight between hospitals and manufacturers</strong>, not a one-sided accountability standard.</p>
       </article>
       <article id="pa-impact" class="card card--compact">
         <div class="card-heading">
@@ -492,15 +498,15 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <div class="stat-block">
           <div class="stat">
             <p class="stat-label">Rural</p>
-            <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+            <p class="stat-value count-up" data-count-up="49" data-suffix="%">49%</p>
           </div>
           <div class="stat">
-            <p class="stat-label">Negative margin</p>
-            <p class="stat-value count-up" data-count-up="53" data-suffix="%">0</p>
+            <p class="stat-label">Operating at a loss</p>
+            <p class="stat-value count-up" data-count-up="53" data-suffix="%">53%</p>
           </div>
           <div class="stat">
-            <p class="stat-label">L&amp;D</p>
-            <p class="stat-value count-up" data-count-up="49" data-suffix="%">0</p>
+            <p class="stat-label">Labor &amp; delivery</p>
+            <p class="stat-value count-up" data-count-up="49" data-suffix="%">49%</p>
           </div>
         </div>
       </article>
@@ -536,7 +542,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
       <div class="community-benefit-hero">
         <p class="big-stat-label">Total community benefits (2024)</p>
-        <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">0</span>B</p>
+        <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">7.95</span>B</p>
         <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
       </div>
     </article>
@@ -567,7 +573,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
         <div class="card-icon card-icon--rx" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 12h14"/><path d="m3 8 3-3 3 3"/><path d="m21 8-3-3-3 3"/><path d="m3 16 3 3 3-3"/><path d="m21 16-3 3-3-3"/></svg></div>
       </div>
-      <p>Federal guidance permits 340B dispensing through in-house or contract pharmacies. Manufacturer-imposed policies can <strong>restrict hospitals to a single contract pharmacy</strong>, which puts rural, specialty, and underserved patient access at risk when hospitals depend on distributed pharmacy networks.</p>
+      <p>Federal rules allow hospitals to use in-house or community pharmacies for 340B. Some drugmakers limit hospitals to <strong>one contract pharmacy</strong>, which hurts rural and underserved patients when hospitals rely on local pharmacy networks.</p>
     </article>
 
     <!-- PA Safeguards -->
@@ -580,9 +586,9 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <div class="card-icon card-icon--check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-2.09 2.09"/><path d="M22 4 12 14.01l-3-3"/></svg></div>
       </div>
       <ul>
-        <li>Manufacturers are not required to provide both a 340B discount and a Medicaid rebate for the same drug.</li>
-        <li>DHS administers the <strong>340B Drug Exclusion List</strong> and invoices manufacturers for Medicaid rebates, so covered entities may not dispense 340B-priced drugs on this list.</li>
-        <li>Contract pharmacies dispense non-340B drugs to Medicare Advantage beneficiaries, and DHS invoices manufacturers for rebates.</li>
+        <li>Manufacturers are not required to give both a 340B discount and a Medicaid rebate for the same drug.</li>
+        <li>State DHS (Department of Human Services) runs the <strong>340B Drug Exclusion List</strong> and bills manufacturers for Medicaid rebates, so hospitals may not use 340B-priced drugs on this list.</li>
+        <li>Contract pharmacies give non-340B drugs to Medicare Advantage patients, and DHS bills manufacturers for rebates.</li>
       </ul>
     </article>
 
