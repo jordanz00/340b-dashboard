@@ -1753,9 +1753,14 @@
         "body.pdf-capture .intro-section .card h2 { font-size: 1.05rem; line-height: 1.25; } " +
         "body.pdf-capture .intro-section .card p, body.pdf-capture .intro-section .stat-block { font-size: 0.82rem; } " +
         "body.pdf-capture .exec-takeaway { margin: 0.5rem 0; padding: 0.55rem 0.85rem; font-size: 0.82rem; line-height: 1.35; } " +
-        "body.pdf-capture .key-findings-strip { margin: 0.6rem 0 0.5rem; padding: 0.6rem 1rem; } " +
-        "body.pdf-capture .key-findings-strip h3 { font-size: 0.9rem; } " +
-        "body.pdf-capture .key-findings-strip ul { font-size: 0.82rem; line-height: 1.4; } " +
+        "body.pdf-capture .key-finding-next-line { display: block !important; margin-top: 0.2rem !important; } " +
+        "body.pdf-capture .key-findings-strip { margin: 0.6rem 0 0.5rem; padding: 0.85rem 1.15rem; } " +
+        "body.pdf-capture .key-findings-strip .key-findings-heading { margin-bottom: 0.5rem; } " +
+        "body.pdf-capture .key-findings-strip .key-findings-icon { width: 32px !important; height: 32px !important; } " +
+        "body.pdf-capture .key-findings-strip .key-findings-icon svg { width: 28px !important; height: 28px !important; } " +
+        "body.pdf-capture .key-findings-strip .key-findings-title { font-size: 1.05rem !important; margin: 0; } " +
+        "body.pdf-capture .key-findings-strip ul { font-size: 0.95rem !important; line-height: 1.45; gap: 0.4rem; } " +
+        "body.pdf-capture .key-findings-strip li { margin-bottom: 0.1rem; } " +
         "body.pdf-capture .executive-proof-strip { margin: 0.55rem 0; padding: 0.5rem 0; } " +
         "body.pdf-capture .executive-proof-strip .executive-proof-card { padding: 0.55rem 0.75rem; margin-bottom: 0.5rem; } " +
         "body.pdf-capture .executive-proof-strip h3 { font-size: 0.9rem; line-height: 1.3; } " +

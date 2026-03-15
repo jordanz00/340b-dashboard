@@ -278,9 +278,12 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 
     <!-- Key findings — narrative that answers: which states, how much benefit, who participates -->
     <section class="key-findings-strip span-12 scroll-reveal" aria-label="Key findings">
-      <h3 class="key-findings-title">The numbers that matter</h3>
+      <div class="key-findings-heading">
+        <span class="key-findings-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
+        <h3 class="key-findings-title">The numbers that matter</h3>
+      </div>
       <ul class="key-findings-list">
-        <li><span id="key-finding-protection-count">21</span> states protect the discount; <strong>29</strong> don’t yet</li>
+        <li><span id="key-finding-protection-count">21</span> states protect the discount;<span class="key-finding-next-line"> <strong>29</strong> don't yet</span></li>
         <li><strong>$7.95B</strong> in community benefits from 340B hospitals (2024)</li>
         <li><strong>72</strong> Pennsylvania hospitals use 340B to serve patients</li>
         <li><strong>7%</strong> of U.S. outpatient drug spending uses the 340B discount</li>
