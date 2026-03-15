@@ -1765,39 +1765,40 @@
         "body.pdf-capture .us-map-wrap.visible, body.pdf-capture .us-map-wrap.map-visible { opacity: 1 !important; } " +
         "body.pdf-capture #state-lists-wrap { display: none !important; } " +
         "body.pdf-capture .data-freshness { display: none !important; } " +
-        "body.pdf-capture .kpi-strip { margin-top: 0.6rem; margin-bottom: 0.6rem; padding: 0.5rem 0.5rem; font-size: 0.65em; } " +
+        "body.pdf-capture .kpi-strip { margin-top: 1.25rem; margin-bottom: 1rem; padding: 0.6rem 0.5rem; font-size: 0.65em; } " +
         "body.pdf-capture .kpi-strip .kpi-card { padding: 0.4em 0.5em; } " +
-        "body.pdf-capture .supporting-section { margin-top: 0.55rem; margin-bottom: 0.55rem; font-size: 0.65em; line-height: 1.25; padding: 0 0.15rem; } " +
-        "body.pdf-capture .supporting-section .section-subhead { font-size: 0.92em; margin-bottom: 0.3rem; padding: 0.15rem 0; } " +
-        "body.pdf-capture .supporting-cards-row { gap: 0.5rem; } " +
-        "body.pdf-capture .supporting-section .card--compact { padding: 0.35em 0.5em !important; margin-bottom: 0.3rem; } " +
-        "body.pdf-capture .supporting-section .card-heading h2, body.pdf-capture .supporting-section .card-title { font-size: 0.92em; } " +
-        "body.pdf-capture .supporting-section p { margin: 0.15em 0; } " +
-        "body.pdf-capture .supporting-section ul { margin: 0.15em 0; padding-left: 0.85rem; } " +
-        "body.pdf-capture .supporting-section li { margin-bottom: 0.1em; } " +
-        "body.pdf-capture .supporting-section .stat-block { margin-top: 0.2em; gap: 0.25rem; } " +
-        "body.pdf-capture .supporting-section .stat { padding: 0.2em 0.3em; } " +
-        "body.pdf-capture .supporting-section .stat-label, body.pdf-capture .supporting-section .stat-desc { font-size: 0.88em; } " +
-        "body.pdf-capture .supporting-section .stat-value { font-size: 0.92em; } " +
-        "body.pdf-capture #community-benefit { margin-top: 0.5rem; margin-bottom: 0.5rem; padding: 0.4em 0.6em !important; font-size: 0.58em; line-height: 1.25; overflow: visible !important; } " +
-        "body.pdf-capture #community-benefit .card-heading h2, body.pdf-capture #community-benefit .card-title { font-size: 0.88em; } " +
-        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.25rem; } " +
-        "body.pdf-capture #community-benefit .benefit-item { padding: 0.22em 0.4em; } " +
-        "body.pdf-capture #community-benefit .benefit-item-icon { width: 22px; height: 22px; } " +
-        "body.pdf-capture #community-benefit .benefit-item-icon svg { width: 11px; height: 11px; } " +
-        "body.pdf-capture #community-benefit .benefit-item-text { font-size: 0.92em; } " +
-        "body.pdf-capture .community-benefit-hero { padding: 0.45rem 0.65rem !important; margin-top: 0.3rem !important; overflow: visible !important; min-height: auto !important; border-radius: 6px; } " +
-        "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.15rem !important; font-size: 0.85em; } " +
-        "body.pdf-capture .community-benefit-hero .big-stat-value { margin: 0 !important; font-size: 1.2em !important; } " +
-        "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.15rem 0 0 !important; font-size: 0.85em; } " +
+        "body.pdf-capture .supporting-section { margin-top: 1.25rem; margin-bottom: 1rem; font-size: 0.9em; line-height: 1.3; padding: 0 0.15rem; } " +
+        "body.pdf-capture .supporting-section .section-subhead { font-size: 1.05rem !important; font-weight: 700 !important; margin-bottom: 0.6rem !important; padding: 0.2rem 0 !important; letter-spacing: 0.04em; text-transform: uppercase; } " +
+        "body.pdf-capture .supporting-cards-row { gap: 0.6rem; } " +
+        "body.pdf-capture .supporting-section .card--compact { padding: 0.5em 0.65em !important; margin-bottom: 0.5rem; } " +
+        "body.pdf-capture .supporting-section .card-heading h2 { font-size: 1rem !important; margin: 0 0 0.25rem !important; } " +
+        "body.pdf-capture .supporting-section .card-title { font-size: 0.95rem !important; font-weight: 600; } " +
+        "body.pdf-capture .supporting-section .card-icon { width: 50px !important; height: 50px !important; } " +
+        "body.pdf-capture .supporting-section .card-icon svg { width: 29px !important; height: 29px !important; } " +
+        "body.pdf-capture .supporting-section p { margin: 0.2em 0; font-size: 0.9rem; } " +
+        "body.pdf-capture .supporting-section ul { margin: 0.2em 0; padding-left: 1rem; } " +
+        "body.pdf-capture .supporting-section li { margin-bottom: 0.15em; font-size: 0.9rem; } " +
+        "body.pdf-capture .supporting-section .stat-block { margin-top: 0.35rem; gap: 0.4rem; } " +
+        "body.pdf-capture .supporting-section .stat { padding: 0.35em 0.45em; } " +
+        "body.pdf-capture .supporting-section .stat-label { font-size: 0.6rem !important; font-weight: 600; } " +
+        "body.pdf-capture .supporting-section .stat-value { font-size: 0.8rem !important; font-weight: 700; } " +
+        "body.pdf-capture .supporting-section .stat-desc { font-size: 0.56rem !important; } " +
+        "body.pdf-capture .supporting-section { margin-bottom: 1.5rem; } " +
+        "body.pdf-capture #community-benefit { margin-top: 145px; margin-bottom: 0.5rem; padding: 0.4rem 0.65rem !important; font-size: 0.81em; line-height: 1.28; overflow: visible !important; } " +
+        "body.pdf-capture #community-benefit .card-heading h2 { font-size: 0.9rem !important; } " +
+        "body.pdf-capture #community-benefit .card-title { font-size: 0.86rem !important; font-weight: 600; } " +
+        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.32rem; } " +
+        "body.pdf-capture #community-benefit .benefit-item { padding: 0.28em 0.45em; } " +
+        "body.pdf-capture #community-benefit .benefit-item-icon { width: 43px !important; height: 43px !important; } " +
+        "body.pdf-capture #community-benefit .benefit-item-icon svg { width: 22px !important; height: 22px !important; } " +
+        "body.pdf-capture #community-benefit .benefit-item-text { font-size: 0.81rem !important; } " +
+        "body.pdf-capture .community-benefit-hero { padding: 0.45rem 0.65rem !important; margin-top: 0.32rem !important; overflow: visible !important; min-height: auto !important; border-radius: 6px; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.15rem !important; font-size: 0.86rem !important; font-weight: 600; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-value { margin: 0 !important; font-size: 1.35rem !important; font-weight: 700; } " +
+        "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.15rem 0 0 !important; font-size: 0.81rem !important; } " +
         "body.pdf-capture #community-benefit { content-visibility: visible !important; contain: none !important; } " +
-        "body.pdf-capture #access { margin-top: 0.4rem; padding: 0.35em 0.5em !important; font-size: 0.52em; line-height: 1.18; } " +
-        "body.pdf-capture #access .card-heading h2, body.pdf-capture #access .card-title { font-size: 0.9em; } " +
-        "body.pdf-capture #access p { margin: 0.1em 0 0; } " +
-        "body.pdf-capture #pa-safeguards { margin-top: 0.4rem; padding: 0.35em 0.5em !important; font-size: 0.52em; line-height: 1.18; margin-bottom: 0.4rem; } " +
-        "body.pdf-capture #pa-safeguards .card-heading h2, body.pdf-capture #pa-safeguards .card-title { font-size: 0.9em; } " +
-        "body.pdf-capture #pa-safeguards ul { margin: 0.1em 0 0; padding-left: 0.85rem; } " +
-        "body.pdf-capture #pa-safeguards li { margin-bottom: 0.06em; } " +
+        "body.pdf-capture #access { display: none !important; } " +
+        "body.pdf-capture #pa-safeguards { display: none !important; } " +
         "body.pdf-capture .pa-impact-mode-section, body.pdf-capture .impact-simulator-section { display: none !important; } ";
       document.head.appendChild(pdfStyleEl);
     }
