@@ -9,13 +9,26 @@
 
 **IT-safe hosting:** Use **340b-BASIC.html** when CDN or PDF tooling is not allowed. It includes the US map via local D3 + TopoJSON only; no unpkg, no print/PDF. See SECURITY.md.
 
+---
+
+## 340b-BASIC.html (Basic version)
+
+**Purpose:** A single-page, easy-to-maintain version of the 340B dashboard for employer or locked-down hosting. Same content as the full dashboard (including “Why this matters,” community benefit, PA Impact, Policy Simulator snapshot, access to care, and PA safeguards) but with **no** print/PDF, no share link, no scenario switchers—only the interactive US map. Scripts are local only (state-data.js, D3, TopoJSON, states-10m, 340b-basic-map.js). Ideal when your employer blocks CDNs, external scripts, or backend features.
+
+**What’s in it:** Header, intro, key findings, executive strip, **interactive state map**, recent legal signals, methodology, KPI strip, **Why this matters** (eligible providers, oversight, PA stakes), **community benefit**, **Pennsylvania Impact Mode** (static “Current status” snapshot), **Policy Impact Simulator** (static “Keep today’s mix” snapshot), **Access to care**, **Pennsylvania safeguards**, footer. PA Impact and Simulator are plain HTML—no JavaScript toggles.
+
+**How to edit:** Open **340b-BASIC.html** in a text editor. Each major section is labeled with an HTML comment, e.g. `<!-- ========== WHY THIS MATTERS ========== -->`. Use Find (Ctrl+F / Cmd+F) to jump to the section you need, then change only the text or numbers inside the tags; do not remove or rename tags or `class="..."` attributes. For step-by-step instructions for non-coders (what to change and what to avoid), see **[docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md)**.
+
+**Map data:** The Basic page uses the same **state-data.js** as the full dashboard. To change which states show as “protection” or “no protection,” edit STATE_340B in state-data.js (see CODE MAP at the top of that file). The Basic page does not use modules/pa-impact-data.js or modules/impact-data.js—those drive the full dashboard’s scenario buttons; on Basic, the PA Impact and Simulator text is static HTML in 340b-BASIC.html.
+
 **What file to edit**
 | Need to change…        | Edit…                |
 |------------------------|----------------------|
+| **Basic page only** (text/numbers on 340b-BASIC.html) | 340b-BASIC.html — see [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) |
 | Map colors             | 340b.css             |
 | State law data         | state-data.js        |
-| Simulator text         | modules/impact-data.js |
-| PA impact text         | modules/pa-impact-data.js |
+| Simulator text (full dashboard) | modules/impact-data.js |
+| PA impact text (full dashboard) | modules/pa-impact-data.js |
 
 If you only remember three files, remember these:
 

@@ -78,6 +78,26 @@ If you use Docker, Terraform, K8s, or cloud/database configs:
 
 ---
 
+## 340b-BASIC.html — Most secure deployable version
+
+When your employer locks down scripting, blocks CDNs, or disallows backend/APIs, **340b-BASIC.html** is the recommended dashboard to deploy. It is the most secure, compatible, and maintainable option for restricted hosting.
+
+| Aspect | 340b-BASIC.html |
+|--------|------------------|
+| **Scripts** | Local only: `state-data.js`, `assets/vendor/d3.min.js`, `topojson-client.min.js`, `states-10m.js`, `340b-basic-map.js`. No unpkg, no third-party CDN. |
+| **CSP** | `script-src 'self'`; no `unsafe-inline` for scripts; no `connect-src` (no network calls from script). |
+| **Backend** | None. No APIs, no database, no auth, no webhooks. |
+| **Storage** | No localStorage for print payload; no sessionStorage. Map and state detail are in-memory only. |
+| **Print/PDF** | No print view or PDF generation. Reduces attack surface (no html2canvas/jsPDF, no new window, no cross-origin or file:// issues). |
+| **User input** | Only map click (state selection). State code is validated against allowlist from state-data.js before use. No forms, no free-text input. |
+| **Mobile** | Same responsive 340b.css as full dashboard; mobile-friendly and tested for small viewports. |
+| **Content** | Full advocacy content (KPIs, Why this matters, community benefit, PA Impact snapshot, Simulator snapshot, access, PA safeguards) as static HTML. No dynamic content from user input. |
+| **Maintainability** | Single HTML file + one small map script. Edits are in 340b-BASIC.html and optionally state-data.js; see [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) and [NOVICE-MAINTAINER.md](NOVICE-MAINTAINER.md). |
+
+**Deploy recommendation:** Prefer 340b-BASIC.html when (a) CSP or IT policy forbids third-party scripts or inline script, (b) you cannot run a backend or use external APIs, or (c) you need a single, auditable set of files that a novice can update without touching print/PDF or share logic. Run the OWASP-oriented checklist below on the Basic version before deploy; the same SAST and manual review apply.
+
+---
+
 ## Summary
 
 | Layer        | Tool / Action                                      | Catches / Ensures                                      |
@@ -85,7 +105,7 @@ If you use Docker, Terraform, K8s, or cloud/database configs:
 | SAST        | Semgrep `semgrep scan --config auto`                | SQLi, XSS, secrets, dangerous DOM, common AI patterns  |
 | Input/Auth  | Manual review of every user-input and auth path     | Semantic vulns, missing validation, wrong auth logic   |
 | Infra       | Config/infra scanner (e.g. CoGuard)                | Docker/K8s/cloud misconfig, missing resource limits    |
-| Deploy gate | Review AI output before deploy; run checklist      | "It runs, ship it" security failures                   |
+| Deploy gate | Review AI output before deploy; run checklist       | "It runs, ship it" security failures                   |
 
 Nothing is 100% secure; the goal is to make it much harder than an open door. Automated checks + manual review of auth and input = baseline Secure Force workflow.
 
