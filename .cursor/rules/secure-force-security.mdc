@@ -1,0 +1,31 @@
+---
+description: Secure Force — no hardcoded creds, parameterized queries, input validation, auth on routes
+alwaysApply: true
+---
+
+# Secure Force — Security Rules for AI-Generated Code
+
+When editing code in this project, follow these rules. They align with [SECURE-FORCE.md](SECURE-FORCE.md) and reduce common AI security mistakes.
+
+## Never
+
+- **Hardcode credentials:** No API keys, passwords, bearer tokens, or secrets in source. Use environment variables or a secret store. If you add a backend, document where secrets live in NOVICE-MAINTAINER.md.
+- **Use unsafe DOM with user input:** No `innerHTML`, `outerHTML`, `eval()`, or inline event handlers with unsanitized user data. Use `textContent`, `createElement`, `appendChild`, and attribute setters. For hash/URL/input-driven content, validate and allowlist (e.g. state codes) before use.
+- **Skip input validation:** Every place user input touches the app (hash, filters, forms, URL params) must be validated and bounded. Dashboard filters must not pass raw input to any data or API layer without validation.
+- **Skip authorization on routes:** If you add auth, every protected route (including nested routes) must enforce it. Do not assume one middleware is enough; manually verify each route and chained data source.
+
+## Always
+
+- **Parameterized queries:** If you add database access, use parameterized/prepared statements. Never concatenate user input into SQL.
+- **Resource limits in infra:** If you add Docker, Terraform, or K8s, set CPU/memory limits. Add to configs; do not leave unbounded.
+- **Fail safely:** On validation or auth failure, do not expose internal errors to the client. Use generic messages and log details server-side if applicable.
+- **Run SAST after security-sensitive changes:** After touching auth, webhooks, or user-input handling, run `semgrep scan --config auto` (or project Semgrep config) and fix or document findings.
+
+## Dashboard-Specific
+
+- **Hash state:** Validate `#state-XX` against an allowlist of state codes; reject or fall back to default (e.g. PA) for invalid values.
+- **Share/print:** Keep share URL canonical; do not leak internal state or errors in print payload or localStorage.
+- **Third-party scripts:** Prefer local vendor copies; if using CDN, add SRI and `crossorigin="anonymous"`.
+- **IT-safe hosting:** Keep **340b-BASIC.html** script-free (no `<script>` tags, CSP `script-src 'none'`). It is the approved page for locked-down environments. Do not add script or external resources to 340b-BASIC.html. See [SECURITY.md](SECURITY.md).
+
+For full workflow (SAST, manual checklist, infra scan), see [SECURE-FORCE.md](SECURE-FORCE.md).

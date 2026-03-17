@@ -225,12 +225,12 @@
               img.setAttribute("alt", "US map of 340B contract pharmacy protection by state");
               img.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important; max-height: 4.5cm !important;";
               img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString);
-              mapContainer.innerHTML = "";
+              mapContainer.replaceChildren();
               mapContainer.appendChild(img);
               mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; overflow: visible !important; min-height: 200px !important;";
             }
           } catch (e) {
-            mapContainer.innerHTML = "";
+            mapContainer.replaceChildren();
             var fallback = document.createElement("p");
             fallback.className = "print-view-map-fallback";
             fallback.textContent = "Map not available. Load the dashboard and use Print / PDF to include the map.";

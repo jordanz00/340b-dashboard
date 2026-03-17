@@ -8,6 +8,8 @@ Step-by-step instructions for maintainers. For architecture and data flow, see [
 - `preparePrintSnapshot()`
 - `openPrintView()`
 
+**IT-safe hosting:** For environments that do not allow external scripts or heavy JavaScript, host **340b-BASIC.html** instead of 340b.html. It is static HTML only (no script tags), uses the same 340b.css, and passes strict CSP. See [SECURITY.md](../SECURITY.md).
+
 ---
 
 ## 0. Project structure (CEO-ready layers)

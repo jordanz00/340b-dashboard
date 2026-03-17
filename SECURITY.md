@@ -1,5 +1,18 @@
 # Security Notes
 
+## IT-safe hosting: use 340b-BASIC.html
+
+If your IT or security team will not approve the full dashboard (external scripts, inline script, localStorage), host **340b-BASIC.html** instead:
+
+- **No JavaScript.** No `<script>` tags. CSP is `script-src 'none'`.
+- **Same content.** Overview, HAP position, key numbers, executive strip, state lists (static), recent legal signals, methodology, KPIs.
+- **Same look.** Uses the same `340b.css`. No map, no PDF download, no filters—pure HTML.
+- **Safe for locked-down environments.** No CDN, no inline script, no eval, no localStorage. Passes strict CSP and script restrictions.
+
+Link from 340b-BASIC.html to 340b.html for users who are allowed to use the full interactive dashboard.
+
+## Full dashboard (340b.html)
+
 This dashboard is a static site. Most of its security posture comes from:
 
 - safe DOM rendering in `340b.js`
@@ -14,7 +27,9 @@ This dashboard is a static site. Most of its security posture comes from:
 
 If you deploy this on GitHub Pages, Netlify, Vercel, S3, or another static host, configure these headers where possible:
 
-- `Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'; frame-ancestors 'none'`
+- **HTTPS:** Serve the dashboard over HTTPS only in production. GitHub Pages provides HTTPS by default. For self-hosting, use a valid TLS certificate and redirect HTTP to HTTPS.
+- **For 340b-BASIC.html only (strictest):** No script, so CSP can be `script-src 'none'`. See the CSP in 340b-BASIC.html.
+- **For 340b.html (full dashboard):** CSP in the page allows `'self'` and `https://unpkg.com` for PDF libraries. If IT disallows external script, host 340b-BASIC.html instead or self-host html2canvas and jsPDF under `assets/vendor/` and change script src to local.
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `X-Content-Type-Options: nosniff`
 
@@ -63,3 +78,10 @@ Do not publish until a human has confirmed:
 - Do not replace safe DOM creation with string-based HTML rendering.
 - Do not update vendor assets without also updating `assets/vendor/README.md`.
 - Do not describe this static site as having backend auth or secret-handling protections that do not actually exist.
+
+## Code patterns (Wave 4)
+
+- **Dynamic content:** Use `textContent` (or the dashboard’s `safeText()` helper) for any string that comes from data or could later come from user/external input. Do not use `innerHTML` with dynamic or unsanitized strings.
+- **JSON:** If you add `JSON.parse()` (e.g. for future API or config), always use try/catch and handle parse errors; do not use the result without checking it.
+- **Links:** Any link that opens in a new tab (`target="_blank"`) must include `rel="noopener noreferrer"`.
+- **Map/content from external source:** Validate structure and bounds before rendering; do not inject raw response HTML or script into the page.

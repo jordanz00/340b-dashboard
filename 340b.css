@@ -708,6 +708,9 @@ body.scroll-reveal-js .scroll-reveal.revealed { opacity: 1; transform: none; }
 .section-subhead--supporting { margin-top: var(--space-7); }
 .sources { font-size: var(--text-xs); color: var(--text-muted); margin-top: var(--space-4); font-style: italic; }
 
+/* 340b-BASIC.html: static state list paragraphs */
+.basic-state-list { margin: 0 0 var(--space-4); font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.5; }
+
 /* About Data panel: data provenance, version, methodology (Wave 1 architecture) */
 .about-data-panel {
   margin-top: var(--space-4);
