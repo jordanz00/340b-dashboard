@@ -26,6 +26,6 @@ When editing code in this project, follow these rules. They align with [SECURE-F
 - **Hash state:** Validate `#state-XX` against an allowlist of state codes; reject or fall back to default (e.g. PA) for invalid values.
 - **Share/print:** Keep share URL canonical; do not leak internal state or errors in print payload or localStorage.
 - **Third-party scripts:** Prefer local vendor copies; if using CDN, add SRI and `crossorigin="anonymous"`.
-- **IT-safe hosting:** Keep **340b-BASIC.html** script-free (no `<script>` tags, CSP `script-src 'none'`). It is the approved page for locked-down environments. Do not add script or external resources to 340b-BASIC.html. See [SECURITY.md](SECURITY.md).
+- **IT-safe hosting:** **340b-BASIC.html** uses only local scripts (`state-data.js`, vendor D3/topojson/states, `340b-basic-map.js`). No CDN, no inline script, no eval, no localStorage. Do not add unpkg or external script to 340b-BASIC.html. See [SECURITY.md](SECURITY.md).
 
 For full workflow (SAST, manual checklist, infra scan), see [SECURE-FORCE.md](SECURE-FORCE.md).

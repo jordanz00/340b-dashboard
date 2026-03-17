@@ -2,14 +2,14 @@
 
 ## IT-safe hosting: use 340b-BASIC.html
 
-If your IT or security team will not approve the full dashboard (external scripts, inline script, localStorage), host **340b-BASIC.html** instead:
+If your IT or security team will not approve the full dashboard (external CDN scripts, html2canvas/pdf, localStorage), host **340b-BASIC.html** instead:
 
-- **No JavaScript.** No `<script>` tags. CSP is `script-src 'none'`.
-- **Same content.** Overview, HAP position, key numbers, executive strip, state lists (static), recent legal signals, methodology, KPIs.
-- **Same look.** Uses the same `340b.css`. No map, no PDF download, no filters—pure HTML.
-- **Safe for locked-down environments.** No CDN, no inline script, no eval, no localStorage. Passes strict CSP and script restrictions.
+- **Scripts are local only (same origin):** `state-data.js`, `assets/vendor/d3.min.js`, `topojson-client.min.js`, `states-10m.js`, `340b-basic-map.js`. No unpkg, no inline script, no eval, no localStorage, no html2canvas.
+- **Interactive US map:** Same TopoJSON + D3 drawing as the main dashboard, scoped to one small file (click state → text summary only).
+- **Same layout as main:** `dashboard-header`, padded content, `dashboard-inner`, KPIs, methodology, professional footer.
+- **CSP:** `default-src 'self'; script-src 'self'` only — no third-party script sources.
 
-Link from 340b-BASIC.html to 340b.html for users who are allowed to use the full interactive dashboard.
+Link to **340b.html** for print/PDF, filters, simulators, and full tooling.
 
 ## Full dashboard (340b.html)
 

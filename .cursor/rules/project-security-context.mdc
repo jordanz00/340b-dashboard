@@ -14,4 +14,4 @@ alwaysApply: true
 - Treat URL hash, share links, and print/export flows as sensitive reliability surfaces. Validate hash-driven state and keep share output canonical.
 - Keep features failure-isolated: map issues must not break print, share, filters, or disclosures.
 - After meaningful edits, run `python3 dashboard-audit.py`; use Semgrep for a deeper code scan when security-sensitive changes are made.
-- **340b-BASIC.html** is the IT-safe, script-free version for hosting where the full dashboard is not approved. It must remain static HTML only (no script tags, no external script). Do not add JavaScript or remote resources to 340b-BASIC.html.
+- **340b-BASIC.html** is IT-safe: local scripts only (state-data, vendor D3/topojson/states, 340b-basic-map). No CDN, no html2canvas/jspdf, no localStorage. Do not add external script URLs to 340b-BASIC.html.

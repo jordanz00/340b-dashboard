@@ -7,7 +7,7 @@
 - **340b.css** — Layout and print. Edit for spacing, breakpoints, and `@media print`.
 - **print.html / print-view.css** — Dedicated print view; map comes from 340b.js via localStorage.
 
-**IT-safe hosting:** If your environment does not allow external scripts or heavy JavaScript, use **340b-BASIC.html**. It is static HTML only (no script tags), same content and look via 340b.css. Do not add script or external resources to 340b-BASIC.html. See SECURITY.md.
+**IT-safe hosting:** Use **340b-BASIC.html** when CDN or PDF tooling is not allowed. It includes the US map via local D3 + TopoJSON only; no unpkg, no print/PDF. See SECURITY.md.
 
 **What file to edit**
 | Need to change…        | Edit…                |

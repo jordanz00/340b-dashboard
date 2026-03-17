@@ -8,7 +8,7 @@ Step-by-step instructions for maintainers. For architecture and data flow, see [
 - `preparePrintSnapshot()`
 - `openPrintView()`
 
-**IT-safe hosting:** For environments that do not allow external scripts or heavy JavaScript, host **340b-BASIC.html** instead of 340b.html. It is static HTML only (no script tags), uses the same 340b.css, and passes strict CSP. See [SECURITY.md](../SECURITY.md).
+**IT-safe hosting:** Host **340b-BASIC.html** when CDNs are disallowed. It uses local D3/TopoJSON + `340b-basic-map.js` for the map only; no unpkg, no PDF. See [SECURITY.md](../SECURITY.md).
 
 ---
 

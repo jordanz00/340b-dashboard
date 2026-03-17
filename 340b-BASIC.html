@@ -4,104 +4,123 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self'; form-action 'none';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self';">
   <title>340B Drug Pricing Program | HAP Advocacy Dashboard (Basic)</title>
-  <meta name="description" content="HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection, $7.95B community benefits, 72 PA hospitals. Static view—no JavaScript required.">
+  <meta name="description" content="HAP 340B Advocacy Dashboard — static-safe page with interactive US map. No third-party scripts, no PDF tooling.">
   <link rel="stylesheet" href="340b.css">
+  <script src="state-data.js"></script>
+  <script src="assets/vendor/d3.min.js"></script>
+  <script src="assets/vendor/topojson-client.min.js"></script>
+  <script src="assets/vendor/states-10m.js"></script>
 </head>
-<body class="dashboard-body">
-  <div class="dashboard-outer">
-    <header class="site-header" role="banner">
-      <div class="header-inner">
-        <img src="haplogo_box_blue.jpeg" alt="" class="header-logo" width="48" height="48">
-        <div>
-          <h1 class="header-title">340B Drug Pricing Program</h1>
-          <p class="header-subtitle">HAP Advocacy Dashboard</p>
+<body class="basic-dashboard">
+<div class="dashboard">
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <header class="dashboard-header">
+    <div class="header-left">
+      <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="header-logo" width="56" height="56" loading="eager">
+      <div>
+        <p class="report-by">The Hospital and Healthsystem Association of Pennsylvania</p>
+        <h1>340B Drug Pricing Program</h1>
+        <span class="badge-live">ADVOCACY DASHBOARD — BASIC</span>
+      </div>
+    </div>
+    <nav class="dashboard-nav basic-dashboard-nav" aria-label="Dashboard">
+      <a href="#state-laws">State map</a>
+      <a href="340b.html">Full interactive dashboard</a>
+    </nav>
+  </header>
+
+  <div class="dashboard-inner basic-dashboard-inner">
+  <main id="main-content" role="main">
+    <div class="dashboard-grid">
+
+      <div class="intro-section">
+        <div class="intro-section-inner">
+          <article class="card">
+            <div class="card-heading">
+              <div class="card-heading-text">
+                <p class="card-title">Overview</p>
+                <h2>What is 340B?</h2>
+                <p class="card-subtitle">A federal discount drug program that helps hospitals serve more patients.</p>
+              </div>
+            </div>
+            <p>340B empowers Pennsylvania hospitals to provide care and affordable medicines to all communities—at no extra cost to taxpayers.</p>
+            <div class="stat-block">
+              <div class="stat">
+                <p class="stat-label">Market share</p>
+                <p class="stat-value">7%</p>
+                <p class="stat-desc">340B purchases</p>
+              </div>
+            </div>
+          </article>
+          <article class="card card-hap">
+            <div class="card-heading">
+              <div class="card-heading-text">
+                <p class="card-title">HAP Position</p>
+                <h2>Protect the 340B discount and hospital–pharmacy partnerships.</h2>
+              </div>
+            </div>
+            <p>HAP calls on lawmakers to defend 340B, ensuring hospital programs and patients remain protected.</p>
+            <p><strong>Ask leaders:</strong> Protect 340B so hospitals can continue serving Pennsylvanians.</p>
+          </article>
         </div>
       </div>
-    </header>
 
-    <main id="main-content" role="main">
-      <div class="dashboard-grid">
-        <div class="intro-section">
-          <div class="intro-section-inner">
-            <article class="card">
-              <div class="card-heading">
-                <div class="card-heading-text">
-                  <p class="card-title">Overview</p>
-                  <h2>What is 340B?</h2>
-                  <p class="card-subtitle">A federal discount drug program that helps hospitals serve more patients.</p>
-                </div>
-              </div>
-              <p>340B empowers Pennsylvania hospitals to provide care and affordable medicines to all communities—at no extra cost to taxpayers.</p>
-              <div class="stat-block">
-                <div class="stat">
-                  <p class="stat-label">Market share</p>
-                  <p class="stat-value">7%</p>
-                  <p class="stat-desc">340B purchases</p>
-                </div>
-              </div>
-            </article>
-            <article class="card card-hap">
-              <div class="card-heading">
-                <div class="card-heading-text">
-                  <p class="card-title">HAP Position</p>
-                  <h2>Protect the 340B discount and hospital–pharmacy partnerships.</h2>
-                </div>
-              </div>
-              <p>HAP calls on lawmakers to defend 340B, ensuring hospital programs and patients remain protected.</p>
-              <p><strong>Ask leaders:</strong> Protect 340B so hospitals can continue serving Pennsylvanians.</p>
-            </article>
-          </div>
+      <section class="key-findings-strip span-12" aria-label="Key findings">
+        <div class="key-findings-heading">
+          <span class="key-findings-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
+          <h3 class="key-findings-title">The numbers that matter</h3>
         </div>
+        <ul class="key-findings-list">
+          <li>21 states protect the discount; 29 don't yet</li>
+          <li><strong>$7.95B</strong> in community benefits from 340B hospitals (2024)</li>
+          <li><strong>72</strong> Pennsylvania hospitals use 340B to serve patients</li>
+          <li><strong>7%</strong> of U.S. outpatient drug spending uses the 340B discount</li>
+        </ul>
+      </section>
 
-        <section class="key-findings-strip span-12" aria-label="Key findings">
-          <div class="key-findings-heading">
-            <span class="key-findings-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
-            <h3 class="key-findings-title">The numbers that matter</h3>
-          </div>
-          <ul class="key-findings-list">
-            <li>21 states protect the discount; 29 don't yet</li>
-            <li><strong>$7.95B</strong> in community benefits from 340B hospitals (2024)</li>
-            <li><strong>72</strong> Pennsylvania hospitals use 340B to serve patients</li>
-            <li><strong>7%</strong> of U.S. outpatient drug spending uses the 340B discount</li>
-          </ul>
-        </section>
+      <section class="exec-takeaway span-12" aria-label="Key takeaway">
+        <strong>Bottom line:</strong> What happens to 340B in the states directly affects whether hospitals can keep getting discount meds to patients—including 72 hospitals in Pennsylvania.
+      </section>
 
-        <section class="exec-takeaway span-12" aria-label="Key takeaway">
-          <strong>Bottom line:</strong> What happens to 340B in the states directly affects whether hospitals can keep getting discount meds to patients—including 72 hospitals in Pennsylvania.
-        </section>
+      <section class="executive-proof-strip span-12" aria-label="Executive scan">
+        <article class="executive-proof-card">
+          <p class="executive-proof-label">What we're fighting for</p>
+          <h3 class="executive-proof-value">Protect the 340B discount and hospital–pharmacy partnerships</h3>
+          <p class="executive-proof-note">One clear story: access, fairness, and continuity for patients.</p>
+        </article>
+        <article class="executive-proof-card executive-proof-card--accent">
+          <p class="executive-proof-label">Where things stand</p>
+          <h3 class="executive-proof-value">21 states have enacted contract pharmacy protection; 29 remain without enacted protection</h3>
+          <p class="executive-proof-note">Use the map below — blue = protection, gray = no state law yet.</p>
+        </article>
+        <article class="executive-proof-card">
+          <p class="executive-proof-label">Why trust this</p>
+          <h3 class="executive-proof-value">Sources and dates are right here</h3>
+          <p class="executive-proof-note">MultiState, ASHP, America's Essential Hospitals.</p>
+        </article>
+      </section>
 
-        <section class="executive-proof-strip span-12" aria-label="Executive scan">
-          <article class="executive-proof-card">
-            <p class="executive-proof-label">What we're fighting for</p>
-            <h3 class="executive-proof-value">Protect the 340B discount and hospital–pharmacy partnerships</h3>
-            <p class="executive-proof-note">One clear story: access, fairness, and continuity for patients.</p>
-          </article>
-          <article class="executive-proof-card executive-proof-card--accent">
-            <p class="executive-proof-label">Where things stand</p>
-            <h3 class="executive-proof-value">21 states have enacted contract pharmacy protection; 29 remain without enacted protection</h3>
-            <p class="executive-proof-note">See state lists below for who is protected and who is not.</p>
-          </article>
-          <article class="executive-proof-card">
-            <p class="executive-proof-label">Why trust this</p>
-            <h3 class="executive-proof-value">Sources and dates are right here</h3>
-            <p class="executive-proof-note">MultiState, ASHP, America's Essential Hospitals.</p>
-          </article>
-        </section>
-
-        <section class="map-hero-section span-12">
+      <section id="state-laws" class="map-hero-section span-12 scroll-reveal">
+        <div class="map-hero-inner">
           <article class="map-hero-card">
             <p class="map-hero-title">State-by-state</p>
             <h2 class="map-hero-headline">Who protects the 340B discount—and who doesn't</h2>
-            <p class="map-hero-sub">Below: states with enacted contract pharmacy protection and states without. For the interactive map and filters, use <a href="340b.html">340b.html</a>.</p>
+            <p class="map-hero-sub">Click a state to see whether it has enacted contract pharmacy protection. <strong>No third-party scripts</strong> on this page — map uses only local data and D3 from this site.</p>
           </article>
-
-          <h3>States with protection (21)</h3>
-          <p class="basic-state-list">Arkansas, Colorado, Hawaii, Kansas, Louisiana, Maine, Maryland, Minnesota, Mississippi, Missouri, Nebraska, New Mexico, North Dakota, Oklahoma, Oregon, Rhode Island, South Dakota, Tennessee, Utah, Vermont, West Virginia.</p>
-
-          <h3>No protection law (29)</h3>
-          <p class="basic-state-list">Alabama, Alaska, Arizona, California, Connecticut, Delaware, D.C., Florida, Georgia, Idaho, Illinois, Indiana, Iowa, Kentucky, Massachusetts, Michigan, Montana, Nevada, New Hampshire, New Jersey, New York, North Carolina, Ohio, Pennsylvania, South Carolina, Texas, Virginia, Washington, Wisconsin, Wyoming.</p>
+          <div id="basic-map-tooltip" class="basic-map-tooltip" aria-hidden="true"></div>
+          <div class="basic-map-shell">
+            <div class="us-map-wrap visible map-visible basic-map-wrap">
+              <div id="basic-us-map" class="basic-map-canvas" role="application" aria-label="Interactive US map"></div>
+            </div>
+            <p class="map-legend-context">Blue = state protects the discount. Gray = no state law protecting it yet.</p>
+            <div class="map-legend">
+              <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection</span>
+              <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
+            </div>
+            <div id="basic-state-detail" class="basic-state-detail" role="status" aria-live="polite">Click a state on the map for details.</div>
+          </div>
 
           <h3 class="section-subhead">Recent legal signals</h3>
           <div class="trends-grid">
@@ -118,15 +137,13 @@
               <div><h4>Vetoes</h4><p>Some governors vetoed proposed 340B protections, including in Virginia.</p></div>
             </div>
           </div>
-
           <p class="sources">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
 
-          <details class="methodology-wrap" id="methodology-wrap" aria-label="Data sources and methodology">
+          <details class="methodology-wrap" id="methodology-wrap">
             <summary class="methodology-toggle">About this data</summary>
             <div class="methodology-content">
               <p><strong>Data sources:</strong> MultiState, ASHP, America's Essential Hospitals (state law); 340B Health, AHA (community benefit); HRSA (oversight).</p>
               <p>State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2025.</p>
-              <p><strong>Community benefit</strong> figures are from 340B Health and AHA survey data (2024).</p>
               <p><strong>Last updated:</strong> March 2025</p>
               <ul class="source-links">
                 <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a></li>
@@ -135,41 +152,44 @@
               </ul>
             </div>
           </details>
-        </section>
+        </div>
+      </section>
 
-        <section class="kpi-strip span-12" aria-label="Key metrics">
-          <div class="kpi-card">
-            <p class="kpi-label">U.S. Drug Market</p>
-            <p class="kpi-value">7%</p>
-            <p class="kpi-desc">340B share of U.S. outpatient drug market</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">Community Benefit</p>
-            <p class="kpi-value">$7.95B</p>
-            <p class="kpi-desc">340B community benefits (2024)</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">Oversight</p>
-            <p class="kpi-value">200+</p>
-            <p class="kpi-desc">HRSA audits in 2024</p>
-          </div>
-          <div class="kpi-card">
-            <p class="kpi-label">Pennsylvania</p>
-            <p class="kpi-value">72</p>
-            <p class="kpi-desc">PA hospitals in 340B</p>
-          </div>
-        </section>
-      </div>
-    </main>
-
-    <footer class="site-footer" role="contentinfo">
-      <p class="footer-org">
-        <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64">
-        <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
-      </p>
-      <p class="footer-design">Design Mark IV — Basic (no JavaScript)</p>
-      <p><a href="340b.html">Full interactive dashboard</a></p>
-    </footer>
+      <section class="kpi-strip span-12" aria-label="Key metrics">
+        <div class="kpi-card">
+          <p class="kpi-label">U.S. Drug Market</p>
+          <p class="kpi-value">7%</p>
+          <p class="kpi-desc">340B share of U.S. outpatient drug market</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Community Benefit</p>
+          <p class="kpi-value">$7.95B</p>
+          <p class="kpi-desc">340B community benefits (2024)</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Oversight</p>
+          <p class="kpi-value">200+</p>
+          <p class="kpi-desc">HRSA audits in 2024</p>
+        </div>
+        <div class="kpi-card">
+          <p class="kpi-label">Pennsylvania</p>
+          <p class="kpi-value">72</p>
+          <p class="kpi-desc">PA hospitals in 340B</p>
+        </div>
+      </section>
+    </div>
+  </main>
   </div>
+
+  <footer class="site-footer" role="contentinfo">
+    <p class="footer-org">
+      <img src="haplogo_box_blue.jpeg" alt="" class="footer-logo" width="64" height="64">
+      <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
+    </p>
+    <p class="footer-design">Design Mark IV — Basic (local scripts only: map + data)</p>
+    <p><a href="340b.html">Full dashboard</a> — print, PDF image, filters, simulators</p>
+  </footer>
+</div>
+<script src="340b-basic-map.js"></script>
 </body>
 </html>
