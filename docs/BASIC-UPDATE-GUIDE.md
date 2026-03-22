@@ -11,6 +11,7 @@
 1. **Back up the file.** Copy `340b-BASIC.html` to `340b-BASIC-backup.html` before making changes.
 2. **Use a plain text editor** (e.g. Notepad, TextEdit in “Plain Text” mode, or VS Code). Do not use Word or Google Docs—they can insert invisible characters and break the page.
 3. **Search to find the right spot.** Use your editor’s “Find” (Ctrl+F or Cmd+F) and search for the exact phrase you want to change, or the section name below.
+4. **Terms you don’t recognize?** See **[GLOSSARY.md](../GLOSSARY.md)** (CONFIG, STATE_340B, BASIC vs full dashboard, etc.).
 
 ---
 
@@ -226,5 +227,6 @@ You’ll see four blocks with:
 
 ## Need more help?
 
-- For **state-by-state map data** (which states are blue or gray), the Basic version reads from `state-data.js`. Updating that file requires following the instructions in **NOVICE-MAINTAINER.md** and **state-data.js** (CODE MAP at the top).
+- For **state-by-state map data** (which states are blue or gray), the Basic version reads from `state-data.js`. Updating that file requires following the instructions in **[NOVICE-MAINTAINER.md](../NOVICE-MAINTAINER.md)** and **state-data.js** (CODE MAP at the top).
 - For **full interactive features** (print, PDF, scenario switchers), use the full dashboard: **340b.html**.
+- For the **full project map** (which file to edit for what), see **[NOVICE-MAINTAINER.md](../NOVICE-MAINTAINER.md)** and **[docs/INDEX.md](INDEX.md)**.

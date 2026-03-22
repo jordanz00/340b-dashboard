@@ -1,179 +1,77 @@
 # Novice Maintainer Notes
 
-**Code map:** Know where things live so you edit the right file.
-- **state-data.js** — Data only: dates, state records, copy. Do not edit for layout or behavior.
-- **340b.html** — Structure and visible content. Edit for text, headings, sections, links.
-- **340b.js** — All interaction: map, buttons, print/PDF/share. Edit for behavior and logic.
-- **340b.css** — Layout and print. Edit for spacing, breakpoints, and `@media print`.
-- **print.html / print-view.css** — Dedicated print view; map comes from 340b.js via localStorage.
+**Start here:** This file is the single entry point for “what do I edit?” Use **[GLOSSARY.md](GLOSSARY.md)** for term definitions, **[CONFIG-INDEX.md](CONFIG-INDEX.md)** for where each setting lives, and **[docs/INDEX.md](docs/INDEX.md)** for all documentation links.
 
-**IT-safe hosting:** Use **340b-BASIC.html** when CDN or PDF tooling is not allowed. It includes the US map via local D3 + TopoJSON only; no unpkg, no print/PDF. See SECURITY.md.
+---
+
+## One-page code map
+
+| File | Role | Edit when… | See also |
+|------|------|------------|----------|
+| **state-data.js** | CONFIG, STATE_340B, lookups | Dates, share URL, state law, intro/trust copy | [DATA-UPDATE.md](DATA-UPDATE.md), [GLOSSARY.md](GLOSSARY.md) |
+| **340b.html** | Structure, visible content, inline CONFIG fallback | Headings, sections, links, initial HTML that must match JS | Section comments `<!-- ========== SECTION: … ========== -->` |
+| **340b.js** | Map, filters, print/PDF/share, hash | Buttons, map, selection, print flow | CODE MAP + INIT FLOW at top of file |
+| **340b.css** | Layout, responsive, `@media print` | Spacing, colors, print breaks | CODE MAP comment after `:root` |
+| **print.html**, **print-view.css** | Print tab layout | Print-only layout (coordinate with 340b.js) | Protected — see below |
+| **340b-BASIC.html** | IT-safe single page | Text on Basic only; map data still in state-data.js | [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) |
+| **modules/** | PA Impact + Policy Simulator | Scenario data in `pa-impact-data.js`, `impact-data.js` | [modules/README.md](modules/README.md) |
+| **config/settings.js**, **config/chart-configs.js** | Feature flags, chart formats | Tooltip timing, KPI formatting | [CONFIG-INDEX.md](CONFIG-INDEX.md) |
+| **data/dataset-metadata.js** | Provenance, version | Sync with CONFIG when publishing data refresh | [CONFIG-INDEX.md](CONFIG-INDEX.md) |
+
+**IT-safe hosting:** Use **340b-BASIC.html** when CDN or PDF tooling is not allowed. Local D3 + TopoJSON only; no unpkg. See [SECURITY.md](SECURITY.md) and [SECURE-FORCE.md](SECURE-FORCE.md).
+
+---
+
+## “I want to…” (decision tree)
+
+| I want to… | Start here |
+|------------|------------|
+| **Change a date or “last updated”** | `state-data.js` → CONFIG; sync `340b.html` inline script and matching element ids |
+| **Change state law (who has protection)** | `state-data.js` → STATE_340B; then sync counts in `340b.html` (key findings, executive strip, print counts) |
+| **Change visible wording or section order** | `340b.html` (search section comments) |
+| **Change map colors or spacing** | `340b.css` (never add `overflow:hidden` on `.map-wrap` / `.us-map-wrap`) |
+| **Fix Print/PDF or Download PDF (image)** | `340b.js` → `preparePrintSnapshot`, `openPrintView`; then `print.html` / `print-view.css` only if layout is wrong |
+| **Fix share link or URL hash** | `340b.js` → `buildShareUrl`, `getHashState`, `updateUrlHash` |
+| **Change simulator numbers (full dashboard)** | `modules/impact-data.js` or `modules/pa-impact-data.js` |
+| **Edit only the Basic page** | `340b-BASIC.html` — [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) |
+| **Find where a setting lives** | [CONFIG-INDEX.md](CONFIG-INDEX.md) |
+| **Understand a term** | [GLOSSARY.md](GLOSSARY.md) |
+| **Refactor labels / learn daily** | [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md), [ULTRA-prompts.md](ULTRA-prompts.md) (v13–v22) |
+
+**Quick shortcut (legacy):** (1) Content → `340b.html` (2) Data/dates → `state-data.js` (3) Print view page → `print.html` + `print-view.css` (4) Share/hash → `340b.js` (5) Print breaks → `340b.css` then `340b.js` (6) Buttons/map → `340b.js` (7) Source verification wording → `340b.html` + `QA-CHECKLIST.md`
 
 ---
 
 ## 340b-BASIC.html (Basic version)
 
-**Purpose:** A single-page, easy-to-maintain version of the 340B dashboard for employer or locked-down hosting. Same content as the full dashboard (including “Why this matters,” community benefit, PA Impact, Policy Simulator snapshot, access to care, and PA safeguards) but with **no** print/PDF, no share link, no scenario switchers—only the interactive US map. Scripts are local only (state-data.js, D3, TopoJSON, states-10m, 340b-basic-map.js). Ideal when your employer blocks CDNs, external scripts, or backend features.
+**Purpose:** A single-page version for employer or locked-down hosting. Same advocacy content as the full dashboard (including “Why this matters,” community benefit, PA Impact and Policy Simulator **snapshots**, access, PA safeguards) but **no** print/PDF, no share, **no** scenario switchers—only the interactive US map. Scripts: local only (`state-data.js`, D3, TopoJSON, states-10m, `340b-basic-map.js`).
 
-**What’s in it:** Header, intro, key findings, executive strip, **interactive state map**, recent legal signals, methodology, KPI strip, **Why this matters** (eligible providers, oversight, PA stakes), **community benefit**, **Pennsylvania Impact Mode** (static “Current status” snapshot), **Policy Impact Simulator** (static “Keep today’s mix” snapshot), **Access to care**, **Pennsylvania safeguards**, footer. PA Impact and Simulator are plain HTML—no JavaScript toggles.
+**How to edit:** [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md). Map law data: **state-data.js** (STATE_340B). PA Impact / Simulator text on Basic is **static HTML** in `340b-BASIC.html`, not the `modules/*.js` files.
 
-**How to edit:** Open **340b-BASIC.html** in a text editor. Each major section is labeled with an HTML comment, e.g. `<!-- ========== WHY THIS MATTERS ========== -->`. Use Find (Ctrl+F / Cmd+F) to jump to the section you need, then change only the text or numbers inside the tags; do not remove or rename tags or `class="..."` attributes. For step-by-step instructions for non-coders (what to change and what to avoid), see **[docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md)**.
+| Need to change… | Edit… |
+|-----------------|-------|
+| Basic page text/numbers only | `340b-BASIC.html` — BASIC-UPDATE-GUIDE |
+| Map colors | `340b.css` |
+| State law data | `state-data.js` |
+| Simulator (full dashboard) | `modules/impact-data.js` |
+| PA impact (full dashboard) | `modules/pa-impact-data.js` |
 
-**Map data:** The Basic page uses the same **state-data.js** as the full dashboard. To change which states show as “protection” or “no protection,” edit STATE_340B in state-data.js (see CODE MAP at the top of that file). The Basic page does not use modules/pa-impact-data.js or modules/impact-data.js—those drive the full dashboard’s scenario buttons; on Basic, the PA Impact and Simulator text is static HTML in 340b-BASIC.html.
+---
 
-**What file to edit**
-| Need to change…        | Edit…                |
-|------------------------|----------------------|
-| **Basic page only** (text/numbers on 340b-BASIC.html) | 340b-BASIC.html — see [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) |
-| Map colors             | 340b.css             |
-| State law data         | state-data.js        |
-| Simulator text (full dashboard) | modules/impact-data.js |
-| PA impact text (full dashboard) | modules/pa-impact-data.js |
+## Protected systems (do not modify without a known bug)
 
-If you only remember three files, remember these:
-
-## 1. `state-data.js`
-
-This is the main update file.
-
-Edit this when you need to change:
-
-- dates
-- share URL
-- state law records
-- high-salience intro and trust-copy defaults
-
-Do not edit this file for layout, colors, spacing, or button behavior.
-
-For step-by-step instructions on updating state data or CONFIG, see [DATA-UPDATE.md](DATA-UPDATE.md) (if present) or the CODE MAP in state-data.js. For adding data, updating charts/UI, republishing, and daily self-improvement tips, see [docs/OPERATIONS_MANUAL.md](docs/OPERATIONS_MANUAL.md). For the latest big update (layman's terms, simulator overhaul) and what to tell ChatGPT next, see [docs/CHATGPT-HANDOFF-AFTER-LAYMAN-UPDATE.md](docs/CHATGPT-HANDOFF-AFTER-LAYMAN-UPDATE.md). For 100 prioritized next-step choices, see [docs/100-CRITICAL-CHOICES.md](docs/100-CRITICAL-CHOICES.md).
-
-## 2. `340b.html`
-
-This is the page structure and content.
-
-Edit this when you need to change:
-
-- visible copy
-- headings
-- sections
-- source links
-
-Use this file when:
-
-- text is wrong
-- a section needs to move up or down
-- a button or heading is missing from the page
-- print is showing duplicate content because the HTML contains two versions of the same message
-
-**Avoid text/number pop on load:** The first thing the user sees is the raw HTML. JavaScript then runs and can overwrite copy and counts from `state-data.js` (CONFIG) and STATE_340B. If the initial HTML does not match what the script will set, the page will "flash" or "pop" (old or placeholder text/numbers replaced by the real values). To prevent this, whenever you change **CONFIG.copy** or **STATE_340B** in state-data.js, update the **initial content** of the corresponding elements in 340b.html so they match:
-
-- Intro/overview: `#overview-lead`, `#hap-position-lead`, `#hap-ask-label`, `#hap-ask-text`, `#map-hero-sub`
-- Executive strip: `#executive-priority-*`, `#executive-landscape-*`, `#executive-trust-*` (and landscape value = "X states have enacted...; Y remain without...", where X = number of states with `cp: true`, Y = rest)
-- Methodology/sources: `#sources-summary`, `#methodology-state-law-copy`, `#verification-order-copy`, `#print-source-summary`, `#print-verification-order-copy`
-- Protection counts: `#key-finding-protection-count`, `#protection-count`, `#no-protection-count`, `#print-protection-count`, `#print-no-protection-count` (same X and Y as executive landscape)
-- Count-up stats: elements with `data-count-up` should have their initial text set to the final value (e.g. `7%`, `7.95`, `200+`) so they don't flash from 0
-
-Also keep the inline CONFIG fallback in 340b.html (inside the first `<script>` block) in sync with state-data.js so any code path sees the same copy.
-
-## 3. `340b.js`
-
-This is the interaction file.
-
-**Section headers (block labels):** 340b.js uses block comments to mark logical sections. Key blocks: `CONFIGURATION & CONSTANTS`, `DOM REFERENCES`, `UTILITY HELPERS`, `STATE DATA HELPERS`, `SHARE LINK & URL HASH`, `PRINT PREPARATION (PROTECTED)`, `MAP INITIALIZATION & LIFECYCLE`, `FILTER INIT`, `UTILITY BUTTONS`, `INIT`. Use these to locate code without refactoring structure.
-
-**Named constants:** Magic numbers are replaced with named constants. Examples: `UTILITY_STATUS_DISMISS_MS`, `UTILITY_STATUS_DEFAULT_MS`, `CHART_BAR_MAX_HEIGHT_PX`, `RESIZE_DEBOUNCE_MS`, `TOOLTIP_OFFSET_Y`, `PDF_PAGE1_FALLBACK_RATIO`, `PDF_PAGE2_FALLBACK_RATIO`. Edit constants at the top of their block rather than inline values.
-
-Edit this when you need to change:
-
-- map behavior
-- button behavior
-- filters
-- print/share logic
-
-Use this file when:
-
-- the map does not render
-- `Print / PDF` opens the wrong snapshot
-- `Share link` does nothing
-- `Clear selection` does nothing
-- counts stay at `0`
-- the selected-state story feels weak or generic
-
-Important print note:
-
-- **For the Print/PDF button** the flow is `openPrintView()` → localStorage → `print.html`. **For File → Print on the main page** the flow is `beforeprint` → `preparePrintSnapshot()`.
-- The print/PDF flow is prepared in `preparePrintSnapshot()`.
-- The print-only Pennsylvania default is applied in `preparePrintSelectionState()`.
-- The counter values are forced to their final numbers in `finalizeCountUpValues()`.
-- The executive proof strip is updated in `updateExecutiveProofStrip()`.
-- The selected-state map story is updated in `updateMapContext()`.
-- If print is wrong, check those functions before rewriting HTML.
-- The compact print state summary is filled from JavaScript and should stay smaller than the live interactive state lists.
-
-## 4. `print.html` and `print-view.css`
-
-Print view is the primary PDF path. The map is injected from `localStorage` (key: `hap340bPrint`). Do not change this flow without updating both `340b.js` (openPrintView) and `print.html`. See [AGENT-RULES-SYSTEM.md](AGENT-RULES-SYSTEM.md) for stability rules.
-
-## 5. Policy simulators (`modules/`)
-
-Both simulators are modular and do not modify 340b.js, the map, or print/PDF.
-
-**Pennsylvania Impact Mode** (PA-specific):
-| File | Purpose |
-|------|---------|
-| `modules/pa-impact-data.js` | PA baseline anchors and scenario estimates |
-| `modules/pa-impact-engine.js` | Pure logic — computes PA impact |
-| `modules/pa-impact-ui.js` | Renders the PA Impact panel |
-
-**Policy Impact Simulator** (national):
-| File | Purpose |
-|------|---------|
-| `modules/impact-data.js` | Scenario definitions and estimated values |
-| `modules/impact-simulator.js` | Pure logic — computes national impact |
-| `modules/impact-ui.js` | Renders the national simulator panel |
-
-To change PA scenario data, edit **pa-impact-data.js** — `PA_ANCHORS` and `PA_SCENARIO_ESTIMATES`. To change national scenario data, edit **impact-data.js**.
-
-**Executive strip and tooltips:** The three executive proof cards (policy priority, national landscape, why trust) are populated from `CONFIG.copy.executiveStrip` in state-data.js. Each card has a `title` attribute for hover tooltips; edit 340b.html if you change tooltip text.
-
-## 6. `340b.css`
-
-This is the layout and print file.
-
-Use this file when:
-
-- spacing looks wrong
-- sections overlap
-- print preview hides content
-- page breaks look bad
-- the map or intro cards look fine on screen but wrong in PDF
-
-Important print note:
-
-- All print-specific rules live in the `@media print` section near the bottom of the file.
-- If the first print page is blank, look for hidden elements, forced page breaks, or duplicate print-only sections here and in `340b.html`.
-
-## What must NOT be changed
-
-These systems are finalized. Do not modify unless fixing a known bug:
+These flows are finalized and fragile:
 
 - **Print system** — `preparePrintSnapshot()`, `openPrintView()`, `hap340bPrint` localStorage, `print.html` structure
-- **Download PDF (image)** — `downloadPdfAsImage()`, html2canvas, jsPDF, 3-page layout
-- **Map** — SVG structure, injection logic; never add `overflow:hidden` on `.map-wrap` or `.us-map-wrap`
+- **Download PDF (image)** — `downloadPdfAsImage()`, html2canvas, jsPDF, multi-page layout
+- **Map** — SVG structure, injection logic; **never** add `overflow:hidden` on `.map-wrap` or `.us-map-wrap`
+- **DOM ids** used by `cacheDom()` in `340b.js` — renaming breaks the app
 
-See **CHATGPT-PROJECT-HANDOFF.md** for full constraints.
+See [CHATGPT-PROJECT-HANDOFF.md](CHATGPT-PROJECT-HANDOFF.md) and [AGENT-RULES-SYSTEM.md](AGENT-RULES-SYSTEM.md) for stability rules.
 
-## Important rules
+**Other rules:** Do not edit `assets/vendor/` except intentional vendor updates. Test print after any date/state/data change. Run **`python3 dashboard-audit.py`** after meaningful edits. **Print preview is a mandatory release gate.** Read [THREAT-MODEL.md](THREAT-MODEL.md) before adding remote services or auth.
 
-- **Do NOT touch print/PDF or Download PDF (image)** unless you are deliberately fixing a known print bug. These flows (`print.html`, `print-view.css`, and the html2canvas + jsPDF path) are fragile and highly coupled; casual edits often break PDF output.
-- Do not edit files inside `assets/vendor/` unless you are intentionally updating vendor assets.
-- If you change dates or state data, test print preview before publishing.
-- If a button stops working, check `340b.js` first and look for a console warning.
-- If the map fails, other buttons should still work. Keep that behavior.
-- Use `QA-CHECKLIST.md` before pushing changes.
-- Run `python3 dashboard-audit.py` after meaningful edits so the project checks for common regressions.
-- **Print preview is a mandatory release gate.** Do not publish if the PDF has blank pages, cut-off map, or wrong scaling—fix or revert before committing.
-- Read `THREAT-MODEL.md` before making security-related changes or adding any remote service, auth flow, or external script.
+---
 
 ## Simple release order
 
@@ -181,44 +79,115 @@ Follow this order after meaningful changes:
 
 1. Decide which file should change before editing anything.
 2. Update the content, style, or behavior in the correct file.
-3. Open the page through a local server and test the exact feature you changed.
-4. **Print gate:** Open `Print / PDF` and `Download PDF (image)` and confirm: (a) map fully visible in both outputs, (b) **Print/PDF:** first page shows header + Overview block (no blank first page), no page break in the middle of content or map, tight spacing; (c) **PDF image:** exactly 2 pages (page 1 = intro through map, page 2 = KPI through end), no break in community benefit, no blank page 4. If layout or print CSS changed, this is mandatory.
-5. Run `python3 dashboard-audit.py`.
-6. Use `QA-CHECKLIST.md`.
+3. Open the page through a **local server** and test the exact feature you changed.
+4. **Print gate:** Open `Print / PDF` and `Download PDF (image)` and confirm: (a) map fully visible in both outputs, (b) **Print/PDF:** first page shows header + Overview block (no blank first page), no page break in the middle of content or map, tight spacing; (c) **PDF image:** layout matches expectations (see `QA-CHECKLIST.md`). If layout or print CSS changed, this is mandatory.
+5. Run **`python3 dashboard-audit.py`**.
+6. Use **`QA-CHECKLIST.md`**.
 7. Run Semgrep if you changed security-sensitive code.
 8. Publish only after the print preview and source checks look correct to a human reviewer.
 
 If the printed PDF would confuse a lawmaker, hospital CEO, or administrator, treat that as a real bug and fix it before publishing.
 
+---
+
+## 1. `state-data.js`
+
+This is the main update file for **data**.
+
+Edit when you need: dates, share URL, state law records, high-salience intro and trust-copy defaults.
+
+Do **not** use this file for layout, colors, spacing, or button behavior.
+
+For step-by-step state updates, see [DATA-UPDATE.md](DATA-UPDATE.md) or the CODE MAP at the top of `state-data.js`. For operations and republishing, see [docs/OPERATIONS_MANUAL.md](docs/OPERATIONS_MANUAL.md). For prioritized next steps, see [docs/100-CRITICAL-CHOICES.md](docs/100-CRITICAL-CHOICES.md).
+
+---
+
+## 2. `340b.html`
+
+This is the page structure and content.
+
+Edit when: visible copy, headings, sections, source links, order of blocks, or when print shows duplicate content.
+
+**Avoid text/number pop on load:** The first thing the user sees is the raw HTML. JavaScript then overwrites copy from `state-data.js` (CONFIG) and STATE_340B. If the initial HTML does not match, the page will “flash.” Whenever you change **CONFIG.copy** or **STATE_340B** in state-data.js, update the **initial content** of the corresponding elements in 340b.html:
+
+- Intro/overview: `#overview-lead`, `#hap-position-lead`, `#hap-ask-label`, `#hap-ask-text`, `#map-hero-sub`
+- Executive strip: `#executive-priority-*`, `#executive-landscape-*`, `#executive-trust-*` (landscape value = “X states have enacted…; Y remain without…”, where X = states with `cp: true`, Y = rest)
+- Methodology/sources: `#sources-summary`, `#methodology-state-law-copy`, `#verification-order-copy`, `#print-source-summary`, `#print-verification-order-copy`
+- Protection counts: `#key-finding-protection-count`, `#protection-count`, `#no-protection-count`, `#print-protection-count`, `#print-no-protection-count` (same X and Y as executive landscape)
+- Count-up stats: elements with `data-count-up` should have initial text set to the final value (e.g. `7%`, `7.95`, `200+`) so they don’t flash from 0
+
+Keep the **inline CONFIG** in the first `<script>` block in `340b.html` in sync with `state-data.js`.
+
+---
+
+## 3. `340b.js`
+
+**Section blocks:** `CONFIGURATION & CONSTANTS`, `DOM REFERENCES`, `UTILITY HELPERS`, `STATE DATA HELPERS`, `SHARE LINK & URL HASH`, `PRINT PREPARATION (PROTECTED)`, `MAP INITIALIZATION & LIFECYCLE`, `FILTER INIT`, `UTILITY BUTTONS`, `INIT`.
+
+**Named constants:** e.g. `UTILITY_STATUS_DISMISS_MS`, `RESIZE_DEBOUNCE_MS`, `PDF_PAGE1_FALLBACK_RATIO`, `PDF_PAGE2_FALLBACK_RATIO` — edit at the top of their block.
+
+Edit when: map behavior, buttons, filters, print/share logic.
+
+Use when: map doesn’t render; Print/PDF wrong snapshot; Share link dead; Clear selection broken; counts stay at `0`; weak map story.
+
+**Print:** `Print / PDF` → `openPrintView()` → localStorage → `print.html`. **File → Print** on main page → `beforeprint` → `preparePrintSnapshot()`. Flow: `preparePrintSnapshot()`; PA default in `preparePrintSelectionState()`; counts in `finalizeCountUpValues()`; executive strip `updateExecutiveProofStrip()`; map context `updateMapContext()`. Compact print state summary stays smaller than live lists.
+
+---
+
+## 4. `print.html` and `print-view.css`
+
+Print view is the primary PDF path. Map and payload come from `localStorage` (key: `hap340bPrint`). Do not change this flow without updating both `340b.js` and `print.html`.
+
+---
+
+## 5. Policy simulators (`modules/`)
+
+Both simulators are modular and do not modify core map or print/PDF. See **[modules/README.md](modules/README.md)** for file roles.
+
+To change PA scenario data: **pa-impact-data.js** (`PA_ANCHORS`, `PA_SCENARIO_ESTIMATES`). National scenarios: **impact-data.js**.
+
+**Executive strip:** Populated from `CONFIG.copy.executiveStrip` in `state-data.js`; tooltips on cards in `340b.html`.
+
+---
+
+## 6. `340b.css`
+
+This is the layout and print file. Print-specific rules live in `@media print` near the bottom.
+
+---
+
 ## Fast debugging order
 
-If you do not know where to start, use this list:
+1. Wrong text or duplicate text → `340b.html`
+2. Wrong spacing, hidden content, or print layout → `340b.css`
+3. Broken button, map, filter, or share → `340b.js`
+4. Wrong dates or state facts → `state-data.js`
 
-1. Wrong text or duplicate text: check `340b.html`
-2. Wrong spacing, hidden content, or print layout issue: check `340b.css`
-3. Broken button, map, filter, or share behavior: check `340b.js`
-4. Wrong dates or state facts: check `state-data.js`
-
-## Quick decision tree
-
-Use this shortcut before you edit:
-
-1. Content issue: start in `340b.html`
-2. Data, date, or high-salience intro/trust-copy issue: start in `state-data.js`
-3. **Print view page** (content/layout of Print/PDF tab): start in `print.html` and `print-view.css`
-4. **Share link or URL hash wrong**: start in `340b.js` (buildShareUrl, getHashState, updateUrlHash)
-5. Print or page-break issue: start in `340b.css`, then `340b.js`
-6. Button, map, share, or selection issue: start in `340b.js`
-7. Source-verification wording issue: check `340b.html`, then `QA-CHECKLIST.md`, `README.md`, and `SECURITY.md`
+---
 
 ## Source verification order
 
 If you update state-law content, verify in this order:
 
-1. `MultiState` for the most current legislative status
-2. `ASHP` as the pharmacy-policy cross-check
-3. `America's Essential Hospitals` as the advocacy-reference confirmation
+1. **MultiState** — most current legislative status  
+2. **ASHP** — pharmacy-policy cross-check  
+3. **America's Essential Hospitals** — advocacy-reference confirmation  
+
+---
+
+## Where to read next
+
+| Document | Purpose |
+|----------|---------|
+| [docs/INDEX.md](docs/INDEX.md) | Documentation hub (“start here” for all docs) |
+| [GLOSSARY.md](GLOSSARY.md) | Terms (CONFIG, print snapshot, hap340bPrint, etc.) |
+| [CONFIG-INDEX.md](CONFIG-INDEX.md) | Where each config file lives |
+| [DATA-UPDATE.md](DATA-UPDATE.md) | State law updates |
+| [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) | Editing `340b-BASIC.html` |
+| [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md) | Daily refactor, reuse checklist, ULTRA v13–v22 |
+| [QA-CHECKLIST.md](QA-CHECKLIST.md) | Pre-push checks |
+| [README.md](README.md) | Project overview and file table |
 
 ## Using this project as a template / Export and reuse
 
-For reusing this dashboard as a template (e.g. another policy dashboard), see the **Reuse checklist** in [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md) and, if present, **REUSE.md**. They describe the print payload schema, DOM ids 340b.js depends on, and what to copy or rename.
+See the **Reuse checklist** in [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md) — print payload schema, DOM ids 340b.js depends on, what to copy or rename.

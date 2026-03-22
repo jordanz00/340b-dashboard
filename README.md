@@ -2,6 +2,8 @@
 
 A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing Program. Built for the Hospital and Healthsystem Association of Pennsylvania.
 
+**New here?** Start with **[NOVICE-MAINTAINER.md](NOVICE-MAINTAINER.md)** (what to edit) and **[docs/INDEX.md](docs/INDEX.md)** (all documentation links). Use **[GLOSSARY.md](GLOSSARY.md)** for terms and **[CONFIG-INDEX.md](CONFIG-INDEX.md)** to find where settings live.
+
 ## Files
 
 | File | Purpose |
@@ -11,17 +13,35 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 | `340b.js` | Interactivity: map, filters, animations, buttons |
 | `state-data.js` | **Edit this** for dates and state law data |
 | `DATA-UPDATE.md` | Step-by-step guide to update state data |
-| `NOVICE-MAINTAINER.md` | Short guide for a first-time maintainer |
+| `NOVICE-MAINTAINER.md` | **Start here** — maintainer guide, code map, protected systems |
+| `GLOSSARY.md` | Definitions for CONFIG, print snapshot, simulators, etc. |
+| `CONFIG-INDEX.md` | Which file holds each kind of setting |
+| `docs/INDEX.md` | Documentation navigation hub |
+| `340b-BASIC.html` | IT-safe variant (local scripts only); see `docs/BASIC-UPDATE-GUIDE.md` |
 | `QA-CHECKLIST.md` | Pre-push verification checklist |
 | `dashboard-audit.py` | Lightweight self-audit for dashboard regressions |
 | `THREAT-MODEL.md` | Static-site threat model and security boundaries |
 | `AI-HANDOFF.md` | AI memory structure and project context |
+| `print.html` | Dedicated print view (map + data from localStorage); used by Print / PDF |
+| `print-view.css` | Print view layout and print-specific styles |
+| `EXECUTIVE-READY-UPGRADE.md` | Executive-ready improvements and implementation log |
 | `assets/vendor/` | Local map libraries and U.S. atlas data |
 | `SECURITY.md` | Static-host security and audit notes |
+| `config.json` | Multi-agent and self-upgrade config: archive_path, daily_update, ultra_prompt_wave_size, rules_per_wave, security_checks |
+| `ultra_prompts.json` | Self-improvement waves (root copy; also in self_upgrade/). 10 waves, agent file names. |
+| `OPERATIONS_MANUAL.md` | Root entry point; full manual in [docs/OPERATIONS_MANUAL.md](docs/OPERATIONS_MANUAL.md) |
+| `modules/` | Simulators — see [modules/README.md](modules/README.md) |
+| `config/` | Dashboard settings — `config/settings.js` |
+| `data/` | Dataset metadata — `data/dataset-metadata.js` |
+| `analytics/` | Validation and policy insights |
+| `docs/` | [docs/INDEX.md](docs/INDEX.md), [docs/README.md](docs/README.md), [OPERATIONS_MANUAL.md](docs/OPERATIONS_MANUAL.md), [PROMPTS.md](docs/PROMPTS.md) |
+| `self_upgrade/` | Self-improvement waves: [ultra_prompts.json](self_upgrade/ultra_prompts.json), [self_update.js](self_upgrade/self_update.js) |
+| `agents/` | Multi-agent system: 10 agents + [run-waves.js](agents/run-waves.js). See [docs/MULTI_AGENT_SYSTEM.md](docs/MULTI_AGENT_SYSTEM.md). |
+| `ui/` | [ui/README.md](ui/README.md) — UI docs; main dashboard files stay at root |
 
 ## Quick edits (beginner-friendly)
 
-If you are new to this repo, use this rule:
+If you are new to this repo, use **[GLOSSARY.md](GLOSSARY.md)** when a term is unclear.
 
 - Change facts and dates in `state-data.js`
 - Change high-salience intro or trust-copy defaults in `state-data.js`
@@ -36,18 +56,20 @@ Open `state-data.js` and change:
 - `shareUrlBase` — if the public dashboard URL changes
 - `copy` — if the intro, HAP ask, source summary, or executive-scan wording needs to change
 
-### Update state law data
-When a new state passes 340B protection:
-1. Open `state-data.js`
+### How to update state law data
+1. Open **state-data.js**
 2. Find the state in `STATE_340B` (e.g. `PA: { y: null, pbm: false, cp: false, notes: "In progress." }`)
 3. Change `cp: true` if they now have contract pharmacy protection
 4. Update `y` (year), `pbm`, and `notes` as needed
+5. Sync `CONFIG.lastUpdated` and `data/dataset-metadata.js` if dates change
+6. Run `python3 dashboard-audit.py`
+7. Test the dashboard: map, filters, Print/PDF, Download PDF
 
 See **DATA-UPDATE.md** for full instructions.
 
 ## Running locally
 
-Open `340b.html` in a browser, or use a simple server:
+**Use a local web server** so all scripts load and the dashboard matches the [live site](https://jordanz00.github.io/340b-dashboard/340b.html). If you open `340b.html` directly (file://), you may see "Dashboard data didn't load" and a blank map because browsers can block loading other local scripts.
 
 ```bash
 # Python
@@ -57,9 +79,9 @@ python -m http.server 8000
 npx serve
 ```
 
-Then visit `http://localhost:8000/340b.html`
+Then visit `http://localhost:8000/340b.html` (or the URL `npx serve` prints).
 
-Do not test only from the file browser if you are checking interactive behavior. Use a local server so the dashboard behaves more like the hosted site.
+Do not rely on opening the file from the file browser when checking interactive behavior.
 
 ## Dependencies
 
@@ -68,8 +90,20 @@ Do not test only from the file browser if you are checking interactive behavior.
 
 No package install is required for the dashboard itself.
 
+## Protected systems
+
+Do **not** modify these without explicit need — they are finalized:
+
+- **Print system** — `preparePrintSnapshot()`, `openPrintView()`, `hap340bPrint` localStorage, `print.html`
+- **PDF image export** — `downloadPdfAsImage()`, html2canvas, jsPDF layout
+- **Map** — SVG structure, injection logic; never add `overflow:hidden` to `.map-wrap` or `.us-map-wrap`
+
+See **NOVICE-MAINTAINER.md** and **CHATGPT-PROJECT-HANDOFF.md** for full constraints.
+
 ## Features
 
+- **Pennsylvania Impact Mode** — PA-specific estimates: hospitals, pharmacies, patient access, community benefit
+- **Policy Impact Simulator** — National scenarios (expand, current, remove protections)
 - Interactive US map (click states for details)
 - State list buttons sync with map and detail panel
 - Filter states by `All`, `Protection`, or `No protection`
@@ -98,6 +132,10 @@ If you are deciding where to be most careful, use this order:
 3. URL hash state and selection recovery
 4. share-link behavior and fallback copy
 5. map rendering and local vendor assets
+
+## Executive Mode and daily improvement
+
+For structured upgrades and periodic polish, use the **Executive Mode** / **daily improvement workflow**: run the next ULTRA wave from `ULTRA-prompts.md`, apply changes, then audit and update handoff. See [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md) for the full flow.
 
 ## Maintenance workflow
 
@@ -135,7 +173,8 @@ Check these files in this order:
 
 ### If the map is missing
 
-Check these files in this order:
+- If you see **"Dashboard data didn't load"** in the map area, you are likely opening the page via file://. Use a local server (see **Running locally** above).
+- Otherwise check these files in this order:
 
 1. `assets/vendor/states-10m.js`
 2. `340b.html` script tags

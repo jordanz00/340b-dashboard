@@ -27,6 +27,13 @@
  *
  * LEARNING: Count-up = numbers that animate from 0 to their final value when they scroll into view; see finalizeCountUpValues() and elements with [data-count-up]. preparePrintSnapshot = runs before the print dialog; it finalizes numbers, reveals sections, sets PA default, builds intro snapshot, and draws the map so the PDF is complete; see openPrintView() which calls it.
  *
+ * INIT FLOW (what runs on load — find these functions in this file):
+ *   DOMContentLoaded → cacheDom, applyConfigCopy, validateStateData, drawMap,
+ *   renderStateChips, bindMapEvents, setupMapVisibilityObserver, initFilters,
+ *   initUtilityButtons, updateMetadata, applyAboutDataPanel, applyPolicyInsights
+ * PRINT / PDF TAB: openPrintView → preparePrintSnapshot → getPrintViewPayload → localStorage (hap340bPrint)
+ * MAP CLICK: bindMapEvents → selectState → updateMapContext, updateUrlHash, renderStateDetail
+ *
  * WAVE 1 (Data Credibility): Metadata, versioning, timestamps in data/dataset-metadata.js and applyAboutDataPanel(); dataset download CSV/JSON in buildDatasetCsv(), buildDatasetJson(), initDatasetDownload().
  * WAVE 2 (Policy Analytics): POLICY_INSIGHTS in analytics/policy-insights.js; applyPolicyInsights(); fillAdoptionsChart(); data/historical-trends.js for YoY trends.
  * WAVE 3 (Interactivity): State filters, map hover/click, tooltips, ranked table with initRankedTableSort(), chart bar tooltips.

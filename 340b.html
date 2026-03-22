@@ -173,12 +173,30 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <script src="assets/vendor/states-10m.js"></script>
 </head>
 <body>
+<!--
+  CODE MAP (top to bottom):
+  - Meta, Open Graph, inlined CONFIG, vendor scripts in <head>
+  - Header and navigation
+  - Utility toolbar (Print / PDF, Download PDF image, Share, Export SVG)
+  - Main: print-only snapshot blocks, then dashboard grid
+  - Intro (Overview, HAP Position)
+  - Key findings, bottom line takeaway, executive scan strip
+  - Map hero (state map, lists, legal signals, methodology, print state summary)
+  - Key metrics (KPI strip)
+  - Supporting context — Why this matters
+  - Community benefit
+  - Pennsylvania Impact Mode, Policy Impact Simulator
+  - Access to care, PA safeguards
+  - Footer
+  Edit text and structure here. Dates and state data: state-data.js.
+-->
 <div class="dashboard">
 <div id="map-tooltip" class="map-tooltip" aria-hidden="true"></div>
 <div id="state-list-tooltip" class="state-list-tooltip" aria-hidden="true"></div>
 <p id="state-selection-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
 <p id="map-keyboard-hint" class="sr-only">Tab to move between states. Press Enter or Space to select a state.</p>
 <a href="#main-content" class="skip-link">Skip to main content</a>
+<!-- ========== SECTION: Header and navigation ========== -->
 <header class="dashboard-header">
   <div class="header-left">
     <picture>
@@ -203,6 +221,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 </header>
 
 <div class="dashboard-inner">
+<!-- ========== SECTION: Utility toolbar (Print / PDF, Share, Download) ========== -->
 <section class="utility-toolbar scroll-reveal" aria-label="Page tools">
   <div class="utility-toolbar-actions">
     <button type="button" id="btn-print" class="utility-btn" aria-label="Print or save as PDF">Print / PDF</button>
@@ -213,13 +232,16 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <p class="utility-toolbar-text">Page tools</p>
   <p id="utility-status" class="utility-status" aria-live="polite"></p>
 </section>
+<!-- ========== SECTION: No JavaScript notice ========== -->
 <noscript>
   <section class="noscript-card" aria-label="JavaScript notice">
     <p><strong>Interactive features are unavailable.</strong> JavaScript is required for the live map, filters, and sharing tools, but the policy summary and key 340B facts below remain available.</p>
   </section>
 </noscript>
+<!-- ========== SECTION: Main content (PDF capture root) ========== -->
 <main id="main-content" role="main">
   <div id="pdf-capture-root">
+  <!-- ========== SECTION: Print-only — report header and intro snapshot for PDF ========== -->
   <!-- Keep the print header minimal. The real intro cards below should be the printed source of truth,
        so the PDF matches the live dashboard instead of showing duplicated summary copy. -->
   <section class="print-report-header print-only" aria-hidden="true">
@@ -239,7 +261,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <section id="print-intro-snapshot" class="print-intro-snapshot print-only" aria-hidden="true"></section>
   <div class="dashboard-grid">
 
-    <!-- Intro: What is 340B first, HAP Position below — aligned with map width -->
+    <!-- ========== SECTION: Intro — Overview and HAP Position ========== -->
     <div class="intro-section">
       <div class="intro-section-inner">
         <article id="what-is-340b" class="card">
@@ -276,7 +298,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
     </div>
 
-    <!-- Key findings — narrative that answers: which states, how much benefit, who participates -->
+    <!-- ========== SECTION: Key findings ========== -->
     <section class="key-findings-strip span-12 scroll-reveal" aria-label="Key findings">
       <div class="key-findings-heading">
         <span class="key-findings-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
@@ -290,10 +312,12 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </ul>
     </section>
 
+    <!-- ========== SECTION: Bottom line takeaway ========== -->
     <section class="exec-takeaway span-12 scroll-reveal" aria-label="Key takeaway">
       <strong>Bottom line:</strong> What happens to 340B in the states directly affects whether hospitals can keep getting discount meds to patients—including 72 hospitals in Pennsylvania.
     </section>
 
+    <!-- ========== SECTION: Executive scan strip ========== -->
     <section class="executive-proof-strip span-12 scroll-reveal" aria-label="Executive scan">
       <article class="executive-proof-card" title="HAP's core advocacy focus for 340B">
         <p class="executive-proof-label" id="executive-priority-label">What we're fighting for</p>
@@ -312,7 +336,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </article>
     </section>
 
-    <!-- Map hero — centerpiece display -->
+    <!-- ========== SECTION: Map hero — state map, lists, legal signals, methodology ========== -->
     <section id="state-laws" class="map-hero-section span-12 scroll-reveal">
       <div class="map-hero-inner">
         <article class="map-hero-card">
@@ -422,7 +446,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
     </section>
 
-    <!-- Key metrics — below map -->
+    <!-- ========== SECTION: Key metrics (KPI strip) ========== -->
     <section class="kpi-strip span-12 scroll-reveal" aria-label="Key metrics">
       <div class="kpi-card">
         <p class="kpi-label">U.S. Drug Market</p>
@@ -447,7 +471,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       <p class="data-freshness" id="data-freshness-text">Data as of March 2025 - Last updated March 2025</p>
     </section>
 
-    <!-- Supporting context cards -->
+    <!-- ========== SECTION: Supporting context — Why this matters ========== -->
     <div class="supporting-section span-12 scroll-reveal">
       <h3 class="section-subhead section-subhead--supporting">Why this matters to health system leaders</h3>
       <div class="supporting-cards-row">
@@ -516,7 +540,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
     </div>
 
-    <!-- Community benefit — full width under map -->
+    <!-- ========== SECTION: Community benefit ========== -->
     <article id="community-benefit" class="card span-12 scroll-reveal">
       <div class="card-heading">
         <div class="card-heading-text">
@@ -550,24 +574,24 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
     </article>
 
-    <!-- Pennsylvania Impact Mode — PA-specific policy scenarios, isolated from core dashboard -->
+    <!-- ========== SECTION: Pennsylvania Impact Mode (JS modules) ========== -->
     <section id="pa-impact-mode" class="pa-impact-mode-section span-12 scroll-reveal" aria-label="Pennsylvania Impact Mode">
       <article class="card pa-impact-mode-card">
         <div id="pa-impact-mode-root"></div>
       </article>
     </section>
 
-    <!-- Policy Impact Simulator — modular, isolated from core dashboard -->
+    <!-- ========== SECTION: Policy Impact Simulator (JS modules) ========== -->
     <section id="policy-impact-simulator" class="impact-simulator-section span-12 scroll-reveal" aria-label="Policy Impact Simulator">
       <article class="card impact-simulator-card">
         <div id="policy-impact-simulator-root"></div>
       </article>
     </section>
 
-    <!-- Policy anchor (for nav) -->
+    <!-- ========== SECTION: Policy nav anchor ========== -->
     <div id="policy" class="span-12" style="height:0;margin:0;padding:0;" aria-hidden="true"></div>
 
-    <!-- Access -->
+    <!-- ========== SECTION: Access to care ========== -->
     <article id="access" class="card span-6">
       <div class="card-heading">
         <div class="card-heading-text">
@@ -579,7 +603,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       <p>Federal rules allow hospitals to use in-house or community pharmacies for 340B. Some drugmakers limit hospitals to <strong>one contract pharmacy</strong>, which hurts rural and underserved patients when hospitals rely on local pharmacy networks.</p>
     </article>
 
-    <!-- PA Safeguards -->
+    <!-- ========== SECTION: Pennsylvania safeguards ========== -->
     <article id="pa-safeguards" class="card span-6">
       <div class="card-heading">
         <div class="card-heading-text">
@@ -601,6 +625,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 
 </div>
 
+<!-- ========== SECTION: Site footer ========== -->
 <footer class="site-footer" role="contentinfo">
   <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
   <div class="footer-cta">
@@ -615,6 +640,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 </footer>
 </div>
 
+<!-- ========== SECTION: Scripts — PDF libs (CDN), main app, then simulator modules ========== -->
 <!-- Download PDF (image) uses html2canvas + jsPDF from CDN. For offline/local-only, replace with assets/vendor copies and remove unpkg from CSP. -->
   <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js" crossorigin="anonymous"></script>

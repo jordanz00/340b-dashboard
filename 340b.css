@@ -101,6 +101,22 @@ html { scroll-behavior: smooth; }
  --print-muted: #64748b;
 }
 
+/*
+  CODE MAP (approximate line — search for section comments below):
+  - :root variables, base reset (1–118)
+  - Header (120), mobile nav (135), utility toolbar (144)
+  - KPI strip (174), PA metrics (182), key findings (198)
+  - Main grid, below-fold (215–230), card icons (232)
+  - Intro (245), map hero (273), compact cards (307), stat blocks (328)
+  - Community benefit (341), PA Impact (360), Policy Simulator (382)
+  - Map, domino, state filter, scroll reveal, state lists, trends (561–710)
+  - About Data, validation, policy insights, count-up, methodology (714–890)
+  - Footer CTA (890)
+  - @media print (896+)
+  - 340b-BASIC overrides (980+)
+  See DATA-UPDATE.md for data; NOVICE-MAINTAINER.md for what to edit.
+*/
+
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

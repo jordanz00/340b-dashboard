@@ -1,0 +1,43 @@
+# Documentation — Start Here
+
+This is the **navigation hub** for the 340B Advocacy Dashboard. For day-to-day edits, see the root [README.md](../README.md) and [NOVICE-MAINTAINER.md](../NOVICE-MAINTAINER.md).
+
+---
+
+## START HERE
+
+| If you are… | Read this |
+|-------------|-----------|
+| **Brand new to the project** | [NOVICE-MAINTAINER.md](../NOVICE-MAINTAINER.md) — code map, what file to edit, “I want to…” tree |
+| **Changing dates or state law data** | [DATA-UPDATE.md](../DATA-UPDATE.md) |
+| **Editing the Basic (IT-safe) page only** | [BASIC-UPDATE-GUIDE.md](BASIC-UPDATE-GUIDE.md) |
+| **Looking up a term** | [GLOSSARY.md](../GLOSSARY.md) |
+| **Finding where config lives** | [CONFIG-INDEX.md](../CONFIG-INDEX.md) |
+| **Refactoring daily / learning labels** | [REFACTORING-CODEBASE-MANUAL.md](../REFACTORING-CODEBASE-MANUAL.md) and [ULTRA-prompts.md](../ULTRA-prompts.md) (waves v13–v22) |
+| **Architecture overview** | [docs/README.md](README.md) (this folder’s architecture) |
+| **Operations (multi-agent, republishing)** | [OPERATIONS_MANUAL.md](OPERATIONS_MANUAL.md) |
+| **Security** | [SECURITY.md](../SECURITY.md), [SECURE-FORCE.md](../SECURE-FORCE.md) |
+
+---
+
+## Quick file map (dashboard code)
+
+| File | Role |
+|------|------|
+| [state-data.js](../state-data.js) | CONFIG, STATE_340B, lookups |
+| [340b.html](../340b.html) | Structure and visible content |
+| [340b.js](../340b.js) | Map, filters, print/PDF/share |
+| [340b.css](../340b.css) | Layout and print styles |
+| [print.html](../print.html) + [print-view.css](../print-view.css) | Print view tab |
+| [340b-BASIC.html](../340b-BASIC.html) | Locked-down hosting (no CDN) |
+
+---
+
+## Folder map
+
+| Folder | Purpose |
+|--------|---------|
+| [modules/](../modules/) | PA Impact + Policy Simulator scripts |
+| [config/](../config/) | Settings and chart defaults (see CONFIG-INDEX) |
+| [data/](../data/) | Dataset metadata and provenance |
+| [assets/vendor/](../assets/vendor/) | D3, TopoJSON, map data |
