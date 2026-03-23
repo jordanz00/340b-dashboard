@@ -2,6 +2,9 @@
 
 **Start here:** This file is the single entry point for “what do I edit?” Use **[GLOSSARY.md](GLOSSARY.md)** for term definitions, **[CONFIG-INDEX.md](CONFIG-INDEX.md)** for where each setting lives, and **[docs/INDEX.md](docs/INDEX.md)** for all documentation links.
 
+| **Primary product (communications, CEO, IT-safe deploy)** | **[340b-BASIC.html](340b-BASIC.html)** — edit copy in the HTML; map data in **state-data.js**. See [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) and [docs/CEO-SHOWCASE.md](docs/CEO-SHOWCASE.md). |
+| **Advanced dashboard** | **[340b.html](340b.html)** + **[340b.js](340b.js)** — Print/PDF, share, filters, simulators. See [docs/340b-js-map.md](340b-js-map.md) if you must touch behavior. |
+
 ---
 
 ## One-page code map
@@ -114,7 +117,7 @@ Edit when: visible copy, headings, sections, source links, order of blocks, or w
 - Executive strip: `#executive-priority-*`, `#executive-landscape-*`, `#executive-trust-*` (landscape value = “X states have enacted…; Y remain without…”, where X = states with `cp: true`, Y = rest)
 - Methodology/sources: `#sources-summary`, `#methodology-state-law-copy`, `#verification-order-copy`, `#print-source-summary`, `#print-verification-order-copy`
 - Protection counts: `#key-finding-protection-count`, `#protection-count`, `#no-protection-count`, `#print-protection-count`, `#print-no-protection-count` (same X and Y as executive landscape)
-- Count-up stats: elements with `data-count-up` should have initial text set to the final value (e.g. `7%`, `7.95`, `200+`) so they don’t flash from 0
+- Count-up stats: elements with `data-count-up` should have initial text set to the final value (e.g. `7%`, `7.95`, `179`) so they don’t flash from 0
 
 Keep the **inline CONFIG** in the first `<script>` block in `340b.html` in sync with `state-data.js`.
 
@@ -180,9 +183,12 @@ If you update state-law content, verify in this order:
 | Document | Purpose |
 |----------|---------|
 | [docs/INDEX.md](docs/INDEX.md) | Documentation hub (“start here” for all docs) |
+| [docs/CEO-SHOWCASE.md](docs/CEO-SHOWCASE.md) | Leadership brief, talking points, BASIC-first deploy |
+| [docs/DESIGN-ITERATION-CHECKLIST.md](docs/DESIGN-ITERATION-CHECKLIST.md) | Design pass every release |
+| [docs/340b-js-map.md](docs/340b-js-map.md) | Full-dashboard JS function map (advanced) |
 | [GLOSSARY.md](GLOSSARY.md) | Terms (CONFIG, print snapshot, hap340bPrint, etc.) |
 | [CONFIG-INDEX.md](CONFIG-INDEX.md) | Where each config file lives |
-| [DATA-UPDATE.md](DATA-UPDATE.md) | State law updates |
+| [DATA-UPDATE.md](DATA-UPDATE.md) | State law updates + inline `340b.html` sync |
 | [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) | Editing `340b-BASIC.html` |
 | [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md) | Daily refactor, reuse checklist, ULTRA v13–v22 |
 | [QA-CHECKLIST.md](QA-CHECKLIST.md) | Pre-push checks |

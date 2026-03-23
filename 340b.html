@@ -57,8 +57,8 @@ var CONFIG = {
   shareTitle: "340B Drug Pricing Program | HAP Advocacy Dashboard",
   shareDescription: "Protect 340B integrity and contract pharmacy access | 72 PA hospitals | $7.95B community benefits | State-by-state 340B policy dashboard.",
   shareUrlBase: "https://jordanz00.github.io/340b-dashboard/340b.html",
-  dataFreshness: "March 2025",
-  lastUpdated: "March 2025",
+  dataFreshness: "March 2026",
+  lastUpdated: "March 2026",
   printDefaultState: "PA",
   printDefaultStateReason: "HAP focal state for print.",
     copy: {
@@ -68,8 +68,8 @@ var CONFIG = {
     hapAskText: "Protect 340B so hospitals can continue serving Pennsylvanians.",
     mapHeroSub: "Click a state to see whether it protects the discount—and what that means for hospitals and patients.",
     sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
-    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2025.",
-    printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures from 340B Health and AHA (2024). Federal oversight from HRSA (2024).",
+    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2026.",
+    printSourceSummary: "State law status is compiled from MultiState, ASHP, America's Essential Hospitals. Community benefit from 340B Health and AHA (HAP/PA figures). HRSA Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.",
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
       priorityLabel: "What we're fighting for",
@@ -305,7 +305,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <h3 class="key-findings-title">The numbers that matter</h3>
       </div>
       <ul class="key-findings-list">
-        <li><span id="key-finding-protection-count">21</span> states protect the discount;<span class="key-finding-next-line"> <strong>29</strong> don't yet</span></li>
+        <li><span id="key-finding-protection-count">21</span> states protect the discount; <strong>29</strong> have not yet enacted protection</li>
         <li><strong>$7.95B</strong> in community benefits from 340B hospitals (2024)</li>
         <li><strong>72</strong> Pennsylvania hospitals use 340B to serve patients</li>
         <li><strong>7%</strong> of U.S. outpatient drug spending uses the 340B discount</li>
@@ -422,15 +422,16 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <summary class="methodology-toggle" id="methodology-toggle" aria-label="Expand about this data section">About this data</summary>
         <div class="methodology-content" id="methodology-content">
           <p class="methodology-sources-header"><strong>Data sources:</strong> MultiState, ASHP, America's Essential Hospitals (state law); 340B Health, AHA (community benefit); HRSA (oversight).</p>
-          <p id="methodology-state-law-copy">State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2025.</p>
-          <p><strong>Community benefit</strong> figures are from 340B Health and AHA survey data (2024).</p>
-          <p><strong>HRSA oversight</strong> figures reflect federal audit activity in 2024.</p>
+          <p id="methodology-state-law-copy">State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2026.</p>
+          <p><strong>Community benefit</strong> figures are from 340B Health and AHA (HAP/PA figures).</p>
+          <p><strong>HRSA oversight</strong> — Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.</p>
           <p><strong>Recommended verification order:</strong> <span id="verification-order-copy">MultiState, then ASHP, then America's Essential Hospitals.</span></p>
-          <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2025</span></p>
+          <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2026</span></p>
           <ul class="source-links">
             <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a> - current legislative status</li>
             <li><a href="https://www.ashp.org/" target="_blank" rel="noopener noreferrer">ASHP</a> - pharmacy-policy cross-check</li>
             <li><a href="https://essentialhospitals.org/" target="_blank" rel="noopener noreferrer">America's Essential Hospitals</a> - advocacy-reference confirmation</li>
+            <li><a href="https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" target="_blank" rel="noopener noreferrer">HRSA Program Integrity FY 2024</a> - audit results</li>
           </ul>
         </div>
       </details>
@@ -438,9 +439,9 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
            after the interactive disclosure is hidden in print. -->
       <section class="print-sources print-only" aria-hidden="true">
         <h3>About this data</h3>
-        <p id="print-source-summary">State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures are from 340B Health and AHA survey data (2024). HRSA oversight figures reflect federal audit activity in 2024.</p>
+        <p id="print-source-summary">State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit from 340B Health and AHA (HAP/PA figures). HRSA Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.</p>
         <p><strong>Verification order:</strong> <span id="print-verification-order-copy">MultiState, then ASHP, then America's Essential Hospitals.</span></p>
-        <p><strong>Last updated:</strong> <span id="print-methodology-last-updated">March 2025</span></p>
+        <p><strong>Last updated:</strong> <span id="print-methodology-last-updated">March 2026</span></p>
       </section>
         </article>
       </div>
@@ -460,7 +461,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
       <div class="kpi-card">
         <p class="kpi-label">Oversight</p>
-        <p class="kpi-value primary count-up" data-count-up="200" data-suffix="+">200+</p>
+        <p class="kpi-value primary count-up" data-count-up="179" data-suffix="">179</p>
         <p class="kpi-desc">HRSA audits in 2024</p>
       </div>
       <div class="kpi-card">
@@ -501,13 +502,13 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <p>In 2024 federal oversight still included meaningful review activity:</p>
         <div class="stat-block">
           <div class="stat">
-            <p class="stat-label">Hospitals</p>
-            <p class="stat-value count-up" data-count-up="200" data-suffix="+">200+</p>
+            <p class="stat-label">Covered entities</p>
+            <p class="stat-value count-up" data-count-up="179" data-suffix="">179</p>
             <p class="stat-desc">Audited</p>
           </div>
           <div class="stat">
             <p class="stat-label">Manufacturers</p>
-            <p class="stat-value count-up" data-count-up="6" data-suffix="%">6%</p>
+            <p class="stat-value count-up" data-count-up="5" data-suffix="">5</p>
             <p class="stat-desc">Audited</p>
           </div>
         </div>
@@ -636,7 +637,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64" loading="lazy">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
   </p>
-  <p class="footer-design">Design Mark IV</p>
+  <p class="footer-design">Design Mark VI</p>
 </footer>
 </div>
 

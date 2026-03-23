@@ -23,8 +23,8 @@ var CONFIG = {
   shareTitle: "340B Drug Pricing Program | HAP Advocacy Dashboard",
   shareDescription: "Protect 340B integrity and contract pharmacy access | 72 PA hospitals | $7.95B community benefits | State-by-state 340B policy dashboard.",
   shareUrlBase: "https://jordanz00.github.io/340b-dashboard/340b.html",
-  dataFreshness: "March 2025",
-  lastUpdated: "March 2025",
+  dataFreshness: "March 2026",
+  lastUpdated: "March 2026",
   printDefaultState: "PA",
   printDefaultStateReason: "HAP focal state for print.",
 
@@ -36,8 +36,8 @@ var CONFIG = {
     hapAskText: "Protect 340B so hospitals can continue serving Pennsylvanians.",
     mapHeroSub: "Click a state to see whether it protects the discount—and what that means for hospitals and patients.",
     sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
-    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2025.",
-    printSourceSummary: "State law status is compiled from MultiState, ASHP, and America's Essential Hospitals. Community benefit figures from 340B Health and AHA (2024). Federal oversight from HRSA (2024).",
+    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2026.",
+    printSourceSummary: "State law status is compiled from MultiState, ASHP, America's Essential Hospitals. Community benefit from 340B Health and AHA (HAP/PA figures). HRSA Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.",
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
       priorityLabel: "What we're fighting for",

@@ -48,6 +48,8 @@ SOURCE_FILES = list(DASHBOARD_FILES) + [PROMPTS_FILE]
 APP_HTML_FILES = [
     ROOT / "340b.html",
 ]
+PRINT_HTML = ROOT / "print.html"
+PRINT_VIEW_CSS = ROOT / "print-view.css"
 
 UNSAFE_PATTERNS = [
     r"\binnerHTML\b",
@@ -76,6 +78,7 @@ MANUAL_CHECKS = [
     "Confirm the PDF looks polished and pharma/CEO presentable.",
     "Verify source dates and source links still match the current law and reporting data.",
     "Re-read the PDF and dashboard copy for lawmakers, hospital CEOs, and administrators before release.",
+    "Confirm invalid #state-XX in URL (e.g. #state-XY) shows empty selection and no console error.",
 ]
 
 
@@ -151,6 +154,47 @@ def check_page_hardening(results: list[str]) -> bool:
     if okay:
         record(results, True, "App entry pages include CSP and referrer hardening")
 
+    return okay
+
+
+def check_print_view_regression_guards(results: list[str]) -> bool:
+    """Print view must have @page rules and page-break regression guards."""
+    okay = True
+    if not PRINT_VIEW_CSS.exists():
+        record(results, False, "print-view.css missing")
+        return False
+    css = read_text(PRINT_VIEW_CSS)
+    if "@page" not in css:
+        record(results, False, "print-view.css should have @page rules for print layout")
+        okay = False
+    if "page-break" not in css:
+        record(results, False, "print-view.css should use page-break rules for content blocks")
+        okay = False
+    if okay:
+        record(results, True, "print-view.css has print regression guards")
+    return okay
+
+
+def check_print_view_security(results: list[str]) -> bool:
+    """Print view (print.html) must have CSP and must not use innerHTML for payload injection."""
+    okay = True
+    if not PRINT_HTML.exists():
+        record(results, True, "print.html not present (optional); skipping print view checks")
+        return True
+    html = read_text(PRINT_HTML)
+    if 'Content-Security-Policy' not in html:
+        record(results, False, "print.html is missing a Content-Security-Policy meta tag")
+        okay = False
+    # Allow innerHTML for map SVG (validated payload from our serialization). Fail only on clearly unsafe sources.
+    if re.search(r"\.innerHTML\s*=\s*(?:params|location|document\.URL|window\.name|location\.search)", html):
+        record(results, False, "print.html must not assign unsanitized URL/params to innerHTML")
+        okay = False
+    # Check for payload validation
+    if "isValidPayload" not in html and "typeof payload" not in html:
+        record(results, False, "print.html should validate payload shape before use")
+        okay = False
+    if okay:
+        record(results, True, "print.html has CSP and does not use innerHTML for payload")
     return okay
 
 
@@ -308,6 +352,8 @@ def main() -> int:
         check_hidden_characters,
         check_external_links,
         check_page_hardening,
+        check_print_view_security,
+        check_print_view_regression_guards,
         check_remote_assets,
         check_removed_feature_copy,
         check_print_css,

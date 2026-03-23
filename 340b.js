@@ -739,7 +739,7 @@
 
     var kpiDrug = "7%";
     var kpiBenefit = "$7.95B";
-    var kpiOversight = "200+";
+    var kpiOversight = "179";
     var kpiPA = "72";
     var drugEl = document.querySelector(".kpi-strip .kpi-card:nth-child(1) .kpi-value");
     var benefitEl = document.querySelector(".kpi-strip .kpi-card:nth-child(2) .kpi-value");
@@ -801,7 +801,7 @@
       kpiOversight: summary.kpiOversight,
       kpiPA: summary.kpiPA,
       dataFreshness: summary.dataFreshness,
-      methodologyDate: config.lastUpdated || "March 2025"
+      methodologyDate: config.lastUpdated || "March 2026"
     };
   }
 
