@@ -704,25 +704,6 @@
     }
   }
 
-  function writePopupLoadingDoc(win, docTitle, message) {
-    if (!win || win.closed) return;
-    try {
-      var doc = win.document;
-      doc.open();
-      doc.write(
-        "<!DOCTYPE html><html lang=\"en\"><head><meta charset=\"utf-8\">" +
-          "<meta name=\"viewport\" content=\"width=device-width,initial-scale=1\">" +
-          "<title>" + docTitle + "</title>" +
-          "<style>body{font-family:-apple-system,BlinkMacSystemFont,\"Segoe UI\",sans-serif;padding:2rem 1.25rem;margin:0;text-align:center;color:#1d1d1f;background:#fafafa}" +
-          "p{margin:0 0 0.75rem} .sub{font-size:0.9rem;color:#424245}</style></head><body>" +
-          "<p><strong>" + message + "</strong></p><p class=\"sub\">This tab will update when ready.</p></body></html>"
-      );
-      doc.close();
-    } catch (e) {
-      /* ignore */
-    }
-  }
-
   /** Tooltip vertical offset (px) below cursor for map hover. */
   var TOOLTIP_OFFSET_Y = 14;
   /** Tooltip vertical offset (px) above cursor for state chip hover. */
@@ -778,10 +759,10 @@
     var kpiBenefit = "$7.95B";
     var kpiOversight = "179";
     var kpiPA = "72";
-    var drugEl = document.querySelector(".kpi-strip .kpi-card:nth-child(1) .kpi-value");
-    var benefitEl = document.querySelector(".kpi-strip .kpi-card:nth-child(2) .kpi-value");
-    var oversightEl = document.querySelector(".kpi-strip .kpi-card:nth-child(3) .kpi-value");
-    var paEl = document.querySelector(".kpi-strip .kpi-card:nth-child(4) .kpi-value");
+    var drugEl = document.querySelector(".kpi-card--market .kpi-value");
+    var benefitEl = document.querySelector(".kpi-card--benefit .kpi-value");
+    var oversightEl = document.querySelector(".kpi-card--oversight .kpi-value");
+    var paEl = document.querySelector(".kpi-card--pa .kpi-value");
     if (drugEl) kpiDrug = drugEl.textContent.trim();
     if (benefitEl) kpiBenefit = benefitEl.textContent.trim();
     if (oversightEl) kpiOversight = oversightEl.textContent.trim();
@@ -842,14 +823,10 @@
     };
   }
 
-  // Opens the print view tab and injects the map and snapshot data from localStorage so the user can save as PDF from the browser.
-  // preOpenedWin: optional window returned from window.open("about:blank") in the same click tick (required for iOS / mobile popup policy).
-  function openPrintView(preOpenedWin) {
+  // Opens the print view and injects the map and snapshot data from localStorage so the user can save as PDF from the browser.
+  // Mobile/tablet: same-tab navigation (reliable localStorage + no popup). Desktop: new tab when allowed.
+  function openPrintView() {
     setUtilityStatus("Preparing print view...");
-    if (preOpenedWin && !preOpenedWin.closed) {
-      writePopupLoadingDoc(preOpenedWin, "Preparing print view…", "Preparing print view…");
-    }
-    /* Desktop: preOpenedWin is null; we open print.html after map prep (allowed on most desktop browsers). */
     // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
     finalizeCountUpValues();
     preparePrintSelectionState();
@@ -864,42 +841,19 @@
         localStorage.setItem(PRINT_VIEW_STORAGE_KEY, JSON.stringify(payload));
       } catch (e) {
         setUtilityStatus("Print data too large. Try closing other tabs.");
-        if (preOpenedWin && !preOpenedWin.closed) {
-          try {
-            preOpenedWin.close();
-          } catch (ce) {
-            /* ignore */
-          }
-        }
         return;
       }
       var printUrl = resolveAppUrl("print.html?auto=1");
-      if (preOpenedWin && !preOpenedWin.closed) {
-        try {
-          preOpenedWin.location.href = printUrl;
-        } catch (e1) {
-          try {
-            preOpenedWin.location.assign(printUrl);
-          } catch (e2) {
-            window.location.href = printUrl;
-            return;
-          }
-        }
-        setUtilityStatus("Print view ready — use Share, then Print or Save as PDF.");
+      if (isMobileOrTabletBrowser()) {
+        window.location.assign(printUrl);
+        return;
+      }
+      var printWin = window.open(printUrl, "_blank", "noopener");
+      if (printWin) {
+        setUtilityStatus("Print view opened. Use the browser print dialog to save as PDF.");
       } else {
-        if (isMobileOrTabletBrowser()) {
-          setUtilityStatus("Opening print view in this tab…");
-          window.location.href = printUrl;
-          return;
-        }
-        var printWin = window.open(printUrl, "_blank", "noopener");
-        if (printWin) {
-          setUtilityStatus("Print view opened. Use the browser print dialog to save as PDF.");
-        } else {
-          setUtilityStatus("Opening print view in this tab…");
-          window.location.href = printUrl;
-          return;
-        }
+        window.location.assign(printUrl);
+        return;
       }
       setTimeout(function () {
         setUtilityStatus("");
@@ -1670,12 +1624,7 @@
     if (!appState.dom.printButton) return;
 
     appState.dom.printButton.addEventListener("click", function () {
-      // Mobile/tablet: open a tab in the same gesture, then navigate when localStorage payload is ready (iOS blocks delayed window.open).
-      var preOpenedWin = null;
-      if (isMobileOrTabletBrowser()) {
-        preOpenedWin = window.open("about:blank", "_blank");
-      }
-      openPrintView(preOpenedWin);
+      openPrintView();
     });
   }
 
@@ -1802,18 +1751,20 @@
      Page 1: intro through executive strip. Page 2: map + state analysis.
      Page 3: KPI strip through end. Changes can break layout.
      */
-  function downloadPdfAsImage(preOpenedWin) {
+  function downloadPdfAsImage() {
+    /* Phones/tablets: html2canvas + jsPDF reliably runs out of memory or times out. Use the same print-optimized view + system Save as PDF. */
+    if (isMobileOrTabletBrowser()) {
+      setUtilityStatus("Opening print-ready page — tap Print / Save as PDF, then Save to Files.");
+      setTimeout(function () { setUtilityStatus(""); }, 6000);
+      openPrintView();
+      return;
+    }
     var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
     var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
     if (!html2canvasLib || !jsPDFLib) {
       setUtilityStatus("PDF download isn't available right now. Use 'Print / PDF' and choose Save as PDF in the print dialog.");
       setTimeout(function () { setUtilityStatus(""); }, 4000);
       return;
-    }
-    var limitedEnv = isMobileOrTabletBrowser();
-    var deliverViaPopup = !!(preOpenedWin && !preOpenedWin.closed);
-    if (deliverViaPopup) {
-      writePopupLoadingDoc(preOpenedWin, "Creating PDF…", "Creating PDF — please wait…");
     }
     preparePrintSelectionState();
     runTaskSafely("reveal for pdf", revealAllAnimatedSections);
@@ -1913,9 +1864,8 @@
       document.body.classList.add("pdf-capture");
       // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
       finalizeCountUpValues();
-      // Mobile: scale 2 often exhausts memory or hangs; use 1. Desktop: sharper capture at 2.
-      var captureScale = limitedEnv ? 1 : 2;
-      var captureTimeoutMs = limitedEnv ? Math.max(PDF_CAPTURE_TIMEOUT_MS, 60000) : PDF_CAPTURE_TIMEOUT_MS;
+      var captureScale = 2;
+      var captureTimeoutMs = PDF_CAPTURE_TIMEOUT_MS;
       var capturePromise = html2canvasLib(target, {
         scale: captureScale,
         useCORS: true,
@@ -1985,81 +1935,14 @@
           slice3.height = canvas.height - page2EndY;
           slice3.getContext("2d").drawImage(canvas, 0, page2EndY, canvas.width, canvas.height - page2EndY, 0, 0, canvas.width, canvas.height - page2EndY);
           addCanvasSliceWithMargins(slice3, { fitWidth: true });
-
-          function clearPrintOnlySelectionIfAny() {
-            if (appState.printAppliedDefaultSelection) {
-              clearSelection("", { updateHash: false, announce: false });
-              appState.printAppliedDefaultSelection = false;
-            }
+          if (appState.printAppliedDefaultSelection) {
+            clearSelection("", { updateHash: false, announce: false });
+            appState.printAppliedDefaultSelection = false;
           }
-
-          function anchorPdfBlob(blob) {
-            var u = URL.createObjectURL(blob);
-            var a = document.createElement("a");
-            a.href = u;
-            a.download = "340b-dashboard.pdf";
-            a.setAttribute("rel", "noopener");
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(function () { URL.revokeObjectURL(u); }, 90000);
-          }
-
-          function deliverPdfOutput(pdfInstance) {
-            if (deliverViaPopup && preOpenedWin && !preOpenedWin.closed) {
-              try {
-                var blobPopup = pdfInstance.output("blob");
-                var blobUrl = URL.createObjectURL(blobPopup);
-                preOpenedWin.location.href = blobUrl;
-                setUtilityStatus("PDF ready — use Share to save or send.");
-                setTimeout(function () { URL.revokeObjectURL(blobUrl); }, 180000);
-                clearPrintOnlySelectionIfAny();
-                setTimeout(function () { setUtilityStatus(""); }, 4000);
-                return;
-              } catch (popupDelErr) {
-                /* fall through to mobile / save fallbacks */
-              }
-            }
-            if (limitedEnv) {
-              try {
-                var blobM = pdfInstance.output("blob");
-                var file = new File([blobM], "340b-dashboard.pdf", { type: "application/pdf" });
-                if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-                  navigator.share({ files: [file], title: "340B Dashboard" }).then(function () {
-                    setUtilityStatus("Shared.");
-                    clearPrintOnlySelectionIfAny();
-                    setTimeout(function () { setUtilityStatus(""); }, 3000);
-                  }).catch(function () {
-                    anchorPdfBlob(blobM);
-                    setUtilityStatus("If save did not start, use Print / PDF.");
-                    clearPrintOnlySelectionIfAny();
-                    setTimeout(function () { setUtilityStatus(""); }, 4000);
-                  });
-                  return;
-                }
-              } catch (shareErr) {
-                /* fall through */
-              }
-              try {
-                anchorPdfBlob(pdfInstance.output("blob"));
-              } catch (ae) {
-                setUtilityStatus("Use Print / PDF on this device.");
-              }
-              clearPrintOnlySelectionIfAny();
-              setTimeout(function () { setUtilityStatus(""); }, 4000);
-              return;
-            }
-            pdfInstance.save("340b-dashboard.pdf");
-            clearPrintOnlySelectionIfAny();
-            setUtilityStatus("PDF saved.");
-            setTimeout(function () { setUtilityStatus(""); }, 2500);
-          }
-
-          deliverPdfOutput(pdf);
+          pdf.save("340b-dashboard.pdf");
+          setUtilityStatus("PDF saved.");
+          setTimeout(function () { setUtilityStatus(""); }, 2500);
         } catch (e) {
-          if (preOpenedWin && !preOpenedWin.closed) {
-            writePopupLoadingDoc(preOpenedWin, "PDF failed", "Could not create PDF. Close this tab and use Print / PDF on the dashboard.");
-          }
           if (appState.printAppliedDefaultSelection) {
             clearSelection("", { updateHash: false, announce: false });
             appState.printAppliedDefaultSelection = false;
@@ -2070,9 +1953,6 @@
       }).catch(function (err) {
         restoreMapSvg();
         removePdfStyle();
-        if (preOpenedWin && !preOpenedWin.closed) {
-          writePopupLoadingDoc(preOpenedWin, "PDF failed", "Could not create PDF (timeout or memory). Close this tab and use Print / PDF.");
-        }
         if (appState.printAppliedDefaultSelection) {
           clearSelection("", { updateHash: false, announce: false });
           appState.printAppliedDefaultSelection = false;
@@ -2107,13 +1987,7 @@
     var btn = document.getElementById("btn-download-pdf");
     if (!btn) return;
     btn.addEventListener("click", function () {
-      var prePdfWin = null;
-      if (isMobileOrTabletBrowser()) {
-        prePdfWin = window.open("about:blank", "_blank");
-      }
-      runTaskSafely("download pdf image", function () {
-        downloadPdfAsImage(prePdfWin);
-      });
+      runTaskSafely("download pdf image", downloadPdfAsImage);
     });
   }
 

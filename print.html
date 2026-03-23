@@ -9,6 +9,12 @@
   <link rel="stylesheet" href="print-view.css">
 </head>
 <body class="print-view">
+  <!-- Screen-only: iOS/Android block delayed window.print(); user must tap (stays hidden when printing). -->
+  <div id="print-view-mobile-actions" class="print-view-mobile-actions" hidden>
+    <p class="print-view-mobile-actions-text"><strong>Phone or tablet:</strong> Tap the button below. Then use <strong>Print</strong> and choose <strong>Save as PDF</strong> or <strong>Save to Files</strong> (varies by device).</p>
+    <button type="button" class="print-view-mobile-actions-btn" id="print-view-mobile-print-btn">Print / Save as PDF</button>
+    <a href="340b.html" class="print-view-mobile-actions-back">← Back to dashboard</a>
+  </div>
   <div id="print-view-root">
     <header class="print-view-header">
       <img src="haplogo_box_blue.jpeg" alt="" class="print-view-logo" width="40" height="40">
@@ -299,6 +305,14 @@
         window.print();
       }
 
+      /** Mobile browsers often ignore window.print() when it is not tied directly to a user tap. */
+      function isMobileScreenForPrint() {
+        try {
+          if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return true;
+        } catch (e1) { /* ignore */ }
+        return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || "");
+      }
+
       function init() {
         try {
           var payload = getPayload();
@@ -309,19 +323,34 @@
           msg.textContent = "Unable to load print data. Use Print / PDF from the dashboard again.";
           if (mapContainer) mapContainer.appendChild(msg);
         }
-        // Clear payload after a delay so the map has time to render and print can capture it.
+        var mobileUi = isMobileScreenForPrint();
+        // Clear payload after a delay so the map has time to render; phones may need longer before user taps Print.
         setTimeout(function () {
           try {
             localStorage.removeItem(KEY);
           } catch (e) {}
-        }, 5000);
+        }, mobileUi ? 20000 : 5000);
 
         var params = new URLSearchParams(window.location.search);
         if (params.get("auto") === "1") {
-          setTimeout(function () {
-            mapContainer && mapContainer.offsetHeight;
-            runPrint();
-          }, 1500);
+          if (mobileUi) {
+            var bar = document.getElementById("print-view-mobile-actions");
+            var btn = document.getElementById("print-view-mobile-print-btn");
+            if (bar) {
+              bar.hidden = false;
+              document.body.classList.add("print-view-has-mobile-bar");
+            }
+            if (btn) {
+              btn.addEventListener("click", function () {
+                runPrint();
+              });
+            }
+          } else {
+            setTimeout(function () {
+              if (mapContainer) mapContainer.offsetHeight;
+              runPrint();
+            }, 1500);
+          }
         }
       }
 

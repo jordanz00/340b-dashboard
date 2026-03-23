@@ -419,6 +419,69 @@
   color: #ff8a3d;
 }
 
+/* Mobile / screen-only: tap-to-print bar (hidden when printing to paper/PDF). */
+.print-view-mobile-actions {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 9999;
+  padding: 0.75rem 1rem calc(0.75rem + env(safe-area-inset-bottom, 0));
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid rgba(11, 103, 194, 0.2);
+  box-shadow: 0 -4px 24px rgba(15, 23, 42, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 0.65rem;
+}
+
+.print-view-mobile-actions[hidden] {
+  display: none !important;
+}
+
+.print-view-mobile-actions-text {
+  margin: 0;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #374151;
+  text-align: center;
+}
+
+.print-view-mobile-actions-btn {
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  min-height: 48px;
+  padding: 0.65rem 1rem;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  background: #0b67c2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.print-view-mobile-actions-btn:active {
+  opacity: 0.92;
+}
+
+.print-view-mobile-actions-back {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #0b67c2;
+  text-align: center;
+  text-decoration: none;
+}
+
+.print-view-mobile-actions-back:hover {
+  text-decoration: underline;
+}
+
+body.print-view.print-view-has-mobile-bar #print-view-root {
+  padding-bottom: 9rem;
+}
+
 /* Print: first page = header + intro + map; tight spacing so map fits on page 1. */
 @media print {
   @page {
@@ -430,6 +493,10 @@
     margin-bottom: 0.3cm;
     margin-left: 0.35cm;
     margin-right: 0.35cm;
+  }
+
+  .print-view-mobile-actions {
+    display: none !important;
   }
 
   .print-view {
