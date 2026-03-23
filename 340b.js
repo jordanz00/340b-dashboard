@@ -1843,11 +1843,11 @@
         "body.pdf-capture #community-benefit { margin-top: 145px; margin-bottom: 0.5rem; padding: 0.4rem 0.65rem !important; font-size: 0.81em; line-height: 1.28; overflow: visible !important; } " +
         "body.pdf-capture #community-benefit .card-heading h2 { font-size: 0.9rem !important; } " +
         "body.pdf-capture #community-benefit .card-title { font-size: 0.86rem !important; font-weight: 600; } " +
-        "body.pdf-capture #community-benefit .benefit-grid { gap: 0.32rem; } " +
-        "body.pdf-capture #community-benefit .benefit-item { padding: 0.28em 0.45em; } " +
-        "body.pdf-capture #community-benefit .benefit-item-icon { width: 43px !important; height: 43px !important; } " +
-        "body.pdf-capture #community-benefit .benefit-item-icon svg { width: 22px !important; height: 22px !important; } " +
-        "body.pdf-capture #community-benefit .benefit-item-text { font-size: 0.81rem !important; } " +
+        "body.pdf-capture #community-benefit .benefit-grid--community { gap: 0.35rem !important; } " +
+        "body.pdf-capture #community-benefit .benefit-item { flex-direction: column !important; align-items: center !important; text-align: center !important; padding: 0.4em 0.35em !important; } " +
+        "body.pdf-capture #community-benefit .benefit-item-icon { width: 48px !important; height: 48px !important; } " +
+        "body.pdf-capture #community-benefit .benefit-item-icon svg { width: 26px !important; height: 26px !important; } " +
+        "body.pdf-capture #community-benefit .benefit-item-text { font-size: 0.78rem !important; line-height: 1.35 !important; display: block !important; overflow: visible !important; -webkit-line-clamp: unset !important; max-width: none !important; } " +
         "body.pdf-capture .community-benefit-hero { padding: 0.45rem 0.65rem !important; margin-top: 0.32rem !important; overflow: visible !important; min-height: auto !important; border-radius: 6px; } " +
         "body.pdf-capture .community-benefit-hero .big-stat-label { margin: 0 0 0.15rem !important; font-size: 0.86rem !important; font-weight: 600; } " +
         "body.pdf-capture .community-benefit-hero .big-stat-value { margin: 0 !important; font-size: 1.35rem !important; font-weight: 700; } " +

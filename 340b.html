@@ -27,7 +27,7 @@
   <meta name="twitter:title" id="meta-twitter-title" content="340B Drug Pricing Program | HAP Advocacy Dashboard">
   <meta name="twitter:description" id="meta-twitter-description" content="72 PA hospitals • $7.95B community benefits • No cost to taxpayers. State-by-state contract pharmacy protection map.">
   <meta name="twitter:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
-  <link rel="stylesheet" href="340b.css">
+  <link rel="stylesheet" href="340b.css?v=community-benefit-1">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -557,21 +557,21 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">7.95</span>B</p>
         <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
       </div>
-      <div class="benefit-grid">
+      <div class="benefit-grid benefit-grid--community">
         <div class="benefit-item">
-          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 12h6"/><path d="M12 9v6"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--savings" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.29 4.15a2 2 0 0 1-1.4.58H8"/><path d="M6 10V8a2 2 0 0 1 2-2"/><circle cx="17" cy="6" r="3"/><path d="M17 4.5v3"/><path d="M15.75 6h2.5"/></svg></div>
           <p class="benefit-item-text"><strong>23%</strong> average savings on pharma purchases</p>
         </div>
         <div class="benefit-item">
-          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 12h14"/><path d="m3 8 3-3 3 3"/><path d="m21 8-3-3-3 3"/><path d="m3 16 3 3 3-3"/><path d="m21 16-3 3-3-3"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--rx-price" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M12 5.5v5"/><path d="M13.8 7.2c0-1.2-1-1.7-2.3-1.7s-2.3.8-2.3 2c0 1.3 1.3 1.6 2.2 2 1 .4 2.4.9 2.4 2.5 0 1.4-1.2 2.2-2.6 2.2-1.5 0-2.7-.9-2.7-2.4"/><path d="M12 15v1.5"/><path d="m10 18 2 3 2-3"/></svg></div>
           <p class="benefit-item-text">Free or reduced-price prescriptions</p>
         </div>
         <div class="benefit-item">
-          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7H4z"/><path d="M6 13h.01"/><path d="M10 13h.01"/><path d="M14 13h.01"/><path d="M18 13h.01"/><circle cx="7.5" cy="20" r="2"/><circle cx="16.5" cy="20" r="2"/><path d="M2 15h2"/></svg></div>
           <p class="benefit-item-text">Mobile mammography &amp; cancer screening</p>
         </div>
         <div class="benefit-item">
-          <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C9.5 2 7 4 7 7v1c0 1.5.8 2.5 2 3 1.2.5 2 1.5 2 3v6c0 1.5 1 2.5 2.5 2.5h1c1.5 0 2.5-1 2.5-2.5v-6c0-1.5.8-2.5 2-3 1.2-.5 2-1.5 2-3V7c0-3-2.5-5-5-5z"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--tooth" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.2.4-2.8 1.1-.6-.7-1.6-1.1-2.8-1.1-2.2 0-4 1.6-4 4.2 0 3.2 1.5 6.4 4.8 10.5.4.5 1 .8 1.6.8h.2c.6 0 1.2-.3 1.6-.8 3.3-4.1 4.8-7.3 4.8-10.5 0-2.6-1.8-4.2-4-4.2z"/><path d="M9 5.5c.3 1.2 1 2 1.8 2.5"/><path d="M15 5.5c-.3 1.2-1 2-1.8 2.5"/></svg></div>
           <p class="benefit-item-text">Dental care &amp; preventive services</p>
         </div>
       </div>
@@ -647,7 +647,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <!-- Download PDF (image) uses local html2canvas + jsPDF copies for deterministic offline behavior. -->
   <script src="assets/vendor/html2canvas.min.js"></script>
   <script src="assets/vendor/jspdf.umd.min.js"></script>
-  <script src="340b.js?v=pdf-mobile-print-flow-1"></script>
+  <script src="340b.js?v=community-benefit-icons-1"></script>
   <!-- Pennsylvania Impact Mode — loads after main dashboard; fully isolated -->
   <script src="modules/pa-impact-data.js"></script>
   <script src="modules/pa-impact-engine.js"></script>
