@@ -702,18 +702,6 @@
     return false;
   }
 
-  /**
-   * Full-page html2canvas + jsPDF often OOMs or times out on phones, iPad, and iOS desktop-UA mode.
-   * Also skip when the viewport is phone-sized but UA was tweaked (in-app browsers, some modes).
-   */
-  function shouldSkipCanvasPdfExport() {
-    if (isMobileOrTabletBrowser()) return true;
-    var t = typeof navigator !== "undefined" && typeof navigator.maxTouchPoints === "number" ? navigator.maxTouchPoints : 0;
-    var w = typeof window !== "undefined" && typeof window.innerWidth === "number" ? window.innerWidth : 9999;
-    if (t > 0 && w <= 1024) return true;
-    return false;
-  }
-
   function resolveAppUrl(relativePath) {
     try {
       return new URL(relativePath, window.location.href).href;
@@ -1770,20 +1758,18 @@
      Page 3: KPI strip through end. Changes can break layout.
      */
   function downloadPdfAsImage() {
-    /* Touch / iOS / narrow viewports: never run canvas capture (OOM/timeout). Use print view + Save as PDF. */
-    if (shouldSkipCanvasPdfExport()) {
-      setUtilityStatus("Opening print-ready page — tap Print / Save as PDF, then Save to Files.");
-      setTimeout(function () { setUtilityStatus(""); }, 6000);
-      openPrintView();
-      return;
-    }
     var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
     var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
     if (!html2canvasLib || !jsPDFLib) {
-      setUtilityStatus("PDF download isn't available right now. Use 'Print / PDF' and choose Save as PDF in the print dialog.");
+      var libMsg = "PDF download isn't available right now. Use 'Print / PDF' and choose Save as PDF in the print dialog.";
+      setUtilityStatus(libMsg);
       setTimeout(function () { setUtilityStatus(""); }, 4000);
       return;
     }
+    var lowMemCapture = isMobileOrTabletBrowser();
+    try {
+      if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) lowMemCapture = true;
+    } catch (e0) { /* ignore */ }
     preparePrintSelectionState();
     runTaskSafely("reveal for pdf", revealAllAnimatedSections);
     runTaskSafely("show map for pdf", showMapWrapImmediately);
@@ -1877,19 +1863,101 @@
       mapImgEl = null;
     }
     setUtilityStatus("Creating PDF...");
+    function pdfFinishDelivery(pdf) {
+      if (appState.printAppliedDefaultSelection) {
+        clearSelection("", { updateHash: false, announce: false });
+        appState.printAppliedDefaultSelection = false;
+      }
+      function done(msg, ms) {
+        setUtilityStatus(msg);
+        setTimeout(function () { setUtilityStatus(""); }, ms || 2500);
+      }
+      /** Same-tab delivery: no window.open — Share sheet on iOS, else programmatic download link, else jsPDF save. */
+      function deliverWithAnchorThenSave() {
+        try {
+          var dlBlob = pdf.output("blob");
+          var dlUrl = URL.createObjectURL(dlBlob);
+          var a = document.createElement("a");
+          a.href = dlUrl;
+          a.download = "340b-dashboard.pdf";
+          a.setAttribute("download", "340b-dashboard.pdf");
+          a.rel = "noopener";
+          a.style.cssText = "position:fixed;left:-9999px;top:0;width:1px;height:1px;opacity:0";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () {
+            try {
+              if (a.parentNode) a.parentNode.removeChild(a);
+            } catch (rm) { /* ignore */ }
+            try {
+              URL.revokeObjectURL(dlUrl);
+            } catch (rev) { /* ignore */ }
+          }, 3000);
+          done("Opening PDF — use Share → Save to Files if needed.", 5000);
+        } catch (eA) {
+          try {
+            pdf.save("340b-dashboard.pdf");
+            done("PDF saved.", 2500);
+          } catch (eSave) {
+            done("PDF capture failed. Try Print / PDF instead.", 4000);
+          }
+        }
+      }
+      try {
+        if (lowMemCapture && typeof navigator.share === "function" && typeof File !== "undefined") {
+          try {
+            var shareBlob = pdf.output("blob");
+            var shareFile = new File([shareBlob], "340b-dashboard.pdf", { type: "application/pdf" });
+            var filesShareable = !navigator.canShare || navigator.canShare({ files: [shareFile] });
+            if (filesShareable) {
+              navigator.share({ files: [shareFile], title: "340B Dashboard" })
+                .then(function () {
+                  done("Use Save to Files if you want a copy on your device.", 4500);
+                })
+                .catch(function () {
+                  deliverWithAnchorThenSave();
+                });
+              return;
+            }
+          } catch (se) { /* fall through */ }
+        }
+        if (lowMemCapture) {
+          deliverWithAnchorThenSave();
+          return;
+        }
+        pdf.save("340b-dashboard.pdf");
+        done("PDF saved.", 2500);
+      } catch (delErr) {
+        try {
+          pdf.save("340b-dashboard.pdf");
+          done("PDF saved.", 2500);
+        } catch (eSave) {
+          done("PDF capture failed. Try Print / PDF instead.", 4000);
+        }
+      }
+    }
     function capture() {
       injectPdfStyle();
       document.body.classList.add("pdf-capture");
       // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
       finalizeCountUpValues();
-      var captureScale = 2;
-      var captureTimeoutMs = PDF_CAPTURE_TIMEOUT_MS;
-      var capturePromise = html2canvasLib(target, {
+      var maxCanvasSide = 7500;
+      var sh = Math.max(target.scrollHeight || 0, 1);
+      var sw = Math.max(target.scrollWidth || 0, 1);
+      var captureScale = lowMemCapture ? 1 : 2;
+      captureScale = Math.min(captureScale, maxCanvasSide / sh, maxCanvasSide / sw);
+      if (captureScale < 0.35) captureScale = 0.35;
+      var captureTimeoutMs = lowMemCapture ? Math.max(PDF_CAPTURE_TIMEOUT_MS, 90000) : PDF_CAPTURE_TIMEOUT_MS;
+      var h2cOpts = {
         scale: captureScale,
         useCORS: true,
         allowTaint: false,
         logging: false
-      });
+      };
+      if (lowMemCapture) {
+        h2cOpts.foreignObjectRendering = false;
+      }
+      var capturePromise = html2canvasLib(target, h2cOpts);
       var timeoutPromise = new Promise(function (_, reject) {
         setTimeout(function () { reject(new Error("timeout")); }, captureTimeoutMs);
       });
@@ -1931,10 +1999,14 @@
               imgH = innerH;
               imgW = (sliceCanvas.width * innerH) / sliceCanvas.height;
             }
-            var imgData = drawCanvas.toDataURL("image/png", 0.95);
+            var useJpegSlices = lowMemCapture;
+            var imgData = useJpegSlices
+              ? drawCanvas.toDataURL("image/jpeg", 0.85)
+              : drawCanvas.toDataURL("image/png", 0.95);
+            var imgFmt = useJpegSlices ? "JPEG" : "PNG";
             var x = marginMm + (innerW - imgW) / 2;
             var y = opts.topAlign ? marginMm : marginMm + (innerH - imgH) / 2;
-            pdf.addImage(imgData, "PNG", x, y, imgW, imgH);
+            pdf.addImage(imgData, imgFmt, x, y, imgW, imgH);
           }
           var slice1 = document.createElement("canvas");
           slice1.width = canvas.width;
@@ -1953,13 +2025,7 @@
           slice3.height = canvas.height - page2EndY;
           slice3.getContext("2d").drawImage(canvas, 0, page2EndY, canvas.width, canvas.height - page2EndY, 0, 0, canvas.width, canvas.height - page2EndY);
           addCanvasSliceWithMargins(slice3, { fitWidth: true });
-          if (appState.printAppliedDefaultSelection) {
-            clearSelection("", { updateHash: false, announce: false });
-            appState.printAppliedDefaultSelection = false;
-          }
-          pdf.save("340b-dashboard.pdf");
-          setUtilityStatus("PDF saved.");
-          setTimeout(function () { setUtilityStatus(""); }, 2500);
+          pdfFinishDelivery(pdf);
         } catch (e) {
           if (appState.printAppliedDefaultSelection) {
             clearSelection("", { updateHash: false, announce: false });
