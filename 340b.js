@@ -831,8 +831,11 @@
 
   // Opens the print view and injects the map and snapshot data from localStorage so the user can save as PDF from the browser.
   // Mobile/tablet: same-tab navigation (reliable localStorage + no popup). Desktop: new tab when allowed.
-  function openPrintView() {
-    setUtilityStatus("Preparing print view...");
+  // options.fromPdfImage: opened from "Download PDF (image)" on mobile — print.html shows tailored steps (canvas PDF stalls on iOS).
+  function openPrintView(options) {
+    options = options || {};
+    var fromPdfImage = !!options.fromPdfImage;
+    setUtilityStatus(fromPdfImage ? "Preparing your PDF page…" : "Preparing print view...");
     // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
     finalizeCountUpValues();
     preparePrintSelectionState();
@@ -849,7 +852,8 @@
         setUtilityStatus("Print data too large. Try closing other tabs.");
         return;
       }
-      var printUrl = resolveAppUrl("print.html?auto=1");
+      var printQs = "auto=1" + (fromPdfImage ? "&from=pdfimage" : "");
+      var printUrl = resolveAppUrl("print.html?" + printQs);
       if (isMobileOrTabletBrowser()) {
         window.location.assign(printUrl);
         return;
@@ -1758,6 +1762,13 @@
      Page 3: KPI strip through end. Changes can break layout.
      */
   function downloadPdfAsImage() {
+    /* Phones/tablets: html2canvas + jsPDF often hangs or OOMs on iOS Safari — same flow as Print / PDF (print-ready page + Save as PDF). */
+    if (isMobileOrTabletBrowser()) {
+      setUtilityStatus("Opening print-ready page — same as Print / PDF. Tap the blue button, then Save as PDF.");
+      setTimeout(function () { setUtilityStatus(""); }, 6500);
+      openPrintView({ fromPdfImage: true });
+      return;
+    }
     var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
     var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
     if (!html2canvasLib || !jsPDFLib) {
@@ -1766,7 +1777,7 @@
       setTimeout(function () { setUtilityStatus(""); }, 4000);
       return;
     }
-    var lowMemCapture = isMobileOrTabletBrowser();
+    var lowMemCapture = false;
     try {
       if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) lowMemCapture = true;
     } catch (e0) { /* ignore */ }

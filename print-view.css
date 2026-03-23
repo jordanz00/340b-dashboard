@@ -440,11 +440,25 @@
   display: none !important;
 }
 
+.print-view-mobile-actions-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
 .print-view-mobile-actions-text {
   margin: 0;
   font-size: 0.8rem;
   line-height: 1.45;
   color: #374151;
+  text-align: center;
+}
+
+.print-view-mobile-actions-subline {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.4;
+  color: #64748b;
   text-align: center;
 }
 

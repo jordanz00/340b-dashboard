@@ -6,12 +6,14 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
   <title>340B Drug Pricing Program — Print View | HAP Advocacy Dashboard</title>
   <link rel="stylesheet" href="340b.css">
-  <link rel="stylesheet" href="print-view.css">
+  <link rel="stylesheet" href="print-view.css?v=mobile-pdf-copy-1">
 </head>
 <body class="print-view">
   <!-- Screen-only: iOS/Android block delayed window.print(); user must tap (stays hidden when printing). -->
   <div id="print-view-mobile-actions" class="print-view-mobile-actions" hidden>
-    <p class="print-view-mobile-actions-text"><strong>Phone or tablet:</strong> Tap the button below. Then use <strong>Print</strong> and choose <strong>Save as PDF</strong> or <strong>Save to Files</strong> (varies by device).</p>
+    <div id="print-view-mobile-actions-copy" class="print-view-mobile-actions-copy">
+      <p class="print-view-mobile-actions-text"><strong>Phone or tablet:</strong> Tap the button below. Then use <strong>Print</strong> and choose <strong>Save as PDF</strong> or <strong>Save to Files</strong> (varies by device).</p>
+    </div>
     <button type="button" class="print-view-mobile-actions-btn" id="print-view-mobile-print-btn">Print / Save as PDF</button>
     <a href="340b.html" class="print-view-mobile-actions-back">← Back to dashboard</a>
   </div>
@@ -332,8 +334,28 @@
         }, mobileUi ? 20000 : 5000);
 
         var params = new URLSearchParams(window.location.search);
+        var fromPdfImage = params.get("from") === "pdfimage";
         if (params.get("auto") === "1") {
           if (mobileUi) {
+            if (fromPdfImage) {
+              var copyRoot = document.getElementById("print-view-mobile-actions-copy");
+              if (copyRoot) {
+                while (copyRoot.firstChild) {
+                  copyRoot.removeChild(copyRoot.firstChild);
+                }
+                var lead = document.createElement("p");
+                lead.className = "print-view-mobile-actions-text";
+                var strongEl = document.createElement("strong");
+                strongEl.textContent = "Your PDF is ready";
+                lead.appendChild(strongEl);
+                lead.appendChild(document.createTextNode(" — Same live numbers and map as the dashboard, in a clean layout for sharing."));
+                var sub = document.createElement("p");
+                sub.className = "print-view-mobile-actions-subline";
+                sub.textContent = "Tap the button below. Then choose Print → Save as PDF, or Save to Files (same flow as Print / PDF on the dashboard).";
+                copyRoot.appendChild(lead);
+                copyRoot.appendChild(sub);
+              }
+            }
             var bar = document.getElementById("print-view-mobile-actions");
             var btn = document.getElementById("print-view-mobile-print-btn");
             if (bar) {
