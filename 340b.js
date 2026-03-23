@@ -692,7 +692,25 @@
     var ua = typeof navigator !== "undefined" ? navigator.userAgent || "" : "";
     if (/iPhone|iPod|Android/i.test(ua)) return true;
     if (/iPad|Tablet/i.test(ua)) return true;
-    if (typeof navigator.maxTouchPoints === "number" && navigator.maxTouchPoints > 1 && /Macintosh|Mac OS X/i.test(ua)) return true;
+    /* iPadOS / iOS "Request Desktop Website": UA looks like Mac, but touch points > 0 (real Macs report 0 in Safari). */
+    if (typeof navigator.maxTouchPoints === "number" && navigator.maxTouchPoints > 0 && /Macintosh|Mac OS X/i.test(ua)) return true;
+    try {
+      if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return true;
+    } catch (e) { /* ignore */ }
+    /* Added-to-home-screen Web App on iOS */
+    if (typeof navigator.standalone === "boolean" && navigator.standalone === true) return true;
+    return false;
+  }
+
+  /**
+   * Full-page html2canvas + jsPDF often OOMs or times out on phones, iPad, and iOS desktop-UA mode.
+   * Also skip when the viewport is phone-sized but UA was tweaked (in-app browsers, some modes).
+   */
+  function shouldSkipCanvasPdfExport() {
+    if (isMobileOrTabletBrowser()) return true;
+    var t = typeof navigator !== "undefined" && typeof navigator.maxTouchPoints === "number" ? navigator.maxTouchPoints : 0;
+    var w = typeof window !== "undefined" && typeof window.innerWidth === "number" ? window.innerWidth : 9999;
+    if (t > 0 && w <= 1024) return true;
     return false;
   }
 
@@ -1752,8 +1770,8 @@
      Page 3: KPI strip through end. Changes can break layout.
      */
   function downloadPdfAsImage() {
-    /* Phones/tablets: html2canvas + jsPDF reliably runs out of memory or times out. Use the same print-optimized view + system Save as PDF. */
-    if (isMobileOrTabletBrowser()) {
+    /* Touch / iOS / narrow viewports: never run canvas capture (OOM/timeout). Use print view + Save as PDF. */
+    if (shouldSkipCanvasPdfExport()) {
       setUtilityStatus("Opening print-ready page — tap Print / Save as PDF, then Save to Files.");
       setTimeout(function () { setUtilityStatus(""); }, 6000);
       openPrintView();
