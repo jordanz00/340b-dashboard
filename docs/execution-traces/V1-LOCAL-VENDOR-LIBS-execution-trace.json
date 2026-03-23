@@ -1,0 +1,32 @@
+{
+  "taskId": "V1-LOCAL-VENDOR-LIBS",
+  "timestampUtc": "2026-03-23T13:32:45Z",
+  "locks": {
+    "acquired": [
+      "locks/assets/vendor/html2canvas.min.js.lock",
+      "locks/assets/vendor/jspdf.umd.min.js.lock"
+    ],
+    "removed": [
+      "locks/assets/vendor/html2canvas.min.js.lock",
+      "locks/assets/vendor/jspdf.umd.min.js.lock"
+    ]
+  },
+  "filesModified": [
+    "assets/vendor/html2canvas.min.js",
+    "assets/vendor/jspdf.umd.min.js"
+  ],
+  "filesHashesSha256": {
+    "assets/vendor/html2canvas.min.js": "e87e550794322e574a1fda0c1549a3c70dae5a93d9113417a429016838eab8cb",
+    "assets/vendor/jspdf.umd.min.js": "42e178aaabcbb33c89075c0a54347c0d7c6e1e7883706cbc1c00344134c22729"
+  },
+  "actions": [
+    "Copied html2canvas@1.4.1 dist artifact into assets/vendor/html2canvas.min.js",
+    "Copied jsPDF@2.5.1 dist artifact into assets/vendor/jspdf.umd.min.js"
+  ],
+  "runtimeChecks": [
+    "No browser runtime executed in this task (deterministic artifact copy + sha256 captured only)."
+  ],
+  "errors": [],
+  "status": "passed"
+}
+

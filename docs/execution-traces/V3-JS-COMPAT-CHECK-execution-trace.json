@@ -1,0 +1,24 @@
+{
+  "taskId": "V3-JS-COMPAT-CHECK",
+  "timestampUtc": "2026-03-23T13:34:02Z",
+  "locks": {
+    "acquired": [
+      "locks/340b.js.lock"
+    ],
+    "removed": [
+      "locks/340b.js.lock"
+    ]
+  },
+  "filesModified": [],
+  "filesHashesSha256": {},
+  "actions": [
+    "Static-checked 340b.js detection globals in downloadPdfAsImage(): window.html2canvas and window.jspdf.jsPDF.",
+    "Static-checked vendor artifacts: html2canvas 1.4.1 UMD exposes a global via self.html2canvas, jsPDF 2.5.1 UMD wrapper assigns self.jspdf and exports jsPDF under that namespace."
+  ],
+  "runtimeChecks": [
+    "No runtime JS executed in this task; deterministic static verification via source inspection."
+  ],
+  "errors": [],
+  "status": "passed"
+}
+

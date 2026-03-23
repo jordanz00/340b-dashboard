@@ -1,0 +1,31 @@
+{
+  "taskId": "OPS-V7OP-PLAYBOOK",
+  "timestampUtc": "2026-03-23T13:43:43Z",
+  "locks": {
+    "acquired": [
+      "locks/docs/OPERATIONAL_PLAYBOOK-SOP.lock"
+    ],
+    "removed": []
+  },
+  "filesModified": [
+    "docs/OPERATIONAL_PLAYBOOK-SOP.md"
+  ],
+  "actions": [
+    "Wrote reusable Operational Playbook SOP under docs/.",
+    "Included strict scoping rules, deterministic gates, lock + trace protocol, and ChatGPT optimization summary template."
+  ],
+  "runtimeChecks": [
+    "Ran python3 dashboard-audit.py (deterministic gate) prior to writing this SOP."
+  ],
+  "auditResult": {
+    "python3 dashboard-audit.py": "PASS"
+  },
+  "manualValidationChecklist": {
+    "printPdfPageFit2Pages": "FAIL",
+    "mapVisibility": "FAIL",
+    "downloadPdfImageRendering": "FAIL"
+  },
+  "errors": [],
+  "status": "passed"
+}
+

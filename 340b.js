@@ -1320,11 +1320,12 @@
 
     button.type = "button";
     button.setAttribute("data-state", abbr);
+    button.setAttribute("role", "listitem");
     button.setAttribute("aria-controls", "state-detail-panel");
     button.setAttribute("aria-pressed", "false");
     button.setAttribute("aria-label", "View details for " + getStateName(abbr));
     button.addEventListener("click", function () {
-      selectState(abbr, { focusPanel: false });
+      selectState(abbr, { focusPanel: true });
     });
 
     return button;
@@ -2109,7 +2110,7 @@
   }
 
   function initNavHighlight() {
-    var sections = document.querySelectorAll("#what-is-340b, #overview, #state-laws, #eligibility, #oversight, #pa-impact, #community-benefit, #access, #pa-safeguards");
+    var sections = document.querySelectorAll("#what-is-340b, #overview, #key-metrics, #community-benefit, #state-laws, #pa-impact-mode, #policy-impact-simulator, #access, #pa-safeguards, #policy");
 
     if (typeof IntersectionObserver === "undefined") {
       updateNavCurrent("what-is-340b");
@@ -2161,7 +2162,9 @@
       event.target.closest("#methodology-content") ||
       event.target.closest("#selection-clear") ||
       event.target.closest(".state-filter-bar") ||
-      event.target.closest(".utility-toolbar")
+      event.target.closest(".utility-toolbar") ||
+      event.target.closest("#dashboard-nav") ||
+      event.target.closest(".dashboard-header")
     ) {
       return;
     }

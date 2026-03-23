@@ -20,6 +20,7 @@
     var container = document.getElementById("basic-us-map");
     var atlas = window.US_ATLAS_STATES_10M;
     var detailEl = document.getElementById("basic-state-detail");
+    var statusEl = document.getElementById("basic-state-selection-status");
     var tooltip = document.getElementById("basic-map-tooltip");
     if (!container || typeof d3 === "undefined" || typeof topojson === "undefined" || !atlas || !atlas.objects || !atlas.objects.states) {
       if (container) {
@@ -60,6 +61,14 @@
       })
       .attr("d", pathGen)
       .attr("data-state", function (d) { return getStateAbbr(d) || ""; })
+      .attr("tabindex", 0)
+      .attr("role", "button")
+      .attr("aria-label", function (d) {
+        var abbr = getStateAbbr(d);
+        var name = STATE_NAMES[abbr] || abbr || "State";
+        var has = abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0;
+        return name + ": " + (has ? "contract pharmacy protection enacted" : "no enacted contract pharmacy protection law");
+      })
       .attr("fill", function (d) {
         var abbr = getStateAbbr(d);
         return abbr && STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? protectionColor : noProtectionColor;
@@ -74,6 +83,18 @@
         var data = STATE_340B[abbr];
         var line = name + " — " + (data && data.cp ? "State law protects contract pharmacy access." : "No state law protecting contract pharmacy access yet.");
         detailEl.textContent = line;
+        if (statusEl) statusEl.textContent = line;
+      })
+      .on("keydown", function (event, d) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        var abbr = getStateAbbr(d);
+        if (!abbr || !detailEl) return;
+        var name = STATE_NAMES[abbr] || abbr;
+        var data = STATE_340B[abbr];
+        var line = name + " — " + (data && data.cp ? "State law protects contract pharmacy access." : "No state law protecting contract pharmacy access yet.");
+        detailEl.textContent = line;
+        if (statusEl) statusEl.textContent = line;
       })
       .on("mouseenter", function (event, d) {
         var abbr = getStateAbbr(d);

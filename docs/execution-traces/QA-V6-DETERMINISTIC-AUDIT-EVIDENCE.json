@@ -1,0 +1,34 @@
+{
+  "taskId": "QA-V6-DETERMINISTIC-AUDIT-EVIDENCE",
+  "timestampUtc": "2026-03-23T09:42:00Z",
+  "locks": {
+    "acquired": [
+      "locks/docs/MARK-VII-RELEASE-AUDIT-EVIDENCE.lock"
+    ],
+    "removed": [
+      "locks/docs/MARK-VII-RELEASE-AUDIT-EVIDENCE.lock"
+    ]
+  },
+  "filesModified": [
+    "docs/MARK-VII-RELEASE-AUDIT-EVIDENCE.md"
+  ],
+  "actions": [
+    "Created MARK-VII release audit evidence doc under docs/.",
+    "Recorded deterministic audit gate PASS output summary.",
+    "Recorded deterministic evidence: unpkg.com matches = 0; metric string occurrences counts for 7.95B/72/179/7%.",
+    "Marked manual validation checklist as pending (human/browser required)."
+  ],
+  "runtimeChecks": [
+    "Ran python3 dashboard-audit.py (deterministic audit gate)."
+  ],
+  "auditResult": {
+    "python3 dashboard-audit.py": "PASS"
+  },
+  "manualValidationStatus": {
+    "printPdfPageFit2Pages": "FAIL",
+    "mapVisibility": "FAIL",
+    "downloadPdfImageRendering": "FAIL"
+  },
+  "errors": [],
+  "status": "passed"
+}

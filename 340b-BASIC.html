@@ -29,6 +29,8 @@
       </div>
     </div>
     <nav class="dashboard-nav basic-dashboard-nav" aria-label="Dashboard">
+      <a href="#key-metrics">Key metrics</a>
+      <a href="#community-benefit">Community benefit</a>
       <a href="#state-laws">State map</a>
       <a href="340b.html" title="Opens the full dashboard with Print/PDF, share, and live simulators">Full dashboard (advanced)</a>
     </nav>
@@ -120,12 +122,14 @@
           <div id="basic-map-tooltip" class="basic-map-tooltip" aria-hidden="true"></div>
           <div class="basic-map-shell">
             <div class="us-map-wrap visible map-visible basic-map-wrap">
-              <div id="basic-us-map" class="basic-map-canvas" role="application" aria-label="Interactive US map"></div>
+              <div id="basic-us-map" class="basic-map-canvas" role="group" aria-label="Interactive U.S. map showing state contract pharmacy protection status" aria-describedby="basic-map-keyboard-hint"></div>
             </div>
+            <p id="basic-state-selection-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
+            <p id="basic-map-keyboard-hint" class="sr-only">Tab to move between states. Press Enter or Space to select a state.</p>
             <p class="map-legend-context">Blue = state protects the discount. Gray = no state law protecting it yet.</p>
             <div class="map-legend">
-              <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection</span>
-              <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
+              <span class="map-legend-item map-legend-item--policy"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection (protected)</span>
+              <span class="map-legend-item map-legend-item--no-policy"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law (unprotected)</span>
             </div>
             <div id="basic-state-detail" class="basic-state-detail" role="status" aria-live="polite">Click a state on the map for details.</div>
           </div>
@@ -133,15 +137,15 @@
           <!-- ========== RECENT LEGAL SIGNALS ========== -->
           <h3 class="section-subhead">Recent legal signals</h3>
           <div class="trends-grid">
-            <div class="trends-card">
+            <div class="trends-card trends-card--policy">
               <span class="trends-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
               <div><h4>Courts</h4><p>States including AR, LA, MO, MN, TN, and RI prevailed when manufacturers challenged contract pharmacy protections.</p></div>
             </div>
-            <div class="trends-card">
+            <div class="trends-card trends-card--impact">
               <span class="trends-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
               <div><h4>2025 hybrid</h4><p>CO, ME, OH, RI, and VT paired pharmacy protections with reporting requirements.</p></div>
             </div>
-            <div class="trends-card">
+            <div class="trends-card trends-card--neutral">
               <span class="trends-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
               <div><h4>Vetoes</h4><p>Some governors vetoed proposed 340B protections, including in Virginia.</p></div>
             </div>
@@ -166,23 +170,23 @@
       </section>
 
       <!-- ========== KPI STRIP: 4 key numbers ========== -->
-      <section class="kpi-strip span-12" aria-label="Key metrics">
-        <div class="kpi-card">
+      <section id="key-metrics" class="kpi-strip span-12" aria-label="Key metrics">
+        <div class="kpi-card kpi-card--market">
           <p class="kpi-label">U.S. Drug Market</p>
           <p class="kpi-value">7%</p>
           <p class="kpi-desc">340B share of U.S. outpatient drug market</p>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card kpi-card--benefit">
           <p class="kpi-label">Community Benefit</p>
           <p class="kpi-value">$7.95B</p>
           <p class="kpi-desc">340B community benefits (2024)</p>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card kpi-card--oversight">
           <p class="kpi-label">Oversight</p>
           <p class="kpi-value">179</p>
           <p class="kpi-desc">HRSA covered entity audits (FY 2024)</p>
         </div>
-        <div class="kpi-card">
+        <div class="kpi-card kpi-card--pa">
           <p class="kpi-label">Pennsylvania</p>
           <p class="kpi-value">72</p>
           <p class="kpi-desc">PA hospitals in 340B</p>
@@ -193,7 +197,7 @@
       <div class="supporting-section span-12">
         <h3 class="section-subhead section-subhead--supporting">Why this matters to health system leaders</h3>
         <div class="supporting-cards-row">
-          <article class="card card--compact">
+          <article class="card card--compact card--identity-policy">
             <div class="card-heading">
               <div class="card-heading-text">
                 <p class="card-title">Eligible providers</p>
@@ -208,7 +212,7 @@
               <li>Federally qualified health centers</li>
             </ul>
           </article>
-          <article class="card card--compact">
+          <article class="card card--compact card--identity-policy">
             <div class="card-heading">
               <div class="card-heading-text">
                 <p class="card-title">Oversight credibility</p>
@@ -231,7 +235,7 @@
             </div>
             <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight between hospitals and manufacturers</strong>, not a one-sided accountability standard.</p>
           </article>
-          <article class="card card--compact">
+          <article class="card card--compact card--identity-impact">
             <div class="card-heading">
               <div class="card-heading-text">
                 <p class="card-title">Pennsylvania operating stakes</p>
@@ -267,6 +271,11 @@
           </div>
           <div class="card-icon card-icon--heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
         </div>
+        <div class="community-benefit-hero">
+          <p class="big-stat-label">Total community benefits (2024)</p>
+          <p class="big-stat-value">$7.95B</p>
+          <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
+        </div>
         <div class="benefit-grid">
           <div class="benefit-item">
             <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 12h6"/><path d="M12 9v6"/></svg></div>
@@ -284,11 +293,6 @@
             <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C9.5 2 7 4 7 7v1c0 1.5.8 2.5 2 3 1.2.5 2 1.5 2 3v6c0 1.5 1 2.5 2.5 2.5h1c1.5 0 2.5-1 2.5-2.5v-6c0-1.5.8-2.5 2-3 1.2-.5 2-1.5 2-3V7c0-3-2.5-5-5-5z"/></svg></div>
             <p class="benefit-item-text">Dental care &amp; preventive services</p>
           </div>
-        </div>
-        <div class="community-benefit-hero">
-          <p class="big-stat-label">Total community benefits (2024)</p>
-          <p class="big-stat-value">$7.95B</p>
-          <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
         </div>
       </article>
 

@@ -1,0 +1,112 @@
+{
+  "traceVersion": "1.0",
+  "timestampUtc": "2026-03-23T13:37:55Z",
+  "taskSet": "Mark VII Improvements + Operational Hardening (V1-V8)",
+  "status": "passed_with_manual_gates_remaining",
+  "tasks": [
+    {
+      "taskId": "V1-LOCALIZE-PDF-LIBS-VENDOR",
+      "status": "passed",
+      "traceFile": "docs/execution-traces/V1-LOCAL-VENDOR-LIBS-execution-trace.json",
+      "filesModified": [
+        "assets/vendor/html2canvas.min.js",
+        "assets/vendor/jspdf.umd.min.js"
+      ]
+    },
+    {
+      "taskId": "V2-REMOVE-REMOTE-INFRA-FROM-340B",
+      "status": "passed",
+      "traceFile": "docs/execution-traces/V2-CSP-AND-SCRIPT-TAGS-execution-trace.json",
+      "filesModified": [
+        "340b.html"
+      ]
+    },
+    {
+      "taskId": "V3-PDF-EXPORT-GLOBAL-COMPAT-CHECK",
+      "status": "passed",
+      "traceFile": "docs/execution-traces/V3-JS-COMPAT-CHECK-execution-trace.json",
+      "filesModified": []
+    },
+    {
+      "taskId": "V4-DET-VALIDATION-REPORT",
+      "status": "passed",
+      "filesModified": [
+        "docs/MARK-VII-POSTSPRINT-VALIDATION.md"
+      ]
+    },
+    {
+      "taskId": "V5-CEO-DESIGN-CHANGELOG",
+      "status": "passed",
+      "filesModified": [
+        "docs/MARK-VII-DESIGN-CHANGELOG.md"
+      ]
+    }
+    ,
+    {
+      "taskId": "QA-V6-DETERMINISTIC-AUDIT-EVIDENCE",
+      "status": "passed",
+      "traceFile": "docs/execution-traces/QA-V6-DETERMINISTIC-AUDIT-EVIDENCE.json",
+      "filesModified": [
+        "docs/MARK-VII-RELEASE-AUDIT-EVIDENCE.md"
+      ]
+    },
+    {
+      "taskId": "OPS-V7OP-PLAYBOOK",
+      "status": "passed",
+      "traceFile": "docs/execution-traces/OPS-V7OP-PLAYBOOK.json",
+      "filesModified": [
+        "docs/OPERATIONAL_PLAYBOOK-SOP.md"
+      ]
+    },
+    {
+      "taskId": "RELEASE-V8-CEO-READY-CHECKLIST",
+      "status": "passed",
+      "traceFile": "docs/execution-traces/RELEASE-V8-CEO-READY-CHECKLIST.json",
+      "filesModified": [
+        "docs/CEO-READY-RELEASE-CHECKLIST.md"
+      ]
+    }
+  ],
+  "validation": {
+    "dashboardAudit": {
+      "command": "python3 dashboard-audit.py",
+      "exitCode": 0,
+      "result": "PASS"
+    },
+    "remoteInfraCheck": {
+      "file": "340b.html",
+      "pattern": "unpkg.com",
+      "matches": 0
+    },
+    "metricIntegrityEvidence": {
+      "filesChecked": [
+        "340b.html",
+        "340b-BASIC.html"
+      ],
+      "requiredMetrics": [
+        "7.95B",
+        "72",
+        "179",
+        "7%"
+      ],
+      "counts": {
+        "340b.html": 16,
+        "340b-BASIC.html": 11
+      }
+    },
+    "locks": {
+      "remainingLockFiles": []
+    }
+  },
+  "manualGatesRemaining": [
+    "Open Print/PDF and confirm 2-page fit with no excessive white space.",
+    "Confirm map visible in Print/PDF and Download PDF (image) output.",
+    "Confirm page content composition for page 1 and page 2 as per audit checklist.",
+    "Confirm invalid hash behavior (#state-XX) has no console errors."
+  ],
+  "notes": [
+    "All execution traces for V1-V3 are present under docs/execution-traces/.",
+    "No plan file was edited."
+  ]
+}
+

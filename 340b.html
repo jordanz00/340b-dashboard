@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ffffff">
   <meta name="color-scheme" content="light">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://unpkg.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self';">
   <title id="page-title">340B Drug Pricing Program | HAP Advocacy Dashboard</title>
   <meta name="description" id="meta-description" content="HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection, $7.95B community benefits, 72 PA hospitals. For lawmakers and hospital CEOs.">
   <meta name="robots" content="index, follow">
@@ -212,6 +212,8 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <nav class="dashboard-nav" id="dashboard-nav" aria-label="Dashboard sections">
     <a href="#what-is-340b" class="active" aria-current="page">Overview</a>
     <a href="#overview">HAP Position</a>
+    <a href="#key-metrics">Key metrics</a>
+    <a href="#community-benefit">Community Benefit</a>
     <a href="#state-laws">State Map</a>
     <a href="#pa-impact-mode">PA Impact</a>
     <a href="#policy-impact-simulator">Impact Simulator</a>
@@ -354,11 +356,11 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       <div class="map-container" id="map-container">
         <div class="us-map-wrap map-wrap" id="us-map-wrap" aria-busy="true">
           <div class="map-loading-skeleton" id="map-loading-skeleton"><span class="map-loading-text">Loading map...</span></div>
-          <div id="us-map" role="img" aria-label="Interactive US map showing states with and without 340B contract pharmacy protection. Blue states have protection, gray states do not. Click or select a state for details." aria-describedby="map-hero-sub map-keyboard-hint"></div>
+          <div id="us-map" role="group" aria-label="Interactive US map showing states with and without 340B contract pharmacy protection. Blue states have protection, gray states do not. Click or select a state for details." aria-describedby="map-hero-sub map-keyboard-hint"></div>
           <p class="map-legend-context">Blue = state protects the discount. Gray = no state law protecting it yet.</p>
           <div class="map-legend">
-            <span class="map-legend-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection</span>
-            <span class="map-legend-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law</span>
+            <span class="map-legend-item map-legend-item--policy"><span class="map-legend-swatch protection" aria-hidden="true"></span> Contract pharmacy protection (protected)</span>
+            <span class="map-legend-item map-legend-item--no-policy"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> No protection law (unprotected)</span>
           </div>
         </div>
         <!-- Cloned map for print/PDF so the map reliably appears when printing -->
@@ -404,15 +406,15 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </section>
       <h3 class="section-subhead">Recent legal signals</h3>
       <div class="trends-grid">
-        <div class="trends-card">
+        <div class="trends-card trends-card--policy">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
           <div><h4>Courts</h4><p>States including AR, LA, MO, MN, TN, and RI prevailed when manufacturers challenged contract pharmacy protections.</p></div>
         </div>
-        <div class="trends-card">
+        <div class="trends-card trends-card--impact">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
           <div><h4>2025 hybrid</h4><p>CO, ME, OH, RI, and VT paired pharmacy protections with reporting requirements.</p></div>
         </div>
-        <div class="trends-card">
+        <div class="trends-card trends-card--neutral">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
           <div><h4>Vetoes</h4><p>Some governors vetoed proposed 340B protections, including in Virginia.</p></div>
         </div>
@@ -448,35 +450,35 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </section>
 
     <!-- ========== SECTION: Key metrics (KPI strip) ========== -->
-    <section class="kpi-strip span-12 scroll-reveal" aria-label="Key metrics">
-      <div class="kpi-card">
+    <section id="key-metrics" class="kpi-strip span-12 scroll-reveal" aria-label="Key metrics">
+      <div class="kpi-card kpi-card--market">
         <p class="kpi-label">U.S. Drug Market</p>
         <p class="kpi-value count-up" data-count-up="7" data-suffix="%">7%</p>
         <p class="kpi-desc">340B share of U.S. outpatient drug market</p>
       </div>
-      <div class="kpi-card">
+      <div class="kpi-card kpi-card--benefit">
         <p class="kpi-label">Community Benefit</p>
         <p class="kpi-value">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">7.95B</span></p>
         <p class="kpi-desc">340B community benefits (2024)</p>
       </div>
-      <div class="kpi-card">
+      <div class="kpi-card kpi-card--oversight">
         <p class="kpi-label">Oversight</p>
         <p class="kpi-value primary count-up" data-count-up="179" data-suffix="">179</p>
         <p class="kpi-desc">HRSA audits in 2024</p>
       </div>
-      <div class="kpi-card">
+      <div class="kpi-card kpi-card--pa">
         <p class="kpi-label">Pennsylvania</p>
         <p class="kpi-value primary">72</p>
         <p class="kpi-desc">PA hospitals in 340B</p>
       </div>
-      <p class="data-freshness" id="data-freshness-text">Data as of March 2025 - Last updated March 2025</p>
+      <p class="data-freshness" id="data-freshness-text">Data as of March 2026 - Last updated March 2026</p>
     </section>
 
     <!-- ========== SECTION: Supporting context — Why this matters ========== -->
     <div class="supporting-section span-12 scroll-reveal">
       <h3 class="section-subhead section-subhead--supporting">Why this matters to health system leaders</h3>
       <div class="supporting-cards-row">
-      <article id="eligibility" class="card card--compact">
+      <article id="eligibility" class="card card--compact card--identity-policy">
         <div class="card-heading">
           <div class="card-heading-text">
             <p class="card-title">Eligible providers</p>
@@ -491,7 +493,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <li>Federally qualified health centers</li>
         </ul>
       </article>
-      <article id="oversight" class="card card--compact">
+      <article id="oversight" class="card card--compact card--identity-policy">
         <div class="card-heading">
           <div class="card-heading-text">
             <p class="card-title">Oversight credibility</p>
@@ -514,7 +516,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
         <p style="margin-top:0.35rem;">HAP supports <strong>parity in oversight between hospitals and manufacturers</strong>, not a one-sided accountability standard.</p>
       </article>
-      <article id="pa-impact" class="card card--compact">
+      <article id="pa-impact" class="card card--compact card--identity-impact">
         <div class="card-heading">
           <div class="card-heading-text">
             <p class="card-title">Pennsylvania operating stakes</p>
@@ -550,6 +552,11 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
         <div class="card-icon card-icon--heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
       </div>
+      <div class="community-benefit-hero">
+        <p class="big-stat-label">Total community benefits (2024)</p>
+        <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">7.95</span>B</p>
+        <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
+      </div>
       <div class="benefit-grid">
         <div class="benefit-item">
           <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M9 12h6"/><path d="M12 9v6"/></svg></div>
@@ -567,11 +574,6 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <div class="benefit-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2C9.5 2 7 4 7 7v1c0 1.5.8 2.5 2 3 1.2.5 2 1.5 2 3v6c0 1.5 1 2.5 2.5 2.5h1c1.5 0 2.5-1 2.5-2.5v-6c0-1.5.8-2.5 2-3 1.2-.5 2-1.5 2-3V7c0-3-2.5-5-5-5z"/></svg></div>
           <p class="benefit-item-text">Dental care &amp; preventive services</p>
         </div>
-      </div>
-      <div class="community-benefit-hero">
-        <p class="big-stat-label">Total community benefits (2024)</p>
-        <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">7.95</span>B</p>
-        <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
       </div>
     </article>
 
@@ -642,9 +644,9 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 </div>
 
 <!-- ========== SECTION: Scripts — PDF libs (CDN), main app, then simulator modules ========== -->
-<!-- Download PDF (image) uses html2canvas + jsPDF from CDN. For offline/local-only, replace with assets/vendor copies and remove unpkg from CSP. -->
-  <script src="https://unpkg.com/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/jspdf@2.5.1/dist/jspdf.umd.min.js" crossorigin="anonymous"></script>
+<!-- Download PDF (image) uses local html2canvas + jsPDF copies for deterministic offline behavior. -->
+  <script src="assets/vendor/html2canvas.min.js"></script>
+  <script src="assets/vendor/jspdf.umd.min.js"></script>
   <script src="340b.js"></script>
   <!-- Pennsylvania Impact Mode — loads after main dashboard; fully isolated -->
   <script src="modules/pa-impact-data.js"></script>

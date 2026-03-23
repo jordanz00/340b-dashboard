@@ -1,0 +1,28 @@
+{
+  "taskId": "V2-CSP-AND-SCRIPT-TAGS",
+  "timestampUtc": "2026-03-23T13:33:30Z",
+  "locks": {
+    "acquired": [
+      "locks/340b.html.lock"
+    ],
+    "removed": [
+      "locks/340b.html.lock"
+    ]
+  },
+  "filesModified": [
+    "340b.html"
+  ],
+  "filesHashesSha256": {
+    "340b.html": "7f703d3df3d33901df8eeb70591fd4e33b2e30238c6d4d2320cb7f1306fb6280"
+  },
+  "actions": [
+    "Removed https://unpkg.com from CSP script-src in 340b.html",
+    "Replaced unpkg html2canvas/jsPDF script tags with local assets/vendor html2canvas.min.js and jspdf.umd.min.js"
+  ],
+  "runtimeChecks": [
+    "No browser runtime executed in this task (deterministic CSP + script tag edit only)."
+  ],
+  "errors": [],
+  "status": "passed"
+}
+

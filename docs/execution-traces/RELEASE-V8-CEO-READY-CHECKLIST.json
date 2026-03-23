@@ -1,0 +1,32 @@
+{
+  "taskId": "RELEASE-V8-CEO-READY-CHECKLIST",
+  "timestampUtc": "2026-03-23T13:44:42Z",
+  "locks": {
+    "acquired": [
+      "locks/docs/CEO-READY-RELEASE-CHECKLIST.lock"
+    ],
+    "removed": []
+  },
+  "filesModified": [
+    "docs/CEO-READY-RELEASE-CHECKLIST.md"
+  ],
+  "actions": [
+    "Created CEO-ready deterministic release checklist with PASS from dashboard-audit.",
+    "Recorded unpkg.com removal evidence and preserved metric integrity list.",
+    "Recorded manual validation checklist status as FAIL (not validated in this environment)."
+  ],
+  "runtimeChecks": [
+    "Ran python3 dashboard-audit.py (deterministic gate) before writing checklist."
+  ],
+  "auditResult": {
+    "python3 dashboard-audit.py": "PASS"
+  },
+  "manualValidationChecklist": {
+    "printPdfPageFit2Pages": "FAIL",
+    "mapVisibility": "FAIL",
+    "downloadPdfImageRendering": "FAIL"
+  },
+  "errors": [],
+  "status": "passed"
+}
+
