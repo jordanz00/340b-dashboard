@@ -232,14 +232,14 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   </div>
   <nav class="dashboard-nav" id="dashboard-nav" aria-label="Dashboard sections">
     <a href="#section-overview" class="active" aria-current="page">Overview</a>
-    <a href="#key-metrics">Financial</a>
-    <a href="#state-laws">State map</a>
-    <a href="#legal-trends">Trends</a>
-    <a href="#methodology-section">Data</a>
-    <a href="#pa-impact-mode">PA Impact</a>
-    <a href="#policy-impact-simulator">Simulator</a>
-    <a href="340b-BASIC.html" title="Core 340B map and story; local scripts only (IT-safe)">340B BASIC</a>
-    <a href="OW_report_dashboard.html" title="Oliver Wyman PA hospital report — sticky sidebar navigation">PA hospitals (OW)</a>
+    <a href="#key-metrics">Key metrics</a>
+    <a href="#state-laws">Map &amp; states</a>
+    <a href="#legal-trends">Legal trends</a>
+    <a href="#methodology-section">Sources</a>
+    <a href="#pa-impact-mode">PA impact</a>
+    <a href="#policy-impact-simulator">Policy simulator</a>
+    <a href="340b-BASIC.html" title="Core 340B map and story; local scripts only (IT-safe)">BASIC (IT-safe)</a>
+    <a href="OW_report_dashboard.html" title="Pennsylvania hospitals — Oliver Wyman sustainability report">PA hospitals report</a>
   </nav>
 </header>
 
@@ -247,15 +247,15 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <aside class="hap-sidebar hap-sidebar--340b" aria-label="Section navigation">
   <nav class="hap-sidebar-nav" id="hap-sidebar-nav">
     <a href="#section-overview">Overview</a>
-    <a href="#key-metrics">Financial impact</a>
+    <a href="#key-metrics">Key metrics</a>
     <a href="#community-benefit">Community benefit</a>
-    <a href="#state-laws">Geographic distribution</a>
-    <a href="#legal-trends">Trends</a>
+    <a href="#state-laws">Map &amp; states</a>
+    <a href="#legal-trends">Legal trends</a>
     <a href="#methodology-section">Methodology</a>
     <div class="hap-sidebar-divider" role="presentation"></div>
     <a href="#overview">HAP position</a>
-    <a href="#pa-impact-mode">PA Impact</a>
-    <a href="#policy-impact-simulator">Impact simulator</a>
+    <a href="#pa-impact-mode">PA impact</a>
+    <a href="#policy-impact-simulator">Policy simulator</a>
     <a href="#policy">Policy &amp; access</a>
     <div class="hap-sidebar-divider" role="presentation"></div>
     <span class="hap-sidebar-label" id="hap-nav-suite-label">Related reports &amp; tools</span>
@@ -268,8 +268,8 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       <span class="hap-cross-link-desc">Core map &amp; story; local scripts (IT-safe)</span>
     </a>
     <a href="OW_report_dashboard.html" class="hap-cross-link hap-cross-link--stack" title="Pennsylvania hospitals — Oliver Wyman sustainability report with sticky sidebar navigation">
-      <span class="hap-cross-link-title">PA hospitals (OW)</span>
-      <span class="hap-cross-link-desc">Oliver Wyman report · sticky section nav</span>
+      <span class="hap-cross-link-title">PA hospitals report</span>
+      <span class="hap-cross-link-desc">Oliver Wyman · sticky section nav</span>
     </a>
     <a href="static.html" class="hap-cross-link hap-cross-link--stack" title="Pennsylvania hospitals — Oliver Wyman report in classic single-page layout">
       <span class="hap-cross-link-title">PA hospitals (classic)</span>
@@ -888,11 +888,13 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 
 <!-- ========== SECTION: Site footer ========== -->
 <footer class="site-footer" role="contentinfo">
-  <a href="OW_report_dashboard.html" class="back-link">PA Hospitals — Oliver Wyman report</a>
-  <div class="footer-cta">
-    <a href="https://www.haponline.org/contact" class="footer-cta-primary" target="_blank" rel="noopener noreferrer">Contact HAP</a>
-    <p class="footer-cta-secondary"><a href="https://www.haponline.org/340b" target="_blank" rel="noopener noreferrer">Learn more about 340B at HAP</a></p>
-  </div>
+  <nav class="footer-actions" aria-label="Quick links">
+    <ul class="footer-actions-list">
+      <li><a href="OW_report_dashboard.html" class="footer-pill footer-pill--outline">PA hospitals report</a></li>
+      <li><a href="https://www.haponline.org/contact" class="footer-pill footer-pill--primary" target="_blank" rel="noopener noreferrer">Contact HAP</a></li>
+      <li><a href="https://www.haponline.org/340b" class="footer-pill footer-pill--ghost" target="_blank" rel="noopener noreferrer">340B resources at HAP</a></li>
+    </ul>
+  </nav>
   <p class="footer-org">
     <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64" loading="lazy">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
