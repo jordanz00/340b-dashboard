@@ -1,6 +1,10 @@
 /**
  * hap-nav-shared.js — lightweight scroll-active highlighting for static dashboards
  * used by 340b-BASIC.html (no 340b.js). Keeps hash-only nav links in sync with scroll position.
+ *
+ * Shared-code contract: `sectionIds` below must match real `id="..."` nodes on the page.
+ * If you add/remove sections or rename #overview (HAP position), update this array and nav hrefs
+ * together. Scroll margin is controlled in CSS (`[id] { scroll-margin-top: ... }`), not here.
  */
 (function () {
   "use strict";

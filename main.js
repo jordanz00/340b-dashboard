@@ -1,3 +1,5 @@
+/* PA/OW dashboard logic — keep figures aligned with the Oliver Wyman report and HAP materials.
+   Visual tokens: hap-design-tokens.css + page inline CSS. Do not duplicate CONFIG from 340b here. */
 // Core data constants derived from the January 2026 report
 const economicImpact = {
   gdpSharePercent: 19,

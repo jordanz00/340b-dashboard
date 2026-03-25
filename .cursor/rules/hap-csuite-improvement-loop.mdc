@@ -1,0 +1,65 @@
+---
+description: CEO/policymaker readiness, cross-dashboard consistency, accuracy, and human-in-the-loop improvement for all HAP dashboards
+alwaysApply: true
+---
+
+# HAP dashboards — C-suite improvement loop (340B + OW + print + shared)
+
+Cursor should behave as a **structured improvement partner**: propose high-impact changes, **never invent data or policy**, and assume **humans merge/deploy**.
+
+## Non-negotiables
+
+- **Accuracy:** All numbers, dates, and law references must match `state-data.js`, report copy, and cited sources. If unsure, flag—do not guess.
+- **Security:** Follow `SECURE-FORCE.md` / project security rules: safe DOM, no secrets, validated hash/state, IT-safe rules for `340b-BASIC.html`.
+- **Cross-surface impact:** Edits to `340b.css`, `hap-design-tokens.css`, `hap-nav-shared.js`, or shared copy patterns can affect **340B advanced, BASIC, OW (`OW_report_dashboard.html`), index/static, print**. Call out blast radius before large changes.
+
+## Recommended heading hierarchy (use consistently)
+
+| Level | Role | Notes |
+|-------|------|--------|
+| **H1** | Page purpose (one per page) | Dashboard title / report title. |
+| **H2** | Major sections | Overview, Key metrics, Map, HAP position, Community impact, Sources. |
+| **H3** | Subsections or card groups | “What lawmakers can do”, metric groups, methodology blocks. |
+| **H4** | Bullets / advocacy lines / stat labels | Pair with one-line “So what” where space allows. |
+
+**HAP Position:** treat as its **own** H2 band (full-width flagship under Overview): eyebrow → headline pledge → short lead → H3 “What lawmakers can do” → H4-style bullets with “So what”.
+
+## Copy defaults
+
+- **Reading level:** Plain English; short sentences; **8th–10th grade** where possible.
+- **So what:** One line under or beside every stat, advocacy bullet, and primary CTA explaining impact for patients, hospitals, or policy.
+- **Acronyms:** Define **340B, PBM, contract pharmacy** once per page (glossary strip on 340B); OW uses PA hospital/sustainability language—do not paste unrelated 340B stats onto OW.
+- **Dates:** Prefer “Data as of [month year]” near KPI blocks; align with `CONFIG` / `state-data.js`.
+
+## Visual & design cohesion
+
+- **Tokens:** Prefer `hap-design-tokens.css` variables (`--hap-brand-primary`, `--hap-type-h*`, spacing) before new hex values.
+- **Flagship rows:** Overview → **HAP Position** → key findings / metrics; use full-width sections and consistent card padding (`--space-*`, `--radius-*`).
+- **Polish:** Subtle elevation (shadows already in `340b.css`); HAP blue accents; avoid loud gradients on dense data screens.
+
+## UX & interactivity
+
+- **Maps:** Preserve failure isolation (map issues must not break print/share). Tooltips via `title` or existing tooltip elements—no `innerHTML` with raw user input.
+- **Motion:** Respect `prefers-reduced-motion`; prefer `transform`/`opacity` for hovers.
+- **Targets:** Interactive controls ≥ **44px** where practical (nav pills, primary actions).
+
+## Performance
+
+- Avoid layout thrashing: batch DOM reads/writes; keep scroll handlers **passive** + **rAF** where already used in `340b.js`.
+- Do not add heavy always-on observers without need; prefer CSS for hover/focus states.
+
+## Shared-code risks (review when touching)
+
+- **`340b.html` inlined `CONFIG` vs `state-data.js`:** duplicated; updates must stay in sync or drift.
+- **`hap-nav-shared.js`:** section IDs must exist on the page; scroll-margin must match header height.
+- **OW inline `<style>` vs `340b.css`:** OW does not load full `340b.css`; token file is linked—keep OW variables aligned with tokens.
+- **Print pipeline:** `print.html` / `print-view.css` / `340b.js` print snapshot—changes to intro/HAP DOM affect PDF first page.
+
+## Improvement loop (human-controlled)
+
+1. **Analyze** — Copy, hierarchy, a11y, consistency across 340B / OW / print.
+2. **Propose** — Ranked list: impact vs effort; note files and risks.
+3. **Implement** — Only after user direction or clear scope; small diffs.
+4. **Verify** — `python3 dashboard-audit.py`; spot-check print; hash navigation.
+
+For deep daily waves and ULTRA prompts, use **`ultra-daily-improvement`** rule and `ULTRA-prompts.md` / `DAILY-IMPROVEMENT.md`.

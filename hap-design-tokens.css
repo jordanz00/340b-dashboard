@@ -1,0 +1,170 @@
+/**
+ * HAP Dashboard Suite — Design tokens (shared)
+ * =============================================
+ * Load before page CSS (340b.css, styles.css, OW inline overrides).
+ * Single source for brand, type scale, spacing, motion, a11y, and interactive patterns.
+ * Do not put secrets or runtime data here.
+ */
+
+:root {
+  /* —— Brand (canonical HAP blue — aligned across OW, index, 340B) —— */
+  --hap-brand-primary: #0072bc;
+  --hap-brand-primary-hover: #005a94;
+  --hap-brand-primary-muted: rgba(0, 114, 188, 0.08);
+  --hap-brand-deep: #003087;
+  --hap-accent-warm: #f59e0b;
+  --hap-accent-warm-alt: #ff8a3d;
+  --hap-accent-soft: rgba(245, 158, 11, 0.12);
+
+  /* Legacy aliases (maps older 340B token names to suite primary) */
+  --hap-ow-blue: var(--hap-brand-primary);
+  --hap-ow-soft: #8ed8f8;
+
+  /* —— Text (WCAG-friendly on light surfaces) —— */
+  --hap-text-primary: #1a1a1a;
+  --hap-text-secondary: #424245;
+  --hap-text-muted: #64748b;
+  --hap-text-on-brand: #ffffff;
+
+  /* —— Surfaces —— */
+  --hap-bg-page: #fafafa;
+  --hap-bg-card: #ffffff;
+  --hap-bg-subtle: #f5f5f7;
+  --hap-border-default: rgba(0, 0, 0, 0.06);
+  --hap-border-strong: rgba(0, 114, 188, 0.14);
+
+  /* —— Typography: Inter-first stack (system fallbacks; no external font file required) —— */
+  --hap-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, sans-serif;
+  --hap-font-display: "Montserrat", var(--hap-font-sans);
+  --hap-font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+
+  /* Scale: H1 ~32–36px, H2 ~24–28px, H3 ~18–22px, labels ~14–16px (fluid clamp) */
+  --hap-type-h1: clamp(1.75rem, 1.35rem + 1.5vw, 2.25rem);
+  --hap-type-h2: clamp(1.375rem, 1.15rem + 1vw, 1.75rem);
+  --hap-type-h3: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
+  --hap-type-h4: clamp(0.875rem, 0.82rem + 0.2vw, 1rem);
+  --hap-type-body: 1rem;
+  --hap-type-small: 0.875rem;
+  --hap-type-eyebrow: 0.6875rem;
+
+  --hap-leading-tight: 1.25;
+  --hap-leading-snug: 1.35;
+  --hap-leading-body: 1.55;
+  --hap-leading-relaxed: 1.6;
+
+  /* —— Spacing: 8px base —— */
+  --hap-space-1: 0.25rem;
+  --hap-space-2: 0.5rem;
+  --hap-space-3: 0.75rem;
+  --hap-space-4: 1rem;
+  --hap-space-5: 1.25rem;
+  --hap-space-6: 1.5rem;
+  --hap-space-8: 2rem;
+  --hap-space-10: 2.5rem;
+  --hap-space-12: 3rem;
+
+  /* —— Radius & elevation —— */
+  --hap-radius-sm: 8px;
+  --hap-radius-md: 12px;
+  --hap-radius-lg: 16px;
+  --hap-radius-pill: 999px;
+
+  --hap-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --hap-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --hap-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --hap-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.07);
+  --hap-shadow-brand: 0 4px 14px rgba(0, 114, 188, 0.22);
+
+  /* —— Motion —— */
+  --hap-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --hap-ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --hap-duration-fast: 0.15s;
+  --hap-duration-normal: 0.22s;
+
+  /* —— Accessibility —— */
+  --hap-tap-min: 44px;
+  --hap-focus-ring: 2px solid var(--hap-brand-primary);
+  --hap-focus-offset: 2px;
+
+  /* —— Iconography —— */
+  --hap-icon-sm: 20px;
+  --hap-icon-md: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --hap-duration-fast: 0.01ms;
+    --hap-duration-normal: 0.01ms;
+  }
+}
+
+/* —— Reusable interactive affordances (opt-in classes) —— */
+.hap-focus-ring:focus-visible {
+  outline: var(--hap-focus-ring);
+  outline-offset: var(--hap-focus-offset);
+}
+
+.hap-tap-target {
+  min-height: var(--hap-tap-min);
+  min-width: var(--hap-tap-min);
+}
+
+/* Primary CTA — HAP blue, pill, keyboard-safe */
+.hap-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hap-space-2);
+  padding: 0.65rem 1.25rem;
+  min-height: var(--hap-tap-min);
+  font-family: var(--hap-font-display);
+  font-size: var(--hap-type-small);
+  font-weight: 600;
+  color: var(--hap-text-on-brand);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--hap-brand-primary) 0%, #0088e0 100%);
+  border: none;
+  border-radius: var(--hap-radius-pill);
+  box-shadow: var(--hap-shadow-brand);
+  cursor: pointer;
+  transition: transform var(--hap-duration-normal) var(--hap-ease-out),
+    box-shadow var(--hap-duration-normal) var(--hap-ease-out),
+    filter var(--hap-duration-fast) var(--hap-ease-out);
+}
+
+.hap-btn-primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 6px 20px rgba(0, 114, 188, 0.35);
+}
+
+.hap-btn-primary:focus-visible {
+  outline: var(--hap-focus-ring);
+  outline-offset: var(--hap-focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hap-btn-primary {
+    transition: none;
+  }
+  .hap-btn-primary:hover {
+    transform: none;
+  }
+}
+
+/* Flagship / metric card hover — GPU-friendly */
+.hap-card-interactive {
+  transition: box-shadow var(--hap-duration-normal) var(--hap-ease-standard),
+    border-color var(--hap-duration-normal) var(--hap-ease-standard),
+    transform var(--hap-duration-normal) var(--hap-ease-out);
+}
+
+.hap-card-interactive:hover {
+  box-shadow: var(--hap-shadow-md);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hap-card-interactive:hover {
+    transform: none;
+  }
+}

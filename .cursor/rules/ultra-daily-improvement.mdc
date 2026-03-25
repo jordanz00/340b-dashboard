@@ -6,7 +6,7 @@ globs: 340b*.{html,js,css}, 340b-basic-map.js, state-data.js, index.html, OW_rep
 
 # ULTRA Daily Improvement — HAP dashboards (340B + OW + print)
 
-When working on **improvement tasks** (design polish, print view, accessibility, layout, text clarity, refactoring for novices), prefer the structured ULTRA workflow over ad-hoc requests. **Consider impact on all surfaces** (see **hap-multi-dashboard-scope** rule) when shared CSS or patterns change.
+When working on **improvement tasks** (design polish, print view, accessibility, layout, text clarity, refactoring for novices), prefer the structured ULTRA workflow over ad-hoc requests. **Consider impact on all surfaces** (see **hap-multi-dashboard-scope** rule) when shared CSS or patterns change. For C-suite copy/hierarchy defaults and shared-code risks, see **`hap-csuite-improvement-loop`**. Shared tokens: `hap-design-tokens.css`.
 
 1. **Primary source:** [ULTRA-prompts.md](ULTRA-prompts.md) — v03–v07 (print, layout, accessibility), v08–v12 (50 improvements), **v13–v22 (100 novice refactor prompts)**.
 2. **Refactoring manual:** [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md) — daily refactor workflow, code map, labeling rules, reuse checklist.

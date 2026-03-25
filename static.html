@@ -7,8 +7,9 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Time to Act: Pennsylvania Hospitals Dashboard</title>
   <meta name="description" content="Oliver Wyman report for HAP on Pennsylvania hospital sustainability. Static HTML version.">
+  <link rel="stylesheet" href="hap-design-tokens.css">
   <style>
-    :root { --primary: #0072bc; --primary-soft: #8ed8f8; --accent: #fbb040; --danger: #b91c1c; --muted: #64748b; --text: #0f172a; --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --radius: 12px; }
+    :root { --primary: var(--hap-brand-primary, #0072bc); --primary-soft: #8ed8f8; --accent: #fbb040; --danger: #b91c1c; --muted: #64748b; --text: #0f172a; --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --radius: 12px; }
     html { scrollbar-gutter: stable; }
     body:has(> .pa-dashboard) { margin: 0; }
     .pa-dashboard * { box-sizing: border-box; }
@@ -620,13 +621,14 @@
       <li>Quantitative values are from the report text and endnotes.</li>
       <li>Scenarios based on Baseline, Baseline with H.R. 1, Rainy Day, and Sustainability Prevails paths.</li>
     </ul>
+    <p class="dashboard-data-freshness" style="margin:1rem 0 0;font-size:0.88rem;color:var(--muted);line-height:1.5;max-width:52ch;">Data as of January 2026 (report date). Refresh figures when HAP publishes an updated synthesis.</p>
   </section>
 
 </main>
 
 <footer>
   <p><strong>Oliver Wyman</strong> prepared this analysis for <strong>The Hospital and Healthsystem Association of Pennsylvania (HAP)</strong>.</p>
-  <p class="footer-dashboard-cross"><a href="340b.html" class="back-link">340B Drug Pricing — Advocacy Dashboard</a></p>
+  <p class="footer-dashboard-cross"><a href="340b.html" class="back-link hap-btn-primary">340B Drug Pricing — Advocacy Dashboard</a></p>
   <p class="footer-design" style="margin-top:0.75rem;font-size:0.85rem;color:var(--muted, #64748b);">Design Mark X — Continuous Optimization System</p>
 </footer>
 

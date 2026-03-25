@@ -7,12 +7,13 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>340B Drug Pricing Program | HAP</title>
   <meta name="description" content="HAP supports policies that protect the 340B program and preserve hospitals' ability to use contract pharmacies for patient access to medications.">
+  <link rel="stylesheet" href="hap-design-tokens.css">
   <script src="assets/vendor/d3.min.js"></script>
   <script src="assets/vendor/topojson-client.min.js"></script>
   <script src="assets/vendor/states-10m.js"></script>
   <style>
     :root {
-      --primary: #0072bc;
+      --primary: var(--hap-brand-primary, #0072bc);
       --primary-soft: #8ed8f8;
       --primary-deep: #005a94;
       --accent: #f59e0b;
@@ -73,6 +74,8 @@
     @supports (backdrop-filter: blur(1px)) { .pa-dashboard footer { background: rgba(255,255,255,0.5); backdrop-filter: blur(24px); } }
     .pa-dashboard .back-link { display: inline-block; margin: 1rem 0; padding: 0.55rem 1.2rem; background: linear-gradient(135deg, var(--primary) 0%, #0088e0 100%); color: white; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.85rem; box-shadow: 0 4px 14px rgba(0,114,188,0.3); transition: transform 0.28s var(--ease-out), box-shadow 0.3s var(--ease-out), background 0.25s; -webkit-tap-highlight-color: transparent; }
     .pa-dashboard .back-link:hover { text-decoration: none; background: linear-gradient(135deg, #005a94 0%, var(--primary) 100%); color: white; transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,114,188,0.4); }
+    .pa-dashboard .back-link--secondary { background: rgba(255,255,255,0.85); color: var(--primary) !important; border: 1px solid rgba(0,114,188,0.28); box-shadow: 0 2px 8px rgba(0,114,188,0.08); }
+    .pa-dashboard .back-link--secondary:hover { background: #fff; color: var(--primary) !important; transform: translateY(-1px); }
     .pa-dashboard .skip-link { position: absolute; top: -3rem; left: 1rem; z-index: 100; padding: 0.5rem 1rem; background: var(--primary); color: white; font-family: "Montserrat", sans-serif; font-size: 0.85rem; font-weight: 600; border-radius: 10px; transition: top 0.2s ease; }
     .pa-dashboard .skip-link:focus { top: 1rem; outline: 2px solid white; outline-offset: 2px; }
     .pa-dashboard .highlight-box { padding: 1rem 1.25rem; border-left: 4px solid var(--accent); background: var(--accent-soft); border-radius: 0 var(--radius) var(--radius) 0; margin: 1rem 0; box-shadow: 0 2px 12px rgba(0,114,188,0.04); transition: box-shadow 0.35s var(--ease-out), border-left-color 0.25s; }
@@ -258,6 +261,7 @@
         <span class="stat-label">of the total U.S. drug market — drugs purchased through 340B</span>
       </div>
     </div>
+    <p class="stat-so-what" style="margin:0.75rem 0 0;font-size:0.88rem;color:var(--muted);max-width:52ch;line-height:1.5;"><strong>So what:</strong> Shows how much of national outpatient drug spend flows through 340B—scale for why policy fights over the program matter.</p>
   </section>
 
   <section id="eligibility" class="reveal">
@@ -335,7 +339,9 @@
 </main>
 
 <footer>
-  <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
+  <p class="dashboard-data-freshness" style="margin:0 0 0.75rem;font-size:0.82rem;color:var(--muted);line-height:1.45;max-width:50ch;">Data as of March 2026. State counts and law status cross-checked to public sources; refresh when statutes change.</p>
+  <a href="340b.html" class="hap-btn-primary">Full 340B advocacy dashboard</a>
+  <p style="margin:0.75rem 0 0;"><a href="static.html" class="back-link back-link--secondary">PA Hospitals sustainability report (Oliver Wyman)</a></p>
   <p style="margin:0.75rem 0 0;"><strong>Hospital &amp;&#32;Healthsystem Association of Pennsylvania (HAP)</strong></p>
 </footer>
 </div>

@@ -38,6 +38,7 @@ var CONFIG = {
       "States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.",
     hapPositionLead:
       "HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.",
+    hapPositionLawmakerLabel: "Lawmaker actions",
     hapAskItems: [
       {
         label: "Protect the 340B discount",

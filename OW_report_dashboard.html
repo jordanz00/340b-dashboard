@@ -8,8 +8,9 @@
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <title>Time to Act: Pennsylvania Hospitals Dashboard</title>
   <meta name="description" content="Oliver Wyman report for HAP on Pennsylvania hospital sustainability. Static HTML version.">
+  <link rel="stylesheet" href="hap-design-tokens.css">
   <style>
-    :root { --primary: #0072bc; --primary-soft: #8ed8f8; --accent: #fbb040; --danger: #b91c1c; --muted: #64748b; --text: #0f172a; --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --radius: 12px; }
+    :root { --primary: var(--hap-brand-primary, #0072bc); --primary-soft: #8ed8f8; --accent: #fbb040; --danger: #b91c1c; --muted: #64748b; --text: #0f172a; --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --radius: 12px; }
     html { scrollbar-gutter: stable; }
     body:has(> .pa-dashboard) { margin: 0; }
     .pa-dashboard * { box-sizing: border-box; }
@@ -306,10 +307,7 @@
       .pa-dashboard .gauge-svg { width: 120px; height: 72px; }
       .pa-dashboard .big-number-rainy { font-size: 2.5rem; }
     }
-    /* ── HAP Shell: sticky sidebar layout ──
-       CRITICAL: hap-sidebar's sticky works ONLY because no ancestor
-       between it and <body> has overflow set to anything but visible.
-       pa-dashboard wraps ONLY <main> — never the sidebar or hap-body. */
+    /* ── HAP Shell: desktop = fixed left nav (full scroll); mobile = sticky horizontal strip ── */
     html, body { margin: 0; padding: 0; }
     /* Match 340b.html / HAP suite page wash */
     body {
@@ -333,19 +331,35 @@
     .hap-header-org { margin: 0; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #5a7a99; font-family: "Montserrat", system-ui, sans-serif; }
     .hap-header-title { margin: 0; font-size: 1.05rem; font-weight: 800; color: #003087; letter-spacing: -0.02em; line-height: 1.15; font-family: "Montserrat", system-ui, sans-serif; }
     .hap-header-badge { display: inline-flex; align-items: center; margin-top: 0.2rem; padding: 0.15rem 0.5rem; background: rgba(0,48,135,0.1); border: 1px solid rgba(0,48,135,0.2); color: #003087; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; }
-    /* Body row: sidebar + content. NO overflow on this or any child except sidebar itself */
+    :root { --hap-sidebar-w: 210px; --hap-header-h: 57px; }
+    /* Body row: sidebar (fixed on desktop) + content offset */
     .hap-body { display: flex; flex: 1; align-items: flex-start; }
-    /* Sidebar: sticky, bounded by viewport */
+    @media (min-width: 901px) {
+      .hap-page-content {
+        margin-left: var(--hap-sidebar-w);
+        width: calc(100% - var(--hap-sidebar-w));
+        box-sizing: border-box;
+      }
+    }
+    /* Sidebar: fixed below header so it stays visible for entire page scroll */
     .hap-sidebar {
-      width: 210px; flex-shrink: 0;
-      position: sticky; top: 57px;
-      height: calc(100vh - 57px);
+      width: var(--hap-sidebar-w); flex-shrink: 0;
       overflow-y: auto;
+      overscroll-behavior: contain;
       background: #ddeef8;
       border-right: 1px solid #c8d8e8;
       display: flex; flex-direction: column;
-      padding: 0.9rem 0 1.5rem;
+      padding: 0.9rem 0 calc(1.5rem + env(safe-area-inset-bottom, 0));
       z-index: 200;
+    }
+    @media (min-width: 901px) {
+      .hap-sidebar {
+        position: fixed;
+        left: 0;
+        top: var(--hap-header-h);
+        height: calc(100vh - var(--hap-header-h));
+        max-height: calc(100vh - var(--hap-header-h));
+      }
     }
     .hap-sidebar-nav { display: flex; flex-direction: column; gap: 0.1rem; padding: 0 0.65rem; flex: 1; }
     .hap-sidebar-nav a { display: block; padding: 0.5rem 0.85rem; border-radius: 7px; font-size: 0.8rem; font-weight: 600; font-family: "Montserrat", system-ui, sans-serif; color: #3a5a7a; text-decoration: none; border: 1px solid transparent; transition: color 0.18s, background 0.18s; }
@@ -371,7 +385,20 @@
       .hap-header { padding: 0.5rem 0.8rem; }
       .hap-header-title { font-size: 0.88rem; }
       .hap-body { flex-direction: column; }
-      .hap-sidebar { width: 100%; height: auto; position: sticky; top: 0; flex-direction: row; padding: 0.35rem 0.65rem; border-right: none; border-bottom: 1px solid #c8d8e8; box-shadow: 0 2px 6px rgba(0,114,188,0.1); }
+      .hap-page-content { margin-left: 0 !important; width: 100% !important; }
+      .hap-sidebar {
+        position: sticky;
+        left: auto;
+        top: 0;
+        width: 100%;
+        height: auto;
+        max-height: none;
+        flex-direction: row;
+        padding: 0.35rem 0.65rem;
+        border-right: none;
+        border-bottom: 1px solid #c8d8e8;
+        box-shadow: 0 2px 6px rgba(0,114,188,0.1);
+      }
       .hap-sidebar-nav { flex-direction: row; flex-wrap: wrap; gap: 0.2rem; padding: 0; }
       .hap-sidebar-nav a { padding: 0.22rem 0.5rem; font-size: 0.67rem; border-radius: 999px; }
       .hap-sidebar-divider { display: none; }
@@ -380,7 +407,51 @@
       .hap-cross-link-desc { font-size: 0.52rem; }
     }
     @media (max-width: 480px) { .hap-header-badge { display: none; } .hap-header-title { font-size: 0.8rem; } }
-    @media print { .hap-header, .hap-sidebar { display: none !important; } .hap-body { display: block; } }
+    @media print {
+      .hap-header, .hap-sidebar { display: none !important; }
+      .hap-page-content { margin-left: 0 !important; width: 100% !important; }
+      .hap-body { display: block; }
+    }
+
+    /* HAP position flagship — visual parity with 340B suite (PA sustainability framing; no new stats) */
+    .pa-dashboard section.hap-position-flagship--ow {
+      margin-bottom: var(--space-xl);
+      padding: 1.5rem 1.35rem 1.65rem 1.5rem;
+      background: linear-gradient(165deg, rgba(0,114,188,0.14) 0%, rgba(0,114,188,0.06) 50%, rgba(255,255,255,0.82) 100%);
+      border: 1px solid rgba(0,114,188,0.28);
+      border-radius: var(--radius);
+      box-shadow: 0 10px 40px rgba(0,114,188,0.12), inset 0 1px 0 rgba(255,255,255,0.9);
+      position: relative;
+      overflow: hidden;
+    }
+    .pa-dashboard section.hap-position-flagship--ow::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 5px;
+      background: linear-gradient(180deg, #0072bc, #fbb040);
+      border-radius: var(--radius) 0 0 var(--radius);
+      pointer-events: none;
+    }
+    .hap-ow-pos-inner { position: relative; z-index: 1; padding-left: 0.35rem; }
+    .hap-ow-pos-brand { margin: 0 0 0.35rem; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: #005a94; font-family: "Montserrat", system-ui, sans-serif; }
+    .hap-ow-pos-focus { margin: 0 0 0.45rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #0072bc; font-family: "Montserrat", system-ui, sans-serif; }
+    .hap-position-flagship--ow > .hap-ow-pos-inner > h2 { margin: 0 0 0.65rem; font-size: 1.35rem; color: #003087; line-height: 1.25; }
+    .hap-ow-pos-lead { margin: 0 0 1rem; font-size: 0.95rem; line-height: 1.55; color: #334155; max-width: 65ch; }
+    .hap-ow-pos-sub { margin: 0 0 0.4rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #64748b; font-family: "Montserrat", system-ui, sans-serif; }
+    .hap-ow-ask-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 0.65rem; }
+    @media (min-width: 900px) {
+      .hap-ow-ask-list { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.85rem; }
+    }
+    .hap-ow-ask-item { display: flex; flex-direction: column; gap: 0.2rem; padding: 0.85rem 1rem; background: rgba(255,255,255,0.9); border: 1px solid rgba(0,114,188,0.14); border-radius: 10px; border-left: 3px solid #0072bc; box-shadow: 0 2px 8px rgba(0,114,188,0.06); transition: box-shadow 0.2s ease, transform 0.2s ease; min-height: 44px; }
+    .hap-ow-ask-item:hover { box-shadow: 0 6px 20px rgba(0,114,188,0.1); transform: translateY(-2px); }
+    @media (prefers-reduced-motion: reduce) { .hap-ow-ask-item:hover { transform: none; } }
+    .hap-ow-ask-item--workforce { border-left-color: #fbb040; }
+    .hap-ow-ask-item--access { border-left-color: #0d9488; }
+    .hap-ow-ask-h { margin: 0; font-size: 0.92rem; font-weight: 700; color: #0f172a; font-family: "Montserrat", system-ui, sans-serif; line-height: 1.3; }
+    .hap-ow-ask-so { margin: 0; font-size: 0.82rem; line-height: 1.45; color: #64748b; }
   </style>
 </head>
 <body>
@@ -403,6 +474,7 @@
 <aside class="hap-sidebar" aria-label="Page sections">
   <nav class="hap-sidebar-nav">
     <a href="#overview" class="active">Overview</a>
+    <a href="#hap-pa-position">HAP position</a>
     <a href="#today">Today's Reality</a>
     <a href="#scenarios">2030 Scenarios</a>
     <a href="#access">Access &amp; Closures</a>
@@ -511,6 +583,30 @@
           </svg>
         </div>
       </div>
+    </div>
+  </section>
+
+  <section id="hap-pa-position" class="hap-position-flagship--ow scroll-reveal" aria-labelledby="hap-ow-pos-heading" title="HAP’s policy priorities for Pennsylvania hospital sustainability (Oliver Wyman report context).">
+    <div class="hap-ow-pos-inner">
+      <p class="hap-ow-pos-brand">HAP position</p>
+      <p class="hap-ow-pos-focus" id="hap-ow-pos-focus">Pennsylvania hospitals · CEO briefing</p>
+      <h2 id="hap-ow-pos-heading">Align policy with the cost of care</h2>
+      <p class="hap-ow-pos-lead">The sections below quantify pressure on Pennsylvania hospitals. HAP asks state and federal leaders to set payment and rules that match what it costs to deliver care—so communities keep access and hospitals can invest for the long term, not just survive the quarter.</p>
+      <h3 class="hap-ow-pos-sub">What leaders can prioritize</h3>
+      <ul class="hap-ow-ask-list" role="list">
+        <li class="hap-ow-ask-item" title="Payment reform that reflects true cost supports stable operations.">
+          <p class="hap-ow-ask-h">Match public and private payment to the cost of care</p>
+          <p class="hap-ow-ask-so">So what: Hospitals can cover labor, supplies, and community benefit without chronic operating losses.</p>
+        </li>
+        <li class="hap-ow-ask-item hap-ow-ask-item--access" title="Rural and underserved patients depend on nearby hospitals staying open.">
+          <p class="hap-ow-ask-h">Protect access in rural and underserved communities</p>
+          <p class="hap-ow-ask-so">So what: Patients keep local options when anchor hospitals remain financially viable.</p>
+        </li>
+        <li class="hap-ow-ask-item hap-ow-ask-item--workforce" title="Workforce and facilities need predictable funding to serve patients.">
+          <p class="hap-ow-ask-h">Support workforce and infrastructure investment</p>
+          <p class="hap-ow-ask-so">So what: CEOs can plan beyond short-term fixes when capital and staffing are fundable.</p>
+        </li>
+      </ul>
     </div>
   </section>
 
@@ -724,13 +820,14 @@
       <li>Quantitative values are from the report text and endnotes.</li>
       <li>Scenarios based on Baseline, Baseline with H.R. 1, Rainy Day, and Sustainability Prevails paths.</li>
     </ul>
+    <p class="pa-dashboard-data-freshness" style="margin:1rem 0 0;font-size:0.88rem;color:var(--muted);line-height:1.5;max-width:52ch;">Data as of January 2026 (report date). Update this line when the underlying report or HAP synthesis is revised.</p>
   </section>
 
 </main>
 
 <footer>
   <p><strong>Oliver Wyman</strong> prepared this analysis for <strong>The Hospital and Healthsystem Association of Pennsylvania (HAP)</strong>.</p>
-  <p style="margin-top:0.75rem"><a href="340b.html" class="back-link">← 340B Drug Pricing Dashboard</a></p>
+  <p style="margin-top:0.75rem"><a href="340b.html" class="back-link hap-btn-primary">340B Drug Pricing — Advocacy Dashboard</a></p>
   <p class="footer-design" style="margin-top:0.65rem;font-size:0.85rem;color:var(--muted, #64748b);">Design Mark X — Continuous Optimization System</p>
 </footer>
 

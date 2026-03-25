@@ -56,8 +56,8 @@
     pageDescription: "340B advocacy dashboard.",
     shareTitle: "340B Drug Pricing Program | HAP Advocacy Dashboard",
     shareDescription: "340B contract pharmacy protection dashboard.",
-    dataFreshness: "March 2025",
-    lastUpdated: "March 2025",
+    dataFreshness: "March 2026",
+    lastUpdated: "March 2026",
     printDefaultState: "PA",
     printDefaultStateReason: "HAP focal state for print.",
     copy: {
@@ -131,6 +131,7 @@
       overviewLead: document.getElementById("overview-lead"),
       headerValueProp: document.getElementById("header-value-prop"),
       hapPositionLead: document.getElementById("hap-position-lead"),
+      hapLawmakerLabel: document.getElementById("hap-lawmaker-label"),
       hapPositionWhy: document.getElementById("hap-position-why"),
       mapHeroSub: document.getElementById("map-hero-sub"),
       mapHowToUse: document.getElementById("map-how-to-use"),
@@ -297,6 +298,13 @@
     introClone = introSection.cloneNode(true);
     removeIdsFromClone(introClone);
     snapshotRoot.appendChild(introClone);
+
+    var hapFlagship = document.querySelector(".dashboard-grid > .hap-position-flagship");
+    if (hapFlagship) {
+      var hapClone = hapFlagship.cloneNode(true);
+      removeIdsFromClone(hapClone);
+      snapshotRoot.appendChild(hapClone);
+    }
   }
 
   function buildPrintStateSummary(withProtection, withoutProtection) {
@@ -343,6 +351,7 @@
     setElementText(appState.dom.headerValueProp, copy.headerValueProp);
     setElementText(appState.dom.hapPositionWhy, copy.hapPositionWhy);
     setElementText(appState.dom.hapPositionLead, copy.hapPositionLead);
+    setElementText(appState.dom.hapLawmakerLabel, copy.hapPositionLawmakerLabel);
     (function applyHapAskItems() {
       var asks = copy.hapAskItems;
       if (!Array.isArray(asks)) return;
@@ -1847,6 +1856,11 @@
         "body.pdf-capture .intro-section .card { padding: 0.7rem 1rem; margin-bottom: 0.65rem; } " +
         "body.pdf-capture .intro-section .card h2 { font-size: 1.05rem; line-height: 1.25; } " +
         "body.pdf-capture .intro-section .card p, body.pdf-capture .intro-section .stat-block { font-size: 0.82rem; } " +
+        "body.pdf-capture .hap-position-flagship { padding: 0.35rem 0 !important; margin: 0.4rem 0 0.5rem !important; } " +
+        "body.pdf-capture .hap-position-flagship::before { display: none; } " +
+        "body.pdf-capture .hap-position-flagship .card { padding: 0.7rem 1rem; } " +
+        "body.pdf-capture .hap-position-flagship .hap-ask-list { gap: 0.35rem; } " +
+        "body.pdf-capture .hap-position-flagship .hap-ask-item { padding: 0.45rem 0.55rem; } " +
         "body.pdf-capture .exec-takeaway { margin: 0.5rem 0; padding: 0.55rem 0.85rem; font-size: 0.82rem; line-height: 1.35; } " +
         "body.pdf-capture .key-finding-next-line { display: block !important; margin-top: 0.2rem !important; } " +
         "body.pdf-capture .key-findings-strip { margin: 0.6rem 0 0.5rem; padding: 0.85rem 1.15rem; } " +

@@ -27,6 +27,7 @@
   <meta name="twitter:title" id="meta-twitter-title" content="340B Drug Pricing Program | HAP Advocacy Dashboard">
   <meta name="twitter:description" id="meta-twitter-description" content="72 PA hospitals • $7.95B community benefits • No cost to taxpayers. State-by-state contract pharmacy protection map.">
   <meta name="twitter:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
+  <link rel="stylesheet" href="hap-design-tokens.css">
   <link rel="stylesheet" href="340b.css?v=dmx-8">
   <script type="application/ld+json">
 {
@@ -70,6 +71,7 @@ var CONFIG = {
       "States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.",
     hapPositionLead:
       "HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.",
+    hapPositionLawmakerLabel: "Lawmaker actions",
     hapAskItems: [
       {
         label: "Protect the 340B discount",
@@ -283,7 +285,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <!-- ========== SECTION: Utility toolbar (Print / PDF, Share, Download) ========== -->
 <section class="utility-toolbar scroll-reveal" aria-label="Page tools">
   <div class="utility-toolbar-actions">
-    <button type="button" id="btn-print" class="utility-btn" aria-label="Print or save as PDF">Print / PDF</button>
+    <button type="button" id="btn-print" class="utility-btn utility-btn--primary" aria-label="Print or save as PDF">Print / PDF</button>
     <button type="button" id="btn-download-pdf" class="utility-btn" aria-label="Download dashboard as PDF image">Download PDF (image)</button>
     <button type="button" id="btn-share" class="utility-btn" aria-label="Copy link to clipboard">Share link</button>
     <button type="button" id="btn-export-svg" class="utility-btn" aria-label="Download map as SVG">Export map SVG</button>
@@ -344,57 +346,62 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <div class="glossary-strip" aria-label="Key terms on this page">
             <p class="glossary-strip-title">Terms used here</p>
             <dl class="glossary-dl">
-              <dt>340B</dt>
+              <dt title="Federal outpatient drug discount program for eligible hospitals and clinics (short definition below).">340B</dt>
               <dd>Federal program that requires manufacturers to charge certain eligible hospitals and clinics lower prices on outpatient drugs.</dd>
-              <dt>Covered entity</dt>
+              <dt title="A hospital or clinic that meets federal rules and can buy outpatient drugs at 340B prices.">Covered entity</dt>
               <dd>A hospital or clinic that qualifies for 340B pricing.</dd>
-              <dt>Contract pharmacy</dt>
+              <dt title="Pharmacy that fills 340B prescriptions under agreement with a covered entity hospital.">Contract pharmacy</dt>
               <dd>A community pharmacy that dispenses 340B-discounted drugs on a hospital’s behalf.</dd>
-              <dt>PBM</dt>
+              <dt title="Pharmacy benefit manager: third party that manages drug benefits for insurers and employers.">PBM</dt>
               <dd>Pharmacy benefit manager—coordinates drug benefits for health plans.</dd>
             </dl>
           </div>
         </article>
-        <article id="overview" class="card card-hap card-hap--featured" aria-labelledby="hap-position-heading">
-          <div class="hap-position-featured-inner">
-            <div class="card-heading card-heading--hap-featured">
-              <div class="card-heading-text">
-                <p class="card-title">HAP Position</p>
-                <h2 id="hap-position-heading">Protect the 340B discount and hospital–pharmacy partnerships.</h2>
-                <p class="hap-position-kicker" id="hap-position-why">States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.</p>
-              </div>
-              <div class="card-icon card-icon--shield" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-            </div>
-            <p class="hap-position-lead" id="hap-position-lead">HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.</p>
-            <h3 class="hap-asks-heading">What lawmakers can do</h3>
-            <p class="hap-asks-subline" id="hap-asks-subline">Three concrete actions—each tied to patient and hospital impact.</p>
-            <ul class="hap-ask-list" role="list">
-              <li class="hap-ask-item hap-ask-item--policy" data-hap-ask-index="0" title="Keeps hospitals at the discount prices Congress intended for covered care.">
-                <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
-                <div class="hap-ask-item-body">
-                  <h4 class="hap-ask-item-label">Protect the 340B discount</h4>
-                  <p class="hap-ask-item-impact">So what: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</p>
-                </div>
-              </li>
-              <li class="hap-ask-item hap-ask-item--partnership" data-hap-ask-index="1" title="Supports filling prescriptions through hospitals’ contract pharmacy networks.">
-                <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
-                <div class="hap-ask-item-body">
-                  <h4 class="hap-ask-item-label">Defend contract pharmacy partnerships</h4>
-                  <p class="hap-ask-item-impact">So what: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</p>
-                </div>
-              </li>
-              <li class="hap-ask-item hap-ask-item--access" data-hap-ask-index="2" title="Avoids policies that make it harder for underserved patients to get 340B-priced drugs.">
-                <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
-                <div class="hap-ask-item-body">
-                  <h4 class="hap-ask-item-label">Oppose rules that shrink access for safety-net patients</h4>
-                  <p class="hap-ask-item-impact">So what: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</p>
-                </div>
-              </li>
-            </ul>
-          </div>
-        </article>
       </div>
     </div>
+
+    <!-- ========== SECTION: HAP Position — flagship (separate from Overview) ========== -->
+    <section id="overview" class="hap-position-flagship span-12 scroll-reveal ow-section ow-section--band-hap" aria-labelledby="hap-position-heading" title="Learn how this protects patient access and hospital partnerships.">
+      <article class="card card-hap card-hap--featured hap-position-flagship-card">
+        <div class="hap-position-featured-inner">
+          <div class="card-heading card-heading--hap-featured">
+            <div class="card-heading-text">
+              <p class="card-title">HAP position</p>
+              <p class="hap-position-lawmaker-label" id="hap-lawmaker-label">Lawmaker actions</p>
+              <h2 id="hap-position-heading">Protect the 340B discount and hospital–pharmacy partnerships.</h2>
+              <p class="hap-position-kicker" id="hap-position-why">States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.</p>
+            </div>
+            <div class="card-icon card-icon--shield" aria-hidden="true" title="HAP advocacy position: protect the discount and partnerships."><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+          </div>
+          <p class="hap-position-lead" id="hap-position-lead">HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.</p>
+          <h3 class="hap-asks-heading">What lawmakers can do</h3>
+          <p class="hap-asks-subline" id="hap-asks-subline">Three concrete actions—each tied to patient and hospital impact.</p>
+          <ul class="hap-ask-list" role="list">
+            <li class="hap-ask-item hap-ask-item--policy" data-hap-ask-index="0" title="Keeps hospitals at the discount prices Congress intended for covered care.">
+              <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
+              <div class="hap-ask-item-body">
+                <h4 class="hap-ask-item-label">Protect the 340B discount</h4>
+                <p class="hap-ask-item-impact">So what: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</p>
+              </div>
+            </li>
+            <li class="hap-ask-item hap-ask-item--partnership" data-hap-ask-index="1" title="Supports filling prescriptions through hospitals’ contract pharmacy networks.">
+              <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
+              <div class="hap-ask-item-body">
+                <h4 class="hap-ask-item-label">Defend contract pharmacy partnerships</h4>
+                <p class="hap-ask-item-impact">So what: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</p>
+              </div>
+            </li>
+            <li class="hap-ask-item hap-ask-item--access" data-hap-ask-index="2" title="Avoids policies that make it harder for underserved patients to get 340B-priced drugs.">
+              <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <div class="hap-ask-item-body">
+                <h4 class="hap-ask-item-label">Oppose rules that shrink access for safety-net patients</h4>
+                <p class="hap-ask-item-impact">So what: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</p>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </article>
+    </section>
 
     <!-- ========== SECTION: Key findings ========== -->
     <section class="key-findings-strip span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Key findings">
@@ -406,7 +413,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
       </header>
       <div class="key-findings-grid">
-        <article class="key-finding-card key-finding-card--split key-finding-card--policy">
+        <article class="key-finding-card key-finding-card--split key-finding-card--policy hap-card-interactive">
           <p class="key-finding-label">Contract pharmacy protection · states</p>
           <div class="key-finding-split" role="group" aria-label="States with and without protection">
             <div class="key-finding-split-cell">
@@ -421,19 +428,19 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           </div>
           <p class="key-finding-so-what">So what: The map shows where state law backs contract pharmacy networks.</p>
         </article>
-        <article class="key-finding-card key-finding-card--finance">
+        <article class="key-finding-card key-finding-card--finance hap-card-interactive">
           <p class="key-finding-label">Community benefit (340B hospitals)</p>
           <p class="key-finding-value ban-stat ban-stat--finance">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">7.95B</span></p>
           <p class="key-finding-meta">2024</p>
           <p class="key-finding-so-what">So what: Dollars hospitals report putting back into community programs and care.</p>
         </article>
-        <article class="key-finding-card key-finding-card--pa">
+        <article class="key-finding-card key-finding-card--pa hap-card-interactive">
           <p class="key-finding-label">Pennsylvania hospitals in 340B</p>
           <p class="key-finding-value ban-stat ban-stat--pa count-up" data-count-up="72">72</p>
           <p class="key-finding-caption">Hospitals serving patients</p>
           <p class="key-finding-so-what">So what: Pennsylvania’s scale in the program for statewide advocacy.</p>
         </article>
-        <article class="key-finding-card key-finding-card--market">
+        <article class="key-finding-card key-finding-card--market hap-card-interactive">
           <p class="key-finding-label">Share of U.S. outpatient drug spend</p>
           <p class="key-finding-value ban-stat ban-stat--market count-up" data-count-up="7" data-suffix="%">7%</p>
           <p class="key-finding-caption">Uses the 340B discount</p>
@@ -891,7 +898,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <nav class="footer-actions" aria-label="Quick links">
     <ul class="footer-actions-list">
       <li><a href="OW_report_dashboard.html" class="footer-pill footer-pill--outline">PA hospitals report</a></li>
-      <li><a href="https://www.haponline.org/contact" class="footer-pill footer-pill--primary" target="_blank" rel="noopener noreferrer">Contact HAP</a></li>
+      <li><a href="https://www.haponline.org/contact" class="footer-pill footer-pill--primary hap-btn-primary" target="_blank" rel="noopener noreferrer">Contact HAP</a></li>
       <li><a href="https://www.haponline.org/340b" class="footer-pill footer-pill--ghost" target="_blank" rel="noopener noreferrer">340B resources at HAP</a></li>
     </ul>
   </nav>
