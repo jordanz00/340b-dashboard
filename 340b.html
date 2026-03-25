@@ -27,7 +27,7 @@
   <meta name="twitter:title" id="meta-twitter-title" content="340B Drug Pricing Program | HAP Advocacy Dashboard">
   <meta name="twitter:description" id="meta-twitter-description" content="72 PA hospitals • $7.95B community benefits • No cost to taxpayers. State-by-state contract pharmacy protection map.">
   <meta name="twitter:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
-  <link rel="stylesheet" href="340b.css?v=community-benefit-1">
+  <link rel="stylesheet" href="340b.css?v=timeline-ow-2">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -210,17 +210,41 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </div>
   </div>
   <nav class="dashboard-nav" id="dashboard-nav" aria-label="Dashboard sections">
-    <a href="#what-is-340b" class="active" aria-current="page">Overview</a>
-    <a href="#overview">HAP Position</a>
-    <a href="#key-metrics">Key metrics</a>
-    <a href="#community-benefit">Community Benefit</a>
-    <a href="#state-laws">State Map</a>
+    <a href="#section-overview" class="active" aria-current="page">Overview</a>
+    <a href="#key-metrics">Financial</a>
+    <a href="#state-laws">State map</a>
+    <a href="#legal-trends">Trends</a>
+    <a href="#methodology-section">Data</a>
     <a href="#pa-impact-mode">PA Impact</a>
-    <a href="#policy-impact-simulator">Impact Simulator</a>
-    <a href="#policy">Policy</a>
-    <a href="static.html">PA Dashboard</a>
+    <a href="#policy-impact-simulator">Simulator</a>
+    <a href="340b-BASIC.html">BASIC</a>
+    <a href="static_sticky_menu.html">PA Hospitals (OW)</a>
   </nav>
 </header>
+
+<div class="hap-body">
+<aside class="hap-sidebar hap-sidebar--340b" aria-label="Section navigation">
+  <nav class="hap-sidebar-nav" id="hap-sidebar-nav">
+    <a href="#section-overview">Overview</a>
+    <a href="#key-metrics">Financial impact</a>
+    <a href="#community-benefit">Community benefit</a>
+    <a href="#state-laws">Geographic distribution</a>
+    <a href="#legal-trends">Trends</a>
+    <a href="#methodology-section">Methodology</a>
+    <div class="hap-sidebar-divider" role="presentation"></div>
+    <a href="#overview">HAP position</a>
+    <a href="#pa-impact-mode">PA Impact</a>
+    <a href="#policy-impact-simulator">Impact simulator</a>
+    <a href="#policy">Policy &amp; access</a>
+    <div class="hap-sidebar-divider" role="presentation"></div>
+    <span class="hap-sidebar-label" id="hap-nav-suite-label">HAP suite</span>
+    <a href="340b.html" class="hap-cross-link hap-cross-link--current" aria-current="page">340B — Full dashboard</a>
+    <a href="340b-BASIC.html" class="hap-cross-link">340B — BASIC</a>
+    <a href="static_sticky_menu.html" class="hap-cross-link">PA report (OW)</a>
+    <a href="static.html" class="hap-cross-link">PA report (classic)</a>
+  </nav>
+</aside>
+<div class="hap-page-content">
 
 <div class="dashboard-inner">
 <!-- ========== SECTION: Utility toolbar (Print / PDF, Share, Download) ========== -->
@@ -264,7 +288,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <div class="dashboard-grid">
 
     <!-- ========== SECTION: Intro — Overview and HAP Position ========== -->
-    <div class="intro-section">
+    <div id="section-overview" class="intro-section ow-section ow-section--band-a">
       <div class="intro-section-inner">
         <article id="what-is-340b" class="card">
           <div class="card-heading">
@@ -279,7 +303,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <div class="stat-block">
             <div class="stat">
               <p class="stat-label">Market share</p>
-              <p class="stat-value count-up" data-count-up="7" data-suffix="%">7%</p>
+              <p class="stat-value ban-stat count-up" data-count-up="7" data-suffix="%">7%</p>
               <p class="stat-desc">340B purchases</p>
             </div>
           </div>
@@ -301,26 +325,26 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </div>
 
     <!-- ========== SECTION: Key findings ========== -->
-    <section class="key-findings-strip span-12 scroll-reveal" aria-label="Key findings">
+    <section class="key-findings-strip span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Key findings">
       <div class="key-findings-heading">
         <span class="key-findings-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
         <h3 class="key-findings-title">The numbers that matter</h3>
       </div>
       <ul class="key-findings-list">
-        <li><span id="key-finding-protection-count">21</span> states protect the discount; <strong>29</strong> have not yet enacted protection</li>
-        <li><strong>$7.95B</strong> in community benefits from 340B hospitals (2024)</li>
-        <li><strong>72</strong> Pennsylvania hospitals use 340B to serve patients</li>
-        <li><strong>7%</strong> of U.S. outpatient drug spending uses the 340B discount</li>
+        <li><span class="ban-inline ban-inline--policy" id="key-finding-protection-count">21</span> states protect the discount; <span class="ban-inline ban-inline--policy">29</span> have not yet enacted protection</li>
+        <li><span class="ban-inline ban-inline--finance">$7.95B</span> in community benefits from 340B hospitals (2024)</li>
+        <li><span class="ban-inline ban-inline--finance">72</span> Pennsylvania hospitals use 340B to serve patients</li>
+        <li><span class="ban-inline ban-inline--insurance">7%</span> of U.S. outpatient drug spending uses the 340B discount</li>
       </ul>
     </section>
 
     <!-- ========== SECTION: Bottom line takeaway ========== -->
-    <section class="exec-takeaway span-12 scroll-reveal" aria-label="Key takeaway">
+    <section class="exec-takeaway span-12 scroll-reveal ow-section ow-section--band-a" aria-label="Key takeaway">
       <strong>Bottom line:</strong> What happens to 340B in the states directly affects whether hospitals can keep getting discount meds to patients—including 72 hospitals in Pennsylvania.
     </section>
 
     <!-- ========== SECTION: Executive scan strip ========== -->
-    <section class="executive-proof-strip span-12 scroll-reveal" aria-label="Executive scan">
+    <section class="executive-proof-strip span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Executive scan">
       <article class="executive-proof-card" title="HAP's core advocacy focus for 340B">
         <p class="executive-proof-label" id="executive-priority-label">What we're fighting for</p>
         <h3 class="executive-proof-value" id="executive-priority-value">Protect the 340B discount and hospital–pharmacy partnerships</h3>
@@ -339,12 +363,18 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </section>
 
     <!-- ========== SECTION: Map hero — state map, lists, legal signals, methodology ========== -->
-    <section id="state-laws" class="map-hero-section span-12 scroll-reveal">
+    <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a">
       <div class="map-hero-inner">
         <article class="map-hero-card">
           <p class="map-hero-title">State-by-state</p>
           <h2 class="map-hero-headline">Who protects the 340B discount—and who doesn’t</h2>
           <p class="map-hero-sub" id="map-hero-sub">Click a state to see whether it protects the discount—and what that means for hospitals and patients.</p>
+          <div class="section-insight" aria-label="How to read this map">
+            <p class="section-insight-label">What this shows</p>
+            <p class="section-insight-text">Contract pharmacy protection by state—where state law backs hospitals’ ability to use community pharmacies under 340B.</p>
+            <p class="section-insight-label">Why it matters</p>
+            <p class="section-insight-text">Manufacturers sometimes restrict contract pharmacy arrangements; state protections reduce that friction for patients and hospitals.</p>
+          </div>
       <div class="selection-summary" id="selection-summary">
         <div class="selection-summary-copy">
           <p class="selection-summary-label">State</p>
@@ -404,7 +434,14 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           </article>
         </div>
       </section>
-      <h3 class="section-subhead">Recent legal signals</h3>
+      <div id="legal-trends" class="legal-trends-anchor" aria-labelledby="legal-trends-heading">
+      <h3 id="legal-trends-heading" class="section-subhead">Recent legal signals</h3>
+      <div class="section-insight" aria-label="How to read trends">
+        <p class="section-insight-label">What this shows</p>
+        <p class="section-insight-text">A snapshot of how courts, legislatures, and governors are shaping 340B contract pharmacy rules—not a complete case list.</p>
+        <p class="section-insight-label">Why it matters</p>
+        <p class="section-insight-text">These signals preview where manufacturer challenges succeed or fail, and where states pair protections with new reporting rules.</p>
+      </div>
       <div class="trends-grid">
         <div class="trends-card trends-card--policy">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
@@ -419,7 +456,10 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <div><h4>Vetoes</h4><p>Some governors vetoed proposed 340B protections, including in Virginia.</p></div>
         </div>
       </div>
+      </div>
       <p class="sources" id="sources-summary">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
+      <h3 id="methodology-section" class="section-subhead">Data transparency &amp; methodology</h3>
+      <p class="methodology-lede">Metrics here support advocacy storytelling. Figures combine published sources and HAP-curated state law flags. Normalized or per-hospital numbers labeled “illustrative” are for context, not regulatory filings.</p>
       <details class="methodology-wrap" id="methodology-wrap" aria-label="Data sources and methodology">
         <summary class="methodology-toggle" id="methodology-toggle" aria-label="Expand about this data section">About this data</summary>
         <div class="methodology-content" id="methodology-content">
@@ -427,6 +467,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <p id="methodology-state-law-copy">State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2026.</p>
           <p><strong>Community benefit</strong> figures are from 340B Health and AHA (HAP/PA figures).</p>
           <p><strong>HRSA oversight</strong> — Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.</p>
+          <p><strong>Limitations:</strong> State lists and counts can change as legislatures meet; community-benefit totals are reported aggregates, not patient-level claims; simulator and PA Impact panels use illustrative scenarios.</p>
           <p><strong>Recommended verification order:</strong> <span id="verification-order-copy">MultiState, then ASHP, then America's Essential Hospitals.</span></p>
           <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2026</span></p>
           <ul class="source-links">
@@ -450,32 +491,39 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </section>
 
     <!-- ========== SECTION: Key metrics (KPI strip) ========== -->
-    <section id="key-metrics" class="kpi-strip span-12 scroll-reveal" aria-label="Key metrics">
+    <section id="key-metrics" class="kpi-strip span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Key metrics">
+      <div class="section-insight kpi-strip-intro">
+        <p class="section-insight-label">What this shows</p>
+        <p class="section-insight-text">National scale of 340B in the drug market, reinvested community benefit, federal oversight load, and Pennsylvania participation.</p>
+        <p class="section-insight-label">Why it matters</p>
+        <p class="section-insight-text">Leaders can anchor briefings in a few defensible numbers before diving into state law or scenarios.</p>
+      </div>
       <div class="kpi-card kpi-card--market">
         <p class="kpi-label">U.S. Drug Market</p>
-        <p class="kpi-value count-up" data-count-up="7" data-suffix="%">7%</p>
+        <p class="kpi-value ban-stat count-up" data-count-up="7" data-suffix="%">7%</p>
         <p class="kpi-desc">340B share of U.S. outpatient drug market</p>
       </div>
       <div class="kpi-card kpi-card--benefit">
         <p class="kpi-label">Community Benefit</p>
-        <p class="kpi-value">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">7.95B</span></p>
+        <p class="kpi-value ban-stat">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">7.95B</span></p>
         <p class="kpi-desc">340B community benefits (2024)</p>
       </div>
       <div class="kpi-card kpi-card--oversight">
         <p class="kpi-label">Oversight</p>
-        <p class="kpi-value primary count-up" data-count-up="179" data-suffix="">179</p>
+        <p class="kpi-value ban-stat primary count-up" data-count-up="179" data-suffix="">179</p>
         <p class="kpi-desc">HRSA audits in 2024</p>
       </div>
       <div class="kpi-card kpi-card--pa">
         <p class="kpi-label">Pennsylvania</p>
-        <p class="kpi-value primary">72</p>
+        <p class="kpi-value ban-stat primary">72</p>
         <p class="kpi-desc">PA hospitals in 340B</p>
       </div>
+      <p class="data-benchmark"><strong>Illustrative context:</strong> ~$110M community benefit per participating PA hospital if national totals were divided evenly across 72 hospitals—actual facility-level amounts vary widely.</p>
       <p class="data-freshness" id="data-freshness-text">Data as of March 2026 - Last updated March 2026</p>
     </section>
 
     <!-- ========== SECTION: Supporting context — Why this matters ========== -->
-    <div class="supporting-section span-12 scroll-reveal">
+    <div class="supporting-section span-12 scroll-reveal ow-section ow-section--band-a">
       <h3 class="section-subhead section-subhead--supporting">Why this matters to health system leaders</h3>
       <div class="supporting-cards-row">
       <article id="eligibility" class="card card--compact card--identity-policy">
@@ -505,12 +553,12 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <div class="stat-block">
           <div class="stat">
             <p class="stat-label">Covered entities</p>
-            <p class="stat-value count-up" data-count-up="179" data-suffix="">179</p>
+            <p class="stat-value ban-stat count-up" data-count-up="179" data-suffix="">179</p>
             <p class="stat-desc">Audited</p>
           </div>
           <div class="stat">
             <p class="stat-label">Manufacturers</p>
-            <p class="stat-value count-up" data-count-up="5" data-suffix="">5</p>
+            <p class="stat-value ban-stat count-up" data-count-up="5" data-suffix="">5</p>
             <p class="stat-desc">Audited</p>
           </div>
         </div>
@@ -524,19 +572,19 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           </div>
           <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
         </div>
-        <p><strong>72 hospitals (30%)</strong> participate, making Pennsylvania a serious operating and policy example for this dashboard:</p>
+        <p><strong><span class="ban-inline ban-inline--insurance">72</span> hospitals (30%)</strong> participate, making Pennsylvania a serious operating and policy example for this dashboard:</p>
         <div class="stat-block">
           <div class="stat">
             <p class="stat-label">Rural</p>
-            <p class="stat-value count-up" data-count-up="49" data-suffix="%">49%</p>
+            <p class="stat-value ban-stat count-up" data-count-up="49" data-suffix="%">49%</p>
           </div>
           <div class="stat">
             <p class="stat-label">Operating at a loss</p>
-            <p class="stat-value count-up" data-count-up="53" data-suffix="%">53%</p>
+            <p class="stat-value ban-stat count-up stat--perf-negative" data-count-up="53" data-suffix="%">53%</p>
           </div>
           <div class="stat">
             <p class="stat-label">Labor &amp; delivery</p>
-            <p class="stat-value count-up" data-count-up="49" data-suffix="%">49%</p>
+            <p class="stat-value ban-stat count-up" data-count-up="49" data-suffix="%">49%</p>
           </div>
         </div>
       </article>
@@ -544,7 +592,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </div>
 
     <!-- ========== SECTION: Community benefit ========== -->
-    <article id="community-benefit" class="card span-12 scroll-reveal">
+    <article id="community-benefit" class="card span-12 scroll-reveal ow-section ow-section--band-b">
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">Community benefit</p>
@@ -554,40 +602,107 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
       <div class="community-benefit-hero">
         <p class="big-stat-label">Total community benefits (2024)</p>
-        <p class="big-stat-value">$<span class="count-up" data-count-up="7.95" data-decimals="2">7.95</span>B</p>
+        <p class="big-stat-value ban-stat">$<span class="count-up" data-count-up="7.95" data-decimals="2">7.95</span>B</p>
         <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
       </div>
       <div class="benefit-grid benefit-grid--community">
         <div class="benefit-item">
-          <div class="benefit-item-icon benefit-item-icon--savings" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M11 15h2a2 2 0 1 0 0-4h-3c-.6 0-1.1.2-1.4.6L3 17"/><path d="m7 21 1.6-1.4c.3-.4.8-.6 1.4-.6h4c1.1 0 2.1-.4 2.8-1.2l4.6-4.4a2 2 0 0 0-2.75-2.91l-4.29 4.15a2 2 0 0 1-1.4.58H8"/><path d="M6 10V8a2 2 0 0 1 2-2"/><circle cx="17" cy="6" r="3"/><path d="M17 4.5v3"/><path d="M15.75 6h2.5"/></svg></div>
-          <p class="benefit-item-text"><strong>23%</strong> average savings on pharma purchases</p>
+          <div class="benefit-item-icon benefit-item-icon--photo benefit-item-icon--pharma" aria-hidden="true"><img src="assets/icons/rx.jpg" alt="" width="96" height="96" loading="lazy" decoding="async"></div>
+          <p class="benefit-item-text"><strong class="ban-inline ban-inline--finance">23%</strong> average savings on pharma purchases</p>
         </div>
         <div class="benefit-item">
-          <div class="benefit-item-icon benefit-item-icon--rx-price" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M12 5.5v5"/><path d="M13.8 7.2c0-1.2-1-1.7-2.3-1.7s-2.3.8-2.3 2c0 1.3 1.3 1.6 2.2 2 1 .4 2.4.9 2.4 2.5 0 1.4-1.2 2.2-2.6 2.2-1.5 0-2.7-.9-2.7-2.4"/><path d="M12 15v1.5"/><path d="m10 18 2 3 2-3"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--rx-price" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="currentColor" stroke-width="2"/><path d="M10 11h12M10 16h12M10 21h7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="m22 22 6 6M28 22l-6 6" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/></svg></div>
           <p class="benefit-item-text">Free or reduced-price prescriptions</p>
         </div>
         <div class="benefit-item">
-          <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v7H4z"/><path d="M6 13h.01"/><path d="M10 13h.01"/><path d="M14 13h.01"/><path d="M18 13h.01"/><circle cx="7.5" cy="20" r="2"/><circle cx="16.5" cy="20" r="2"/><path d="M2 15h2"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 14h18a2 2 0 0 1 2 2v6H3v-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M23 16h5l3 6h-8v-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="24" r="2.75" fill="currentColor"/><circle cx="21" cy="24" r="2.75" fill="currentColor"/><path d="M11 10V8a5 5 0 0 1 10 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 14h8v-2a4 4 0 0 0-8 0v2z" stroke="currentColor" stroke-width="1.75"/></svg></div>
           <p class="benefit-item-text">Mobile mammography &amp; cancer screening</p>
         </div>
         <div class="benefit-item">
-          <div class="benefit-item-icon benefit-item-icon--tooth" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c-1.2 0-2.2.4-2.8 1.1-.6-.7-1.6-1.1-2.8-1.1-2.2 0-4 1.6-4 4.2 0 3.2 1.5 6.4 4.8 10.5.4.5 1 .8 1.6.8h.2c.6 0 1.2-.3 1.6-.8 3.3-4.1 4.8-7.3 4.8-10.5 0-2.6-1.8-4.2-4-4.2z"/><path d="M9 5.5c.3 1.2 1 2 1.8 2.5"/><path d="M15 5.5c-.3 1.2-1 2-1.8 2.5"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--photo benefit-item-icon--dental" aria-hidden="true"><img src="assets/icons/tooth.png" alt="" width="96" height="96" loading="lazy" decoding="async"></div>
           <p class="benefit-item-text">Dental care &amp; preventive services</p>
         </div>
       </div>
     </article>
 
     <!-- ========== SECTION: Pennsylvania Impact Mode (JS modules) ========== -->
-    <section id="pa-impact-mode" class="pa-impact-mode-section span-12 scroll-reveal" aria-label="Pennsylvania Impact Mode">
+    <section id="pa-impact-mode" class="pa-impact-mode-section span-12 scroll-reveal ow-section ow-section--band-a" aria-label="Pennsylvania Impact Mode">
       <article class="card pa-impact-mode-card">
         <div id="pa-impact-mode-root"></div>
       </article>
     </section>
 
     <!-- ========== SECTION: Policy Impact Simulator (JS modules) ========== -->
-    <section id="policy-impact-simulator" class="impact-simulator-section span-12 scroll-reveal" aria-label="Policy Impact Simulator">
+    <section id="policy-impact-simulator" class="impact-simulator-section span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Policy Impact Simulator">
       <article class="card impact-simulator-card">
         <div id="policy-impact-simulator-root"></div>
+      </article>
+    </section>
+
+    <!-- Policy milestones: static context only (advanced dashboard); not shown on BASIC -->
+    <section id="policy-milestones" class="dashboard-advanced-only span-12 scroll-reveal ow-section ow-section--band-a" aria-label="340B policy timeline">
+      <article class="card policy-timeline-card">
+        <p class="card-title">Policy context</p>
+        <h2 class="policy-timeline-heading">Federal program to state protections</h2>
+        <p class="policy-timeline-kicker">High-level anchors for briefings—not a substitute for legal counsel or a full regulatory history.</p>
+        <div class="policy-timeline">
+          <div class="policy-timeline-svg-wrap">
+            <svg viewBox="0 0 1000 90" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+              <defs>
+                <linearGradient id="ptl-line-gradient-340b" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#0b67c2"/>
+                  <stop offset="32%" stop-color="#2e7d32"/>
+                  <stop offset="66%" stop-color="#6a1b9a"/>
+                  <stop offset="100%" stop-color="#1565c0"/>
+                </linearGradient>
+              </defs>
+              <path class="policy-timeline-line-base" d="M 70 44 L 290 44 L 510 44 L 730 44 L 930 44" />
+              <path class="policy-timeline-line-anim" d="M 70 44 L 290 44 L 510 44 L 730 44 L 930 44" />
+              <g class="policy-timeline-node-g policy-timeline-node-g--1">
+                <circle class="policy-timeline-node-outer" cx="70" cy="44" r="14" fill="#fff" stroke="#0b67c2" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="70" cy="44" r="6" fill="#0b67c2" />
+              </g>
+              <g class="policy-timeline-node-g policy-timeline-node-g--2">
+                <circle class="policy-timeline-node-outer" cx="290" cy="44" r="14" fill="#fff" stroke="#455a64" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="290" cy="44" r="6" fill="#455a64" />
+              </g>
+              <g class="policy-timeline-node-g policy-timeline-node-g--3">
+                <circle class="policy-timeline-node-outer" cx="510" cy="44" r="14" fill="#fff" stroke="#2e7d32" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="510" cy="44" r="6" fill="#2e7d32" />
+              </g>
+              <g class="policy-timeline-node-g policy-timeline-node-g--4">
+                <circle class="policy-timeline-node-outer" cx="730" cy="44" r="14" fill="#fff" stroke="#6a1b9a" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="730" cy="44" r="6" fill="#6a1b9a" />
+              </g>
+              <g class="policy-timeline-node-g policy-timeline-node-g--5">
+                <circle class="policy-timeline-node-outer" cx="930" cy="44" r="14" fill="#fff" stroke="#1565c0" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="930" cy="44" r="6" fill="#1565c0" />
+              </g>
+            </svg>
+          </div>
+          <ol class="policy-timeline-steps">
+            <li class="policy-timeline-step">
+              <span class="policy-timeline-year">1992</span>
+              <p class="policy-timeline-copy">340B enacted—discounts so safety-net hospitals stretch federal resources further.</p>
+            </li>
+            <li class="policy-timeline-step">
+              <span class="policy-timeline-year">2010s–20s</span>
+              <p class="policy-timeline-copy">Contract pharmacy models scale; manufacturer restrictions on off-site pharmacies become a central dispute.</p>
+            </li>
+            <li class="policy-timeline-step">
+              <span class="policy-timeline-year">Pennsylvania</span>
+              <p class="policy-timeline-copy">72 hospitals participate statewide; 340B savings are reinvested from rural clinics to urban safety-net sites.</p>
+            </li>
+            <li class="policy-timeline-step">
+              <span class="policy-timeline-year">2018–20s</span>
+              <p class="policy-timeline-copy">Manufacturers narrow contract pharmacy policies; federal and state responses intensify as a flashpoint for access.</p>
+            </li>
+            <li class="policy-timeline-step">
+              <span class="policy-timeline-year">2021+</span>
+              <p class="policy-timeline-copy">States—including Pennsylvania in ongoing policy debate—move to codify contract pharmacy protections where federal rules leave gaps.</p>
+            </li>
+          </ol>
+        </div>
       </article>
     </section>
 
@@ -595,7 +710,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <div id="policy" class="span-12" style="height:0;margin:0;padding:0;" aria-hidden="true"></div>
 
     <!-- ========== SECTION: Access to care ========== -->
-    <article id="access" class="card span-6">
+    <article id="access" class="card span-6 ow-section ow-section--band-a">
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">Access to care</p>
@@ -607,7 +722,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </article>
 
     <!-- ========== SECTION: Pennsylvania safeguards ========== -->
-    <article id="pa-safeguards" class="card span-6">
+    <article id="pa-safeguards" class="card span-6 ow-section ow-section--band-a">
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">Pennsylvania safeguards</p>
@@ -627,10 +742,12 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 </main>
 
 </div>
+</div>
+</div>
 
 <!-- ========== SECTION: Site footer ========== -->
 <footer class="site-footer" role="contentinfo">
-  <a href="static.html" class="back-link">Back to PA Hospitals Dashboard</a>
+  <a href="static_sticky_menu.html" class="back-link">PA Hospitals — Oliver Wyman report</a>
   <div class="footer-cta">
     <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">Contact HAP</a>
     <a href="https://www.haponline.org/340b" target="_blank" rel="noopener noreferrer">Learn more about 340B</a>
@@ -639,7 +756,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64" loading="lazy">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
   </p>
-  <p class="footer-design">Design Mark VIII</p>
+  <p class="footer-design">Design Mark IX</p>
 </footer>
 </div>
 
@@ -647,7 +764,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <!-- Download PDF (image) uses local html2canvas + jsPDF copies for deterministic offline behavior. -->
   <script src="assets/vendor/html2canvas.min.js"></script>
   <script src="assets/vendor/jspdf.umd.min.js"></script>
-  <script src="340b.js?v=community-benefit-icons-1"></script>
+  <script src="340b.js?v=timeline-ow-2"></script>
   <!-- Pennsylvania Impact Mode — loads after main dashboard; fully isolated -->
   <script src="modules/pa-impact-data.js"></script>
   <script src="modules/pa-impact-engine.js"></script>

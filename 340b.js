@@ -151,7 +151,7 @@
       printMethodologyLastUpdated: document.getElementById("print-methodology-last-updated"),
       /* Performance: cached repeated selectors (not used in print/PDF/map logic) */
       stateLawsSection: document.getElementById("state-laws"),
-      navLinks: document.querySelectorAll(".dashboard-nav a[href^='#']"),
+      navLinks: document.querySelectorAll(".dashboard-nav a[href^='#'], .hap-sidebar-nav a[href^='#']"),
       filterButtons: document.querySelectorAll(".state-filter-btn"),
       filterSelect: document.getElementById("state-filter-select"),
       kpiStrip: document.querySelector(".kpi-strip"),
@@ -997,12 +997,17 @@
 
   function updateNavCurrent(activeId) {
     var navLinks = appState.dom.navLinks;
-    var policySections = ["oversight", "pa-impact", "community-benefit", "access", "pa-safeguards"];
+    var policySections = ["oversight", "pa-impact", "community-benefit", "access", "pa-safeguards", "policy-milestones"];
 
     if (!navLinks || !navLinks.length) return;
     navLinks.forEach(function (link) {
-      var href = link.getAttribute("href");
-      var isActive = href === "#" + activeId || (href === "#policy" && policySections.indexOf(activeId) >= 0);
+      var href = link.getAttribute("href") || "";
+      var hash = href.indexOf("#") === 0 ? href.slice(1) : "";
+      var isActive =
+        hash === activeId ||
+        (activeId === "section-overview" && (hash === "what-is-340b" || hash === "section-overview")) ||
+        (activeId === "overview" && hash === "overview") ||
+        (href === "#policy" && policySections.indexOf(activeId) >= 0);
       link.classList.toggle("active", isActive);
       if (isActive) link.setAttribute("aria-current", "page");
       else link.removeAttribute("aria-current");
@@ -1614,6 +1619,7 @@
     var arr = POLICY_INSIGHTS.getAdoptionTimelineArray();
     if (!arr || arr.length === 0) return;
     var maxCount = Math.max.apply(null, arr.map(function (d) { return d.count; })) || 1;
+    var topicInsurance = getCssVariable("--chart-topic-insurance", "#0b67c2");
     container.textContent = "";
     container.setAttribute("aria-label", "Bar chart: " + arr.map(function (d) { return d.year + " " + d.count + " states"; }).join(", "));
     arr.forEach(function (d) {
@@ -1621,6 +1627,7 @@
       bar.className = "adoptions-chart-bar";
       var pct = maxCount > 0 ? (d.count / maxCount) * CHART_BAR_MAX_HEIGHT_PX : 0;
       bar.style.height = Math.max(4, pct) + "px";
+      bar.style.background = "linear-gradient(180deg, " + topicInsurance + ", " + topicInsurance + "cc)";
       bar.setAttribute("title", d.year + ": " + d.count + " state(s) enacted");
       bar.setAttribute("role", "img");
       bar.setAttribute("aria-label", d.year + " " + d.count + " states");
@@ -2211,6 +2218,34 @@
     });
   }
 
+  /** Sets --dashboard-header-offset so the left sticky sidebar uses top: header height, not 0 (avoids clipping under the sticky header). */
+  function updateDashboardHeaderOffset() {
+    var header = document.querySelector(".dashboard-header");
+    if (!header || !document.documentElement) return;
+    var h = header.offsetHeight;
+    if (h > 0) {
+      document.documentElement.style.setProperty("--dashboard-header-offset", h + "px");
+    }
+  }
+
+  function initDashboardHeaderOffset() {
+    updateDashboardHeaderOffset();
+    requestAnimationFrame(function () {
+      requestAnimationFrame(updateDashboardHeaderOffset);
+    });
+    var header = document.querySelector(".dashboard-header");
+    if (header && typeof ResizeObserver !== "undefined") {
+      var ro = new ResizeObserver(function () {
+        updateDashboardHeaderOffset();
+      });
+      ro.observe(header);
+    }
+    window.addEventListener("resize", updateDashboardHeaderOffset);
+    window.addEventListener("orientationchange", function () {
+      window.setTimeout(updateDashboardHeaderOffset, 200);
+    });
+  }
+
   function initScrollReveal() {
     document.body.classList.add("scroll-reveal-js");
     var items = document.querySelectorAll(".scroll-reveal");
@@ -2233,23 +2268,115 @@
     });
   }
 
-  function initNavHighlight() {
-    var sections = document.querySelectorAll("#what-is-340b, #overview, #key-metrics, #community-benefit, #state-laws, #pa-impact-mode, #policy-impact-simulator, #access, #pa-safeguards, #policy");
+  /** Policy timeline (advanced): stroke-dash line draw + staggered nodes; .ptl-inview on the card. */
+  function initPolicyTimelineAnimation() {
+    var section = document.getElementById("policy-milestones");
+    var card = document.querySelector(".policy-timeline-card");
+    if (!card) return;
+    var path = card.querySelector(".policy-timeline-line-anim");
+    var observeEl = section || card;
 
-    if (typeof IntersectionObserver === "undefined") {
-      updateNavCurrent("what-is-340b");
+    function applyDashLength() {
+      if (!path || !path.getTotalLength) return;
+      var len = path.getTotalLength();
+      if (len < 2) return;
+      path.style.strokeDasharray = len + " " + len;
+      if (card.classList.contains("ptl-inview")) {
+        path.style.strokeDashoffset = "0";
+      } else {
+        path.style.strokeDashoffset = String(len);
+      }
+    }
+
+    function revealNow() {
+      card.classList.add("ptl-inview");
+      applyDashLength();
+      if (path) path.style.strokeDashoffset = "0";
+    }
+
+    if (prefersReducedMotion()) {
+      revealNow();
       return;
     }
 
-    var observer = new IntersectionObserver(function (entries) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) updateNavCurrent(entry.target.id);
-      });
-    }, { rootMargin: "-80px 0 -50% 0", threshold: 0 });
-
-    sections.forEach(function (section) {
-      observer.observe(section);
+    applyDashLength();
+    window.requestAnimationFrame(function () {
+      applyDashLength();
+      window.requestAnimationFrame(applyDashLength);
     });
+
+    if (typeof IntersectionObserver === "undefined") {
+      revealNow();
+      return;
+    }
+
+    var obs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        revealNow();
+        obs.disconnect();
+      });
+    }, { threshold: 0.1, rootMargin: "0px 0px -12% 0px" });
+    obs.observe(observeEl);
+  }
+
+  function initNavHighlight() {
+    /* Scroll-active nav: last section (document order) whose top is above the header band wins. */
+    var sectionIds = [
+      "section-overview",
+      "overview",
+      "state-laws",
+      "legal-trends",
+      "methodology-section",
+      "key-metrics",
+      "community-benefit",
+      "pa-impact-mode",
+      "policy-impact-simulator",
+      "policy-milestones",
+      "access",
+      "pa-safeguards"
+    ];
+    var sections = sectionIds.map(function (id) {
+      return document.getElementById(id);
+    }).filter(Boolean);
+
+    if (!sections.length) {
+      updateNavCurrent("section-overview");
+      return;
+    }
+
+    function headerBandOffset() {
+      var h = document.querySelector(".dashboard-header");
+      return h ? Math.round(h.getBoundingClientRect().height) + 12 : 96;
+    }
+
+    var scrollTickScheduled = false;
+    function tickNavFromScroll() {
+      var offset = headerBandOffset();
+      var activeId = sections[0].id;
+      for (var i = sections.length - 1; i >= 0; i--) {
+        var el = sections[i];
+        var top = el.getBoundingClientRect().top;
+        if (top <= offset + 8) {
+          activeId = el.id;
+          break;
+        }
+      }
+      updateNavCurrent(activeId);
+    }
+
+    function onScrollOrResize() {
+      if (scrollTickScheduled) return;
+      scrollTickScheduled = true;
+      window.requestAnimationFrame(function () {
+        scrollTickScheduled = false;
+        tickNavFromScroll();
+      });
+    }
+
+    window.addEventListener("scroll", onScrollOrResize, { passive: true });
+    window.addEventListener("resize", onScrollOrResize);
+    tickNavFromScroll();
   }
 
   /* ---------- Event handlers ---------- */
@@ -2288,6 +2415,7 @@
       event.target.closest(".state-filter-bar") ||
       event.target.closest(".utility-toolbar") ||
       event.target.closest("#dashboard-nav") ||
+      event.target.closest(".hap-sidebar") ||
       event.target.closest(".dashboard-header")
     ) {
       return;
@@ -2398,6 +2526,8 @@
     runTaskSafely("draw map", drawMap);
     runTaskSafely("initialize count up", initCountUp);
     runTaskSafely("initialize scroll reveal", initScrollReveal);
+    runTaskSafely("initialize policy timeline animation", initPolicyTimelineAnimation);
+    runTaskSafely("sync sticky header offset", initDashboardHeaderOffset);
     runTaskSafely("initialize nav highlight", initNavHighlight);
     runTaskSafely("sync selection from hash", syncSelectionFromHash);
 
