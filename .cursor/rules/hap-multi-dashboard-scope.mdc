@@ -1,0 +1,29 @@
+---
+description: Multi-dashboard scope — improvements must consider 340B, OW report, print, and shared assets
+alwaysApply: true
+---
+
+# HAP multi-dashboard improvement scope
+
+When the user asks for **continuous improvement**, **safe multi-agent-style** passes (copy, UX, timeline, performance, QA), **polish**, or **daily improvement**, treat the repo as **one family of products**. Changes should be **consistent where assets are shared**, and **validated per surface** where constraints differ.
+
+## Surfaces in scope (all affected by default)
+
+| Area | Primary files |
+|------|----------------|
+| 340B advanced | `340b.html`, `340b.js`, `340b.css`, `state-data.js` |
+| 340B BASIC (IT-safe) | `340b-BASIC.html`, `340b-basic-map.js`, `state-data.js` — **no CDN / no extra remote scripts** per project security rules |
+| OW / PA hospitals report | `OW_report_dashboard.html`, `index.html` (`.pa-dashboard` shell) |
+| Print / PDF | `print.html`, `print-view.css`, `print/` |
+| Shared chrome / nav | `hap-nav-shared.js`, `main.js`, `styles.css` where used |
+
+## Cross-product rules
+
+1. **Shared styling:** `340b.css` (and patterns like `.pa-dashboard`, `--hap-ow-*`) may affect **both** 340B and OW-style pages. After edits, **call out** both audiences or verify both layouts mentally.
+2. **Terminology:** Use product-appropriate language (340B Program / Contract Pharmacy / Covered Entity on 340B surfaces; OW report and hospital sustainability language on OW surfaces). Do not blend claims across products without human review.
+3. **Facts:** No invented statistics; OW and 340B datasets are separate — do not copy numbers between products.
+4. **Automation vs human:** Suggest diffs and safe updates; **do not** auto-commit, bulk-rewrite files without cause, or remove animations/design systems unless the user explicitly approves.
+
+## Goal
+
+Move **all** listed surfaces toward CEO-ready copy, clear UX, smooth performance, and consistent polish — **without** breaking BASIC security constraints or either product’s design.

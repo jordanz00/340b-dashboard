@@ -975,13 +975,23 @@ function initBackToTop() {
   const btn = document.getElementById("back-to-top");
   if (!btn) return;
 
-  window.addEventListener("scroll", () => {
-    if (window.scrollY > 300) {
-      btn.style.display = "block";
-    } else {
-      btn.style.display = "none";
+  let ticking = false;
+  let visible = false;
+  function updateBackToTop() {
+    ticking = false;
+    const show = window.scrollY > 300;
+    if (show === visible) return;
+    visible = show;
+    btn.style.display = show ? "block" : "none";
+  }
+  function onScroll() {
+    if (!ticking) {
+      ticking = true;
+      requestAnimationFrame(updateBackToTop);
     }
-  });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  updateBackToTop();
 
   btn.addEventListener("click", () => {
     window.scrollTo({ top: 0, behavior: "smooth" });

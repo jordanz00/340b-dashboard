@@ -38,6 +38,7 @@
  * WAVE 2 (Policy Analytics): POLICY_INSIGHTS in analytics/policy-insights.js; applyPolicyInsights(); fillAdoptionsChart(); data/historical-trends.js for YoY trends.
  * WAVE 3 (Interactivity): State filters, map hover/click, tooltips, ranked table with initRankedTableSort(), chart bar tooltips.
  * WAVE 4 (Engineering): config.json and config/settings.js; safeText() and textContent-only rendering; runTaskSafely() for isolated task execution; print/print.html compatible.
+ * WAVE 5 (Scroll perf — iterative passes): passive scroll + rAF nav; cached section tops; lastNavActiveId skips redundant nav DOM; batched rAF for scroll-reveal + policy timeline IO; debounced window resize for header offset; ResizeObserver coalesced to rAF.
  */
 
 (function () {
@@ -82,6 +83,8 @@
     hoverCapable: window.matchMedia && window.matchMedia("(hover: hover)").matches,
     printPreparationPending: false,
     printAppliedDefaultSelection: false,
+    /** Last section id passed to updateNavCurrent — skips redundant class/aria churn while scrolling */
+    lastNavActiveId: null,
     dom: {}
   };
 
@@ -111,6 +114,7 @@
       printStateListWithout: document.getElementById("print-states-without-list"),
       protectionCount: document.getElementById("protection-count"),
       keyFindingProtectionCount: document.getElementById("key-finding-protection-count"),
+      keyFindingNoCount: document.getElementById("key-finding-no-count"),
       noProtectionCount: document.getElementById("no-protection-count"),
       printProtectionCount: document.getElementById("print-protection-count"),
       printNoProtectionCount: document.getElementById("print-no-protection-count"),
@@ -125,10 +129,11 @@
       methodologyContent: document.getElementById("methodology-content"),
       dataFreshness: document.getElementById("data-freshness-text"),
       overviewLead: document.getElementById("overview-lead"),
+      headerValueProp: document.getElementById("header-value-prop"),
       hapPositionLead: document.getElementById("hap-position-lead"),
-      hapAskLabel: document.getElementById("hap-ask-label"),
-      hapAskText: document.getElementById("hap-ask-text"),
+      hapPositionWhy: document.getElementById("hap-position-why"),
       mapHeroSub: document.getElementById("map-hero-sub"),
+      mapHowToUse: document.getElementById("map-how-to-use"),
       sourcesSummary: document.getElementById("sources-summary"),
       methodologyStateLawCopy: document.getElementById("methodology-state-law-copy"),
       verificationOrderCopy: document.getElementById("verification-order-copy"),
@@ -335,10 +340,26 @@
     var executiveStrip = copy.executiveStrip || {};
 
     setElementText(appState.dom.overviewLead, copy.overviewLead);
+    setElementText(appState.dom.headerValueProp, copy.headerValueProp);
+    setElementText(appState.dom.hapPositionWhy, copy.hapPositionWhy);
     setElementText(appState.dom.hapPositionLead, copy.hapPositionLead);
-    setElementText(appState.dom.hapAskLabel, copy.hapAskLabel);
-    setElementText(appState.dom.hapAskText, copy.hapAskText);
+    (function applyHapAskItems() {
+      var asks = copy.hapAskItems;
+      if (!Array.isArray(asks)) return;
+      document.querySelectorAll(".hap-ask-list .hap-ask-item").forEach(function (li, i) {
+        var item = asks[i];
+        var labelEl = li.querySelector(".hap-ask-item-label");
+        var impactEl = li.querySelector(".hap-ask-item-impact");
+        if (labelEl) {
+          setElementText(labelEl, item && typeof item.label === "string" ? item.label : "");
+        }
+        if (impactEl) {
+          setElementText(impactEl, item && typeof item.soWhat === "string" ? item.soWhat : "");
+        }
+      });
+    })();
     setElementText(appState.dom.mapHeroSub, copy.mapHeroSub);
+    setElementText(appState.dom.mapHowToUse, copy.mapHowToUse);
     setElementText(appState.dom.sourcesSummary, copy.sourceSummary);
     setElementText(appState.dom.methodologyStateLawCopy, copy.methodologyStateLaw);
     setElementText(appState.dom.verificationOrderCopy, copy.verificationOrder);
@@ -607,7 +628,8 @@
 
     if (!abbr) {
       appState.dom.selectionSummaryTitle.textContent = "No state selected yet";
-      appState.dom.selectionSummaryText.textContent = "Click a state on the map or in the list below to see the details.";
+      appState.dom.selectionSummaryText.textContent =
+        "Pick a state on the map or from the lists to see protection status and notes.";
       updateMapContext(null);
       if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
       return;
@@ -958,7 +980,13 @@
 
     panel.classList.add("empty");
     clearElement(panel);
-    panel.appendChild(createElement("p", "", "No state selected. Choose a state to compare legal-status details and policy context."));
+    panel.appendChild(
+      createElement(
+        "p",
+        "",
+        "No state selected yet. Pick a state on the map or from the lists to see protection status and notes."
+      )
+    );
   }
 
   function renderStateDetail(abbr) {
@@ -999,6 +1027,9 @@
   }
 
   function updateNavCurrent(activeId) {
+    if (appState.lastNavActiveId === activeId) return;
+    appState.lastNavActiveId = activeId;
+
     var navLinks = appState.dom.navLinks;
     var policySections = ["oversight", "pa-impact", "community-benefit", "access", "pa-safeguards", "policy-milestones"];
 
@@ -1400,6 +1431,7 @@
 
     if (appState.dom.protectionCount) appState.dom.protectionCount.textContent = String(withProtection.length);
     if (appState.dom.keyFindingProtectionCount) appState.dom.keyFindingProtectionCount.textContent = String(withProtection.length);
+    if (appState.dom.keyFindingNoCount) appState.dom.keyFindingNoCount.textContent = String(withoutProtection.length);
     if (appState.dom.noProtectionCount) appState.dom.noProtectionCount.textContent = String(withoutProtection.length);
     buildPrintStateSummary(withProtection, withoutProtection);
     updateExecutiveProofStrip(withProtection, withoutProtection);
@@ -1502,7 +1534,9 @@
 
     updateListBlockVisibility();
 
-    if (visibleCount === 0) setFilterStatus("No states match this filter. Choose 'All' to see every state.");
+    if (visibleCount === 0) {
+      setFilterStatus("No states match this filter. Choose All to show every state.");
+    }
     else if (appState.currentFilter === "all") setFilterStatus("Showing all states.");
     else setFilterStatus("Showing " + visibleCount + " states in this view.");
   }
@@ -1820,8 +1854,10 @@
         "body.pdf-capture .key-findings-strip .key-findings-icon { width: 32px !important; height: 32px !important; } " +
         "body.pdf-capture .key-findings-strip .key-findings-icon svg { width: 28px !important; height: 28px !important; } " +
         "body.pdf-capture .key-findings-strip .key-findings-title { font-size: 1.05rem !important; margin: 0; } " +
-        "body.pdf-capture .key-findings-strip ul { font-size: 0.95rem !important; line-height: 1.45; gap: 0.4rem; } " +
-        "body.pdf-capture .key-findings-strip li { margin-bottom: 0.1rem; } " +
+        "body.pdf-capture .key-findings-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 0.45rem !important; } " +
+        "body.pdf-capture .key-finding-card { padding: 0.5rem 0.55rem !important; } " +
+        "body.pdf-capture .key-finding-value.ban-stat { font-size: 1.35rem !important; } " +
+        "body.pdf-capture .key-finding-so-what { font-size: 0.72rem !important; padding-top: 0.35rem !important; } " +
         "body.pdf-capture .executive-proof-strip { margin: 0.55rem 0; padding: 0.5rem 0; } " +
         "body.pdf-capture .executive-proof-strip .executive-proof-card { padding: 0.55rem 0.75rem; margin-bottom: 0.5rem; } " +
         "body.pdf-capture .executive-proof-strip h3 { font-size: 0.9rem; line-height: 1.3; } " +
@@ -2238,12 +2274,22 @@
     });
     var header = document.querySelector(".dashboard-header");
     if (header && typeof ResizeObserver !== "undefined") {
+      var roScheduled = false;
       var ro = new ResizeObserver(function () {
-        updateDashboardHeaderOffset();
+        if (roScheduled) return;
+        roScheduled = true;
+        requestAnimationFrame(function () {
+          roScheduled = false;
+          updateDashboardHeaderOffset();
+        });
       });
       ro.observe(header);
     }
-    window.addEventListener("resize", updateDashboardHeaderOffset);
+    var headerResizeDebounce = null;
+    window.addEventListener("resize", function () {
+      if (headerResizeDebounce) window.clearTimeout(headerResizeDebounce);
+      headerResizeDebounce = window.setTimeout(updateDashboardHeaderOffset, 100);
+    });
     window.addEventListener("orientationchange", function () {
       window.setTimeout(updateDashboardHeaderOffset, 200);
     });
@@ -2261,8 +2307,17 @@
     }
 
     var observer = new IntersectionObserver(function (entries) {
+      var toReveal = [];
       entries.forEach(function (entry) {
-        if (entry.isIntersecting) entry.target.classList.add("revealed");
+        if (entry.isIntersecting && !entry.target.classList.contains("revealed")) {
+          toReveal.push(entry.target);
+        }
+      });
+      if (!toReveal.length) return;
+      requestAnimationFrame(function () {
+        toReveal.forEach(function (el) {
+          el.classList.add("revealed");
+        });
       });
     }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
 
@@ -2414,19 +2469,28 @@
       ratios[el.id] = 0;
     });
 
+    var ptlApplyScheduled = false;
+    function applyPolicyTimelineFromRatios() {
+      ptlApplyScheduled = false;
+      var maxIdx = 0;
+      items.forEach(function (el) {
+        var idx = parseInt(el.getAttribute("data-timeline-index"), 10) || 0;
+        var on = ratios[el.id] >= 0.3;
+        el.classList.toggle("is-active", on);
+        if (on && idx > maxIdx) maxIdx = idx;
+      });
+      if (fill) fill.style.setProperty("--ptl-p", String(maxIdx / 4));
+    }
+
     var obs = new IntersectionObserver(
       function (entries) {
         entries.forEach(function (e) {
           ratios[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0;
         });
-        var maxIdx = 0;
-        items.forEach(function (el) {
-          var idx = parseInt(el.getAttribute("data-timeline-index"), 10) || 0;
-          var on = ratios[el.id] >= 0.3;
-          el.classList.toggle("is-active", on);
-          if (on && idx > maxIdx) maxIdx = idx;
-        });
-        if (fill) fill.style.setProperty("--ptl-p", String(maxIdx / 4));
+        if (!ptlApplyScheduled) {
+          ptlApplyScheduled = true;
+          requestAnimationFrame(applyPolicyTimelineFromRatios);
+        }
       },
       { threshold: [0, 0.15, 0.3, 0.5, 0.75, 1], rootMargin: "-10% 0px -10% 0px" }
     );
@@ -2528,11 +2592,6 @@
       window.requestAnimationFrame(afterLayoutRefresh);
     });
 
-    if (typeof window.requestIdleCallback === "function") {
-      window.requestIdleCallback(function () {
-        afterLayoutRefresh();
-      });
-    }
   }
 
   /* ---------- Event handlers ---------- */

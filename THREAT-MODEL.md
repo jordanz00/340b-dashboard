@@ -1,66 +1,122 @@
 # Dashboard Threat Model
 
-This project is a static dashboard, so the main risk is not server compromise. The main risk is shipping unsafe or misleading client-side behavior.
+This project is a **static** advocacy dashboard. The primary risks are **client-side**: misleading or unsafe behavior, not server compromise.
 
 ## What this project does not currently have
 
-- No database connection
-- No login or auth flow
-- No server-side routes
-- No webhook handlers
-- No secret management layer
+- No database connection  
+- No login or auth flow  
+- No server-side routes  
+- No webhook handlers  
+- No secret management layer  
 
-If any of those are added later, this threat model must be expanded.
+If any of those are added later, this threat model must be expanded and reviewed under [SECURITY-FORCE.md](SECURITY-FORCE.md).
+
+---
+
+## Risk catalog (explicit)
+
+### Cross-site scripting (XSS)
+
+| Risk | Description |
+|------|-------------|
+| **DOM injection** | Untrusted strings written with `innerHTML` or similar could execute script in the user’s browser. |
+| **Mitigation** | Use `textContent`, `createElement`, and attribute setters. Dashboard audit forbids unsafe patterns in core files. |
+
+### Malicious URL parameters and hash
+
+| Risk | Description |
+|------|-------------|
+| **Fake state** | A crafted `#state-XX` could try to drive UI into unexpected states. |
+| **Mitigation** | `getHashState()` allowlists **known state codes** from `state-data.js`; unknown codes are ignored. |
+
+### localStorage tampering
+
+| Risk | Description |
+|------|-------------|
+| **Data tampering** | Another script on the same origin could write to `localStorage` keys used by the print view. |
+| **Quota / corruption** | Large or invalid JSON could break `JSON.parse`. |
+| **Mitigation** | **Namespaced key** `hap340b:printSnapshot` (legacy read: `hap340bPrint`). **Schema checks** in `print.html` (`isValidPayload`, `payloadVersion`, bounded `mapSvg` length and text fields). **Try/catch** on parse. |
+
+### Static hosting and supply chain
+
+| Risk | Description |
+|------|-------------|
+| **Remote scripts** | CDN compromise or network MITM could alter behavior. |
+| **Mitigation** | **BASIC:** local scripts only (verified by `dashboard-audit.py`). **Advanced:** vendor libraries vendored under `assets/vendor/`. |
+
+### Data injection (content)
+
+| Risk | Description |
+|------|-------------|
+| **Misleading metrics** | Edited `state-data.js` or copy could misrepresent policy facts. |
+| **Mitigation** | Human release gate; source citations in methodology; version control and review for data changes. |
+
+### Print/PDF surface
+
+| Risk | Description |
+|------|-------------|
+| **Misleading PDF** | Print output could diverge from live page or show partial state. |
+| **Mitigation** | Print pipeline uses validated snapshot; map as **data URL image** from validated SVG string, not arbitrary HTML. |
+
+---
 
 ## Highest-risk surfaces in the current codebase
 
-1. DOM rendering
-Use safe DOM APIs. Avoid string-based HTML insertion for dynamic content.
+1. **DOM rendering** — Use safe DOM APIs; avoid string-based HTML insertion for dynamic content.  
+2. **URL-driven state** — `#state-PA` must not create fake UI state; invalid hashes must be ignored.  
+3. **Share flow** — Clipboard and share must expose only the **canonical** public URL.  
+4. **External assets** — Prefer local assets; BASIC must not rely on remote scripts.  
+5. **Print/PDF output** — Must reflect validated snapshot state.  
+6. **Source credibility** — Legal-status wording and dates must stay aligned across `state-data.js`, `340b.html`, and print.  
+7. **Copy and metadata drift** — Executive and print surfaces must not drift out of sync.
 
-2. URL-driven state
-The dashboard uses hash state like `#state-PA`. Invalid or unexpected hashes must not create fake UI state.
+---
 
-3. Share flow
-Clipboard, share-sheet, and prompt fallbacks should expose only the canonical public URL and should not leak private parameters.
+## Mitigations summary
 
-4. External assets
-Prefer local assets. Corporate and nonprofit deployments should not rely on remote fonts, hosted scripts, or runtime third-party data fetches unless there is a documented exception and explicit review.
+| Category | Mitigation |
+|----------|------------|
+| XSS / DOM | Safe APIs; audit blocks risky patterns |
+| Hash / state | Allowlist state codes |
+| localStorage | Namespace key; validate payload; bounded fields |
+| Supply chain | Local vendor files; BASIC = no remote scripts |
+| Trust | Human review before publish |
 
-5. Print/PDF output
-Print should reflect the final rendered document state, not partial animation or hidden content.
-
-6. Source credibility
-Source dates, legal-status wording, and printed policy framing must stay aligned so the dashboard does not become visually polished but substantively misleading.
-
-7. Copy and metadata drift
-High-salience copy, metadata text, executive summary cues, and print-only trust surfaces must not drift out of sync across `state-data.js`, `340b.html`, and the print path.
+---
 
 ## Security checks to run
 
-- `python3 dashboard-audit.py`
-- `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .`
+- `python3 dashboard-audit.py`  
+- `semgrep scan --config auto` (after security-sensitive changes)  
+
+---
 
 ## What "safe" means here
 
 For this static site, "safe" means reducing avoidable browser-side risk:
 
-- local assets by default
-- strict link handling
-- safe DOM rendering
-- validated URL-driven state
-- documented security boundaries
-- repeatable scans before release
+- Local assets by default  
+- Strict link handling (`rel="noopener noreferrer"` on `target="_blank"`)  
+- Safe DOM rendering  
+- Validated URL-driven state  
+- Documented security boundaries  
+- Repeatable scans before release  
 
-It does not honestly mean a mathematical guarantee that no compromise is ever possible.
+It does not mean a mathematical guarantee against all compromise.
+
+---
 
 ## Human release gate
 
 Before publishing, a human should still confirm:
 
-- the print preview reads correctly end-to-end
-- the default print state context is acceptable
-- the legal-status sources are current
-- the policymaker and hospital-leader framing still sounds precise and credible
+- Print preview reads correctly end-to-end  
+- Default print state context is acceptable  
+- Legal-status sources are current  
+- Policymaker and hospital-leader framing remains precise  
+
+---
 
 ## Maintenance note
 

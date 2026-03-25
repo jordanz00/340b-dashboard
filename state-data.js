@@ -30,11 +30,31 @@ var CONFIG = {
 
   /* Plain-language copy for advocates and lay audiences */
   copy: {
-    overviewLead: "340B empowers Pennsylvania hospitals to provide care and affordable medicines to all communities—at no extra cost to taxpayers.",
-    hapPositionLead: "HAP calls on lawmakers to defend 340B, ensuring hospital programs and patients remain protected.",
-    hapAskLabel: "Ask leaders:",
-    hapAskText: "Protect 340B so hospitals can continue serving Pennsylvanians.",
-    mapHeroSub: "Click a state to see whether it protects the discount—and what that means for hospitals and patients.",
+    headerValueProp:
+      "For policymakers, hospital leaders, and partners: see where states protect contract pharmacy, how Pennsylvania fits in, and HAP’s advocacy ask—sources and dates on page.",
+    overviewLead:
+      "340B is a federal discount that helps eligible hospitals (covered entities) stretch dollars further so more patients get care and affordable medicines—without new taxpayer cost.",
+    hapPositionWhy:
+      "States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.",
+    hapPositionLead:
+      "HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.",
+    hapAskItems: [
+      {
+        label: "Protect the 340B discount",
+        soWhat: "So what: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.",
+      },
+      {
+        label: "Defend contract pharmacy partnerships",
+        soWhat: "So what: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.",
+      },
+      {
+        label: "Oppose rules that shrink access for safety-net patients",
+        soWhat: "So what: Rural and underserved communities keep an affordable path to medications hospitals are required to support.",
+      },
+    ],
+    mapHeroSub: "Start with the map: see which states have enacted contract pharmacy protection and open any state for details.",
+    mapHowToUse:
+      "Click a state on the map or a state name in the lists. Use All / Protection / No protection to filter. Choose Clear to reset your selection.",
     sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
     methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2026.",
     printSourceSummary: "State law status is compiled from MultiState, ASHP, America's Essential Hospitals. Community benefit from 340B Health and AHA (HAP/PA figures). HRSA Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.",

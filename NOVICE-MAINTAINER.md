@@ -113,7 +113,7 @@ Edit when: visible copy, headings, sections, source links, order of blocks, or w
 
 **Avoid text/number pop on load:** The first thing the user sees is the raw HTML. JavaScript then overwrites copy from `state-data.js` (CONFIG) and STATE_340B. If the initial HTML does not match, the page will “flash.” Whenever you change **CONFIG.copy** or **STATE_340B** in state-data.js, update the **initial content** of the corresponding elements in 340b.html:
 
-- Intro/overview: `#overview-lead`, `#hap-position-lead`, `#hap-ask-label`, `#hap-ask-text`, `#map-hero-sub`
+- Intro/overview: `#overview-lead`, `#hap-position-why`, `#hap-position-lead`, `.hap-ask-list` / `CONFIG.copy.hapAskItems`, `#map-hero-sub`
 - Executive strip: `#executive-priority-*`, `#executive-landscape-*`, `#executive-trust-*` (landscape value = “X states have enacted…; Y remain without…”, where X = states with `cp: true`, Y = rest)
 - Methodology/sources: `#sources-summary`, `#methodology-state-law-copy`, `#verification-order-copy`, `#print-source-summary`, `#print-verification-order-copy`
 - Protection counts: `#key-finding-protection-count`, `#protection-count`, `#no-protection-count`, `#print-protection-count`, `#print-no-protection-count` (same X and Y as executive landscape)

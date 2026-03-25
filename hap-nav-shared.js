@@ -5,7 +5,12 @@
 (function () {
   "use strict";
 
+  var lastNavActiveId = null;
+
   function updateNavCurrent(activeId) {
+    if (lastNavActiveId === activeId) return;
+    lastNavActiveId = activeId;
+
     var navLinks = document.querySelectorAll(".dashboard-nav a[href^='#'], .hap-sidebar-nav a[href^='#']");
     if (!navLinks || !navLinks.length) return;
     var policySections = ["oversight", "pa-impact", "community-benefit", "access", "pa-safeguards", "policy-milestones"];
@@ -112,11 +117,6 @@
       window.requestAnimationFrame(afterLayoutRefresh);
     });
 
-    if (typeof window.requestIdleCallback === "function") {
-      window.requestIdleCallback(function () {
-        afterLayoutRefresh();
-      });
-    }
   }
 
   if (document.readyState === "loading") {

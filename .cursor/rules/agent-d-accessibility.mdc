@@ -1,0 +1,11 @@
+---
+description: Agent D — Accessibility and Robustness improvements for 340B dashboard
+alwaysApply: false
+globs: 340b.html, 340b.css, 340b.js
+---
+
+# Agent D: Accessibility & Robustness
+
+When running 50-improvement Batch D, implement items from [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch D.
+
+**Scope:** window.onerror, onunhandledrejection, Share fallback, aria-busy, skip-link focus, link focus underline, touch tooltips, navigator.share fallback, PDF timeout, observer teardown. Files: 340b.html, 340b.css, 340b.js.

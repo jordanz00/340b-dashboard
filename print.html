@@ -37,11 +37,17 @@
         <p class="print-view-stat"><span class="print-view-stat-label">Market share</span> <strong id="pv-kpi-market">7%</strong> 340B purchases</p>
       </section>
 
-      <section class="print-view-block">
+      <section class="print-view-block print-view-block--hap-position">
         <p class="print-view-card-title">HAP Position</p>
         <h2>Protect the 340B discount and hospital–pharmacy partnerships.</h2>
-        <p>HAP calls on lawmakers to defend 340B, ensuring hospital programs and patients remain protected.</p>
-        <p><strong>Ask leaders:</strong> Protect 340B so hospitals can continue serving Pennsylvanians.</p>
+        <p class="print-view-hap-kicker">States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.</p>
+        <p>HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.</p>
+        <p class="print-view-hap-asks-title">What lawmakers can do</p>
+        <ul class="print-view-hap-ask-list">
+          <li><strong>Protect the 340B discount.</strong> So what: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</li>
+          <li><strong>Defend contract pharmacy partnerships.</strong> So what: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</li>
+          <li><strong>Oppose rules that shrink access for safety-net patients.</strong> So what: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</li>
+        </ul>
       </section>
 
       <section class="print-view-block print-view-executive">
@@ -179,15 +185,20 @@
     </main>
   </div>
 
+  <footer class="print-view-footer-dmx" role="contentinfo">
+    <p>Design Mark X — Continuous Optimization System</p>
+  </footer>
+
   <script>
     (function () {
-      var KEY = "hap340bPrint";
+      var KEY_PRIMARY = "hap340b:printSnapshot";
+      var KEY_LEGACY = "hap340bPrint";
       var root = document.getElementById("print-view-root");
       var mapContainer = document.getElementById("pv-map-container");
 
       function getPayload() {
         try {
-          var raw = localStorage.getItem(KEY);
+          var raw = localStorage.getItem(KEY_PRIMARY) || localStorage.getItem(KEY_LEGACY);
           return raw ? JSON.parse(raw) : null;
         } catch (e) {
           return null;
@@ -195,10 +206,21 @@
       }
 
       var MAX_MAP_SVG_LENGTH = 500000;
+      var MAX_TEXT_FIELD_LEN = 4000;
 
       function isValidPayload(payload) {
         if (!payload || typeof payload !== "object") return false;
+        if (payload.payloadVersion != null && payload.payloadVersion !== 1) return false;
         if (payload.mapSvg != null && (typeof payload.mapSvg !== "string" || payload.mapSvg.length > MAX_MAP_SVG_LENGTH)) return false;
+        var textFields = [
+          "selectionTitle", "selectionText", "mapHeroSub", "landscapeValue",
+          "statesWithList", "statesWithoutList", "kpiDrug", "kpiBenefit", "kpiOversight",
+          "kpiPA", "dataFreshness", "methodologyDate"
+        ];
+        for (var i = 0; i < textFields.length; i++) {
+          var k = textFields[i];
+          if (payload[k] != null && typeof payload[k] === "string" && payload[k].length > MAX_TEXT_FIELD_LEN) return false;
+        }
         return true;
       }
 

@@ -2,6 +2,8 @@
 
 Use this checklist before pushing dashboard changes.
 
+**Communications release (BASIC-first):** After any visible or data change, run **[docs/DESIGN-ITERATION-CHECKLIST.md](docs/DESIGN-ITERATION-CHECKLIST.md)** (quick design pass), then verify **[340b-BASIC.html](340b-BASIC.html)** on mobile and desktop. Full-dashboard checks below apply when you ship **340b.html**.
+
 ## Automated audit
 
 1. Run `python3 dashboard-audit.py`.

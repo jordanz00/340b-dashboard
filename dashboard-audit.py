@@ -6,14 +6,16 @@ This is intentionally simple so a novice maintainer can run it with:
 
     python3 dashboard-audit.py
 
-It checks a few high-value risks in the 340B dashboard files only:
-- unsafe DOM patterns
+It checks high-value risks in the 340B dashboard files:
+- unsafe DOM patterns (including print.html)
 - hidden zero-width/control characters
 - missing rel="noopener noreferrer" on external links
-- missing CSP/referrer hardening on app entry pages
+- CSP / referrer hardening on app entry pages (340b.html + 340b-BASIC.html)
+- BASIC: no remote script URLs (CDN-free IT-safe build)
+- print pipeline: namespaced localStorage key + payload version validation
+- security documentation files (SECURITY-FORCE, THREAT-MODEL, SECURE-FORCE)
 - unexpected remote fonts, scripts, or runtime data fetches
-- stale removed-feature copy in dashboard files
-- missing prompt waves
+- stale removed-feature copy; prompt library sections
 
 It does NOT replace manual review. Print preview, source verification, and copy quality
 still need a human check before publishing.
@@ -38,16 +40,21 @@ DASHBOARD_FILES = [
     ROOT / "QA-CHECKLIST.md",
     ROOT / "NOVICE-MAINTAINER.md",
     ROOT / "THREAT-MODEL.md",
+    ROOT / "SECURITY-FORCE.md",
+    ROOT / "SECURE-FORCE.md",
     ROOT / "AI-HANDOFF.md",
 ]
 EXECUTABLE_FILES = [
     ROOT / "340b.html",
     ROOT / "340b.js",
+    ROOT / "print.html",
 ]
 SOURCE_FILES = list(DASHBOARD_FILES) + [PROMPTS_FILE]
 APP_HTML_FILES = [
     ROOT / "340b.html",
+    ROOT / "340b-BASIC.html",
 ]
+BASIC_HTML = ROOT / "340b-BASIC.html"
 PRINT_HTML = ROOT / "print.html"
 PRINT_VIEW_CSS = ROOT / "print-view.css"
 
@@ -219,6 +226,63 @@ def check_remote_assets(results: list[str]) -> bool:
     return okay
 
 
+def check_security_documentation(results: list[str]) -> bool:
+    """Enterprise docs: multi-agent workflow + threat model + maintainer rules."""
+    required = [
+        ROOT / "SECURITY-FORCE.md",
+        ROOT / "THREAT-MODEL.md",
+        ROOT / "SECURE-FORCE.md",
+    ]
+    okay = True
+    for path in required:
+        if not path.exists():
+            record(results, False, f"Missing required security documentation: {path.name}")
+            okay = False
+    if okay:
+        record(
+            results,
+            True,
+            "Security documentation present (SECURITY-FORCE.md, THREAT-MODEL.md, SECURE-FORCE.md)",
+        )
+    return okay
+
+
+def check_basic_local_scripts_only(results: list[str]) -> bool:
+    """340b-BASIC.html must not load scripts from http(s) (air-gapped / hospital IT)."""
+    if not BASIC_HTML.exists():
+        record(results, False, "340b-BASIC.html is missing")
+        return False
+    html = read_text(BASIC_HTML)
+    for match in re.finditer(r"<script[^>]+src=[\"']([^\"']+)[\"']", html, re.IGNORECASE):
+        src = match.group(1).strip()
+        if src.startswith(("http://", "https://", "//")):
+            record(results, False, f"340b-BASIC.html must not use remote script URL: {src}")
+            return False
+    record(results, True, "340b-BASIC.html uses only local script sources (no CDN or remote URLs)")
+    return True
+
+
+def check_print_localstorage_namespace(results: list[str]) -> bool:
+    """Namespaced localStorage key for print snapshot; legacy read retained in print.html."""
+    js = read_text(ROOT / "340b.js")
+    pr = read_text(ROOT / "print.html")
+    if "hap340b:printSnapshot" not in js or "hap340b:printSnapshot" not in pr:
+        record(
+            results,
+            False,
+            "340b.js and print.html should use namespaced localStorage key hap340b:printSnapshot",
+        )
+        return False
+    if "hap340bPrint" not in pr:
+        record(results, False, "print.html should retain legacy localStorage key hap340bPrint for migration")
+        return False
+    if "payloadVersion" not in js or "payloadVersion" not in pr:
+        record(results, False, "Print payload should include payloadVersion (340b.js + print.html)")
+        return False
+    record(results, True, "Print pipeline: namespaced localStorage key, legacy read, payload version")
+    return True
+
+
 def check_removed_feature_copy(results: list[str]) -> bool:
     okay = True
 
@@ -259,7 +323,7 @@ def check_print_structure(results: list[str]) -> bool:
     required_snippets = [
         'class="print-report-header print-only"',
         'id="print-intro-snapshot"',
-        'class="executive-proof-strip span-12 scroll-reveal"',
+        'class="executive-proof-strip span-12 scroll-reveal ow-section ow-section--band-b"',
         'id="executive-landscape-value"',
         'id="print-state-summary"',
         'class="print-sources print-only"',
@@ -352,6 +416,9 @@ def main() -> int:
         check_hidden_characters,
         check_external_links,
         check_page_hardening,
+        check_security_documentation,
+        check_basic_local_scripts_only,
+        check_print_localstorage_namespace,
         check_print_view_security,
         check_print_view_regression_guards,
         check_remote_assets,

@@ -1,5 +1,7 @@
 # Security Notes
 
+For the **Security Force** workflow (supervisor + agents), threat model, and CSP guidance, see [SECURITY-FORCE.md](SECURITY-FORCE.md), [THREAT-MODEL.md](THREAT-MODEL.md), and [SECURE-FORCE.md](SECURE-FORCE.md).
+
 ## IT-safe hosting: use 340b-BASIC.html
 
 If your IT or security team will not approve the full dashboard (external CDN scripts, html2canvas/pdf, localStorage), host **340b-BASIC.html** instead:
@@ -29,7 +31,7 @@ If you deploy this on GitHub Pages, Netlify, Vercel, S3, or another static host,
 
 - **HTTPS:** Serve the dashboard over HTTPS only in production. GitHub Pages provides HTTPS by default. For self-hosting, use a valid TLS certificate and redirect HTTP to HTTPS.
 - **For 340b-BASIC.html only (strictest):** No script, so CSP can be `script-src 'none'`. See the CSP in 340b-BASIC.html.
-- **For 340b.html (full dashboard):** CSP in the page allows `'self'` and `https://unpkg.com` for PDF libraries. If IT disallows external script, host 340b-BASIC.html instead or self-host html2canvas and jsPDF under `assets/vendor/` and change script src to local.
+- **For 340b.html (full dashboard):** html2canvas and jsPDF are **local** under `assets/vendor/` (no CDN required). If IT disallows inline script in CSP, review the meta CSP in `340b.html` or serve stricter headers from the host; use **340b-BASIC.html** when no PDF/simulator scripts are allowed at all.
 - `Referrer-Policy: strict-origin-when-cross-origin`
 - `X-Content-Type-Options: nosniff`
 

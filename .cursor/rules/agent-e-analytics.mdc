@@ -1,0 +1,11 @@
+---
+description: Agent E — Analytics and Data improvements for 340B dashboard
+alwaysApply: false
+globs: state-data.js, 340b.js, NOVICE-MAINTAINER.md
+---
+
+# Agent E: Analytics & Data
+
+When running 50-improvement Batch E, implement items from [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch E.
+
+**Scope:** data-event attributes, HAP340B.track stub, fire events, event catalog, payload schema, i18n layer, data-i18n, state validation, NOVICE-MAINTAINER network vs offline, analytics guard. Files: state-data.js, 340b.js, NOVICE-MAINTAINER.md.

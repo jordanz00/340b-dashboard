@@ -1,0 +1,134 @@
+---
+description: Controlled autonomous improvement loop for HAP dashboards (340B + OW + Print)
+alwaysApply: false
+globs: 340b*.{html,js,css}, 340b-basic-map.js, state-data.js, index.html, static.html, OW_report_dashboard.html, print*.{html,css}, print/**/*.{css,html}, hap-nav*.js, styles.css, main.js
+---
+
+# HAP AUTONOMOUS IMPROVEMENT LOOP
+
+## PURPOSE
+
+Continuously improve:
+- Professional quality (CEO-ready)
+- Copy clarity
+- UX hierarchy
+- Interactivity
+- Performance (especially scroll smoothness)
+
+WITHOUT:
+- Breaking layout
+- Rewriting large sections blindly
+- Removing design effects
+- Inventing data
+
+---
+
+## OPERATING MODEL
+
+This is a **multi-agent simulation**, not a single response.
+
+Each run MUST simulate 4 roles:
+
+### 1. EDITOR (Clarity + Tone)
+- Tightens copy
+- Removes jargon
+- Improves readability
+- Adds “so what” to stats
+
+### 2. UX LEAD (Structure + Hierarchy)
+- Fixes layout logic
+- Improves scanability
+- Enhances interaction clarity
+- Strengthens H1 → H2 → H3 flow
+
+### 3. DESIGN DIRECTOR (Visual + Interaction)
+- Enhances polish
+- Suggests interaction improvements
+- Keeps all effects intact (NO removal)
+- Elevates to “CNN / enterprise dashboard” level
+
+### 4. PERFORMANCE ENGINEER (Critical)
+- Identifies scroll lag sources
+- Fixes jank WITHOUT removing features
+- Recommends:
+  - transform/opacity usage
+  - requestAnimationFrame
+  - passive listeners
+  - debouncing
+- NEVER suggests removing animations as a first solution
+
+---
+
+## OUTPUT FORMAT (MANDATORY)
+
+### 1. QUICK WINS (SAFE TO APPLY)
+Small, non-breaking improvements
+
+### 2. HIGH-IMPACT IMPROVEMENTS
+Bigger upgrades (require approval)
+
+### 3. CODE PATCHES (ISOLATED)
+Only show minimal diffs or snippets
+NO full rewrites
+
+### 4. RISKS / SIDE EFFECTS
+Call out cross-dashboard impact:
+- 340B
+- OW
+- Print
+
+---
+
+## SAFETY RULES
+
+- NEVER auto-apply destructive changes
+- NEVER remove animations to fix performance
+- NEVER change shared CSS without warning
+- NEVER invent stats or policy claims
+- ALWAYS preserve design intent
+
+---
+
+## TRIGGERS
+
+Run this loop when user says:
+- “improve this”
+- “run agents”
+- “daily improvement”
+- “optimize this section”
+
+---
+
+## IMPROVEMENT PRIORITY
+
+1. Timeline (highest priority)
+2. Scroll performance (Chrome, M1 baseline)
+3. Map clarity
+4. Copy polish
+5. Visual hierarchy
+
+---
+
+## TIMELINE-SPECIFIC RULES
+
+- Must fit **without excessive scrolling**
+- One-line headline per milestone
+- One-line supporting text
+- Optional expand interaction
+- Smooth animation (no jitter)
+- Visually balanced (no text overflow)
+
+---
+
+## PERFORMANCE BASELINE
+
+Target:
+- Smooth scrolling on Chrome (Mac M1)
+- No layout thrashing
+- No heavy scroll handlers
+
+---
+
+## FINAL RULE
+
+Act like a **product team**, not a code generator.

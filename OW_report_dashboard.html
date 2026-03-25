@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,11 +24,12 @@
     .pa-dashboard .report-by { margin: 0 0 0.35rem; font-family: "Montserrat", sans-serif; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); }
     .pa-dashboard .pa-dashboard-header h1 { margin: 0; font-family: "Montserrat", sans-serif; font-size: 1.95rem; font-weight: 800; color: var(--primary); letter-spacing: -0.02em; }
     .pa-dashboard .tagline { margin: 0.35rem 0 0; font-size: 0.9rem; font-weight: 500; color: var(--muted); }
-    .pa-dashboard nav { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.75rem; }
-    .pa-dashboard nav a { padding: 0.45rem 1rem; border-radius: 999px; font-family: "Montserrat", sans-serif; font-weight: 600; font-size: 0.82rem; background: #fff; border: 1px solid rgba(0,114,188,0.15); color: var(--muted); transition: color 0.2s, border-color 0.2s, box-shadow 0.2s, transform 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.03); -webkit-tap-highlight-color: rgba(0,114,188,0.1); }
-    .pa-dashboard nav a:hover { color: var(--primary); background: rgba(255,255,255,0.9); border-color: rgba(0,114,188,0.25); box-shadow: 0 4px 12px rgba(0,114,188,0.12); transform: translateY(-1px); }
-    .pa-dashboard nav a:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
-    .pa-dashboard main { max-width: 70rem; margin: 0 auto; padding: var(--space-lg) 1.5rem; position: relative; z-index: 1; }
+    /* Hide original nav and header - replaced by sidebar shell */
+    .pa-dashboard nav { display: none !important; }
+    .pa-dashboard-header { display: none !important; }
+    /* Kill ALL overflow on pa-dashboard so it never breaks position:sticky */
+    .pa-dashboard { overflow: visible !important; }
+    .pa-dashboard main { max-width: 66rem; margin: 0 auto; padding: var(--space-lg) 1.5rem; position: relative; z-index: 1; }
     .pa-dashboard section { margin-bottom: var(--space-xl); padding: var(--space-lg); background: #fff; border-radius: var(--radius); box-shadow: 0 4px 20px rgba(0,114,188,0.08); border: 1px solid rgba(0,114,188,0.08); }
     @supports (backdrop-filter: blur(1px)) { .pa-dashboard section { background: rgba(255,255,255,0.72); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); box-shadow: 0 8px 32px rgba(0,114,188,0.06), inset 0 1px 0 rgba(255,255,255,0.8); } }
     .pa-dashboard section:hover { box-shadow: 0 12px 40px rgba(0,114,188,0.1); }
@@ -121,8 +123,6 @@
     .pa-dashboard table { width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 0.5rem; }
     .pa-dashboard th, .pa-dashboard td { padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid rgba(0,114,188,0.1); }
     .pa-dashboard tr:last-child td { border-bottom: none; }
-    .footer-dashboard-cross { margin-top: 1rem; }
-    .footer-dashboard-cross .back-link { display: inline-block; }
     .pa-dashboard footer { padding: 1.75rem; text-align: center; color: var(--muted); font-size: 0.9rem; border-top: 1px solid rgba(0,114,188,0.1); background: #f8fbfd; position: relative; z-index: 1; }
     @supports (backdrop-filter: blur(1px)) { .pa-dashboard footer { background: rgba(255,255,255,0.5); backdrop-filter: blur(24px); } }
     @media (prefers-reduced-motion: reduce) { .pa-dashboard .big-number-rainy, .pa-dashboard .impact-card, .pa-dashboard .impact-stat .impact-value { animation: none; } .pa-dashboard .scroll-reveal { animation: none; opacity: 1; transform: none; } }
@@ -193,7 +193,7 @@
     .lever-list { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; color: var(--muted); }
     .lever-item { padding: 0.5rem 0.75rem; background: rgba(0,114,188,0.03); border-radius: 8px; }
 
-    .pa-dashboard { overflow-x: hidden; }
+    .pa-dashboard { overflow-x: visible; }
     .pa-dashboard .stat-card, .pa-dashboard nav a, .pa-dashboard .back-link { -webkit-tap-highlight-color: rgba(0,114,188,0.12); }
     /* Mobile: tight, app-like, data-forward — 768px */
     @media (max-width: 768px) {
@@ -306,28 +306,132 @@
       .pa-dashboard .gauge-svg { width: 120px; height: 72px; }
       .pa-dashboard .big-number-rainy { font-size: 2.5rem; }
     }
+    /* ── HAP Shell: sticky sidebar layout ──
+       CRITICAL: hap-sidebar's sticky works ONLY because no ancestor
+       between it and <body> has overflow set to anything but visible.
+       pa-dashboard wraps ONLY <main> — never the sidebar or hap-body. */
+    html, body { margin: 0; padding: 0; }
+    /* Match 340b.html / HAP suite page wash */
+    body {
+      background: #eef6fc;
+      background-image: linear-gradient(165deg, #e8f2fa 0%, #eef6fc 35%, #f0f7fd 70%, #e8f2fa 100%);
+      background-attachment: scroll;
+    }
+    /* Shell: full viewport column */
+    .hap-shell { display: flex; flex-direction: column; min-height: 100vh; }
+    /* Header: light blue, title left-indented to align with content */
+    .hap-header {
+      position: sticky; top: 0; z-index: 300;
+      display: flex; align-items: center; gap: 0.85rem;
+      padding: 0.7rem 1.5rem 0.7rem calc(210px + 1.5rem);
+      background: #e8f2fa;
+      border-bottom: 1px solid #c8d8e8;
+      box-shadow: 0 1px 6px rgba(0,114,188,0.1);
+    }
+    .hap-header-logo { width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0; }
+    .hap-header-text { flex: 1; min-width: 0; }
+    .hap-header-org { margin: 0; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #5a7a99; font-family: "Montserrat", system-ui, sans-serif; }
+    .hap-header-title { margin: 0; font-size: 1.05rem; font-weight: 800; color: #003087; letter-spacing: -0.02em; line-height: 1.15; font-family: "Montserrat", system-ui, sans-serif; }
+    .hap-header-badge { display: inline-flex; align-items: center; margin-top: 0.2rem; padding: 0.15rem 0.5rem; background: rgba(0,48,135,0.1); border: 1px solid rgba(0,48,135,0.2); color: #003087; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; }
+    /* Body row: sidebar + content. NO overflow on this or any child except sidebar itself */
+    .hap-body { display: flex; flex: 1; align-items: flex-start; }
+    /* Sidebar: sticky, bounded by viewport */
+    .hap-sidebar {
+      width: 210px; flex-shrink: 0;
+      position: sticky; top: 57px;
+      height: calc(100vh - 57px);
+      overflow-y: auto;
+      background: #ddeef8;
+      border-right: 1px solid #c8d8e8;
+      display: flex; flex-direction: column;
+      padding: 0.9rem 0 1.5rem;
+      z-index: 200;
+    }
+    .hap-sidebar-nav { display: flex; flex-direction: column; gap: 0.1rem; padding: 0 0.65rem; flex: 1; }
+    .hap-sidebar-nav a { display: block; padding: 0.5rem 0.85rem; border-radius: 7px; font-size: 0.8rem; font-weight: 600; font-family: "Montserrat", system-ui, sans-serif; color: #3a5a7a; text-decoration: none; border: 1px solid transparent; transition: color 0.18s, background 0.18s; }
+    .hap-sidebar-nav a:hover { color: #003087; background: rgba(0,48,135,0.08); border-color: rgba(0,48,135,0.15); text-decoration: none; }
+    .hap-sidebar-nav a.active { color: #003087; background: rgba(0,48,135,0.12); border-color: rgba(0,48,135,0.22); font-weight: 700; }
+    .hap-sidebar-divider { height: 1px; background: rgba(0,82,155,0.15); margin: 0.75rem 0.65rem; }
+    .hap-sidebar-nav a.hap-cross-link { color: #0072bc; background: rgba(0,114,188,0.08); border-color: rgba(0,114,188,0.2); display: flex; align-items: center; gap: 0.4rem; }
+    .hap-sidebar-nav a.hap-cross-link.hap-cross-link--stack { flex-direction: column; align-items: flex-start; gap: 0.2rem; padding-top: 0.45rem; padding-bottom: 0.45rem; }
+    .hap-cross-link-title { font-size: 0.8rem; font-weight: 600; line-height: 1.25; }
+    .hap-cross-link-desc { font-size: 0.58rem; font-weight: 500; line-height: 1.3; color: #5a7189; letter-spacing: 0.01em; }
+    .hap-sidebar-nav a.hap-cross-link--current .hap-cross-link-desc { color: #3d556d; }
+    .hap-sidebar-nav a.hap-cross-link:hover .hap-cross-link-desc { color: #005a94; }
+    .hap-sidebar-nav a.hap-cross-link:hover { background: rgba(0,114,188,0.15); border-color: rgba(0,114,188,0.35); color: #005a94; }
+    .hap-sidebar-nav a.hap-cross-link svg { width: 13px; height: 13px; flex-shrink: 0; }
+    .hap-sidebar-label { display: block; padding: 0.35rem 0.85rem 0.1rem; font-size: 0.58rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #64748b; }
+    .hap-sidebar-nav a.hap-cross-link--current { border-color: rgba(0, 48, 135, 0.35); background: rgba(0, 48, 135, 0.12); font-weight: 700; }
+    /* Content: fills remaining width. NO overflow. */
+    .hap-page-content { flex: 1; min-width: 0; }
+    /* Scroll margin for section anchors */
+    .pa-dashboard [id] { scroll-margin-top: 65px !important; }
+    /* Mobile */
+    @media (max-width: 900px) {
+      .hap-header { padding: 0.5rem 0.8rem; }
+      .hap-header-title { font-size: 0.88rem; }
+      .hap-body { flex-direction: column; }
+      .hap-sidebar { width: 100%; height: auto; position: sticky; top: 0; flex-direction: row; padding: 0.35rem 0.65rem; border-right: none; border-bottom: 1px solid #c8d8e8; box-shadow: 0 2px 6px rgba(0,114,188,0.1); }
+      .hap-sidebar-nav { flex-direction: row; flex-wrap: wrap; gap: 0.2rem; padding: 0; }
+      .hap-sidebar-nav a { padding: 0.22rem 0.5rem; font-size: 0.67rem; border-radius: 999px; }
+      .hap-sidebar-divider { display: none; }
+      .hap-sidebar-nav a.hap-cross-link { font-size: 0.65rem; }
+      .hap-cross-link-title { font-size: 0.62rem; }
+      .hap-cross-link-desc { font-size: 0.52rem; }
+    }
+    @media (max-width: 480px) { .hap-header-badge { display: none; } .hap-header-title { font-size: 0.8rem; } }
+    @media print { .hap-header, .hap-sidebar { display: none !important; } .hap-body { display: block; } }
   </style>
 </head>
 <body>
-<div class="pa-dashboard">
-<a href="#main-content" class="skip-link">Skip to main content</a>
-<header class="pa-dashboard-header">
-  <p class="report-by">Report by Oliver Wyman · Commissioned by HAP</p>
-  <h1>Time to Act</h1>
-  <p class="tagline">Pennsylvania's Hospitals, Patients &amp;&#32;Communities · Jan 2026</p>
-  <nav>
-    <a href="#overview">Overview</a>
-    <a href="#today">Today's Reality</a>
-    <a href="#scenarios">2030 Scenarios</a>
-    <a href="#access">Access &amp;&#32;Closures</a>
-    <a href="#levers">Policy Levers</a>
-    <a href="#methods">Methods &amp;&#32;Sources</a>
-    <a href="340b.html">340B — Full</a>
-    <a href="340b-BASIC.html">340B — BASIC</a>
-    <a href="OW_report_dashboard.html">PA report (OW)</a>
-  </nav>
+<div class="hap-shell">
+
+<!-- Unified Header -->
+<header class="hap-header" role="banner">
+  <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="hap-header-logo" width="40" height="40" loading="eager">
+  <div class="hap-header-text">
+    <p class="hap-header-org">Report by Oliver Wyman · Commissioned by HAP</p>
+    <p class="hap-header-title">Time to Act: PA Hospitals, Patients &amp; Communities</p>
+    <span class="hap-header-badge">Jan 2026</span>
+  </div>
 </header>
 
+<!-- Body row: sidebar + content are siblings, no overflow ancestor -->
+<div class="hap-body">
+
+<!-- Sticky Sidebar -->
+<aside class="hap-sidebar" aria-label="Page sections">
+  <nav class="hap-sidebar-nav">
+    <a href="#overview" class="active">Overview</a>
+    <a href="#today">Today's Reality</a>
+    <a href="#scenarios">2030 Scenarios</a>
+    <a href="#access">Access &amp; Closures</a>
+    <a href="#levers">Policy Levers</a>
+    <a href="#methods">Methods &amp; Sources</a>
+    <div class="hap-sidebar-divider"></div>
+    <span class="hap-sidebar-label" id="hap-nav-suite-label">Related reports &amp; tools</span>
+    <a href="340b.html" class="hap-cross-link hap-cross-link--stack" title="Full 340B dashboard: print, PDF, share, state lists, map filters, and simulators">
+      <span class="hap-cross-link-title">340B — Full dashboard</span>
+      <span class="hap-cross-link-desc">Print, PDF, filters, simulators &amp; share</span>
+    </a>
+    <a href="340b-BASIC.html" class="hap-cross-link hap-cross-link--stack" title="Communications edition: core 340B map and narrative; local scripts only">
+      <span class="hap-cross-link-title">340B — BASIC</span>
+      <span class="hap-cross-link-desc">Core map &amp; story; local scripts (IT-safe)</span>
+    </a>
+    <a href="OW_report_dashboard.html" class="hap-cross-link hap-cross-link--stack hap-cross-link--current" aria-current="page" title="Pennsylvania hospitals — Oliver Wyman sustainability report with sticky sidebar navigation">
+      <span class="hap-cross-link-title">PA hospitals (OW)</span>
+      <span class="hap-cross-link-desc">Oliver Wyman report · sticky section nav</span>
+    </a>
+    <a href="static.html" class="hap-cross-link hap-cross-link--stack" title="Pennsylvania hospitals — Oliver Wyman report in classic single-page layout">
+      <span class="hap-cross-link-title">PA hospitals (classic)</span>
+      <span class="hap-cross-link-desc">Oliver Wyman report · one-page scroll</span>
+    </a>
+  </nav>
+</aside>
+
+<!-- Page content: pa-dashboard is INSIDE hap-page-content, NOT wrapping sidebar -->
+<div class="hap-page-content">
+<div class="pa-dashboard">
 <main id="main-content">
 
   <section id="overview" class="overview-section">
@@ -626,11 +730,77 @@
 
 <footer>
   <p><strong>Oliver Wyman</strong> prepared this analysis for <strong>The Hospital and Healthsystem Association of Pennsylvania (HAP)</strong>.</p>
-  <p class="footer-dashboard-cross"><a href="340b.html" class="back-link">340B Drug Pricing — Advocacy Dashboard</a></p>
-  <p class="footer-design" style="margin-top:0.75rem;font-size:0.85rem;color:var(--muted, #64748b);">Design Mark X — Continuous Optimization System</p>
+  <p style="margin-top:0.75rem"><a href="340b.html" class="back-link">← 340B Drug Pricing Dashboard</a></p>
+  <p class="footer-design" style="margin-top:0.65rem;font-size:0.85rem;color:var(--muted, #64748b);">Design Mark X — Continuous Optimization System</p>
 </footer>
 
-<p><a href="#main-content" class="back-link">Back to top</a></p>
-</div>
+</div><!-- /.pa-dashboard -->
+</div><!-- /.hap-page-content -->
+</div><!-- /.hap-body -->
+</div><!-- /.hap-shell -->
+
+<script>
+(function(){
+  var links = document.querySelectorAll('.hap-sidebar-nav a[href^="#"]');
+  var sections = Array.from(links).map(function(l){
+    return document.getElementById(l.getAttribute('href').slice(1));
+  }).filter(Boolean);
+  if (!sections.length) return;
+
+  var sectionDocumentTops = [];
+  var band = 80;
+  var lastActiveId = null;
+
+  function refreshAnchors() {
+    var sy = window.pageYOffset || document.documentElement.scrollTop || 0;
+    sectionDocumentTops = sections.map(function(s) {
+      return s.getBoundingClientRect().top + sy;
+    });
+  }
+
+  function tick() {
+    if (!sectionDocumentTops.length) refreshAnchors();
+    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+    var cutoff = y + band;
+    var cur = sections[0];
+    for (var i = 0; i < sections.length; i++) {
+      if (sectionDocumentTops[i] <= cutoff) cur = sections[i];
+    }
+    if (!cur || cur.id === lastActiveId) return;
+    lastActiveId = cur.id;
+    links.forEach(function(l){
+      l.classList.toggle('active', cur && l.getAttribute('href') === '#' + cur.id);
+    });
+  }
+
+  var scrollTicking = false;
+  function onScroll() {
+    if (!scrollTicking) {
+      scrollTicking = true;
+      requestAnimationFrame(function(){
+        tick();
+        scrollTicking = false;
+      });
+    }
+  }
+
+  function afterLayout() {
+    refreshAnchors();
+    tick();
+  }
+
+  var resizeTimer = null;
+  refreshAnchors();
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', function(){
+    if (resizeTimer) clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(afterLayout, 100);
+  });
+  window.addEventListener('load', afterLayout);
+  window.addEventListener('hashchange', function(){ requestAnimationFrame(afterLayout); });
+  tick();
+  requestAnimationFrame(function(){ requestAnimationFrame(afterLayout); });
+})();
+</script>
 </body>
 </html>

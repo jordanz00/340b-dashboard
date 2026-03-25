@@ -2,7 +2,9 @@
 
 A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing Program. Built for the Hospital and Healthsystem Association of Pennsylvania.
 
-**New here?** Start with **[NOVICE-MAINTAINER.md](NOVICE-MAINTAINER.md)** (what to edit) and **[docs/INDEX.md](docs/INDEX.md)** (all documentation links). Use **[GLOSSARY.md](GLOSSARY.md)** for terms and **[CONFIG-INDEX.md](CONFIG-INDEX.md)** to find where settings live.
+**Communications & CEO briefings — start here:** **[340b-BASIC.html](340b-BASIC.html)** is the primary, IT-safe product (local scripts, interactive map, full advocacy story). **[340b.html](340b.html)** is the **advanced** dashboard (Print/PDF, share, PDF download, live simulators). See **[docs/CEO-SHOWCASE.md](docs/CEO-SHOWCASE.md)** for talking points and deployment guidance.
+
+**Maintainers:** **[NOVICE-MAINTAINER.md](NOVICE-MAINTAINER.md)** (what to edit), **[docs/INDEX.md](docs/INDEX.md)** (all docs), **[GLOSSARY.md](GLOSSARY.md)** (terms), **[CONFIG-INDEX.md](CONFIG-INDEX.md)** (settings).
 
 ## Files
 
@@ -17,7 +19,10 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 | `GLOSSARY.md` | Definitions for CONFIG, print snapshot, simulators, etc. |
 | `CONFIG-INDEX.md` | Which file holds each kind of setting |
 | `docs/INDEX.md` | Documentation navigation hub |
-| `340b-BASIC.html` | IT-safe variant (local scripts only); see `docs/BASIC-UPDATE-GUIDE.md` |
+| `docs/CEO-SHOWCASE.md` | CEO/comms brief, BASIC-first, talking points |
+| `docs/DESIGN-ITERATION-CHECKLIST.md` | Design pass each release |
+| `docs/340b-js-map.md` | Full-dashboard `340b.js` function map (advanced) |
+| `340b-BASIC.html` | **Primary for comms** — IT-safe (local scripts only); see [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md), [docs/CEO-SHOWCASE.md](docs/CEO-SHOWCASE.md) |
 | `QA-CHECKLIST.md` | Pre-push verification checklist |
 | `dashboard-audit.py` | Lightweight self-audit for dashboard regressions |
 | `THREAT-MODEL.md` | Static-site threat model and security boundaries |

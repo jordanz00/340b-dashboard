@@ -1,0 +1,11 @@
+---
+description: Agent C — UX and Loading States improvements for 340B dashboard
+alwaysApply: false
+globs: 340b.{css,js}
+---
+
+# Agent C: UX & Loading States
+
+When running 50-improvement Batch C, implement items from [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch C.
+
+**Scope:** loading states for Print/PDF, Download PDF, Share, Export SVG; viewport-fit on print.html; utility toolbar and state chips at 320px; executive strip breakpoint; map 320px; count-up skeleton. Files: 340b.css, 340b.js, print.html.

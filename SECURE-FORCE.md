@@ -1,5 +1,19 @@
 # Secure Force — Multi-Agent Security Workflow
 
+## Maintaining security (quick links)
+
+| Document | Purpose |
+|----------|---------|
+| [SECURITY-FORCE.md](SECURITY-FORCE.md) | Supervisor + agent roles, workflow, CSP guidance |
+| [THREAT-MODEL.md](THREAT-MODEL.md) | Risks (XSS, hash, localStorage, supply chain) and mitigations |
+| [SECURITY.md](SECURITY.md) | Project hosting rules and **340b-BASIC** IT-safe constraints |
+
+**Automation:** Run `python3 dashboard-audit.py` after changes to HTML/CSS/JS, print pipeline, or `state-data.js`. For deeper review, run `semgrep scan --config auto`.
+
+**Rules of thumb:** No secrets in source. Static-only. BASIC = no external scripts. `textContent` / `createElement` for dynamic UI. Validate `#state-XX` against the state allowlist.
+
+---
+
 Use this document when running security checks, before deploy, or when the AI touches auth, user input, webhooks, or data connections. Secure Force gives structural and security context so the AI (and maintainers) can build and review with the right threat model.
 
 ---

@@ -1,0 +1,11 @@
+---
+description: Agent B — Performance and Security improvements for 340B dashboard
+alwaysApply: false
+globs: 340b.html, 340b.js
+---
+
+# Agent B: Performance & Security
+
+When running 50-improvement Batch B, implement items from [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch B.
+
+**Scope:** script defer, preload LCP, map CLS, SRI, local vendor, font-display, image dimensions, localStorage try/catch, print SVG sanitization, CSP. Files: 340b.html, 340b.css, 340b.js, print.html.

@@ -8,6 +8,10 @@ This is the **navigation hub** for the 340B Advocacy Dashboard. For day-to-day e
 
 | If you are… | Read this |
 |-------------|-----------|
+| **CEO, comms, or leadership briefing** | [CEO-SHOWCASE.md](CEO-SHOWCASE.md) — BASIC-first, talking points, IT deploy |
+| **CEO-ready copy polish (ChatGPT / Cursor)** | [CHATGPT-CEO-READINESS-BRIEF.md](CHATGPT-CEO-READINESS-BRIEF.md) — mission, copy system, timeline priority, performance bar, execution prompt |
+| **Design pass each release** | [DESIGN-ITERATION-CHECKLIST.md](DESIGN-ITERATION-CHECKLIST.md) |
+| **Debugging full dashboard JS (advanced)** | [340b-js-map.md](340b-js-map.md) |
 | **Brand new to the project** | [NOVICE-MAINTAINER.md](../NOVICE-MAINTAINER.md) — code map, what file to edit, “I want to…” tree |
 | **Changing dates or state law data** | [DATA-UPDATE.md](../DATA-UPDATE.md) |
 | **Editing the Basic (IT-safe) page only** | [BASIC-UPDATE-GUIDE.md](BASIC-UPDATE-GUIDE.md) |
@@ -29,7 +33,7 @@ This is the **navigation hub** for the 340B Advocacy Dashboard. For day-to-day e
 | [340b.js](../340b.js) | Map, filters, print/PDF/share |
 | [340b.css](../340b.css) | Layout and print styles |
 | [print.html](../print.html) + [print-view.css](../print-view.css) | Print view tab |
-| [340b-BASIC.html](../340b-BASIC.html) | Locked-down hosting (no CDN) |
+| [340b-BASIC.html](../340b-BASIC.html) | **Primary for comms** — locked-down hosting (no CDN) |
 
 ---
 

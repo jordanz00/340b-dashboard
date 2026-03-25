@@ -1,0 +1,23 @@
+---
+description: Secure Force SAST — run Semgrep and SECURE-FORCE checklist when scanning or before deploy
+alwaysApply: false
+globs: **/package.json, **/Dockerfile*, **/.env*, **/*.config.{js,ts}, 340b.js, print.html, **/state-data.js
+---
+
+# Secure Force — SAST and Deploy Gate
+
+When running a security scan, before deploy, or when editing these files (auth, config, env, main app):
+
+1. **Run SAST:** Execute Semgrep so automated checks run first.
+   ```bash
+   semgrep scan --config auto
+   ```
+   Fix or document any findings before shipping.
+
+2. **Load security context:** Read [SECURE-FORCE.md](SECURE-FORCE.md). Use the threat model and OWASP-oriented checklist. Manually review every user-input path and auth route; SAST does not catch semantic issues.
+
+3. **Review before deploy:** Do not ship on "it runs." Review AI-generated (or any) auth logic, input validation, and data connections. Ensure no hardcoded credentials and no internal errors exposed to the client.
+
+4. **Infra (if applicable):** If the project has Docker, Terraform, K8s, or cloud configs, run an infrastructure/config scanner and set resource limits.
+
+This rule ensures the AI (and you) have the right context when touching sensitive code and before release.

@@ -2,6 +2,22 @@
 
 When new state laws pass or data changes, edit **state-data.js**.
 
+---
+
+## Keep `state-data.js` and `340b.html` in sync
+
+The full dashboard loads **state-data.js** as a file, but **340b.html** also contains an **inline copy** of `CONFIG`, `FIPS_TO_ABBR`, `STATE_NAMES`, and `STATE_340B` in the first `<script>` block so the page works when opened as `file://`.
+
+**After editing [state-data.js](state-data.js):**
+
+1. Copy the same values into the inline `<script>` block at the top of **[340b.html](340b.html)** (or use the same file content for `CONFIG`, lookup tables, and `STATE_340B`).
+2. Update any **hard-coded counts** in `340b.html` that mirror state counts (e.g. key findings “21 / 29”, executive strip, `#protection-count`, `#no-protection-count`, print counts) so they match the new `cp: true` / `cp: false` totals.
+3. For **BASIC-only** updates, you still use **state-data.js** for the map; edit narrative numbers in **[340b-BASIC.html](340b-BASIC.html)** only when those lines are static.
+
+**Longer-term:** A build step could one day inject `state-data.js` into HTML—until then, treat **sync** as a manual step and document it in every data update.
+
+---
+
 ## Quick steps
 
 1. Open `state-data.js`

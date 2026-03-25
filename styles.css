@@ -24,6 +24,7 @@
 
 html {
   scroll-behavior: smooth;
+  scrollbar-gutter: stable;
 }
 
 *,
@@ -40,17 +41,22 @@ body {
   margin: 0;
   font-family: var(--font-body);
   background: linear-gradient(165deg, #e8f2fa 0%, #eef6fc 35%, #f0f7fd 70%, #e8f2fa 100%);
-  background-attachment: fixed;
+  background-attachment: scroll;
   color: var(--text);
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   position: relative;
+  isolation: isolate;
 }
 
 body::before {
   content: "";
-  position: fixed;
-  inset: 0;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  min-height: 100%;
   background: radial-gradient(ellipse 80% 50% at 50% -20%, rgba(142, 216, 248, 0.25), transparent),
               radial-gradient(ellipse 60% 40% at 100% 50%, rgba(0, 114, 188, 0.06), transparent),
               radial-gradient(ellipse 50% 30% at 0% 80%, rgba(251, 176, 64, 0.05), transparent);

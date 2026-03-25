@@ -1,3 +1,4 @@
 .venv-semgrep/
 .semgrep/
 semgrep-report.json
+backup/*.zip

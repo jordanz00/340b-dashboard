@@ -1,0 +1,14 @@
+---
+description: Rules and update system for 340B dashboard — print/PDF stability, improvement order, release gates
+alwaysApply: false
+globs: 340b*.{html,js,css}, print*.{html,css}, state-data.js, *prompts*.md
+---
+
+# Agent Rules System — 340B Dashboard
+
+When working on print, PDF, map visibility, or improvement prompts:
+
+1. **Meta rules:** [AGENT-RULES-SYSTEM.md](AGENT-RULES-SYSTEM.md) — stability rules, update workflow, release gate.
+2. **50 improvements:** [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) — batches A–E.
+3. **Print/PDF:** Preserve `hap340bPrint` flow; map must be visible in both print view and Download PDF (image).
+4. **Do not:** Add overflow:hidden to map-wrap; change scroll-reveal logic; put PDF CSS in 340b.css.

@@ -101,7 +101,10 @@ ULTRA prompts synthesize and improve upon all prior prompt waves (v01–v60). Ea
 3. **ULTRA v03** — rewritten for print view + map visibility + page breaks. Do not run until instructed.
 4. **ULTRA v04** — do not run until instructed.
 5. **ULTRA v05, v06, v07** — ready for improvement cycles. See [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md).
-6. Run waves in order. After each wave: update handoff, run audit, optionally commit.
+6. **ULTRA v08–v12** — 50 Improvements (Agent Batches A–E). For the agent workflow, use [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md).
+7. **Download PDF (image) reliability:** If "PDF capture failed" appears, treat as a regression. Ensure html2canvas and jsPDF load correctly (constructor: `window.jspdf.jsPDF` or `window.jspdf`), use PNG (not JPEG) for canvas export to avoid tainted canvas, and show the fallback message "Try Print / PDF instead" on failure. See ULTRA-04.7, ULTRA-11.9.
+8. **ULTRA v13–v22** — Novice Refactor (100 prompts). For daily refactoring and learning; see [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md). Run one prompt per day or one wave at a time; then run audit and print gate.
+9. Run waves in order. After each wave: update handoff, run audit, optionally commit.
 
 ---
 
@@ -332,3 +335,549 @@ ULTRA prompts synthesize and improve upon all prior prompt waves (v01–v60). Ea
 ### ULTRA-07.10 ULTRA v07 Handoff
 
 > After running v07, note run and add summary. Next waves (v08+) follow same pattern. See DAILY-IMPROVEMENT.md for continuous improvement.
+
+---
+
+## ULTRA v08 — 10 Prompts (50 Improvements Agent Batch A: SEO & Discoverability)
+
+*Aligns with [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch A. Do not run until instructed.*
+
+### ULTRA-08.1 Canonical URL
+
+> Add `<link rel="canonical" href="https://jordanz00.github.io/340b-dashboard/340b.html">` in 340b.html head.
+
+### ULTRA-08.2 og:image Dimensions
+
+> Use 1200×630 image for og:image or set `og:image:width` and `og:image:height` to match actual image dimensions.
+
+### ULTRA-08.3 JSON-LD Structured Data
+
+> Add `application/ld+json` script with WebPage or Organization schema in 340b.html.
+
+### ULTRA-08.4 og:locale
+
+> Add `<meta property="og:locale" content="en_US">` for social sharing.
+
+### ULTRA-08.5 print.html Robots
+
+> Add `robots: noindex, nofollow` meta to print.html (print-only page).
+
+### ULTRA-08.6 Breadcrumb Schema
+
+> Add structured data for breadcrumb navigation.
+
+### ULTRA-08.7 FAQ Schema
+
+> Add FAQ schema if methodology contains Q&A structure.
+
+### ULTRA-08.8 theme-color
+
+> Extend existing theme-color meta for mobile browsers.
+
+### ULTRA-08.9 apple-touch-icon
+
+> Add apple-touch-icon and favicon sizes (192×192, 512×512).
+
+### ULTRA-08.10 Meta Generator
+
+> Remove or hide meta generator in production.
+
+---
+
+## ULTRA v09 — 10 Prompts (50 Improvements Agent Batch B: Performance & Security)
+
+*Aligns with [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch B. Do not run until instructed. Run after v08.*
+
+### ULTRA-09.1 Script Defer
+
+> Add `defer` to D3/TopoJSON/states scripts or load after DOM ready.
+
+### ULTRA-09.2 Preload LCP Image
+
+> Add `<link rel="preload" href="haplogo_box_blue.jpeg" as="image">` for header logo.
+
+### ULTRA-09.3 Map CLS
+
+> Reserve space for map with `aspect-ratio` or `min-height` on `.map-wrap` to avoid CLS.
+
+### ULTRA-09.4 SRI for html2canvas and jsPDF
+
+> Add `integrity` and `crossorigin="anonymous"` for CDN scripts, or move to local vendor.
+
+### ULTRA-09.5 Local Vendor Copies
+
+> Prefer local copies in `assets/vendor/` per project rules.
+
+### ULTRA-09.6 font-display
+
+> Add `font-display: swap` for any custom fonts.
+
+### ULTRA-09.7 Image Dimensions
+
+> Add `width` and `height` to all images to avoid CLS.
+
+### ULTRA-09.8 localStorage Try/Catch
+
+> Wrap print flow `localStorage` in try/catch for quota or disabled storage.
+
+### ULTRA-09.9 print.html SVG Sanitization
+
+> Sanitize or use DOMParser for map SVG injection in print.html.
+
+### ULTRA-09.10 CSP Restriction
+
+> Restrict `script-src` if switching to local scripts.
+
+---
+
+## ULTRA v10 — 10 Prompts (50 Improvements Agent Batch C: UX & Loading States)
+
+*Aligns with [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch C. Do not run until instructed. Run after v09.*
+
+### ULTRA-10.1 Print/PDF Loading
+
+> Show "Preparing…" until print view opens.
+
+### ULTRA-10.2 Download PDF Loading
+
+> Verify "Creating PDF…" feedback and button disabled during capture.
+
+### ULTRA-10.3 Share Loading
+
+> Verify "Copying…"/"Sharing…" feedback is clear.
+
+### ULTRA-10.4 Export SVG Loading
+
+> Add brief feedback during serialization and download.
+
+### ULTRA-10.5 print.html viewport-fit
+
+> Add `viewport-fit=cover` to print.html for notched devices.
+
+### ULTRA-10.6 Utility Toolbar 320px
+
+> Verify utility toolbar wraps at ~320px without overflow.
+
+### ULTRA-10.7 State Chips 320px
+
+> Validate state chips in `.state-list-grid` at 320px; no overflow.
+
+### ULTRA-10.8 Executive Strip Breakpoint
+
+> Add intermediate breakpoint for executive strip at 900px if needed.
+
+### ULTRA-10.9 Map 320px
+
+> Validate map container readability at 320px.
+
+### ULTRA-10.10 Count-up Skeleton
+
+> Optional skeleton or placeholder for count-up values to avoid visual jump.
+
+---
+
+## ULTRA v11 — 10 Prompts (50 Improvements Agent Batch D: Accessibility & Robustness)
+
+*Aligns with [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch D. Do not run until instructed. Run after v10.*
+
+### ULTRA-11.1 window.onerror
+
+> Add global `window.onerror` handler with minimal "Something went wrong" message.
+
+### ULTRA-11.2 onunhandledrejection
+
+> Add `window.onunhandledrejection` for async failures (share, clipboard).
+
+### ULTRA-11.3 Share .catch()
+
+> Ensure Share/clipboard `.catch()` always runs with clear fallback instructions.
+
+### ULTRA-11.4 aria-busy
+
+> Add `aria-busy` on map container during load.
+
+### ULTRA-11.5 Skip-link Focus
+
+> Verify skip-link focus visibility and keyboard flow.
+
+### ULTRA-11.6 Link Focus Underline
+
+> Add link underline on focus for keyboard navigation.
+
+### ULTRA-11.7 Touch Tooltips
+
+> Disable hover tooltips on touch devices; rely on detail panel.
+
+### ULTRA-11.8 navigator.share Fallback
+
+> Ensure robust clipboard fallback when navigator.share fails.
+
+### ULTRA-11.9 PDF Timeout
+
+> Add idle/long-running op timeout for PDF capture.
+
+### ULTRA-11.10 Observer Teardown
+
+> Dispose observers and listeners on teardown to avoid memory leaks.
+
+---
+
+## ULTRA v12 — 10 Prompts (50 Improvements Agent Batch E: Analytics & Data)
+
+*Aligns with [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch E. Do not run until instructed. Run after v11.*
+
+### ULTRA-12.1 data-event Attributes
+
+> Add `data-event` attributes on utility buttons (share, print, export).
+
+### ULTRA-12.2 HAP340B.track Stub
+
+> Add `window.HAP340B?.track(eventName, payload)` analytics stub.
+
+### ULTRA-12.3 Fire Events
+
+> Fire events for state selection, filter change, share, print, export SVG.
+
+### ULTRA-12.4 Event Catalog
+
+> Create central event catalog: `state_selected`, `filter_changed`, `share_success`, etc.
+
+### ULTRA-12.5 Payload Schema
+
+> Document analytics event payload schema.
+
+### ULTRA-12.6 i18n Data Layer
+
+> Add `strings` object in state-data.js for labels and copy.
+
+### ULTRA-12.7 data-i18n
+
+> Use config for copy to enable future translation.
+
+### ULTRA-12.8 State Validation
+
+> Add validation that warns on missing state keys: `cp`, `pbm`, `y`, `notes`.
+
+### ULTRA-12.9 NOVICE-MAINTAINER Network vs Offline
+
+> Document which features require network vs work offline in NOVICE-MAINTAINER.md.
+
+### ULTRA-12.10 Analytics Guard
+
+> Use `if (window.HAP340B?.analytics)` before firing events.
+
+---
+
+## ULTRA v13 — 10 Prompts (Novice Refactor: Labels and Comments — 340b.js)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md). Run one prompt per day or one wave at a time; then run audit and print gate.*
+
+### ULTRA-13.1 Function comment — preparePrintSnapshot
+
+> So that a novice knows when this runs. Add a one-line comment above `preparePrintSnapshot` that says: "Runs when the user clicks Print/PDF; prepares the page (final numbers, revealed sections, PA default) then opens the print dialog."
+
+### ULTRA-13.2 Function comment — openPrintView
+
+> So that a novice knows what this does. Add a one-line comment above `openPrintView` that says: "Opens the print view tab and injects the map and snapshot data from localStorage so the user can save as PDF from the browser."
+
+### ULTRA-13.3 Function comment — downloadPdfAsImage
+
+> So that a novice can find the PDF image flow. Add a one-line comment above `downloadPdfAsImage` that says: "Runs when the user clicks Download PDF (image); captures the main content with html2canvas and builds a multi-page PDF with breaks after map and before community benefit."
+
+### ULTRA-13.4 Function comment — cacheDom
+
+> So that a novice understands the DOM cache. Add a one-line comment above `cacheDom` that says: "Stores references to all elements the script needs (buttons, map container, status text) so we don't search the DOM repeatedly."
+
+### ULTRA-13.5 Function comment — finalizeCountUpValues
+
+> So that a novice knows why numbers change before print. Add a one-line comment above `finalizeCountUpValues` that says: "Sets every count-up number to its final value (e.g. 7, 72) so print/PDF does not show 0 or half-animated values."
+
+### ULTRA-13.6 Function comment — revealAllAnimatedSections
+
+> So that a novice knows what "revealed" means. Add a one-line comment above `revealAllAnimatedSections` that says: "Makes all scroll-reveal sections visible immediately so print and PDF capture see the full page, not hidden blocks."
+
+### ULTRA-13.7 Function comment — showMapWrapImmediately
+
+> So that a novice knows why the map is shown. Add a one-line comment above `showMapWrapImmediately` that says: "Makes the map container visible without waiting for scroll; used before print and PDF capture so the map is in the output."
+
+### ULTRA-13.8 Function comment — buildPrintIntroSnapshot
+
+> So that a novice can find print intro logic. Add a one-line comment above `buildPrintIntroSnapshot` that says: "Clones the intro cards into the print-only snapshot block so the first print page shows the same content as the live dashboard."
+
+### ULTRA-13.9 Function comment — runTaskSafely
+
+> So that a novice knows errors are caught. Add a one-line comment above `runTaskSafely` that says: "Runs a function and catches any error so one failing part (e.g. map) does not break the rest of the app."
+
+### ULTRA-13.10 Function comment — setUtilityStatus
+
+> So that a novice knows where status messages go. Add a one-line comment above `setUtilityStatus` that says: "Updates the small status text near the toolbar (e.g. 'PDF saved.' or 'Copying link...') so the user gets feedback after an action."
+
+---
+
+## ULTRA v14 — 10 Prompts (Novice Refactor: Labels and Comments — 340b.css)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-14.1 Section label — base and reset
+
+> So that a novice can find global styles. Add a short comment block before the first block of base/reset rules in 340b.css (e.g. "Base — box-sizing, body background, default font"). Keep the existing code map at the top.
+
+### ULTRA-14.2 Section label — header and nav
+
+> So that a novice can find the header. Add a short comment before the styles that affect the dashboard header and nav (e.g. ".dashboard-header, .header-left, .dashboard-nav") with a 2–3 word label like "Header and nav."
+
+### ULTRA-14.3 Section label — utility toolbar
+
+> So that a novice can find toolbar styles. Add a short comment before the rules for the utility toolbar (Print, PDF image, Share, Export SVG) with a label like "Utility toolbar."
+
+### ULTRA-14.4 Section label — cards and intro
+
+> So that a novice can find card styles. Add a short comment before the block that styles the intro cards and general card layout (e.g. ".card", ".intro-section") with a label like "Cards and intro section."
+
+### ULTRA-14.5 Section label — executive strip
+
+> So that a novice can find the executive strip. Add a short comment before the styles for the executive proof strip (the three horizontal cards) with a label like "Executive strip."
+
+### ULTRA-14.6 Section label — map and state list
+
+> So that a novice can find map styles. Add a short comment before the block that styles the map container, legend, and state list (e.g. ".map-hero-section", ".state-list-grid") with a label like "Map and state list."
+
+### ULTRA-14.7 Section label — KPI strip
+
+> So that a novice can find the KPI numbers. Add a short comment before the styles for the KPI strip (the row of key numbers) with a label like "KPI strip."
+
+### ULTRA-14.8 Section label — methodology and details
+
+> So that a novice can find the "About this data" section. Add a short comment before the styles for the methodology/details block with a label like "Methodology and details."
+
+### ULTRA-14.9 Section label — print media
+
+> So that a novice can find print rules. Add a short comment at the start of the `@media print` block that says "Print — scaling, page breaks, and print-only visibility." Do not remove the existing code map line about print.
+
+### ULTRA-14.10 Section label — footer and overrides
+
+> So that a novice can find the footer and any overrides. Add a short comment before the footer and any utility/override rules at the end of the file with a label like "Footer and overrides."
+
+---
+
+## ULTRA v15 — 10 Prompts (Novice Refactor: Labels and Comments — state-data.js and Data Layer)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-15.1 Comment — CONFIG
+
+> So that a novice knows what CONFIG is for. Add a one-line comment above the `CONFIG` object in state-data.js that says: "CONFIG: titles, dates, share URL, and copy used by 340b.js and 340b.html. Edit here when you change the dashboard name or last-updated date."
+
+### ULTRA-15.2 Comment — FIPS_TO_ABBR
+
+> So that a novice knows what FIPS is. Add a one-line comment above `FIPS_TO_ABBR` that says: "Maps numeric FIPS codes (from the map data) to two-letter state codes (e.g. 42 → PA). Used when drawing the map and looking up state data."
+
+### ULTRA-15.3 Comment — STATE_NAMES
+
+> So that a novice knows where full names come from. Add a one-line comment above `STATE_NAMES` that says: "Full state names (e.g. Pennsylvania) for labels and tooltips. Keyed by two-letter code."
+
+### ULTRA-15.4 Comment — STATE_340B
+
+> So that a novice knows where state law data lives. Add a one-line comment above `STATE_340B` that says: "State-by-state 340B data: year enacted (y), PBM (pbm), contract pharmacy (cp), and notes. Update when new state laws pass; used by the map and state lists."
+
+### ULTRA-15.5 Comment — STATES_WITH_PROTECTION
+
+> So that a novice knows this is derived. Add a one-line comment above `STATES_WITH_PROTECTION` that says: "List of state codes that have contract pharmacy protection (cp === true). Computed from STATE_340B; used for filters and counts."
+
+### ULTRA-15.6 Comment — copy object inside CONFIG
+
+> So that a novice knows where to edit copy. Add a one-line comment above the `copy` object inside CONFIG that says: "copy: all user-facing text (overview, HAP position, methodology, executive strip). Change these when you want to update the message without touching HTML."
+
+### ULTRA-15.7 Comment — mapAspectRatio and mapMaxWidth
+
+> So that a novice can adjust map size. Add a one-line comment above mapAspectRatio and mapMaxWidth in CONFIG that says: "Map size: aspect ratio and max width in pixels. Used when the map is drawn so it fits the container."
+
+### ULTRA-15.8 Comment — countUpDuration and dominoDelayPerState
+
+> So that a novice can adjust animation speed. Add a one-line comment above the animation settings in CONFIG that says: "Animation: count-up duration (ms) and delay between state chips. Used by 340b.js for the number animation and optional chip stagger."
+
+### ULTRA-15.9 Comment — printDefaultState
+
+> So that a novice knows why PA is default for print. Add a one-line comment above printDefaultState and printDefaultStateReason that says: "When the user has not selected a state, print/PDF shows this state (e.g. PA) as the focal example."
+
+### ULTRA-15.10 Comment — shareUrlBase
+
+> So that a novice knows where the share link comes from. Add a one-line comment above shareUrlBase that says: "Base URL for the share link. Must match where the dashboard is hosted so copied links work."
+
+---
+
+## ULTRA v16 — 10 Prompts (Novice Refactor: Labels and Comments — 340b.html)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-16.1 HTML comment — utility toolbar
+
+> So that a novice can scan the HTML and find the toolbar. Add an HTML comment before the section that contains the utility toolbar (Print/PDF, Download PDF image, Share, Export SVG), e.g. "<!-- Utility toolbar: Print, PDF image, Share, Export SVG -->".
+
+### ULTRA-16.2 HTML comment — main content start
+
+> So that a novice can find the main content. Add an HTML comment before the `<main>` element that says "<!-- Main content: intro cards, map, state lists, methodology, KPI, supporting cards -->".
+
+### ULTRA-16.3 HTML comment — intro section
+
+> So that a novice can find the intro cards. Add an HTML comment before the intro section (What is 340B, HAP Position) that says "<!-- Intro: What is 340B and HAP Position cards -->".
+
+### ULTRA-16.4 HTML comment — executive strip
+
+> So that a novice can find the executive strip. Add an HTML comment before the executive proof strip (three horizontal cards) that says "<!-- Executive strip: policy priority, landscape, trust -->".
+
+### ULTRA-16.5 HTML comment — map hero section
+
+> So that a novice can find the map. Add an HTML comment before the section with id="state-laws" that says "<!-- Map hero: state map, selection summary, state lists, filter toggles -->".
+
+### ULTRA-16.6 HTML comment — methodology
+
+> So that a novice can find "About this data". Add an HTML comment before the details/methodology block that says "<!-- Methodology: About this data, source links, verification order -->".
+
+### ULTRA-16.7 HTML comment — KPI strip
+
+> So that a novice can find the key numbers. Add an HTML comment before the KPI strip that says "<!-- KPI strip: market share, community benefit, oversight, PA hospitals -->".
+
+### ULTRA-16.8 HTML comment — supporting section
+
+> So that a novice can find the supporting cards. Add an HTML comment before the supporting section (Why this matters, three cards) that says "<!-- Supporting section: eligibility, oversight, PA impact -->".
+
+### ULTRA-16.9 HTML comment — community benefit and policy
+
+> So that a novice can find community benefit and policy cards. Add an HTML comment before the community benefit card and the policy cards (Access, PA safeguards) that says "<!-- Community benefit and policy cards -->".
+
+### ULTRA-16.10 HTML comment — footer
+
+> So that a novice can find the footer. Add an HTML comment before the footer that says "<!-- Footer: back link, contact, org name -->".
+
+---
+
+## ULTRA v17 — 10 Prompts (Novice Refactor: Simplify — 340b.js Patterns)
+
+*For daily refactoring and learning. Do not change behavior; only split or rename for clarity. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-17.1 Split one long function — part 1
+
+> So that a novice can follow one idea per function. Find one function in 340b.js that is long (e.g. over 30 lines) or does two distinct things. Split it into two smaller functions with clear names and add a one-line comment above each. Do not change what the page does.
+
+### ULTRA-17.2 Split one long function — part 2
+
+> So that the codebase has more small, named steps. Pick another function in 340b.js that does two things (e.g. "fetch data and then update DOM"). Extract the second part into a separate function and call it from the first. Add a one-line comment for each. Do not change behavior.
+
+### ULTRA-17.3 Name a helper clearly
+
+> So that a novice knows what a helper does from its name. Find one function or variable in 340b.js with a vague name (e.g. "handleClick" or "data"). Rename it to describe what it does or holds (e.g. "updateSelectionSummary" or "selectedStateData"). Add a one-line comment if the name alone is not enough.
+
+### ULTRA-17.4 Add a one-line "why" comment
+
+> So that non-obvious logic is explained. Find one place in 340b.js where the code does something that is not obvious (e.g. a delay, a fallback, or a special case). Add a single-line comment above it that says why (e.g. "Wait for map to paint before capture so PDF includes the full map.").
+
+### ULTRA-17.5 Reduce nesting in one block
+
+> So that a novice can read the code without deep indentation. Find one block in 340b.js with nested if/callback (3 or more levels). Restructure it so there is at most one level of nesting (e.g. early return or extracted helper). Do not change behavior.
+
+### ULTRA-17.6 Group related logic with a comment
+
+> So that a novice can see where one "story" starts and ends. Find a stretch of 5–10 lines in 340b.js that do one logical thing (e.g. "prepare print payload"). Add a comment block above it like "/* Prepare print payload: ... */" so the block is labeled.
+
+### ULTRA-17.7 Document a magic number
+
+> So that a novice knows why a number is there. Find one magic number in 340b.js (e.g. 800, 25, 2). Add a one-line comment that says what it is (e.g. "Delay in ms before PDF capture so map can render") or replace it with a named constant and comment the constant.
+
+### ULTRA-17.8 One concern per small function
+
+> So that each function does one thing. Pick one function in 340b.js that both builds data and updates the DOM. Split into two functions: one that returns the data, one that takes the data and updates the DOM. Call the first from the second. Add one-line comments. Do not change behavior.
+
+### ULTRA-17.9 Clarify an event handler
+
+> So that a novice knows what triggers the code. Find one event listener in 340b.js (click, load, etc.). Add a one-line comment above it that says when it runs (e.g. "When the user clicks Clear selection, clear the selected state and update the summary.").
+
+### ULTRA-17.10 Consistent naming in one area
+
+> So that a novice is not confused by mixed styles. Pick one area in 340b.js (e.g. PDF capture or state selection). If some variables use different naming (e.g. "pdf" vs "pdfDoc"), make them consistent and add a one-line comment for the main variable in that area.
+
+---
+
+## ULTRA v18 — 10 Prompts (Novice Refactor: Simplify — CSS and Design Tokens)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-18.1 Replace one raw color with a token
+
+> So that colors stay consistent and easy to change. In 340b.css, find one place that uses a raw hex color (e.g. #ddd or #333) that is not already in :root. Replace it with an existing :root variable or add a new one and use it. Add a short comment (e.g. "Muted border for cards").
+
+### ULTRA-18.2 Replace one magic number with a variable
+
+> So that spacing is consistent. In 340b.css, find one place that uses a raw number for margin, padding, or gap (e.g. 1.5rem or 24px) that could use an existing --space-* or similar variable. Replace it and add a one-line comment if needed.
+
+### ULTRA-18.3 Label a complex selector
+
+> So that a novice knows what a selector is for. Find one selector in 340b.css that is long or targets a specific component. Add a short comment above it that says what it styles (e.g. "State list grid: chips wrap, gap between items").
+
+### ULTRA-18.4 Group related selectors with a comment
+
+> So that a novice can scan the file. Find a block of 3–5 rules that all affect the same part of the page (e.g. map container). Add a comment above the block like "/* Map container: size and legend */".
+
+### ULTRA-18.5 Document a breakpoint
+
+> So that a novice knows why a media query exists. Find one @media block in 340b.css. Add a one-line comment that says what breakpoint it is and what it changes (e.g. "At 768px and up: two-column layout for cards").
+
+### ULTRA-18.6 Replace a second raw color
+
+> So that the stylesheet uses tokens. Find another raw color in 340b.css (not the one you fixed in 18.1) and replace it with a :root variable. Add a short comment.
+
+### ULTRA-18.7 Name a print-specific override
+
+> So that a novice knows why a rule is in @media print. Find one rule inside @media print that overrides a screen style. Add a one-line comment that says what it overrides and why (e.g. "Hide toolbar in print so only content appears").
+
+### ULTRA-18.8 Consolidate duplicate values
+
+> So that one value is defined once. Find two rules in 340b.css that use the same value (e.g. the same border-radius or font-size). If they mean the same thing, replace both with one :root variable and use it in both places. Add a short comment.
+
+### ULTRA-18.9 Comment a non-obvious !important
+
+> So that a novice knows why !important is there. Find one use of !important in 340b.css. Add a one-line comment that explains why it is needed (e.g. "Override inline style from JS during PDF capture").
+
+### ULTRA-18.10 Section summary at top of @media print
+
+> So that a novice knows what the print block does. At the top of the @media print block, add or update a 2–3 line comment that lists: (1) global scaling (e.g. font-size 75%), (2) map max height, (3) what is hidden or shown only in print.
+
+---
+
+## ULTRA v19 — 10 Prompts (Novice Refactor: Documentation and Glossary)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-19.1–19.10 Glossary and documentation
+
+> Add or extend a Glossary in REFACTORING-CODEBASE-MANUAL.md (or NOVICE-MAINTAINER.md) with one-sentence definitions for: CONFIG, state-data.js, print snapshot, count-up, map wrap, methodology, DOM, FIPS, hap340bPrint, scroll-reveal. See REFACTORING-CODEBASE-MANUAL.md Glossary section; ensure each term is defined for a novice.
+
+---
+
+## ULTRA v20 — 10 Prompts (Novice Refactor: Export and Reuse)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md) section 8 and Reuse checklist.*
+
+### ULTRA-20.1–20.10 Reuse checklist
+
+> In REFACTORING-CODEBASE-MANUAL.md (or REUSE.md), add and maintain: files to copy, what to rename, what to keep as-is, data shape, script order, print view dependency, minimal template, common pitfalls, link from NOVICE-MAINTAINER. See the Reuse checklist in the manual; run one item per day if refining the checklist.
+
+---
+
+## ULTRA v21 — 10 Prompts (Novice Refactor: Learning Aids and Inline Explanations)
+
+*For daily refactoring and learning. See [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-21.1–21.10 Learning aids
+
+> In 340b.js add top-of-file or inline comments that explain: count-up, preparePrintSnapshot, where the map is drawn, why we poll for the map, why we finalize count-up before capture, PDF page breaks, scale 2 for html2canvas, what runTaskSafely catches, hash sync, filter buttons. One prompt per topic; see v21 in full in the plan for individual task text.
+
+---
+
+## ULTRA v22 — 10 Prompts (Novice Refactor: Daily Refactor Workflow and Safety)
+
+*For daily refactoring and learning. See [DAILY-IMPROVEMENT.md](DAILY-IMPROVEMENT.md) and [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md).*
+
+### ULTRA-22.1–22.10 Daily refactor workflow
+
+> Ensure DAILY-IMPROVEMENT.md has: Novice refactor (daily learning) subsection, link to REFACTORING-CODEBASE-MANUAL, step 1 option for v13–v22, safety (test after each prompt, audit after each wave, one prompt per day), handoff (last refactor date, wave completion checklist), and that ULTRA Usage and the manual cross-link. Run one prompt per day from v13–v22; after each wave run audit and print gate.

@@ -1,0 +1,11 @@
+---
+description: Agent A — SEO and Discoverability improvements for 340B dashboard
+alwaysApply: false
+globs: 340b.html, print.html
+---
+
+# Agent A: SEO & Discoverability
+
+When running 50-improvement Batch A, implement items from [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) Batch A.
+
+**Scope:** canonical URL, og:image, JSON-LD, og:locale, print robots, breadcrumb/FAQ schema, theme-color, apple-touch-icon, meta generator. Files: 340b.html, print.html.
