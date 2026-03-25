@@ -7,8 +7,9 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self';">
   <title>340B Drug Pricing Program | HAP Advocacy Dashboard (Basic)</title>
   <meta name="description" content="HAP 340B Advocacy Dashboard — safe for employer hosting. Interactive map, full content, local scripts only.">
-  <link rel="stylesheet" href="340b.css?v=timeline-ow-2">
-  <!-- Only these 4 scripts load; all from same site. Map needs them. -->
+  <link rel="stylesheet" href="340b.css?v=dmx-2">
+  <!-- Local scripts only; performance hint loads first (no global listener monkey-patch). -->
+  <script src="utils/performance-patch.js"></script>
   <script src="state-data.js"></script>
   <script src="assets/vendor/d3.min.js"></script>
   <script src="assets/vendor/topojson-client.min.js"></script>
@@ -324,7 +325,7 @@
         </div>
         <div class="benefit-grid benefit-grid--community">
           <div class="benefit-item">
-            <div class="benefit-item-icon benefit-item-icon--photo benefit-item-icon--pharma" aria-hidden="true"><img src="assets/icons/rx.jpg" alt="" width="96" height="96" loading="lazy" decoding="async"></div>
+            <div class="benefit-item-icon benefit-item-icon--dollar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/><text x="16" y="21" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif">$</text></svg></div>
             <p class="benefit-item-text"><strong class="ban-inline ban-inline--finance">23%</strong> average savings on pharma purchases</p>
           </div>
           <div class="benefit-item">
@@ -332,7 +333,7 @@
             <p class="benefit-item-text">Free or reduced-price prescriptions</p>
           </div>
           <div class="benefit-item">
-            <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 14h18a2 2 0 0 1 2 2v6H3v-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M23 16h5l3 6h-8v-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="24" r="2.75" fill="currentColor"/><circle cx="21" cy="24" r="2.75" fill="currentColor"/><path d="M11 10V8a5 5 0 0 1 10 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 14h8v-2a4 4 0 0 0-8 0v2z" stroke="currentColor" stroke-width="1.75"/></svg></div>
+            <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 14h22a2 2 0 0 1 2 2v8H5v-10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 14 7 9h18l2 5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="8" y="11" width="5" height="4" rx="0.5" stroke="currentColor" stroke-width="1.5"/><rect x="19" y="11" width="5" height="4" rx="0.5" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="25" r="2.75" fill="currentColor"/><circle cx="21" cy="25" r="2.75" fill="currentColor"/><path d="M9 18h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
             <p class="benefit-item-text">Mobile mammography &amp; cancer screening</p>
           </div>
           <div class="benefit-item">
@@ -448,12 +449,12 @@
       <img src="haplogo_box_blue.jpeg" alt="" class="footer-logo" width="64" height="64">
       <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
     </p>
-    <p class="footer-design">Design Mark IX — Basic (local scripts only)</p>
+    <p class="footer-design">Design Mark X — Continuous Optimization System · BASIC (local scripts only)</p>
     <p><a href="340b.html">Full dashboard</a> — print, PDF, filters, simulators</p>
   </footer>
 </div>
 <!-- Map script (local). hap-nav-shared scroll-active nav; no 340b.js. -->
-<script src="hap-nav-shared.js?v=timeline-ow-1"></script>
+<script src="hap-nav-shared.js?v=dmx-3"></script>
 <script src="340b-basic-map.js"></script>
 </body>
 </html>

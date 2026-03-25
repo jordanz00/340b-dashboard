@@ -27,7 +27,7 @@
   <meta name="twitter:title" id="meta-twitter-title" content="340B Drug Pricing Program | HAP Advocacy Dashboard">
   <meta name="twitter:description" id="meta-twitter-description" content="72 PA hospitals • $7.95B community benefits • No cost to taxpayers. State-by-state contract pharmacy protection map.">
   <meta name="twitter:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
-  <link rel="stylesheet" href="340b.css?v=timeline-ow-2">
+  <link rel="stylesheet" href="340b.css?v=dmx-3">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -607,7 +607,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </div>
       <div class="benefit-grid benefit-grid--community">
         <div class="benefit-item">
-          <div class="benefit-item-icon benefit-item-icon--photo benefit-item-icon--pharma" aria-hidden="true"><img src="assets/icons/rx.jpg" alt="" width="96" height="96" loading="lazy" decoding="async"></div>
+          <div class="benefit-item-icon benefit-item-icon--dollar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/><text x="16" y="21" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif">$</text></svg></div>
           <p class="benefit-item-text"><strong class="ban-inline ban-inline--finance">23%</strong> average savings on pharma purchases</p>
         </div>
         <div class="benefit-item">
@@ -615,7 +615,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <p class="benefit-item-text">Free or reduced-price prescriptions</p>
         </div>
         <div class="benefit-item">
-          <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3 14h18a2 2 0 0 1 2 2v6H3v-8z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M23 16h5l3 6h-8v-6z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><circle cx="9" cy="24" r="2.75" fill="currentColor"/><circle cx="21" cy="24" r="2.75" fill="currentColor"/><path d="M11 10V8a5 5 0 0 1 10 0v2" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><path d="M12 14h8v-2a4 4 0 0 0-8 0v2z" stroke="currentColor" stroke-width="1.75"/></svg></div>
+          <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 14h22a2 2 0 0 1 2 2v8H5v-10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 14 7 9h18l2 5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="8" y="11" width="5" height="4" rx="0.5" stroke="currentColor" stroke-width="1.5"/><rect x="19" y="11" width="5" height="4" rx="0.5" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="25" r="2.75" fill="currentColor"/><circle cx="21" cy="25" r="2.75" fill="currentColor"/><path d="M9 18h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
           <p class="benefit-item-text">Mobile mammography &amp; cancer screening</p>
         </div>
         <div class="benefit-item">
@@ -644,64 +644,87 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       <article class="card policy-timeline-card">
         <p class="card-title">Policy context</p>
         <h2 class="policy-timeline-heading">Federal program to state protections</h2>
-        <p class="policy-timeline-kicker">High-level anchors for briefings—not a substitute for legal counsel or a full regulatory history.</p>
-        <div class="policy-timeline">
+        <p class="policy-timeline-kicker">Briefing anchors only—not legal advice or a full regulatory history.</p>
+        <div class="policy-timeline policy-timeline--v2" data-ptl-interactive="true">
+          <div class="policy-timeline-progress-bar" aria-hidden="true">
+            <div class="policy-timeline-progress-fill"></div>
+          </div>
           <div class="policy-timeline-svg-wrap">
-            <svg viewBox="0 0 1000 90" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
+            <svg class="policy-timeline-svg" viewBox="0 0 1000 88" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
               <defs>
                 <linearGradient id="ptl-line-gradient-340b" x1="0%" y1="0%" x2="100%" y2="0%">
                   <stop offset="0%" stop-color="#0b67c2"/>
-                  <stop offset="32%" stop-color="#2e7d32"/>
-                  <stop offset="66%" stop-color="#6a1b9a"/>
+                  <stop offset="35%" stop-color="#455a64"/>
+                  <stop offset="70%" stop-color="#6a1b9a"/>
                   <stop offset="100%" stop-color="#1565c0"/>
                 </linearGradient>
               </defs>
-              <path class="policy-timeline-line-base" d="M 70 44 L 290 44 L 510 44 L 730 44 L 930 44" />
-              <path class="policy-timeline-line-anim" d="M 70 44 L 290 44 L 510 44 L 730 44 L 930 44" />
+              <path class="policy-timeline-line-base" d="M 90 44 L 330 44 L 570 44 L 810 44" />
+              <path class="policy-timeline-line-anim" d="M 90 44 L 330 44 L 570 44 L 810 44" />
               <g class="policy-timeline-node-g policy-timeline-node-g--1">
-                <circle class="policy-timeline-node-outer" cx="70" cy="44" r="14" fill="#fff" stroke="#0b67c2" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="70" cy="44" r="6" fill="#0b67c2" />
+                <circle class="policy-timeline-node-outer" cx="90" cy="44" r="14" fill="#fff" stroke="#0b67c2" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="90" cy="44" r="6" fill="#0b67c2" />
               </g>
               <g class="policy-timeline-node-g policy-timeline-node-g--2">
-                <circle class="policy-timeline-node-outer" cx="290" cy="44" r="14" fill="#fff" stroke="#455a64" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="290" cy="44" r="6" fill="#455a64" />
+                <circle class="policy-timeline-node-outer" cx="330" cy="44" r="14" fill="#fff" stroke="#455a64" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="330" cy="44" r="6" fill="#455a64" />
               </g>
               <g class="policy-timeline-node-g policy-timeline-node-g--3">
-                <circle class="policy-timeline-node-outer" cx="510" cy="44" r="14" fill="#fff" stroke="#2e7d32" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="510" cy="44" r="6" fill="#2e7d32" />
+                <circle class="policy-timeline-node-outer" cx="570" cy="44" r="14" fill="#fff" stroke="#6a1b9a" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="570" cy="44" r="6" fill="#6a1b9a" />
               </g>
               <g class="policy-timeline-node-g policy-timeline-node-g--4">
-                <circle class="policy-timeline-node-outer" cx="730" cy="44" r="14" fill="#fff" stroke="#6a1b9a" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="730" cy="44" r="6" fill="#6a1b9a" />
-              </g>
-              <g class="policy-timeline-node-g policy-timeline-node-g--5">
-                <circle class="policy-timeline-node-outer" cx="930" cy="44" r="14" fill="#fff" stroke="#1565c0" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="930" cy="44" r="6" fill="#1565c0" />
+                <circle class="policy-timeline-node-outer" cx="810" cy="44" r="14" fill="#fff" stroke="#1565c0" stroke-width="3" />
+                <circle class="policy-timeline-node-inner" cx="810" cy="44" r="6" fill="#1565c0" />
               </g>
             </svg>
           </div>
-          <ol class="policy-timeline-steps">
-            <li class="policy-timeline-step">
-              <span class="policy-timeline-year">1992</span>
-              <p class="policy-timeline-copy">340B enacted—discounts so safety-net hospitals stretch federal resources further.</p>
-            </li>
-            <li class="policy-timeline-step">
-              <span class="policy-timeline-year">2010s–20s</span>
-              <p class="policy-timeline-copy">Contract pharmacy models scale; manufacturer restrictions on off-site pharmacies become a central dispute.</p>
-            </li>
-            <li class="policy-timeline-step">
-              <span class="policy-timeline-year">Pennsylvania</span>
-              <p class="policy-timeline-copy">72 hospitals participate statewide; 340B savings are reinvested from rural clinics to urban safety-net sites.</p>
-            </li>
-            <li class="policy-timeline-step">
-              <span class="policy-timeline-year">2018–20s</span>
-              <p class="policy-timeline-copy">Manufacturers narrow contract pharmacy policies; federal and state responses intensify as a flashpoint for access.</p>
-            </li>
-            <li class="policy-timeline-step">
-              <span class="policy-timeline-year">2021+</span>
-              <p class="policy-timeline-copy">States—including Pennsylvania in ongoing policy debate—move to codify contract pharmacy protections where federal rules leave gaps.</p>
-            </li>
-          </ol>
+          <div class="policy-timeline-track" role="list">
+            <article class="timeline-item" id="timeline-item-1" role="listitem" data-timeline-index="1">
+              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-1" id="timeline-btn-1">
+                <span class="timeline-item__date">1992</span>
+                <span class="timeline-item__title">340B established</span>
+                <span class="timeline-item__chev" aria-hidden="true"></span>
+              </button>
+              <p class="timeline-item__lede">Expands safety-net hospital capacity.</p>
+              <div class="timeline-item__panel" id="timeline-panel-1" hidden>
+                <p class="timeline-item__detail">Statute defines covered entities and the ceiling price formula manufacturers must honor.</p>
+              </div>
+            </article>
+            <article class="timeline-item" id="timeline-item-2" role="listitem" data-timeline-index="2">
+              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-2" id="timeline-btn-2">
+                <span class="timeline-item__date">2010s–20s</span>
+                <span class="timeline-item__title">Contract pharmacy grows</span>
+                <span class="timeline-item__chev" aria-hidden="true"></span>
+              </button>
+              <p class="timeline-item__lede">Off-site networks expand; disputes rise.</p>
+              <div class="timeline-item__panel" id="timeline-panel-2" hidden>
+                <p class="timeline-item__detail">Court and agency positions shift on how many contract pharmacies a covered entity may use.</p>
+              </div>
+            </article>
+            <article class="timeline-item" id="timeline-item-3" role="listitem" data-timeline-index="3">
+              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-3" id="timeline-btn-3">
+                <span class="timeline-item__date">2018–20s</span>
+                <span class="timeline-item__title">Access flashpoint</span>
+                <span class="timeline-item__chev" aria-hidden="true"></span>
+              </button>
+              <p class="timeline-item__lede">Manufacturer limits restrict access.</p>
+              <div class="timeline-item__panel" id="timeline-panel-3" hidden>
+                <p class="timeline-item__detail">Federal enforcement and state legislatures face pressure to clarify contract pharmacy rules.</p>
+              </div>
+            </article>
+            <article class="timeline-item" id="timeline-item-4" role="listitem" data-timeline-index="4">
+              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-4" id="timeline-btn-4">
+                <span class="timeline-item__date">2021+</span>
+                <span class="timeline-item__title">State protections</span>
+                <span class="timeline-item__chev" aria-hidden="true"></span>
+              </button>
+              <p class="timeline-item__lede">States codify contract safeguards.</p>
+              <div class="timeline-item__panel" id="timeline-panel-4" hidden>
+                <p class="timeline-item__detail">Reporting, anti-discrimination, and hybrid models spread across jurisdictions.</p>
+              </div>
+            </article>
+          </div>
         </div>
       </article>
     </section>
@@ -756,15 +779,16 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64" loading="lazy">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
   </p>
-  <p class="footer-design">Design Mark IX</p>
+  <p class="footer-design">Design Mark X — Continuous Optimization System</p>
 </footer>
 </div>
 
 <!-- ========== SECTION: Scripts — PDF libs (CDN), main app, then simulator modules ========== -->
 <!-- Download PDF (image) uses local html2canvas + jsPDF copies for deterministic offline behavior. -->
+  <script src="utils/performance-patch.js"></script>
   <script src="assets/vendor/html2canvas.min.js"></script>
   <script src="assets/vendor/jspdf.umd.min.js"></script>
-  <script src="340b.js?v=timeline-ow-2"></script>
+  <script src="340b.js?v=dmx-3"></script>
   <!-- Pennsylvania Impact Mode — loads after main dashboard; fully isolated -->
   <script src="modules/pa-impact-data.js"></script>
   <script src="modules/pa-impact-engine.js"></script>

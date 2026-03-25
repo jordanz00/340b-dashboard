@@ -31,7 +31,7 @@
  *   DOMContentLoaded → cacheDom, applyConfigCopy, validateStateData, drawMap,
  *   renderStateChips, bindMapEvents, setupMapVisibilityObserver, initFilters,
  *   initUtilityButtons, updateMetadata, applyAboutDataPanel, applyPolicyInsights
- * PRINT / PDF TAB: openPrintView → preparePrintSnapshot → getPrintViewPayload → localStorage (hap340bPrint)
+ * PRINT / PDF TAB: openPrintView → preparePrintSnapshot → getPrintViewPayload → localStorage (hap340b:printSnapshot)
  * MAP CLICK: bindMapEvents → selectState → updateMapContext, updateUrlHash, renderStateDetail
  *
  * WAVE 1 (Data Credibility): Metadata, versioning, timestamps in data/dataset-metadata.js and applyAboutDataPanel(); dataset download CSV/JSON in buildDatasetCsv(), buildDatasetJson(), initDatasetDownload().
@@ -675,7 +675,9 @@
     }
   }
 
-  var PRINT_VIEW_STORAGE_KEY = "hap340bPrint";
+  /** Namespaced localStorage key for print snapshot (enterprise static-site hygiene). Legacy key hap340bPrint still read in print.html. */
+  var LS_NAMESPACE = "hap340b";
+  var PRINT_VIEW_STORAGE_KEY = LS_NAMESPACE + ":printSnapshot";
   /** Fallback map width (px) when container has no offsetWidth (e.g. before layout). */
   var DEFAULT_MAP_WIDTH_PX = 800;
   /** Wait-for-map: used by openPrintView and downloadPdfAsImage so payload/capture includes the SVG. */
@@ -803,13 +805,14 @@
      ⚠ DO NOT MODIFY
      This section controls the Print/PDF system and must remain unchanged.
      Changes here can break the print pipeline and PDF output.
-     Key: hap340bPrint in localStorage; print.html reads it.
+     Key: hap340b:printSnapshot in localStorage; print.html reads it (and legacy hap340bPrint).
      */
   // Assembles the full print view payload (summary, KPIs, map SVG) for print.html to read from localStorage (new tab cannot read sessionStorage).
   function getPrintViewPayload() {
     var summary = gatherPrintPayloadSummaryAndKpis();
     var mapSvg = getMapSvgString();
     return {
+      payloadVersion: 1,
       mapSvg: mapSvg,
       mapSvgFallback: !mapSvg || mapSvg.length < 100,
       selectionTitle: summary.selectionTitle,
@@ -2320,8 +2323,122 @@
     obs.observe(observeEl);
   }
 
+  /** Policy timeline v2: sync SVG node hover with matching card (advanced only). */
+  function initPolicyTimelineInteraction() {
+    var card = document.querySelector(".policy-timeline-card");
+    var timeline = document.querySelector(".policy-timeline--v2[data-ptl-interactive]");
+    if (!card || !timeline) return;
+
+    function setHover(idx) {
+      if (idx >= 1 && idx <= 4) {
+        card.setAttribute("data-ptl-hover", String(idx));
+      } else {
+        card.removeAttribute("data-ptl-hover");
+      }
+    }
+
+    var items = timeline.querySelectorAll(".timeline-item[data-timeline-index]");
+    var nodes = timeline.querySelectorAll(".policy-timeline-node-g");
+
+    items.forEach(function (step) {
+      var idx = parseInt(step.getAttribute("data-timeline-index"), 10);
+      if (isNaN(idx)) return;
+      step.addEventListener("mouseenter", function () {
+        setHover(idx);
+      });
+      step.addEventListener("focusin", function () {
+        setHover(idx);
+      });
+    });
+
+    nodes.forEach(function (node, i) {
+      var idx = i + 1;
+      node.addEventListener("mouseenter", function () {
+        setHover(idx);
+      });
+    });
+
+    timeline.addEventListener("mouseleave", function () {
+      setHover(0);
+    });
+
+    card.addEventListener("focusout", function (e) {
+      if (!card.contains(e.relatedTarget)) setHover(0);
+    });
+  }
+
+  /** Accordion: one timeline panel open at a time. */
+  function initPolicyTimelineAccordion() {
+    var card = document.querySelector(".policy-timeline-card");
+    if (!card) return;
+    var headers = card.querySelectorAll(".timeline-item__header");
+    if (!headers.length) return;
+
+    headers.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var panelId = btn.getAttribute("aria-controls");
+        var panel = panelId ? document.getElementById(panelId) : null;
+        var wasOpen = btn.getAttribute("aria-expanded") === "true";
+
+        headers.forEach(function (b) {
+          b.setAttribute("aria-expanded", "false");
+          var pid = b.getAttribute("aria-controls");
+          var p = pid ? document.getElementById(pid) : null;
+          if (p) p.hidden = true;
+        });
+
+        if (!wasOpen && panel) {
+          btn.setAttribute("aria-expanded", "true");
+          panel.hidden = false;
+        }
+      });
+    });
+  }
+
+  /** IntersectionObserver: active milestone + progress fill (no scroll-loop layout reads). */
+  function initPolicyTimelineIntersection() {
+    var items = document.querySelectorAll(".timeline-item");
+    var fill = document.querySelector(".policy-timeline-progress-fill");
+    if (!items.length) return;
+
+    if (typeof IntersectionObserver === "undefined") {
+      items.forEach(function (el) {
+        el.classList.add("is-active");
+      });
+      if (fill) fill.style.setProperty("--ptl-p", "1");
+      return;
+    }
+
+    var ratios = {};
+    items.forEach(function (el) {
+      ratios[el.id] = 0;
+    });
+
+    var obs = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (e) {
+          ratios[e.target.id] = e.isIntersecting ? e.intersectionRatio : 0;
+        });
+        var maxIdx = 0;
+        items.forEach(function (el) {
+          var idx = parseInt(el.getAttribute("data-timeline-index"), 10) || 0;
+          var on = ratios[el.id] >= 0.3;
+          el.classList.toggle("is-active", on);
+          if (on && idx > maxIdx) maxIdx = idx;
+        });
+        if (fill) fill.style.setProperty("--ptl-p", String(maxIdx / 4));
+      },
+      { threshold: [0, 0.15, 0.3, 0.5, 0.75, 1], rootMargin: "-10% 0px -10% 0px" }
+    );
+
+    items.forEach(function (el) {
+      obs.observe(el);
+    });
+  }
+
   function initNavHighlight() {
-    /* Scroll-active nav: last section (document order) whose top is above the header band wins. */
+    /* Scroll-active nav: last section (document order) whose top is above the header band wins.
+     * Section Y positions are cached; scroll handler only compares scrollY (no getBoundingClientRect per frame). */
     var sectionIds = [
       "section-overview",
       "overview",
@@ -2345,38 +2462,77 @@
       return;
     }
 
-    function headerBandOffset() {
+    /* Cache header height; refresh on resize/load (avoid layout thrash in scroll rAF). */
+    var cachedNavHeaderOffset = 96;
+    function refreshNavHeaderOffset() {
       var h = document.querySelector(".dashboard-header");
-      return h ? Math.round(h.getBoundingClientRect().height) + 12 : 96;
+      cachedNavHeaderOffset = h ? Math.round(h.getBoundingClientRect().height) + 12 : 96;
     }
 
-    var scrollTickScheduled = false;
+    var sectionDocumentTops = [];
+    function refreshSectionAnchors() {
+      var sy = window.pageYOffset || document.documentElement.scrollTop || 0;
+      sectionDocumentTops = sections.map(function (el) {
+        return el.getBoundingClientRect().top + sy;
+      });
+    }
+
     function tickNavFromScroll() {
-      var offset = headerBandOffset();
+      if (!sectionDocumentTops.length) {
+        refreshSectionAnchors();
+      }
+      var y = window.pageYOffset || document.documentElement.scrollTop || 0;
+      var band = cachedNavHeaderOffset + 8;
       var activeId = sections[0].id;
       for (var i = sections.length - 1; i >= 0; i--) {
-        var el = sections[i];
-        var top = el.getBoundingClientRect().top;
-        if (top <= offset + 8) {
-          activeId = el.id;
+        if (sectionDocumentTops[i] <= y + band) {
+          activeId = sections[i].id;
           break;
         }
       }
       updateNavCurrent(activeId);
     }
 
-    function onScrollOrResize() {
-      if (scrollTickScheduled) return;
-      scrollTickScheduled = true;
-      window.requestAnimationFrame(function () {
-        scrollTickScheduled = false;
-        tickNavFromScroll();
-      });
+    var scrollTicking = false;
+    function onScrollOptimized() {
+      if (!scrollTicking) {
+        window.requestAnimationFrame(function () {
+          tickNavFromScroll();
+          scrollTicking = false;
+        });
+        scrollTicking = true;
+      }
     }
 
-    window.addEventListener("scroll", onScrollOrResize, { passive: true });
-    window.addEventListener("resize", onScrollOrResize);
+    function afterLayoutRefresh() {
+      refreshNavHeaderOffset();
+      refreshSectionAnchors();
+      tickNavFromScroll();
+    }
+
+    refreshNavHeaderOffset();
+    refreshSectionAnchors();
+
+    var resizeNavTimer = null;
+    window.addEventListener("scroll", onScrollOptimized, { passive: true });
+    window.addEventListener("resize", function () {
+      if (resizeNavTimer) window.clearTimeout(resizeNavTimer);
+      resizeNavTimer = window.setTimeout(afterLayoutRefresh, 100);
+    });
+    window.addEventListener("load", afterLayoutRefresh);
+    window.addEventListener("hashchange", function () {
+      window.requestAnimationFrame(afterLayoutRefresh);
+    });
     tickNavFromScroll();
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(afterLayoutRefresh);
+    });
+
+    if (typeof window.requestIdleCallback === "function") {
+      window.requestIdleCallback(function () {
+        afterLayoutRefresh();
+      });
+    }
   }
 
   /* ---------- Event handlers ---------- */
@@ -2472,6 +2628,16 @@
   function init() {
     cacheDom();
 
+    try {
+      var sp = new URLSearchParams(window.location.search);
+      if (sp.get("dmxperf") === "1") {
+        document.documentElement.classList.add("dmx-perf");
+        console.log("Scroll FPS test active");
+      }
+    } catch (perfFlagErr) {
+      /* ignore */
+    }
+
     /* If core data did not load (e.g. script order or missing inline data), show message and stop. */
     if (typeof STATE_340B === "undefined" || typeof STATE_NAMES === "undefined" || typeof FIPS_TO_ABBR === "undefined") {
       var msg = "Dashboard data didn't load.";
@@ -2527,6 +2693,9 @@
     runTaskSafely("initialize count up", initCountUp);
     runTaskSafely("initialize scroll reveal", initScrollReveal);
     runTaskSafely("initialize policy timeline animation", initPolicyTimelineAnimation);
+    runTaskSafely("initialize policy timeline accordion", initPolicyTimelineAccordion);
+    runTaskSafely("initialize policy timeline intersection", initPolicyTimelineIntersection);
+    runTaskSafely("initialize policy timeline interaction", initPolicyTimelineInteraction);
     runTaskSafely("sync sticky header offset", initDashboardHeaderOffset);
     runTaskSafely("initialize nav highlight", initNavHighlight);
     runTaskSafely("sync selection from hash", syncSelectionFromHash);
