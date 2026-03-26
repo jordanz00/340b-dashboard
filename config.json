@@ -1,0 +1,32 @@
+{
+  "daily_update": true,
+  "max_agents": 10,
+  "ultra_prompt_wave_size": 10,
+  "rules_per_wave": 10,
+  "archive_path": "data/archive",
+  "raw_path": "data/raw",
+  "processed_path": "data/processed",
+  "maintainer_level": "novice",
+  "security_checks": ["XSS", "input_sanitization", "link_validation"],
+  "scoring_weights": {
+    "executive_impact": 0.35,
+    "maintainability": 0.25,
+    "security": 0.20,
+    "performance": 0.20
+  },
+  "dashboard": {
+    "update_frequency": "quarterly",
+    "default_print_state": "PA",
+    "print_view_path": "print/print.html",
+    "colors": {
+      "primary": "#0b67c2",
+      "primary_hover": "#0a56a3",
+      "accent": "#ff8a3d",
+      "accent_hover": "#ef6f18"
+    },
+    "chart_defaults": {
+      "bar_max_height_px": 80,
+      "count_up_duration_ms": 1200
+    }
+  }
+}

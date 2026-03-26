@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "description": "Self-improvement waves for the 340B executive dashboard. Prompts upgrade themselves; each wave can add up to ultra_prompt_wave_size prompts and rules_per_wave rules (see config.json).",
+  "ultra_prompt_wave_size": 10,
+  "rules_per_wave": 10,
+  "waves": [
+    { "id": "wave1", "name": "Data Integrity", "order": 1, "agentFile": "agent_data.js", "prompts": ["Ensure folder structure config/, data/, analytics/, ui/, docs/.", "Validate STATE_340B vs STATE_NAMES; log and surface validation warnings.", "Keep dataset-metadata.js in sync with state-data.js (lastUpdated, version).", "Display About Data panel with provenance, timestamp, methodology, download link."], "outputs": ["config/settings.js", "data/dataset-metadata.js", "analytics/validate-data.js", "340b.html"] },
+    { "id": "wave2", "name": "Metrics & Insights", "order": 2, "agentFile": "agent_metrics.js", "prompts": ["Add year-over-year trends, policy adoption timeline, national benchmarks.", "Add executive summary panel: key figures upfront ($7.95B, 72 PA hospitals).", "Ensure POLICY_INSIGHTS and applyPolicyInsights() feed the national strip.", "Document metric definitions for CEO readability."], "outputs": ["analytics/policy-insights.js", "340b.js", "340b.html"] },
+    { "id": "wave3", "name": "UX/UI & Design", "order": 3, "agentFile": "agent_ui.js", "prompts": ["State filter dropdown synced with filter buttons; ranked state table by year.", "Interactive map with hover tooltips and state highlights.", "Responsive design; professional palette and typography; smooth transitions.", "Executive overview section with key findings upfront."], "outputs": ["340b.html", "340b.css", "340b.js"] },
+    { "id": "wave4", "name": "Interactivity", "order": 4, "agentFile": "agent_interactivity.js", "prompts": ["Implement hover tooltips, filters, ranked tables.", "Add map and chart interactivity.", "Ensure responsiveness across devices."], "outputs": ["340b.html", "340b.css", "340b.js"] },
+    { "id": "wave5", "name": "Security", "order": 5, "agentFile": "agent_security.js", "prompts": ["Sanitize all dynamic content; safe JSON and link parsing.", "Perform XSS and injection checks.", "Ensure safe external links (rel=noopener noreferrer)."], "outputs": ["340b.js", "config/settings.js", "SECURITY.md"] },
+    { "id": "wave6", "name": "Performance & Optimization", "order": 6, "agentFile": "agent_performance.js", "prompts": ["Optimize DOM manipulations and caching.", "Refactor code for readability; reduce memory and load time.", "Lazy-load components as needed."], "outputs": ["340b.js", "config/settings.js"] },
+    { "id": "wave7", "name": "Self-Improvement", "order": 7, "agentFile": "agent_self_improvement.js", "prompts": ["Read ultra_prompts.json and execute upgrades.", "Generate new prompts per wave; run daily cycles when config.daily_update is true.", "Track versioning and logs in data/archive/."], "outputs": ["self_upgrade/self_update.js", "ultra_prompts.json", "data/archive/"] },
+    { "id": "wave8", "name": "Documentation", "order": 8, "agentFile": "agent_doc.js", "prompts": ["Update OPERATIONS_MANUAL.md automatically.", "Add inline comments and labeling for maintainers.", "Generate README.md updates."], "outputs": ["OPERATIONS_MANUAL.md", "docs/OPERATIONS_MANUAL.md", "README.md"] },
+    { "id": "wave9", "name": "Cross-Agent Validation", "order": 9, "agentFile": "agent_validator.js", "prompts": ["Compare all agent proposals; resolve conflicts using weighted scoring.", "Approve or reject changes; log rejected for learning."], "outputs": ["data/archive/approved-changes-*.json"] },
+    { "id": "wave10", "name": "Executive Experience Audit", "order": 10, "agentFile": "agent_executive_audit.js", "prompts": ["Simulate executive dashboard use.", "Score clarity, polish, and decision-readiness.", "Suggest refinements for final presentation."], "outputs": ["data/archive/executive-summary-*.txt"] }
+  ],
+  "agentWaveMap": {
+    "1": "agent_data",
+    "2": "agent_metrics",
+    "3": "agent_ui",
+    "4": "agent_interactivity",
+    "5": "agent_security",
+    "6": "agent_performance",
+    "7": "agent_self_improvement",
+    "8": "agent_doc",
+    "9": "agent_validator",
+    "10": "agent_executive_audit"
+  }
+}

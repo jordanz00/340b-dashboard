@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "description": "Self-improvement waves for the 340B executive dashboard. Run waves in order; each wave updates files and increments version.",
+  "waves": [
+    {
+      "id": "wave1",
+      "name": "Architecture & Data Validation",
+      "order": 1,
+      "prompts": [
+        "Ensure folder structure: config/, data/, analytics/, ui/, docs/, self_upgrade/.",
+        "Validate STATE_340B vs STATE_NAMES; log and surface validation warnings.",
+        "Keep dataset-metadata.js in sync with state-data.js (lastUpdated, version).",
+        "Display About Data panel with provenance, timestamp, methodology, download link."
+      ],
+      "outputs": ["config/settings.js", "data/dataset-metadata.js", "analytics/validate-data.js", "340b.html"]
+    },
+    {
+      "id": "wave2",
+      "name": "Analytics & Executive Metrics",
+      "order": 2,
+      "prompts": [
+        "Add year-over-year trends, policy adoption timeline, national benchmarks.",
+        "Add executive summary panel: key figures upfront ($7.95B, 72 PA hospitals).",
+        "Ensure POLICY_INSIGHTS and applyPolicyInsights() feed the national strip.",
+        "Document metric definitions for CEO readability."
+      ],
+      "outputs": ["analytics/policy-insights.js", "340b.js", "340b.html"]
+    },
+    {
+      "id": "wave3",
+      "name": "UX/UI & Interactivity",
+      "order": 3,
+      "prompts": [
+        "State filter dropdown synced with filter buttons; ranked state table by year.",
+        "Interactive map with hover tooltips and state highlights.",
+        "Responsive design; professional palette and typography; smooth transitions.",
+        "Executive overview section with key findings upfront."
+      ],
+      "outputs": ["340b.html", "340b.css", "340b.js"]
+    },
+    {
+      "id": "wave4",
+      "name": "Performance & Security",
+      "order": 4,
+      "prompts": [
+        "Lazy load below-the-fold panels; minimize globals; efficient loops.",
+        "Sanitize dynamic content (safeText); no innerHTML with data.",
+        "Safe JSON parsing with try/catch; external links rel='noopener noreferrer'.",
+        "Centralize config in config/settings.js; log security events if needed."
+      ],
+      "outputs": ["340b.js", "config/settings.js", "SECURITY.md"]
+    },
+    {
+      "id": "wave5",
+      "name": "Self-Upgrading Ultra Prompts",
+      "order": 5,
+      "prompts": [
+        "Read ultra_prompts.json; execute waves in order; log each change with timestamp.",
+        "Increment version after each wave; keep backup in data/archive/.",
+        "Validate updates before applying; auto-generate maintenance notes per wave.",
+        "Integrate with OPERATIONS_MANUAL: how to run self-update."
+      ],
+      "outputs": ["self_upgrade/self_update.js", "self_upgrade/ultra_prompts.json", "data/archive/"]
+    },
+    {
+      "id": "wave6",
+      "name": "Documentation & Maintenance",
+      "order": 6,
+      "prompts": [
+        "README: overview, architecture, dependencies, usage for novice maintainers.",
+        "OPERATIONS_MANUAL: add/update data, run self-update waves, update charts/UI, republish.",
+        "PROMPTS.md: document ultra_prompts workflow and example cycles.",
+        "Inline comments in all files for maximum clarity."
+      ],
+      "outputs": ["README.md", "docs/OPERATIONS_MANUAL.md", "docs/PROMPTS.md", "NOVICE-MAINTAINER.md"]
+    },
+    {
+      "id": "wave7",
+      "name": "Self-Improvement Manager",
+      "order": 7,
+      "agentId": "agent-07-self-improvement",
+      "prompts": [
+        "Read ultra_prompts.json and generate improvement cycles.",
+        "Track versioning and update data/archive/upgrade-log.json.",
+        "Ensure data/archive exists for backups and agent logs."
+      ],
+      "outputs": ["self_upgrade/self_update.js", "data/archive/"]
+    },
+    {
+      "id": "wave8",
+      "name": "Documentation & Operations",
+      "order": 8,
+      "agentId": "agent-08-documentation",
+      "prompts": [
+        "Generate operations manual updates; comment new code; maintain README, PROMPTS, SECURITY."
+      ],
+      "outputs": ["docs/OPERATIONS_MANUAL.md", "docs/MULTI_AGENT_SYSTEM.md", "README.md"]
+    },
+    {
+      "id": "wave9",
+      "name": "Cross-Agent Validation",
+      "order": 9,
+      "agentId": "agent-09-cross-validator",
+      "prompts": [
+        "Compare proposals from all agents; resolve conflicts; prioritize by executive impact, maintainability, security, performance.",
+        "Approve changes before integration; output approved-changes JSON."
+      ],
+      "outputs": ["data/archive/approved-changes-*.json"]
+    },
+    {
+      "id": "wave10",
+      "name": "CEO Executive Experience Audit",
+      "order": 10,
+      "agentId": "agent-10-ceo-auditor",
+      "prompts": [
+        "Simulate executive use; score clarity, polish, decision-readiness.",
+        "Suggest refinements to layout, metrics, and interactivity."
+      ],
+      "outputs": ["data/archive/executive-summary-*.txt"]
+    }
+  ],
+  "agentWaveMap": {
+    "1": "agent-01-data-integrity",
+    "2": "agent-02-executive-metrics",
+    "3": "agent-03-ux-ui",
+    "4": "agent-04-interactivity",
+    "5": "agent-05-security",
+    "6": "agent-06-performance",
+    "7": "agent-07-self-improvement",
+    "8": "agent-08-documentation",
+    "9": "agent-09-cross-validator",
+    "10": "agent-10-ceo-auditor"
+  }
+}

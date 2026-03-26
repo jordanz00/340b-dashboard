@@ -20,22 +20,33 @@ Cursor should behave as a **structured improvement partner**: propose high-impac
 | **H1** | Page purpose (one per page) | Dashboard title / report title. |
 | **H2** | Major sections | Overview, Key metrics, Map, HAP position, Community impact, Sources. |
 | **H3** | Subsections or card groups | “What lawmakers can do”, metric groups, methodology blocks. |
-| **H4** | Bullets / advocacy lines / stat labels | Pair with one-line “So what” where space allows. |
+| **H4** | Bullets / advocacy lines / stat labels | Pair with one-line “Why it matters” where space allows. |
 
-**HAP Position:** treat as its **own** H2 band (full-width flagship under Overview): eyebrow → headline pledge → short lead → H3 “What lawmakers can do” → H4-style bullets with “So what”.
+**HAP Position:** treat as its **own** H2 band (full-width flagship under Overview): eyebrow → headline pledge → short lead → H3 “What lawmakers can do” → H4-style bullets with “Why it matters”.
 
 ## Copy defaults
 
 - **Reading level:** Plain English; short sentences; **8th–10th grade** where possible.
-- **So what:** One line under or beside every stat, advocacy bullet, and primary CTA explaining impact for patients, hospitals, or policy.
+- **Why it matters:** One line under or beside every stat, advocacy bullet, and primary CTA explaining impact for patients, hospitals, or policy.
 - **Acronyms:** Define **340B, PBM, contract pharmacy** once per page (glossary strip on 340B); OW uses PA hospital/sustainability language—do not paste unrelated 340B stats onto OW.
 - **Dates:** Prefer “Data as of [month year]” near KPI blocks; align with `CONFIG` / `state-data.js`.
 
 ## Visual & design cohesion
 
 - **Tokens:** Prefer `hap-design-tokens.css` variables (`--hap-brand-primary`, `--hap-type-h*`, spacing) before new hex values.
-- **Flagship rows:** Overview → **HAP Position** → key findings / metrics; use full-width sections and consistent card padding (`--space-*`, `--radius-*`).
-- **Polish:** Subtle elevation (shadows already in `340b.css`); HAP blue accents; avoid loud gradients on dense data screens.
+- **Oliver Wyman–style surfaces:** Light, clean backgrounds; **airy** section rhythm; separate bands with **spacing + subtle background shifts**—avoid heavy/dark UI blocks unless contrast is required for a11y.
+- **Strict semantic colors (no random hex):** Use suite tokens only:
+  | Role | Token family | Meaning |
+  |------|----------------|---------|
+  | **Green** | `--hap-topic-finance*` | Financial / savings / funding |
+  | **Blue** | `--hap-topic-access*` | Coverage / insurance / access |
+  | **Purple** | `--hap-topic-policy*` | Policy / regulation / legal context |
+  | **Orange** | `--hap-topic-risk*` | Risk / pressure / constraints |
+  | **Neutral** | `--hap-topic-neutral*` | Supporting info |
+  | **Direction** | `--hap-sentiment-positive*` / `--hap-sentiment-negative*` | Cool = gains/stability; warm = loss/restriction (never rely on color alone) |
+- **Executive KPIs (“big number” standard):** Large dominant value + short label + one-line **Impact** or **Why it matters** (professional briefing language). Prefer opt-in pattern `.hap-kpi-executive` + `.hap-kpi-value` / `.hap-kpi-label` / `.hap-kpi-meaning` from `hap-design-tokens.css`; tune per card with topic tokens for accents only.
+- **Flagship rows:** Overview → **HAP Position** (full-width, HAP-branded band) → key findings / metrics; consistent card padding (`--space-*`, `--radius-*`).
+- **Polish:** Subtle borders/shadows from tokens; HAP blue for primary brand moments; avoid loud gradients on dense data screens.
 
 ## UX & interactivity
 
@@ -57,9 +68,13 @@ Cursor should behave as a **structured improvement partner**: propose high-impac
 
 ## Improvement loop (human-controlled)
 
-1. **Analyze** — Copy, hierarchy, a11y, consistency across 340B / OW / print.
-2. **Propose** — Ranked list: impact vs effort; note files and risks.
-3. **Implement** — Only after user direction or clear scope; small diffs.
-4. **Verify** — `python3 dashboard-audit.py`; spot-check print; hash navigation.
+1. **Analyze** — Copy, hierarchy, semantic colors, a11y, cross-dashboard drift (340B, BASIC, OW/index/static, print, shared nav).
+2. **Propose** — Ranked by impact vs effort; call out blast radius (`340b.css`, tokens, `hap-nav-shared.js`, print pipeline).
+3. **Implement** — **Human approval before large merges**; default to **small, high-impact diffs** (no bulk rewrites unless scoped).
+4. **Verify** — `python3 dashboard-audit.py`; spot-check print/PDF; hash navigation; BASIC IT-safe constraints unchanged.
 
 For deep daily waves and ULTRA prompts, use **`ultra-daily-improvement`** rule and `ULTRA-prompts.md` / `DAILY-IMPROVEMENT.md`.
+
+## Ultra-scale continuous improvement (manager brief)
+
+When the user asks for **suite-wide** or **daily recursive** polish, treat this rule + **`hap-multi-dashboard-scope`** as the contract: CEO-ready copy, policy clarity, OW-level visual discipline, smooth performance (**transform/opacity** for motion; passive scroll + rAF patterns in `340b.js`), and **cross-surface consistency**—implemented incrementally with human sign-off, not one-shot refactors of every file.

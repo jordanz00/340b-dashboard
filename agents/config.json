@@ -1,0 +1,25 @@
+{
+  "system_name": "Design Mark X",
+  "mode": "parallel",
+  "supervisor": "supervisor_agent",
+  "agents": [
+    "design_system_agent",
+    "color_governance_agent",
+    "ban_optimization_agent",
+    "performance_agent",
+    "navigation_agent",
+    "data_viz_agent",
+    "storytelling_agent",
+    "security_agent",
+    "qa_audit_agent",
+    "print_pdf_agent",
+    "responsiveness_agent",
+    "consistency_agent"
+  ],
+  "rules": {
+    "static_only": true,
+    "no_external_scripts_basic": true,
+    "preserve_map": true,
+    "preserve_print_pipeline": true
+  }
+}

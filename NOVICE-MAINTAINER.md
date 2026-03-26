@@ -47,7 +47,7 @@
 
 ## 340b-BASIC.html (Basic version)
 
-**Purpose:** A single-page version for employer or locked-down hosting. Same advocacy content as the full dashboard (including “Why this matters,” community benefit, PA Impact and Policy Simulator **snapshots**, access, PA safeguards) but **no** print/PDF, no share, **no** scenario switchers—only the interactive US map. Scripts: local only (`state-data.js`, D3, TopoJSON, states-10m, `340b-basic-map.js`).
+**Purpose:** A single-page version for employer or locked-down hosting. Same advocacy content as the full dashboard (including brief **Impact** lines on stats, community benefit, PA Impact and Policy Simulator **snapshots**, access, PA safeguards) but **no** print/PDF, no share, **no** scenario switchers—only the interactive US map. Scripts: local only (`state-data.js`, D3, TopoJSON, states-10m, `340b-basic-map.js`).
 
 **How to edit:** [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md). Map law data: **state-data.js** (STATE_340B). PA Impact / Simulator text on Basic is **static HTML** in `340b-BASIC.html`, not the `modules/*.js` files.
 
@@ -73,6 +73,12 @@ These flows are finalized and fragile:
 See [CHATGPT-PROJECT-HANDOFF.md](CHATGPT-PROJECT-HANDOFF.md) and [AGENT-RULES-SYSTEM.md](AGENT-RULES-SYSTEM.md) for stability rules.
 
 **Other rules:** Do not edit `assets/vendor/` except intentional vendor updates. Test print after any date/state/data change. Run **`python3 dashboard-audit.py`** after meaningful edits. **Print preview is a mandatory release gate.** Read [THREAT-MODEL.md](THREAT-MODEL.md) before adding remote services or auth.
+
+---
+
+## Cache-busting query strings
+
+`340b.html` and `340b-BASIC.html` append `?v=…` to `340b.css`, `340b.js`, and `hap-nav-shared.js` so browsers pick up changes after deploy. **Bump the version together** when you change any of those files, or users may see stale CSS/JS.
 
 ---
 
@@ -113,10 +119,10 @@ Edit when: visible copy, headings, sections, source links, order of blocks, or w
 
 **Avoid text/number pop on load:** The first thing the user sees is the raw HTML. JavaScript then overwrites copy from `state-data.js` (CONFIG) and STATE_340B. If the initial HTML does not match, the page will “flash.” Whenever you change **CONFIG.copy** or **STATE_340B** in state-data.js, update the **initial content** of the corresponding elements in 340b.html:
 
-- Intro/overview: `#overview-lead`, `#hap-position-why`, `#hap-position-lead`, `.hap-ask-list` / `CONFIG.copy.hapAskItems`, `#map-hero-sub`
+- Intro/overview: `#overview-lead`, `#hap-position-why`, `#hap-position-lead`, `.hap-ask-list` / `CONFIG.copy.hapAskItems` (each ask uses **`impactLine`** for the “Impact:” sentence; legacy **`soWhat`** is still read if present), `#map-hero-sub`
 - Executive strip: `#executive-priority-*`, `#executive-landscape-*`, `#executive-trust-*` (landscape value = “X states have enacted…; Y remain without…”, where X = states with `cp: true`, Y = rest)
 - Methodology/sources: `#sources-summary`, `#methodology-state-law-copy`, `#verification-order-copy`, `#print-source-summary`, `#print-verification-order-copy`
-- Protection counts: `#key-finding-protection-count`, `#protection-count`, `#no-protection-count`, `#print-protection-count`, `#print-no-protection-count` (same X and Y as executive landscape)
+- Protection counts: `#exec-summary-protection-count`, `#exec-summary-no-count`, `#key-finding-protection-count`, `#protection-count`, `#no-protection-count`, `#print-protection-count`, `#print-no-protection-count` (same X and Y as executive landscape)
 - Count-up stats: elements with `data-count-up` should have initial text set to the final value (e.g. `7%`, `7.95`, `179`) so they don’t flash from 0
 
 Keep the **inline CONFIG** in the first `<script>` block in `340b.html` in sync with `state-data.js`.

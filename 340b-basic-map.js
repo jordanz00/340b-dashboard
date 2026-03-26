@@ -99,7 +99,10 @@
       .on("mouseenter", function (event, d) {
         var abbr = getStateAbbr(d);
         if (!tooltip || !abbr) return;
-        tooltip.textContent = (STATE_NAMES[abbr] || abbr);
+        var name = STATE_NAMES[abbr] || abbr;
+        var data = STATE_340B[abbr];
+        var statusLine = data && data.cp ? "State law protects contract pharmacy." : "No contract pharmacy protection law yet.";
+        tooltip.textContent = name + " — " + statusLine;
         tooltip.classList.add("basic-map-tooltip--visible");
       })
       .on("mousemove", function (event) {

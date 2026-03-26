@@ -129,7 +129,6 @@
       methodologyContent: document.getElementById("methodology-content"),
       dataFreshness: document.getElementById("data-freshness-text"),
       overviewLead: document.getElementById("overview-lead"),
-      headerValueProp: document.getElementById("header-value-prop"),
       hapPositionLead: document.getElementById("hap-position-lead"),
       hapLawmakerLabel: document.getElementById("hap-lawmaker-label"),
       hapPositionWhy: document.getElementById("hap-position-why"),
@@ -348,7 +347,6 @@
     var executiveStrip = copy.executiveStrip || {};
 
     setElementText(appState.dom.overviewLead, copy.overviewLead);
-    setElementText(appState.dom.headerValueProp, copy.headerValueProp);
     setElementText(appState.dom.hapPositionWhy, copy.hapPositionWhy);
     setElementText(appState.dom.hapPositionLead, copy.hapPositionLead);
     setElementText(appState.dom.hapLawmakerLabel, copy.hapPositionLawmakerLabel);
@@ -363,7 +361,13 @@
           setElementText(labelEl, item && typeof item.label === "string" ? item.label : "");
         }
         if (impactEl) {
-          setElementText(impactEl, item && typeof item.soWhat === "string" ? item.soWhat : "");
+          var line =
+            item && typeof item.impactLine === "string"
+              ? item.impactLine
+              : item && typeof item.soWhat === "string"
+                ? item.soWhat
+                : "";
+          setElementText(impactEl, line);
         }
       });
     })();
@@ -395,6 +399,10 @@
       withoutProtection.length + " remain without enacted protection";
 
     appState.dom.executiveLandscapeValue.textContent = landscapeValue;
+    var execSumP = document.getElementById("exec-summary-protection-count");
+    var execSumN = document.getElementById("exec-summary-no-count");
+    if (execSumP) execSumP.textContent = String(withProtection.length);
+    if (execSumN) execSumN.textContent = String(withoutProtection.length);
   }
 
   function buildMapContextText(abbr, data) {
@@ -517,7 +525,7 @@
 
   function buildStateImpactNote(abbr, data) {
     if (!data) {
-      return "Why it matters: use the map, source notes, and selected-state context together before drawing policy conclusions.";
+      return "Impact: use the map, source notes, and selected-state context together before drawing policy conclusions.";
     }
 
     if (abbr === getDefaultPrintStateAbbr()) {
@@ -525,10 +533,10 @@
     }
 
     if (data.cp) {
-      return "Why it matters: enacted protection here gives lawmakers and hospital leaders a concrete comparison point when evaluating how contract pharmacy access can be preserved.";
+      return "Impact: enacted protection here gives lawmakers and hospital leaders a concrete comparison point when evaluating how contract pharmacy access can be preserved.";
     }
 
-    return "Why it matters: the absence of enacted contract pharmacy protection here helps show the exposure hospitals can face when patient access depends on contract pharmacies.";
+    return "Impact: the absence of enacted contract pharmacy protection here helps show the exposure hospitals can face when patient access depends on contract pharmacies.";
   }
 
   function buildSelectionAnnouncement(abbr) {
@@ -716,9 +724,10 @@
   var WAIT_FOR_MAP_INTERVAL_MS = 250;
   var WAIT_FOR_MAP_MAX_ATTEMPTS = 30;
   var PDF_CAPTURE_TIMEOUT_MS = 18000;
-  /** Canvas Y-ratio fallbacks when #state-laws or .kpi-strip are missing: Page 1 ends at 40%, Page 2 at 75% of canvas height. */
-  var PDF_PAGE1_FALLBACK_RATIO = 0.4;
-  var PDF_PAGE2_FALLBACK_RATIO = 0.75;
+  /** Fallback Y ratios (canvas height) when DOM landmarks are missing — ordered: after intro ~HAP, ~map, ~KPI. */
+  var PDF_SLICE_FALLBACK_Y1 = 0.32;
+  var PDF_SLICE_FALLBACK_Y2 = 0.58;
+  var PDF_SLICE_FALLBACK_Y3 = 0.82;
 
   /** iOS Safari and many mobile browsers only allow window.open during the user gesture; delayed open after async map prep is treated as a popup and blocked. */
   function isMobileOrTabletBrowser() {
@@ -733,6 +742,28 @@
     /* Added-to-home-screen Web App on iOS */
     if (typeof navigator.standalone === "boolean" && navigator.standalone === true) return true;
     return false;
+  }
+
+  /** jsPDF 2.x UMD exposes the constructor as jspdf.jsPDF (and often jspdf.default). Never use the module object as a constructor. */
+  function resolveJsPdfConstructor() {
+    var w = typeof window !== "undefined" ? window : null;
+    if (!w) return null;
+    if (typeof w.jsPDF === "function") return w.jsPDF;
+    var root = w.jspdf;
+    if (!root) return null;
+    if (typeof root.jsPDF === "function") return root.jsPDF;
+    if (root.default && typeof root.default === "function") return root.default;
+    if (typeof root === "function") return root;
+    return null;
+  }
+
+  /** html2canvas UMD sets globalThis.html2canvas; some bundles use .default */
+  function resolveHtml2canvas() {
+    var w = typeof window !== "undefined" ? window : null;
+    if (!w) return null;
+    if (typeof w.html2canvas === "function") return w.html2canvas;
+    if (w.html2canvas && typeof w.html2canvas.default === "function") return w.html2canvas.default;
+    return null;
   }
 
   function resolveAppUrl(relativePath) {
@@ -1807,12 +1838,11 @@
   }
 
   /* ==================================================
-     PDF IMAGE EXPORT (PROTECTED)
+     PDF IMAGE EXPORT
      ==================================================
-     ⚠ DO NOT MODIFY — User requested no changes without explicit permission.
-     Captures 3-page A4 PDF via html2canvas + jsPDF.
-     Page 1: intro through executive strip. Page 2: map + state analysis.
-     Page 3: KPI strip through end. Changes can break layout.
+     4-page A4 PDF via html2canvas + jsPDF (avoids squashing tall pre-map content).
+     Page 1: intro / What is 340B (#section-overview). Page 2: HAP position + key findings + executive strip.
+     Page 3: State map (#state-laws). Page 4: KPI strip through end (fitWidth crop if needed).
      */
   function downloadPdfAsImage() {
     /* Phones/tablets: html2canvas + jsPDF often hangs or OOMs on iOS Safari — same flow as Print / PDF (print-ready page + Save as PDF). */
@@ -1822,12 +1852,12 @@
       openPrintView({ fromPdfImage: true });
       return;
     }
-    var html2canvasLib = typeof window.html2canvas === "function" ? window.html2canvas : null;
-    var jsPDFLib = typeof window.jspdf !== "undefined" && window.jspdf.jsPDF ? window.jspdf.jsPDF : (typeof window.jspdf !== "undefined" ? window.jspdf : null);
-    if (!html2canvasLib || !jsPDFLib) {
-      var libMsg = "PDF download isn't available right now. Use 'Print / PDF' and choose Save as PDF in the print dialog.";
-      setUtilityStatus(libMsg);
-      setTimeout(function () { setUtilityStatus(""); }, 4000);
+    var html2canvasLib = resolveHtml2canvas();
+    var jsPDFLib = resolveJsPdfConstructor();
+    if (!html2canvasLib || typeof jsPDFLib !== "function") {
+      setUtilityStatus("Opening print-ready page — use Save as PDF (canvas libraries unavailable).");
+      setTimeout(function () { setUtilityStatus(""); }, 5000);
+      openPrintView({ fromPdfImage: true });
       return;
     }
     var lowMemCapture = false;
@@ -1871,7 +1901,7 @@
         "body.pdf-capture .key-findings-grid { display: grid !important; grid-template-columns: repeat(2, minmax(0, 1fr)) !important; gap: 0.45rem !important; } " +
         "body.pdf-capture .key-finding-card { padding: 0.5rem 0.55rem !important; } " +
         "body.pdf-capture .key-finding-value.ban-stat { font-size: 1.35rem !important; } " +
-        "body.pdf-capture .key-finding-so-what { font-size: 0.72rem !important; padding-top: 0.35rem !important; } " +
+        "body.pdf-capture .key-finding-impact { font-size: 0.72rem !important; padding-top: 0.35rem !important; } " +
         "body.pdf-capture .executive-proof-strip { margin: 0.55rem 0; padding: 0.5rem 0; } " +
         "body.pdf-capture .executive-proof-strip .executive-proof-card { padding: 0.55rem 0.75rem; margin-bottom: 0.5rem; } " +
         "body.pdf-capture .executive-proof-strip h3 { font-size: 0.9rem; line-height: 1.3; } " +
@@ -2033,17 +2063,40 @@
         setTimeout(function () { reject(new Error("timeout")); }, captureTimeoutMs);
       });
       Promise.race([capturePromise, timeoutPromise]).then(function (canvas) {
+        function failPdfCleanup() {
+          restoreMapSvg();
+          removePdfStyle();
+          if (appState.printAppliedDefaultSelection) {
+            clearSelection("", { updateHash: false, announce: false });
+            appState.printAppliedDefaultSelection = false;
+          }
+          setUtilityStatus("PDF capture failed. Try Print / PDF instead.");
+          setTimeout(function () { setUtilityStatus(""); }, 3000);
+        }
+        if (!canvas || typeof canvas.getContext !== "function" || canvas.width < 1 || canvas.height < 1) {
+          failPdfCleanup();
+          return;
+        }
         var scale = captureScale;
         var mainRect = target.getBoundingClientRect();
+        var overviewHapEl = document.getElementById("overview");
         var stateLawsEl = document.getElementById("state-laws");
         var kpiStripEl = document.querySelector(".kpi-strip");
-        // Page 1: overview to why trust (intro + key findings + executive strip). Page 2: state-by-state + map + recent legal signals. Page 3: KPI strip through end. Method/sources hidden. 10mm margins all sides.
-        /* page1EndY = end of Page 1 (intro through state-laws); page2EndY = end of Page 2 (through kpi-strip). Fallbacks when DOM landmarks are missing. */
-        var page1EndY = stateLawsEl ? Math.max(0, (stateLawsEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE1_FALLBACK_RATIO;
-        var page2EndY = kpiStripEl ? Math.max(page1EndY, (kpiStripEl.getBoundingClientRect().top - mainRect.top) * scale) : canvas.height * PDF_PAGE2_FALLBACK_RATIO;
-        page1EndY = Math.min(page1EndY, canvas.height);
-        page2EndY = Math.min(page2EndY, canvas.height);
-        if (page2EndY <= page1EndY) page2EndY = canvas.height;
+        var ch = canvas.height;
+        function landmarkSliceY(el, fallbackRatio) {
+          if (!el) return Math.round(ch * fallbackRatio);
+          var raw = (el.getBoundingClientRect().top - mainRect.top) * scale;
+          if (!isFinite(raw)) return Math.round(ch * fallbackRatio);
+          return Math.max(0, Math.min(ch, Math.round(raw)));
+        }
+        var y1 = landmarkSliceY(overviewHapEl, PDF_SLICE_FALLBACK_Y1);
+        var y2 = landmarkSliceY(stateLawsEl, PDF_SLICE_FALLBACK_Y2);
+        var y3 = landmarkSliceY(kpiStripEl, PDF_SLICE_FALLBACK_Y3);
+        y1 = Math.min(Math.max(0, y1), ch);
+        y2 = Math.min(Math.max(y1, y2), ch);
+        y3 = Math.min(Math.max(y2, y3), ch);
+        if (y2 <= y1) y2 = Math.min(ch, y1 + Math.round(ch * 0.22));
+        if (y3 <= y2) y3 = Math.min(ch, y2 + Math.round(ch * 0.18));
         restoreMapSvg();
         removePdfStyle();
         try {
@@ -2079,23 +2132,30 @@
             var y = opts.topAlign ? marginMm : marginMm + (innerH - imgH) / 2;
             pdf.addImage(imgData, imgFmt, x, y, imgW, imgH);
           }
-          var slice1 = document.createElement("canvas");
-          slice1.width = canvas.width;
-          slice1.height = page1EndY;
-          slice1.getContext("2d").drawImage(canvas, 0, 0, canvas.width, page1EndY, 0, 0, canvas.width, page1EndY);
-          addCanvasSliceWithMargins(slice1, { topAlign: true });
-          pdf.addPage();
-          var slice2 = document.createElement("canvas");
-          slice2.width = canvas.width;
-          slice2.height = page2EndY - page1EndY;
-          slice2.getContext("2d").drawImage(canvas, 0, page1EndY, canvas.width, page2EndY - page1EndY, 0, 0, canvas.width, page2EndY - page1EndY);
-          addCanvasSliceWithMargins(slice2);
-          pdf.addPage();
-          var slice3 = document.createElement("canvas");
-          slice3.width = canvas.width;
-          slice3.height = canvas.height - page2EndY;
-          slice3.getContext("2d").drawImage(canvas, 0, page2EndY, canvas.width, canvas.height - page2EndY, 0, 0, canvas.width, canvas.height - page2EndY);
-          addCanvasSliceWithMargins(slice3, { fitWidth: true });
+          var sliceDefs = [
+            { y0: 0, y1: y1, topAlign: true, fitWidth: false },
+            { y0: y1, y1: y2, topAlign: true, fitWidth: false },
+            { y0: y2, y1: y3, topAlign: true, fitWidth: false },
+            { y0: y3, y1: ch, topAlign: false, fitWidth: true }
+          ];
+          var firstPdfPage = true;
+          var drewAnySlice = false;
+          for (var si = 0; si < sliceDefs.length; si++) {
+            var def = sliceDefs[si];
+            var sliceH = def.y1 - def.y0;
+            if (sliceH <= 0) continue;
+            if (!firstPdfPage) pdf.addPage();
+            firstPdfPage = false;
+            var sliceC = document.createElement("canvas");
+            sliceC.width = canvas.width;
+            sliceC.height = sliceH;
+            sliceC.getContext("2d").drawImage(canvas, 0, def.y0, canvas.width, sliceH, 0, 0, canvas.width, sliceH);
+            addCanvasSliceWithMargins(sliceC, { topAlign: def.topAlign, fitWidth: def.fitWidth });
+            drewAnySlice = true;
+          }
+          if (!drewAnySlice) {
+            addCanvasSliceWithMargins(canvas, { topAlign: true, fitWidth: true });
+          }
           pdfFinishDelivery(pdf);
         } catch (e) {
           if (appState.printAppliedDefaultSelection) {
@@ -2139,9 +2199,20 @@
   }
 
   function initDownloadPdf() {
+    var toolbar = document.querySelector(".utility-toolbar");
+    if (toolbar) {
+      toolbar.addEventListener("click", function (ev) {
+        var btn = ev.target && ev.target.closest && ev.target.closest("#btn-download-pdf");
+        if (!btn) return;
+        ev.preventDefault();
+        runTaskSafely("download pdf image", downloadPdfAsImage);
+      });
+      return;
+    }
     var btn = document.getElementById("btn-download-pdf");
     if (!btn) return;
-    btn.addEventListener("click", function () {
+    btn.addEventListener("click", function (ev) {
+      ev.preventDefault();
       runTaskSafely("download pdf image", downloadPdfAsImage);
     });
   }

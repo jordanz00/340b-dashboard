@@ -16,6 +16,40 @@
   --hap-accent-warm-alt: #ff8a3d;
   --hap-accent-soft: rgba(245, 158, 11, 0.12);
 
+  /* —— Semantic topics (Oliver Wyman–style system — use these, avoid one-off hex) —— */
+  /* Green = financial / savings / funding */
+  --hap-topic-finance: #0f766e;
+  --hap-topic-finance-soft: rgba(15, 118, 110, 0.1);
+  --hap-topic-finance-border: rgba(15, 118, 110, 0.28);
+  /* Blue = coverage / insurance / access (aligns with HAP brand) */
+  --hap-topic-access: var(--hap-brand-primary);
+  --hap-topic-access-soft: var(--hap-brand-primary-muted);
+  --hap-topic-access-border: var(--hap-border-strong);
+  /* Purple = policy / regulation / legal context */
+  --hap-topic-policy: #5b4d9c;
+  --hap-topic-policy-soft: rgba(91, 77, 156, 0.1);
+  --hap-topic-policy-border: rgba(91, 77, 156, 0.28);
+  /* Orange = risk / pressure / constraints */
+  --hap-topic-risk: var(--hap-accent-warm);
+  --hap-topic-risk-soft: var(--hap-accent-soft);
+  --hap-topic-risk-border: rgba(245, 158, 11, 0.35);
+  /* Neutral = supporting info */
+  --hap-topic-neutral-fg: var(--hap-text-muted);
+  --hap-topic-neutral-soft: var(--hap-bg-subtle);
+
+  /* Performance / direction (cool = positive; warm = negative — use with care for color-only a11y) */
+  --hap-sentiment-positive: #0d9488;
+  --hap-sentiment-positive-soft: rgba(13, 148, 136, 0.12);
+  --hap-sentiment-negative: #ea580c;
+  --hap-sentiment-negative-soft: rgba(234, 88, 12, 0.12);
+
+  /* Executive KPI row: dominant number + short label + one-line meaning (see .hap-kpi-executive) */
+  --hap-kpi-value-size: clamp(1.85rem, 1.2rem + 2.2vw, 2.85rem);
+  --hap-kpi-value-weight: 800;
+  --hap-kpi-label-size: var(--hap-type-small);
+  --hap-kpi-meaning-size: var(--hap-type-small);
+  --hap-kpi-meaning-color: var(--hap-text-muted);
+
   /* Legacy aliases (maps older 340B token names to suite primary) */
   --hap-ow-blue: var(--hap-brand-primary);
   --hap-ow-soft: #8ed8f8;
@@ -167,4 +201,39 @@
   .hap-card-interactive:hover {
     transform: none;
   }
+}
+
+/* —— Executive KPI block (big number + label + one-line impact) —— opt-in wrapper */
+.hap-kpi-executive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--hap-space-2);
+  text-align: left;
+}
+
+.hap-kpi-executive .hap-kpi-value {
+  font-family: var(--hap-font-display);
+  font-size: var(--hap-kpi-value-size);
+  font-weight: var(--hap-kpi-value-weight);
+  line-height: var(--hap-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--hap-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hap-kpi-executive .hap-kpi-label {
+  font-size: var(--hap-kpi-label-size);
+  font-weight: 600;
+  color: var(--hap-text-secondary);
+  line-height: var(--hap-leading-snug);
+  max-width: 42ch;
+}
+
+.hap-kpi-executive .hap-kpi-meaning {
+  font-size: var(--hap-kpi-meaning-size);
+  font-weight: 500;
+  color: var(--hap-kpi-meaning-color);
+  line-height: var(--hap-leading-relaxed);
+  max-width: 52ch;
 }

@@ -3536,7 +3536,7 @@ Run via [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) in agent mode. Each batch has 10 
 
 ### V55.7 Metric Clarity Pass
 
-> Every metric should have a clear "so what" that a reader can grasp quickly.
+> Every metric should have a clear one-line impact that a reader can grasp quickly.
 
 ### V55.8 Hierarchy Durability Pass
 
@@ -3968,7 +3968,7 @@ Run via [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) in agent mode. Each batch has 10 
 
 ### Alt V55.7 Metric Clarity Pass
 
-> Every metric needs a clear "so what."
+> Every metric needs a clear one-line impact.
 
 ### Alt V55.8 Hierarchy Durability Pass
 
@@ -4250,7 +4250,7 @@ Run via [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) in agent mode. Each batch has 10 
 
 ### V62.3 Metric Meaning Pass
 
-> Every metric answers "so what?" immediately. No orphan numbers.
+> Every metric answers “why this number matters” immediately. No orphan numbers.
 
 ### V62.4 State Selection Value Pass
 
@@ -4354,7 +4354,7 @@ Run via [AGENT-TEMPLATE.md](AGENT-TEMPLATE.md) in agent mode. Each batch has 10 
 
 ### V64.7 Metric Clarity Pass
 
-> Every metric needs a clear "so what."
+> Every metric needs a clear one-line impact.
 
 ### V64.8 Hierarchy Durability Pass
 

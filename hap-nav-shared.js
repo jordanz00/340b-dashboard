@@ -34,6 +34,7 @@
 
   function initNavHighlight() {
     var sectionIds = [
+      "executive-summary",
       "section-overview",
       "overview",
       "state-laws",

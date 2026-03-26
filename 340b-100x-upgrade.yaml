@@ -1,0 +1,76 @@
+# 340B Advocacy Dashboard – 100x Upgrade
+# version: 2.0
+# description: >
+#   Complete overhaul: simplified, modular, secure, accessible, performant, monitored, and novice-friendly.
+#   Includes parallel agent monitoring, automated PDF/export, optimized UI, security hardening, and backup/revert system.
+
+project_name: "340B Advocacy Dashboard – 100x Upgrade"
+version: "2.0"
+
+agents:
+  - name: qa_agent
+    role: "Check all core functionality: map, filters, KPIs, PDF/export, responsive design"
+    input: "."
+    output: "reports/qa_report.md"
+
+  - name: security_agent
+    role: "Verify CSP, SRI, sanitize innerHTML, remove unsafe scripts"
+    input: "."
+    output: "reports/security_report.md"
+
+  - name: accessibility_agent
+    role: "Validate keyboard navigation, skip-map, touch targets, color contrast, reduced-motion"
+    input: "."
+    output: "reports/accessibility_report.md"
+
+  - name: data_agent
+    role: "Monitor state-data.js and any dynamic JSON for stale/inconsistent data"
+    input: "state-data.js"
+    output: "reports/data_report.md"
+
+  - name: performance_agent
+    role: "Check load times, deferred/preload scripts, optimized images, lazy-loading maps"
+    input: "."
+    output: "reports/performance_report.md"
+
+  - name: stakeholder_agent
+    role: "Simulate executive user experience: clarity, PDF readability, KPIs, filters"
+    input: "."
+    output: "reports/stakeholder_report.md"
+
+  - name: crosscheck_agent
+    role: "Consolidate all reports, prioritize issues, suggest fixes"
+    input:
+      - "reports/qa_report.md"
+      - "reports/security_report.md"
+      - "reports/accessibility_report.md"
+      - "reports/data_report.md"
+      - "reports/performance_report.md"
+      - "reports/stakeholder_report.md"
+    output: "reports/consolidated_action_plan.md"
+
+  - name: backup_agent
+    role: "Save current dashboard for revert"
+    input: "."
+    output: "backup/dashboard_backup.zip"
+    triggers:
+      - "on_project_start"
+      - "manual: revert back to formula"
+
+# Dashboard files considered "the dashboard" for backup/refactor
+dashboard_files:
+  - "340b.html"
+  - "340b.css"
+  - "340b.js"
+  - "state-data.js"
+  - "print.html"
+  - "print-view.css"
+  - "assets"
+
+triggers:
+  on_project_start:
+    - "backup_agent"
+    - "run_all_agents"
+  on_command:
+    command: "revert back to formula"
+    action: "scripts/revert_dashboard.py"

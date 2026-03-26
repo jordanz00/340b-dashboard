@@ -1,0 +1,6 @@
+{
+  "_comment": "Machine-readable snapshot of 340B state data. Source of truth is state-data.js (CONFIG, STATE_340B, STATE_NAMES). Regenerate or sync when state-data.js changes. Used by tooling and self-update validation.",
+  "lastUpdated": "March 2025",
+  "datasetVersion": "2.0",
+  "states": {}
+}

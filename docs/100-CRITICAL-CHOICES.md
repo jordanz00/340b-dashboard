@@ -22,7 +22,7 @@
 14. Ensure mobile: buttons stack, cards stack, no horizontal scroll.
 15. Consider an optional "Print this scenario" for handouts.
 16. Add aria-live so screen readers announce scenario change.
-17. Consider a one-sentence "So what?" under each scenario for the busiest readers.
+17. Consider a one-sentence “Why it matters” line under each scenario for the busiest readers.
 18. Keep scenario keys stable (EXPAND / CURRENT / REMOVE) for any future API or export.
 19. Consider adding a footnote: "Estimates for advocacy storytelling; not predictive."
 20. Test with a non-policy person: can they explain the three options in one sentence each?

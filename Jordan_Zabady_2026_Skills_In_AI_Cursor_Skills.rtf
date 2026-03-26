@@ -1,0 +1,119 @@
+{\rtf1\ansi\deff0\nouicompat
+{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+\viewkind4\uc1\pard\sa200\sl240\f0\fs22\lang9
+
+\b Jordan Zabady | 2026 Skills in AI & Cursor: Analysis & Skills Profile\b0\par
+\par
+
+\b Document Purpose\b0\par
+This document explains and analyzes Jordan Zabady as the creator of the HAP 340B Advocacy Dashboard and related interactive healthcare data projects. It outlines how the work was done, the exact skills demonstrated, and positions Jordan as an AI-augmented expert capable of delivering production-grade interactive dashboards for healthcare data visualization with little to no prior coding experience.\par
+\par
+
+\b 1. Who Jordan Zabady Is\b0\par
+\par
+Jordan Zabady is Producer, Digital Communications, at The Hospital and Healthsystem Association of Pennsylvania (HAP). His day-to-day work centers on video production, graphic design, and motion graphics. He is responsible for the "Caring for the Commonwealth" video series: shooting, editing, and delivering content that has received positive feedback and supports HAP's mission. He is therefore already skilled at turning complex or policy-heavy material into clear, audience-appropriate visual narratives.\par
+\par
+At the same time, Jordan was looking for something more\u151 a way to extend his impact beyond linear video and static graphics. He had an interest in data, advocacy messaging, and the audiences HAP serves: lawmakers, policymakers, hospital staff, hospital C-suite executives, and administrators. He saw an opportunity to transform data into an interactive experience that could align with HAP's advocacy goals and give those audiences a tool they could explore, share, and use in meetings and decision-making.\par
+\par
+
+\b 2. What Jordan Built\b0\par
+\par
+Jordan led the creation of the \b HAP 340B Advocacy Dashboard\b0 \u151 a single-page, interactive web application that:\par
+\bullet  Displays a clickable U.S. map with state-by-state 340B drug pricing and contract pharmacy protection status\par
+\bullet  Allows users to filter states (All / Protection / No protection), select a state for details, and see Pennsylvania (72 hospitals, $7.95B community benefits) in context\par
+\bullet  Provides shareable links (with state selection preserved), Print/PDF and Download PDF (image) outputs, and Export Map SVG\u151 all without a backend or database\par
+\bullet  Presents executive-style copy, methodology, source verification order (MultiState, ASHP, America's Essential Hospitals), and key metrics in a layout suitable for lawmakers and hospital leaders\par
+\par
+The dashboard is built from standard web files: HTML, CSS, JavaScript, and a dedicated data file (state-data.js) for dates, state records, and copy. It uses D3.js and TopoJSON for the map, plus html2canvas and jsPDF for the PDF image export. The project also includes a separate print view (print.html) for a polished Print/PDF path, a Python audit script for quality and security checks, and a large body of documentation designed for novice maintainers and future reuse.\par
+\par
+
+\b 3. How Jordan Did It: Method & Workflow\b0\par
+\par
+Jordan used \b Cursor\b0 , an AI-powered code editor, as his primary development environment. He did not write the initial code from scratch by hand; instead, he:\par
+\par
+\b 3.1 Defined goals in plain language.\b0  He started from HAP's advocacy messaging, the 340B state-law data, and a clear picture of the audience (lawmakers, policymakers, hospital staff, C-suite, administrators). He articulated what he wanted in natural language\u151 e.g., an interactive map, filters, share link, print/PDF, accessible design\u151 and used AI-assisted generation to produce HTML, CSS, and JavaScript that matched those goals.\par
+\par
+\b 3.2 Iterated through many refinement cycles.\b0  He did not accept the first output. He requested specific changes: multi-page PDF with page breaks after the map and before community benefit; correct final numbers (no count-up animation in PDF); map fully drawn before capture; clean section boundaries; and a refactor of the entire codebase for clarity and novice maintainability. Each round of feedback was concrete and outcome-focused (e.g., "wait for map to be fully drawn," "break right before community benefit"), which required him to understand both the desired user experience and how the system behaved.\par
+\par
+\b 3.3 Adopted structured improvement systems.\b0  Jordan introduced and maintained a \b ULTRA prompts\b0  system (waves of 10 prompts each for print, accessibility, performance, security, and\u151 notably\u151 100 \b novice refactor\b0  prompts in ULTRA v13-v22). He created a \b Refactoring Codebase Manual\b0  that explains how to refactor daily, where each file lives, how to label code for learners, and how to export and reuse the project as a template. He integrated a \b Secure Force\b0  workflow (SAST, threat model, OWASP-oriented checklist) so that security and maintainability are part of the process. He also used \b DAILY-IMPROVEMENT.md\b0 , \b AGENT-RULES-SYSTEM.md\b0 , \b NOVICE-MAINTAINER.md\b0 , and Cursor rules (e.g., ultra-daily-improvement.mdc, secure-force-security.mdc) so that both humans and AI have clear context when working in the codebase. This shows he thinks in systems and documentation, not just one-off edits.\par
+\par
+\b 3.4 Cared about audience \u38? quality.\b0  He insisted that the PDF and print output look professional for "lawmakers, hospital CEOs, and administrators." He treated copy, source verification order, and data freshness as first-class concerns. He required a print gate (no publish without checking Print/PDF and Download PDF image) and an audit script, and he tied these to release and handoff documentation. This reflects a producer and communications mindset: the deliverable must be correct, on-brand, and usable by non-technical stakeholders.\par
+\par
+
+\b 4. Skills Jordan Demonstrated (Exact Outline)\b0\par
+\par
+\b Domain & Advocacy\b0\par
+- Understanding of 340B drug pricing, contract pharmacy protection, and state-level policy\par
+- Ability to align a technical product with HAP advocacy messaging and audience needs\par
+- Judgment about what to highlight for lawmakers, policymakers, and hospital executives\par
+- Awareness of source credibility (MultiState, ASHP, America's Essential Hospitals) and verification order\par
+\par
+\b Product & UX\b0\par
+- Defining user flows: explore map, filter states, select state, share link, print/PDF, export SVG\par
+- Specifying page breaks and content boundaries for multi-page PDF so sections read cleanly\par
+- Insisting on loading states ("Creating PDF..."), error messages ("PDF capture failed. Try Print / PDF instead."), and accessible behavior (e.g., map visible in both print and PDF image)\par
+- Prioritizing a "novice" maintainer experience so the project can be learned from and updated by someone with limited coding experience\par
+\par
+\b AI & Cursor Workflow\b0\par
+- Effective prompting: clear, outcome-based requests (e.g., "page break after the map," "numbers at correct values," "simplify the code for a novice")\par
+- Willingness to iterate: many rounds of changes to PDF behavior, refactoring, documentation, and security without treating the first answer as final\par
+- Use of plan files, agent templates, and multi-step tasks (e.g., refactor + run Secure Force) to scope and complete complex work\par
+- Adoption of rules and documentation (Cursor rules, REFACTORING-CODEBASE-MANUAL, ULTRA-prompts, SECURE-FORCE) so the AI and future maintainers have consistent context\par
+\par
+\b Technical Literacy (Without Writing Code From Scratch)\b0\par
+- Understanding of the roles of HTML (structure/content), CSS (layout/print), JavaScript (behavior), and a data file (state-data.js)\par
+- Ability to read and reason about file structure, function names, and comments to direct changes (e.g., "break before community benefit," "finalize count-up before capture")\par
+- Comfort with running a local audit script (dashboard-audit.py) and interpreting pass/fail and manual checks\par
+- Awareness of security concepts: threat model, SAST, no hardcoded credentials, input validation, and where to apply them (e.g., hash state, share URL, print payload)\par
+\par
+\b Documentation & Process\b0\par
+- Creating and maintaining a Refactoring Codebase Manual with code map, daily refactor workflow, glossary, and reuse checklist\par
+- Designing 100 structured prompts (ULTRA v13\u38?v22) for novice-oriented refactoring and learning\par
+- Integrating Secure Force (SAST, manual review, deploy gate) into the improvement workflow\par
+- Writing supervisor- and CEO-facing documents (e.g., project overview, AI initiative email) that explain the value of AI-augmented development and the skills required\par
+\par
+\b Design & Brand\b0\par
+- Ensuring the dashboard fits HAP branding and a professional, executive-ready presentation\par
+- Caring about typography, hierarchy, and clarity in both screen and print/PDF outputs\par
+- Leveraging existing skills in visual storytelling (from video and motion graphics) to guide layout and emphasis\par
+\par
+
+\b 5. Evidence From the Project\b0\par
+\par
+The repository itself is evidence of Jordan's approach:\par
+\par
+- \b Multiple deliverables:\b0  340b.html (main dashboard), print.html (print view), state-data.js (single source for dates and state data), 340b.css (design system and print styles), 340b.js (map, filters, print/PDF/share logic).\par
+\par
+- \b Novice-first design:\b0  NOVICE-MAINTAINER.md with a code map and "which file to edit when"; REFACTORING-CODEBASE-MANUAL.md with step-by-step daily refactor workflow; inline comments in code (e.g., "Runs when the user clicks Print/PDF," "Sets every count-up number to its final value"); and a Glossary and Reuse checklist for reuse and onboarding.\par
+\par
+- \b Structured improvement:\b0  ULTRA-prompts.md with waves v01\u38?v12 (print, accessibility, 50 improvements) and v13\u38?v22 (100 novice refactor prompts); DAILY-IMPROVEMENT.md with Novice refactor section and Secure Force; AGENT-RULES-SYSTEM.md and AGENT-TEMPLATE.md for batch execution and release gates.\par
+\par
+- \b Security awareness:\b0  SECURE-FORCE.md (threat model, SAST, input/auth review, OWASP-oriented checklist); Cursor rules (secure-force-security.mdc, secure-force-sast.mdc); and a requirement to run Secure Force at the end of a refactor.\par
+\par
+- \b Quality gates:\b0  dashboard-audit.py for DOM, links, CSP, print structure; mandatory print/PDF check before release; and QA-CHECKLIST.md and DATA-UPDATE.md for maintainers.\par
+\par
+Together, this shows Jordan not only as someone who "had the AI build a dashboard" but as someone who \b designed the product, steered the implementation, and built the documentation and process so the project could be maintained, secured, and reused\u151 all without prior professional coding experience.\par
+\par
+
+\b 6. Analysis of Jordan as User & Creator\b0\par
+\par
+Jordan exhibits a mix of \b producer judgment\b0 , \b communications strategy\b0 , and \b learning agility\b0 . He knows what "good" looks like for his audience (lawmakers, C-suite, administrators) and pushes until the output meets that bar. He is comfortable with iterative, AI-assisted development: he does not expect the first answer to be final, and he gives precise feedback (e.g., where page breaks should fall, that numbers must be final in PDF, that the map must be fully drawn before capture). He also invests in the long-term: refactoring for clarity, adding 100 prompts for daily learning, and creating a manual so that a novice coder can understand and extend the work. That suggests he sees this project as a \b showcase\b0 and a \b template\b0 for future work, not a one-off.\par
+\par
+His self-description\u151 "little to no coding experience" but "looking for something more"\u151 aligns with the evidence. He did not write the initial JavaScript or CSS by hand; he used Cursor and AI to generate and modify code. Yet he clearly understood enough about structure (which file does what), behavior (when things run, what gets captured), and quality (print gate, audit, security) to direct the work and to build systems (ULTRA, Refactoring Manual, Secure Force) that outlast any single edit. That is exactly the profile of an \b AI-augmented expert\b0 : domain knowledge and editorial judgment combined with the ability to use AI tools as a force multiplier.\par
+\par
+
+\b 7. Summary: Jordan Zabady as AI Expert for Healthcare Data Visualization\b0\par
+\par
+Jordan Zabady has demonstrated that he can \b conceive, direct, and deliver\b0  an interactive healthcare data visualization product (the HAP 340B Advocacy Dashboard) that serves lawmakers, policymakers, hospital staff, and C-suite executives. He did so with \b little to no traditional coding experience\b0  by using Cursor and AI-assisted development, combined with:\par
+\bullet  Strong domain and audience understanding (340B, HAP advocacy, hospital and policy stakeholders)\par
+\bullet  Producer-level standards for accuracy, branding, and usability\par
+\bullet  Iterative, precise prompting and the willingness to refine until the result is right\par
+\bullet  Systematic thinking (ULTRA waves, Refactoring Manual, Secure Force, novice-first documentation)\par
+\bullet  The ability to read and reason about code structure and behavior enough to guide changes and quality gates\par
+\par
+He has also produced documentation (including this analysis) that can be used to communicate his skills and method to supervisors, leadership, and future collaborators. The project stands as a \b showcase\b0  of what is possible when a communications professional with design and production skills adopts AI-augmented development to transform data into an interactive, advocacy-aligned tool for healthcare policy.\par
+\par
+
+\b \u169  2026 | Prepared for Jordan Zabady | HAP 340B Advocacy Dashboard Project\b0\par
+\par
+}

@@ -12,6 +12,9 @@
  * - STATES_WITH_PROTECTION: derived list for filters
  *
  * See DATA-UPDATE.md for instructions.
+ *
+ * CONFIG.copy overlaps the inline CONFIG in 340b.html — update both when changing shared
+ * strings, or drift will confuse users (see NOVICE-MAINTAINER.md).
  */
 
 /* ========== CONFIGURATION ========== */
@@ -30,8 +33,6 @@ var CONFIG = {
 
   /* Plain-language copy for advocates and lay audiences */
   copy: {
-    headerValueProp:
-      "For policymakers, hospital leaders, and partners: see where states protect contract pharmacy, how Pennsylvania fits in, and HAP’s advocacy ask—sources and dates on page.",
     overviewLead:
       "340B is a federal discount that helps eligible hospitals (covered entities) stretch dollars further so more patients get care and affordable medicines—without new taxpayer cost.",
     hapPositionWhy:
@@ -42,15 +43,15 @@ var CONFIG = {
     hapAskItems: [
       {
         label: "Protect the 340B discount",
-        soWhat: "So what: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.",
+        impactLine: "Impact: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.",
       },
       {
         label: "Defend contract pharmacy partnerships",
-        soWhat: "So what: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.",
+        impactLine: "Impact: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.",
       },
       {
         label: "Oppose rules that shrink access for safety-net patients",
-        soWhat: "So what: Rural and underserved communities keep an affordable path to medications hospitals are required to support.",
+        impactLine: "Impact: Rural and underserved communities keep an affordable path to medications hospitals are required to support.",
       },
     ],
     mapHeroSub: "Start with the map: see which states have enacted contract pharmacy protection and open any state for details.",

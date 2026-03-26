@@ -8,7 +8,7 @@
   <title>340B Drug Pricing Program | HAP Advocacy Dashboard (Basic)</title>
   <meta name="description" content="HAP 340B Advocacy Dashboard — safe for employer hosting. Interactive map, full content, local scripts only.">
   <link rel="stylesheet" href="hap-design-tokens.css">
-  <link rel="stylesheet" href="340b.css?v=dmx-8">
+  <link rel="stylesheet" href="340b.css?v=dmx-9">
   <!-- Local scripts only; performance hint loads first (no global listener monkey-patch). -->
   <script src="utils/performance-patch.js"></script>
   <script src="state-data.js"></script>
@@ -20,18 +20,17 @@
 <div class="dashboard">
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- ========== HEADER + shell (matches 340b.html; BASIC has no PDF/simulators) ========== -->
-  <header class="dashboard-header">
-    <div class="header-left">
-      <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="header-logo" width="56" height="56" loading="eager">
-      <div>
-        <p class="report-by">The Hospital and Healthsystem Association of Pennsylvania</p>
-        <h1>340B: Federal discount for hospital and community care</h1>
-        <p class="header-value-prop">For policymakers, hospital leaders, and partners: see where states protect contract pharmacy, how Pennsylvania fits in, and HAP’s advocacy ask—sources and dates on page.</p>
-        <span class="badge-live">ADVOCACY DASHBOARD — Communications edition</span>
+  <!-- ========== HEADER + shell (OW hap-header pattern; BASIC has no PDF/simulators) ========== -->
+  <header class="dashboard-header dashboard-header--suite" role="banner">
+    <div class="hap-header">
+      <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="hap-header-logo" width="40" height="40" loading="eager">
+      <div class="hap-header-text">
+        <p class="hap-header-org">The Hospital and Healthsystem Association of Pennsylvania</p>
+        <h1 class="hap-header-title">340B: Federal discount for hospital and community care</h1>
+        <span class="hap-header-badge">ADVOCACY DASHBOARD — Communications edition</span>
       </div>
     </div>
-    <nav class="dashboard-nav basic-dashboard-nav" id="dashboard-nav" aria-label="Dashboard sections">
+    <nav class="dashboard-nav dashboard-nav--suite basic-dashboard-nav" id="dashboard-nav" aria-label="Dashboard sections">
       <a href="#section-overview" class="active" aria-current="page">Overview</a>
       <a href="#key-metrics">Key metrics</a>
       <a href="#state-laws">Map &amp; states</a>
@@ -94,7 +93,7 @@
                 <p class="stat-label">Market share</p>
                 <p class="stat-value ban-stat">7%</p>
                 <p class="stat-desc">340B share of U.S. outpatient drug purchases</p>
-                <p class="stat-so-what">So what: Scale of outpatient spend that flows through 340B—context for how large the program’s footprint is nationally.</p>
+                <p class="stat-impact">Impact: It shows the share of national outpatient drug spend that flows through 340B—useful scale for the program’s national footprint.</p>
               </div>
             </div>
             <div class="glossary-strip" aria-label="Key terms on this page">
@@ -133,21 +132,21 @@
                 <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
                 <div class="hap-ask-item-body">
                   <h4 class="hap-ask-item-label">Protect the 340B discount</h4>
-                  <p class="hap-ask-item-impact">So what: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</p>
+                  <p class="hap-ask-item-impact">Impact: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</p>
                 </div>
               </li>
               <li class="hap-ask-item hap-ask-item--partnership" title="Supports filling prescriptions through hospitals’ contract pharmacy networks.">
                 <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
                 <div class="hap-ask-item-body">
                   <h4 class="hap-ask-item-label">Defend contract pharmacy partnerships</h4>
-                  <p class="hap-ask-item-impact">So what: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</p>
+                  <p class="hap-ask-item-impact">Impact: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</p>
                 </div>
               </li>
               <li class="hap-ask-item hap-ask-item--access" title="Avoids policies that make it harder for underserved patients to get 340B-priced drugs.">
                 <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
                 <div class="hap-ask-item-body">
                   <h4 class="hap-ask-item-label">Oppose rules that shrink access for safety-net patients</h4>
-                  <p class="hap-ask-item-impact">So what: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</p>
+                  <p class="hap-ask-item-impact">Impact: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</p>
                 </div>
               </li>
             </ul>
@@ -178,25 +177,25 @@
                 <p class="key-finding-caption">Not yet enacted</p>
               </div>
             </div>
-            <p class="key-finding-so-what">So what: The map shows where state law backs contract pharmacy networks.</p>
+            <p class="key-finding-impact">Impact: The map shows where state law backs contract pharmacy networks.</p>
           </article>
           <article class="key-finding-card key-finding-card--finance hap-card-interactive">
             <p class="key-finding-label">Community benefit (340B hospitals)</p>
             <p class="key-finding-value ban-stat ban-stat--finance">$7.95B</p>
             <p class="key-finding-meta">2024</p>
-            <p class="key-finding-so-what">So what: Dollars hospitals report putting back into community programs and care.</p>
+            <p class="key-finding-impact">Impact: Dollars hospitals report putting back into community programs and care.</p>
           </article>
           <article class="key-finding-card key-finding-card--pa hap-card-interactive">
             <p class="key-finding-label">Pennsylvania hospitals in 340B</p>
             <p class="key-finding-value ban-stat ban-stat--pa">72</p>
             <p class="key-finding-caption">Hospitals serving patients</p>
-            <p class="key-finding-so-what">So what: Pennsylvania’s scale in the program for statewide advocacy.</p>
+            <p class="key-finding-impact">Impact: Pennsylvania’s scale in the program for statewide advocacy.</p>
           </article>
           <article class="key-finding-card key-finding-card--market hap-card-interactive">
             <p class="key-finding-label">Share of U.S. outpatient drug spend</p>
             <p class="key-finding-value ban-stat ban-stat--market">7%</p>
             <p class="key-finding-caption">Uses the 340B discount</p>
-            <p class="key-finding-so-what">So what: How much national outpatient drug spend flows through the program.</p>
+            <p class="key-finding-impact">Impact: It quantifies how much national outpatient drug spend flows through the program.</p>
           </article>
         </div>
       </section>
@@ -321,25 +320,25 @@
           <p class="kpi-label">U.S. Drug Market</p>
           <p class="kpi-value ban-stat">7%</p>
           <p class="kpi-desc">340B share of U.S. outpatient drug market</p>
-          <p class="kpi-meaning">So what: Frames how large a slice of outpatient drug spending runs through 340B.</p>
+          <p class="kpi-meaning">Impact: This metric shows how large a slice of outpatient drug spending runs through 340B.</p>
         </div>
         <div class="kpi-card kpi-card--benefit">
           <p class="kpi-label">Community Benefit</p>
           <p class="kpi-value ban-stat">$7.95B</p>
           <p class="kpi-desc">340B community benefits (2024)</p>
-          <p class="kpi-meaning">So what: Dollars hospitals report reinvesting in community programs and services.</p>
+          <p class="kpi-meaning">Impact: Dollars hospitals report reinvesting in community programs and services.</p>
         </div>
         <div class="kpi-card kpi-card--oversight">
           <p class="kpi-label">Oversight</p>
           <p class="kpi-value ban-stat">179</p>
           <p class="kpi-desc">Covered entity audits (HRSA FY 2024)</p>
-          <p class="kpi-meaning">So what: Scale of federal review activity for covered entities in the stated period.</p>
+          <p class="kpi-meaning">Impact: This reflects the scale of federal review activity for covered entities in the stated period.</p>
         </div>
         <div class="kpi-card kpi-card--pa">
           <p class="kpi-label">Pennsylvania</p>
           <p class="kpi-value ban-stat">72</p>
           <p class="kpi-desc">PA hospitals in 340B</p>
-          <p class="kpi-meaning">So what: Pennsylvania’s footprint in the program for statewide context.</p>
+          <p class="kpi-meaning">Impact: It frames Pennsylvania’s footprint in the program for statewide discussion.</p>
         </div>
         <p class="data-benchmark"><strong>Illustrative context:</strong> ~$110M community benefit per participating PA hospital if national totals were divided evenly across 72 hospitals—actuals vary by facility.</p>
       </section>
@@ -566,7 +565,7 @@
   </footer>
 </div>
 <!-- Map script (local). hap-nav-shared scroll-active nav; no 340b.js. -->
-<script src="hap-nav-shared.js?v=dmx-6"></script>
+<script src="hap-nav-shared.js?v=dmx-9"></script>
 <script src="340b-basic-map.js"></script>
 </body>
 </html>

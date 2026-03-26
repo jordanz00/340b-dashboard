@@ -33,7 +33,7 @@ Each run MUST simulate 4 roles:
 - Tightens copy
 - Removes jargon
 - Improves readability
-- Adds “so what” to stats
+- Adds one-line **Impact** (or **Why it matters**) to stats
 
 ### 2. UX LEAD (Structure + Hierarchy)
 - Fixes layout logic
