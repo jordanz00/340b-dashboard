@@ -4,8 +4,8 @@
     "revision_date": "2022-05-27",
     "geocode": "Nominatim OpenStreetMap",
     "count_input": 66,
-    "count_geocoded": 65,
-    "count_missing": 1,
+    "count_geocoded": 66,
+    "count_missing": 0,
     "note": "Source list from HAP Resource Center (May 2022), geocoded via OpenStreetMap Nominatim."
   },
   "hospitals": [
@@ -355,6 +355,14 @@
       "display_name": "UPMC Children's Hospital of Pittsburgh, 4401, Penn Avenue, Central Lawrenceville, Pittsburgh, Allegheny County, Pennsylvania, 15224, United States"
     },
     {
+      "name": "UPMC Cole",
+      "lat": 41.776165,
+      "lon": -77.956692,
+      "source": "PA ZIP centroid fallback (16915) from USCities.json",
+      "display_name": "UPMC Cole, 1001 E 2nd St, Coudersport, PA 16915",
+      "address_query": "1001 E 2nd St, Coudersport, PA 16915"
+    },
+    {
       "name": "UPMC Hamot",
       "lat": 42.1337769,
       "lon": -80.0872646,
@@ -469,7 +477,5 @@
       "display_name": "West Penn Hospital, 4800, Friendship Avenue, Bloomfield, Pittsburgh, Allegheny County, Pennsylvania, 15224, United States"
     }
   ],
-  "missing": [
-    "UPMC Cole"
-  ]
+  "missing": []
 }
