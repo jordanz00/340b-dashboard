@@ -992,6 +992,16 @@
     }
   }
 
+  function getPaDistrictMapSvgString() {
+    var svg = document.querySelector("#pa-district-map svg");
+    if (!svg) return "";
+    try {
+      return new XMLSerializer().serializeToString(svg);
+    } catch (e) {
+      return "";
+    }
+  }
+
   // Gathers selection text, protection counts, state lists, KPI values, and data freshness from the live page for the print payload.
   function gatherPrintPayloadSummaryAndKpis() {
     var selectionTitle = appState.dom.selectionSummaryTitle ? appState.dom.selectionSummaryTitle.textContent : "No state selected yet";
@@ -1062,9 +1072,11 @@
   function getPrintViewPayload() {
     var summary = gatherPrintPayloadSummaryAndKpis();
     var mapSvg = getMapSvgString();
+    var paDistrictMapSvg = getPaDistrictMapSvgString();
     return {
       payloadVersion: 1,
       mapSvg: mapSvg,
+      paDistrictMapSvg: paDistrictMapSvg,
       mapSvgFallback: !mapSvg || mapSvg.length < 100,
       selectionTitle: summary.selectionTitle,
       selectionText: summary.selectionText,
@@ -2624,13 +2636,18 @@
     try {
       if (window.localStorage && window.localStorage.getItem(KPI_BRIEFING_BANNER_LS) === "1") {
         banner.hidden = true;
+        banner.setAttribute("hidden", "");
+        banner.style.display = "none";
       }
     } catch (e) {
       /* ignore */
     }
 
     btn.addEventListener("click", function () {
+      // Use multiple mechanisms so dismissal works even if CSS/layout is odd.
       banner.hidden = true;
+      banner.setAttribute("hidden", "");
+      banner.style.display = "none";
       try {
         if (window.localStorage) window.localStorage.setItem(KPI_BRIEFING_BANNER_LS, "1");
       } catch (e2) {
@@ -2754,15 +2771,12 @@
     var printBtn = document.getElementById("leave-behind-preview-print");
     var cancelBtn = document.getElementById("leave-behind-preview-cancel");
 
-    if (!btn || !preview || !printBtn || !cancelBtn) return;
+    if (!btn) return;
 
-    btn.addEventListener("click", function () {
-      preview.hidden = false;
-      try { printBtn.focus(); } catch (e) { /* ignore */ }
-    });
+    function startLeaveBehindPrint() {
+      // Ensure preview is closed if present.
+      if (preview) preview.hidden = true;
 
-    printBtn.addEventListener("click", function () {
-      preview.hidden = true;
       document.body.classList.add("leave-behind-mode");
       function cleanupLeaveBehindPrint() {
         document.body.classList.remove("leave-behind-mode");
@@ -2770,12 +2784,25 @@
       }
       window.addEventListener("afterprint", cleanupLeaveBehindPrint);
       window.print();
+    }
+
+    btn.addEventListener("click", function () {
+      // Default behavior: print immediately (most reliable across browsers).
+      // If the preview dialog exists, you can still use it via its buttons.
+      startLeaveBehindPrint();
     });
 
-    cancelBtn.addEventListener("click", function () {
-      preview.hidden = true;
-      try { btn.focus(); } catch (e2) { /* ignore */ }
-    });
+    if (preview && printBtn && cancelBtn) {
+      // Keep the explicit preview controls working if the UI is used elsewhere.
+      printBtn.addEventListener("click", function () {
+        startLeaveBehindPrint();
+      });
+
+      cancelBtn.addEventListener("click", function () {
+        preview.hidden = true;
+        try { btn.focus(); } catch (e2) { /* ignore */ }
+      });
+    }
   }
 
   /* ---------- Progressive enhancement helpers ---------- */
@@ -3433,20 +3460,6 @@
       statusEl.classList.toggle("is-error", !!isError);
     }
 
-    function openLegislatorFinder(zip) {
-      var baseUrl = "https://www.legis.state.pa.us/cfdocs/legis/home/findyourlegislator/";
-      // Best-effort prefill: if the PA site doesn't use query params, the base page still opens.
-      var url = baseUrl + "?zip=" + encodeURIComponent(zip);
-
-      var a = document.createElement("a");
-      a.href = url;
-      a.target = "_blank";
-      a.rel = "noopener noreferrer";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    }
-
     form.addEventListener("submit", function (e) {
       e.preventDefault();
       setStatus("", false);
@@ -3459,7 +3472,10 @@
         return;
       }
 
-      openLegislatorFinder(zip);
+      setStatus("Looking up legislators…", false);
+      window.dispatchEvent(new CustomEvent("hap:pa-district-zip-lookup", {
+        detail: { zip: zip }
+      }));
     });
   }
 

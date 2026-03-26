@@ -23,7 +23,7 @@
 /* Header compact so first overview block sits directly under it (no blank first page). */
 .print-view-header {
   display: block;
-  overflow: hidden;
+  overflow: visible;
   margin-bottom: 0.5rem;
   padding: 0.5rem 0.75rem 0.5rem 0;
   border-bottom: 1px solid rgba(11, 103, 194, 0.15);
@@ -615,8 +615,9 @@ body.print-view.print-view-has-mobile-bar #print-view-root {
     margin-bottom: 0.3rem !important;
     padding: 0.35rem 0.5rem !important;
     font-size: 0.75rem !important;
-    page-break-inside: avoid;
-    page-break-after: avoid;
+    page-break-inside: auto;
+    page-break-after: auto;
+    break-inside: auto;
   }
 
   .print-view-key-findings {
@@ -629,8 +630,9 @@ body.print-view.print-view-has-mobile-bar #print-view-root {
   .print-view-block {
     margin-bottom: 0.4rem;
     padding: 0.45rem 0.6rem;
-    page-break-inside: avoid;
-    page-break-after: avoid;
+    page-break-inside: auto;
+    page-break-after: auto;
+    break-inside: auto;
     box-shadow: none;
     border: 1px solid #ddd;
     background: #fff;
@@ -650,13 +652,12 @@ body.print-view.print-view-has-mobile-bar #print-view-root {
     page-break-before: avoid;
   }
 
-  .print-view-executive {
-    page-break-inside: avoid;
-  }
+  .print-view-executive { page-break-inside: auto; break-inside: auto; }
 
   .print-view-executive-card {
-    page-break-inside: avoid;
-    page-break-after: avoid;
+    page-break-inside: auto;
+    page-break-after: auto;
+    break-inside: auto;
     box-shadow: none;
     border: 1px solid #e5e7eb;
     background: #fff;
@@ -665,21 +666,21 @@ body.print-view.print-view-has-mobile-bar #print-view-root {
   .print-view-kpi-strip {
     margin-bottom: 0.5rem;
     margin-top: 0.5rem;
-    page-break-inside: avoid;
+    page-break-inside: auto;
     page-break-before: auto;
+    break-inside: auto;
     box-shadow: none;
     border: 1px solid #e5e7eb;
     background: #fff;
   }
 
-  .print-view-kpi-card {
-    page-break-inside: avoid;
-  }
+  .print-view-kpi-card { page-break-inside: auto; break-inside: auto; }
 
   .print-view-map-hero {
     page-break-before: avoid;
-    page-break-inside: avoid;
-    page-break-after: avoid;
+    page-break-inside: auto;
+    page-break-after: auto;
+    break-inside: auto;
     margin-top: 0.25rem !important;
     margin-bottom: 0.4rem;
   }
@@ -700,17 +701,15 @@ body.print-view.print-view-has-mobile-bar #print-view-root {
     font-size: 0.7rem;
   }
 
-  .print-view-map-and-legend {
-    page-break-inside: avoid;
-    page-break-after: avoid;
-  }
+  .print-view-map-and-legend { page-break-inside: auto; page-break-after: auto; break-inside: auto; }
 
   .print-view-map-wrap {
     display: block !important;
     visibility: visible !important;
     opacity: 1 !important;
-    page-break-inside: avoid;
+    page-break-inside: auto;
     page-break-before: avoid;
+    break-inside: auto;
     border: 1px solid #e5e7eb;
     background: #fff;
     min-height: 150px !important;
@@ -732,12 +731,26 @@ body.print-view.print-view-has-mobile-bar #print-view-root {
     page-break-inside: avoid;
   }
 
+  .print-view-pa-district-map {
+    page-break-inside: auto;
+    break-inside: auto;
+  }
+
   .print-view-trends {
     page-break-inside: avoid;
   }
 
   .print-view-footer-dmx {
     display: none !important;
+  }
+
+  /* Guardrails: avoid text clipping on narrow print layouts/PDF engines */
+  .print-view-block,
+  .print-view-kpi-card,
+  .print-view-state-list,
+  .print-view-key-findings-list {
+    overflow-wrap: anywhere;
+    word-break: normal;
   }
 }
 

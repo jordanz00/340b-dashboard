@@ -769,6 +769,83 @@ body {
   flex-direction: column;
   gap: 0.15rem;
 }
+
+/* Executive mega strip (hero KPIs) — row redesign for alignment and readability */
+.hero-kpi-banner .exec-summary-mega-strip {
+  grid-template-columns: 1fr;
+  gap: clamp(0.75rem, 1.6vw, 1rem);
+  margin-bottom: var(--space-6);
+}
+
+.hero-kpi-banner .exec-summary-mega {
+  display: grid;
+  grid-template-columns: minmax(170px, 240px) minmax(0, 1fr);
+  column-gap: clamp(0.9rem, 2vw, 1.25rem);
+  align-items: start;
+  padding: clamp(1rem, 2vw, 1.25rem);
+}
+
+.hero-kpi-banner .exec-summary-mega__eyebrow {
+  grid-column: 2;
+  grid-row: 1;
+  margin-bottom: 0.25rem;
+}
+
+.hero-kpi-banner .exec-summary-mega__value,
+.hero-kpi-banner .exec-summary-mega__split {
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  align-self: center;
+  margin: 0;
+}
+
+.hero-kpi-banner .exec-summary-mega__unit {
+  grid-column: 2;
+  grid-row: 2;
+  margin-top: 0.1rem;
+}
+
+.hero-kpi-banner .exec-summary-mega__impact {
+  grid-column: 2;
+  grid-row: 3;
+  margin-top: 0.55rem;
+}
+
+.hero-kpi-banner .exec-summary-mega .stat-verified {
+  grid-column: 2;
+  grid-row: 4;
+  margin-top: 0.4rem;
+}
+
+/* Make the 2-up policy split read cleanly in the left value column */
+.hero-kpi-banner .exec-summary-mega__split {
+  gap: 0.9rem;
+  align-items: flex-end;
+}
+
+.hero-kpi-banner .exec-summary-mega__split .exec-summary-mega__value {
+  font-size: clamp(2.1rem, 3.4vw + 0.65rem, 3.2rem);
+  line-height: 0.98;
+}
+
+.hero-kpi-banner .exec-summary-mega__split-label {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  font-weight: 650;
+}
+
+@media (max-width: 720px) {
+  .hero-kpi-banner .exec-summary-mega {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .hero-kpi-banner .exec-summary-mega__value,
+  .hero-kpi-banner .exec-summary-mega__split {
+    align-self: flex-start;
+  }
+}
 .exec-summary-mega__split .exec-summary-mega__value {
   font-size: clamp(2rem, 3.5vw + 0.75rem, 3.25rem);
 }
@@ -1257,7 +1334,7 @@ body {
 }
 .kpi-strip.kpi-strip--mark11 {
   display: block;
-  padding: var(--space-8) var(--space-5) var(--space-10);
+  padding: var(--space-6) var(--space-5) var(--space-7);
 }
 .kpi-strip-head {
   text-align: center;
@@ -1833,7 +1910,8 @@ body {
 }
 .timeline-item__date {
   flex-shrink: 0;
-  font-family: var(--font-mono);
+  font-family: var(--font-sans);
+  font-variant-numeric: tabular-nums;
   font-size: clamp(0.62rem, 0.85vw, 0.74rem);
   font-weight: 800;
   letter-spacing: 0.02em;
@@ -1956,7 +2034,7 @@ body {
 
 /* OW-style section bands — very light backgrounds alternate to separate major blocks */
 .ow-section {
-  padding: var(--space-4) clamp(var(--space-3), 2.5vw, var(--space-6));
+  padding: var(--space-3) clamp(var(--space-3), 2.3vw, var(--space-5));
   margin-bottom: var(--space-4);
   border-radius: var(--radius-lg);
   border: 1px solid rgba(11, 103, 194, 0.06);
@@ -1980,12 +2058,12 @@ body {
   background: var(--ow-band-a);
 }
 .intro-section.ow-section { margin-bottom: var(--space-2); }
-.map-hero-section.ow-section { margin-top: var(--space-4); margin-bottom: var(--space-6); }
+.map-hero-section.ow-section { margin-top: var(--space-3); margin-bottom: var(--space-4); }
 .kpi-strip.ow-section { margin-top: var(--space-2); }
 /* Full cards that are also section bands: keep a single padding rhythm */
 .card.ow-section {
-  padding: var(--space-6);
-  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  margin-bottom: var(--space-5);
 }
 .pa-impact-mode-section.ow-section,
 .impact-simulator-section.ow-section {
@@ -2426,6 +2504,44 @@ main { padding: var(--space-6) var(--space-6) var(--space-12); max-width: var(--
 #pa-impact .stat-value.ban-stat.stat--perf-negative { color: var(--chart-perf-negative); }
 .card--compact .stat-desc { font-size: var(--text-xs); }
 
+/* Pennsylvania operating stakes: row-based stat layout for cleaner scanability */
+#pa-impact .stat-block.stat-block--rows {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+#pa-impact .stat-block.stat-block--rows .stat.stat--row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  text-align: left;
+}
+#pa-impact .stat-block.stat-block--rows .stat-label {
+  margin: 0;
+  font-size: var(--text-sm);
+  letter-spacing: var(--tracking-normal);
+  text-transform: none;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+#pa-impact .stat-block.stat-block--rows .stat-value {
+  margin: 0;
+  white-space: nowrap;
+  line-height: 1;
+}
+@media (max-width: 520px) {
+  #pa-impact .stat-block.stat-block--rows .stat.stat--row {
+    padding: var(--space-3);
+    gap: var(--space-2);
+  }
+  #pa-impact .stat-block.stat-block--rows .stat-label {
+    font-size: var(--text-xs);
+  }
+}
+
 /* HAP Position — accent (featured variant uses .card-hap--featured) */
 .card-hap:not(.card-hap--featured) { border-left: 3px solid var(--accent); }
 
@@ -2689,13 +2805,45 @@ main { padding: var(--space-6) var(--space-6) var(--space-12); max-width: var(--
 
 .pa-district-svg { width: 100%; height: auto; display: block; }
 .pa-district-shape { stroke: rgba(255,255,255,0.95); stroke-width: 1; cursor: pointer; transition: transform 0.12s var(--ease), filter 0.12s var(--ease); transform-origin: center; }
+.pa-district-shape:focus { outline: none; }
 .pa-district-shape:focus-visible { outline: none; filter: drop-shadow(0 0 3px rgba(11,103,194,0.35)); }
 .pa-district-shape:hover { filter: drop-shadow(0 2px 6px rgba(15,23,42,0.18)); }
+.pa-district-shape--selected {
+  stroke: #f59e0b;
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.45));
+}
 
 .pa-district-shape--hi { fill: var(--hap-brand-deep, #003087); }
 .pa-district-shape--mid { fill: var(--hap-brand-primary, #0072bc); }
 .pa-district-shape--zero { fill: rgba(148, 163, 184, 0.35); }
 .pa-district-shape--unknown { fill: rgba(148, 163, 184, 0.18); }
+
+.pa-district-hospital-dot {
+  pointer-events: auto;
+  cursor: pointer;
+  fill: rgba(245, 158, 11, 0.96);
+  stroke: rgba(15, 23, 42, 0.95);
+  stroke-width: 1.2;
+  transition: transform 0.12s var(--ease), filter 0.12s var(--ease);
+  transform-origin: center;
+}
+.pa-district-hospital-dot--senate {
+  fill: rgba(251, 191, 36, 0.95);
+}
+.pa-district-hospital-dot:hover {
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.75));
+}
+.pa-district-hospital-dot:focus,
+.pa-district-hospital-dot:focus-visible {
+  outline: none;
+  filter: drop-shadow(0 0 4px rgba(245, 158, 11, 0.9));
+}
+@media (prefers-reduced-motion: reduce) {
+  .pa-district-hospital-dot {
+    transition: none !important;
+  }
+}
 
 .pa-district-detail__note {
   margin: var(--space-3) 0 0;
@@ -3708,7 +3856,7 @@ footer a:hover { color: var(--primary); }
 /* Policy triad: duplicate discounts + access + PA safeguards (less cramped) */
 .policy-triad {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: clamp(0.85rem, 1.8vw, 1.15rem);
   align-items: stretch;
 }
@@ -3720,9 +3868,17 @@ footer a:hover { color: var(--primary); }
 }
 
 .policy-triad-card {
-  padding: clamp(0.95rem, 2vw, 1.25rem);
+  padding: clamp(0.85rem, 1.8vw, 1.05rem);
   border-radius: 14px;
   min-height: 0;
+}
+
+#duplicate-discount-national {
+  grid-column: 1 / -1;
+}
+#duplicate-discount-national .policy-triad-headline,
+#duplicate-discount-national .policy-triad-title {
+  text-align: left;
 }
 
 .policy-triad-card__head {
@@ -3778,7 +3934,7 @@ footer a:hover { color: var(--primary); }
 }
 
 .policy-triad-bullets li {
-  margin: 0.28rem 0;
+  margin: 0.18rem 0;
 }
 
 .policy-triad-why {
@@ -3796,6 +3952,48 @@ footer a:hover { color: var(--primary); }
 .policy-triad-why--access {
   background: rgba(2, 132, 199, 0.06);
   border-color: rgba(2, 132, 199, 0.16);
+}
+
+.policy-myth-fact-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.6rem;
+}
+
+.policy-myth-fact-item {
+  margin: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  padding: 0.58rem 0.65rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.7);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  font-size: 0.92rem;
+}
+
+.policy-myth-fact-item--myth {
+  border-color: rgba(194, 65, 12, 0.28);
+  background: rgba(254, 243, 199, 0.45);
+}
+
+.policy-myth-fact-item--fact {
+  border-color: rgba(5, 150, 105, 0.3);
+  background: rgba(220, 252, 231, 0.45);
+}
+
+.policy-myth-fact-icon {
+  flex-shrink: 0;
+  font-size: 0.95rem;
+  line-height: 1.2;
+}
+
+@media (max-width: 760px) {
+  .policy-myth-fact-row {
+    grid-template-columns: 1fr;
+  }
 }
 
 .policy-triad-footnote {
@@ -4192,6 +4390,22 @@ footer a:hover { color: var(--primary); }
  background: #fff !important;
  }
  .kpi-value, .stat-value, .big-stat-value, .count-up { color: #111827 !important; }
+ .kpi-card,
+ .policy-triad-card,
+ .timeline-item,
+ .supporting-cards-row .card--compact,
+ .pa-district-layout > * {
+   break-inside: auto !important;
+   page-break-inside: auto !important;
+ }
+ .kpi-card,
+ .policy-triad-card,
+ .timeline-item,
+ .stat,
+ .pa-impact-card {
+   overflow-wrap: anywhere !important;
+   word-break: normal !important;
+ }
  a { color: #0066a1; }
 }
 
@@ -6008,15 +6222,20 @@ footer {
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-strip-grid {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* Row layout: one KPI per row */
+  grid-template-columns: 1fr;
   gap: clamp(0.85rem, 1.8vw, 1.15rem);
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-card {
   border-radius: 14px;
   padding: clamp(0.95rem, 1.8vw, 1.2rem);
-  min-height: 210px;
+  min-height: 0;
   box-shadow: none;
+  display: grid;
+  grid-template-columns: minmax(160px, 230px) minmax(0, 1fr);
+  column-gap: clamp(0.85rem, 1.8vw, 1.25rem);
+  align-items: start;
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-card:hover,
@@ -6029,12 +6248,17 @@ footer {
   margin-bottom: 0.4rem;
   font-size: 0.8rem;
   color: #435366;
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-value {
   font-size: clamp(2rem, 4.1vw, 2.65rem);
   line-height: 1;
   margin-bottom: 0.35rem;
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  align-self: center;
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-desc {
@@ -6044,6 +6268,8 @@ footer {
   line-height: 1.35;
   -webkit-line-clamp: unset;
   overflow: visible;
+  grid-column: 2;
+  grid-row: 2;
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-impact {
@@ -6051,11 +6277,16 @@ footer {
   padding-top: 0.65rem;
   font-size: 0.85rem;
   line-height: 1.4;
+  grid-column: 2;
+  grid-row: 3;
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-value-with-info {
   align-items: baseline;
   gap: 0.4rem;
+  grid-column: 1;
+  grid-row: 1 / span 4;
+  align-self: center;
 }
 
 /* KPI polish: align Oversight + Oversight gap cards */
@@ -6075,6 +6306,31 @@ footer {
   font-variant-numeric: tabular-nums;
 }
 
+/* Key metrics redesign consistency: center value column on all non-PA KPI cards */
+.kpi-strip.kpi-strip--mark11 .kpi-card--market,
+.kpi-strip.kpi-strip--mark11 .kpi-card--benefit,
+.kpi-strip.kpi-strip--mark11 .kpi-card--oversight,
+.kpi-strip.kpi-strip--mark11 .kpi-card--pa {
+  display: grid;
+}
+.kpi-strip.kpi-strip--mark11 .kpi-card--market .kpi-value,
+.kpi-strip.kpi-strip--mark11 .kpi-card--benefit .kpi-value,
+.kpi-strip.kpi-strip--mark11 .kpi-card--oversight .kpi-value {
+  margin: 0;
+  align-self: center;
+  justify-self: center;
+  text-align: center;
+  min-width: 4ch;
+}
+
+.kpi-strip.kpi-strip--mark11 .kpi-card--pa .kpi-value-with-info {
+  align-self: center;
+  justify-self: center;
+  justify-content: center;
+  text-align: center;
+  min-width: 4ch;
+}
+
 .kpi-strip.kpi-strip--mark11 .kpi-card--oversight .kpi-desc {
   margin-top: 0.15rem;
 }
@@ -6088,6 +6344,8 @@ footer {
   font-size: 0.78rem;
   color: var(--text-muted);
   font-weight: 650;
+  grid-column: 2;
+  grid-row: 4;
 }
 
 .kpi-strip.kpi-strip--mark11 .kpi-scope-footnote,
@@ -6096,18 +6354,27 @@ footer {
 }
 
 @media (max-width: 1100px) {
-  .kpi-strip.kpi-strip--mark11 .kpi-strip-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .kpi-strip.kpi-strip--mark11 .kpi-strip-grid { grid-template-columns: 1fr; }
 }
 
 @media (max-width: 700px) {
-  .kpi-strip.kpi-strip--mark11 .kpi-strip-grid {
-    grid-template-columns: 1fr;
+  .kpi-strip.kpi-strip--mark11 .kpi-card {
+    display: flex;
+    flex-direction: column;
   }
 
-  .kpi-strip.kpi-strip--mark11 .kpi-card {
-    min-height: 0;
+  .kpi-strip.kpi-strip--mark11 .kpi-label,
+  .kpi-strip.kpi-strip--mark11 .kpi-desc,
+  .kpi-strip.kpi-strip--mark11 .kpi-impact {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .kpi-strip.kpi-strip--mark11 .kpi-value,
+  .kpi-strip.kpi-strip--mark11 .kpi-value-with-info {
+    grid-column: auto;
+    grid-row: auto;
+    align-self: flex-start;
   }
 }
 
@@ -6227,7 +6494,7 @@ footer {
 }
 
 .supporting-cards-row #pa-impact .stat-block {
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: 1fr;
 }
 
 /* PA operating stakes card: tighter alignment + less visual clutter */
@@ -6251,17 +6518,35 @@ footer {
 .supporting-cards-row #pa-impact .stat {
   background: rgba(255, 255, 255, 0.85);
   border-color: rgba(11, 103, 194, 0.14);
+  padding: 0.8rem 0.9rem;
+  min-width: 0;
+  overflow: visible;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  text-align: left;
 }
 
 .supporting-cards-row #pa-impact .stat-label {
-  font-size: 0.7rem;
+  font-size: 0.9rem;
   letter-spacing: 0.01em;
   text-transform: none;
-  color: var(--text-muted);
+  color: var(--text-secondary);
+  margin: 0;
+  font-weight: 700;
 }
 
 .supporting-cards-row #pa-impact .stat-value {
-  font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+  font-size: clamp(1.8rem, 3.2vw, 2.3rem);
+  line-height: 1;
+  display: block;
+  white-space: nowrap;
+  overflow: visible;
+  margin: 0;
+  min-width: 3.1ch;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
 }
 
 .supporting-cards-row .stat {

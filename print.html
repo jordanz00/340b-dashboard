@@ -81,8 +81,8 @@
 
       <section class="print-view-block print-view-map-hero">
         <p class="print-view-card-title">State-by-state</p>
-        <h2>Who protects the 340B discount—and who doesn't</h2>
-        <p id="pv-map-hero-sub">Click a state to see whether it protects the discount—and what that means for hospitals and patients.</p>
+        <h2>Who protects contract pharmacy—and who doesn’t</h2>
+        <p id="pv-map-hero-sub">Click a state to see whether state law protects contract pharmacy partnerships—and what that means for hospitals and patients.</p>
         <div class="print-view-selection">
           <p class="print-view-card-title">State</p>
           <p class="print-view-selection-title" id="pv-selection-title">No state selected yet</p>
@@ -91,7 +91,7 @@
         <div class="print-view-map-and-legend">
         <div id="pv-map-container" class="print-view-map-wrap"></div>
         <div class="print-view-legend">
-          <span><span class="print-view-swatch protection"></span> Blue = state protects the discount</span>
+          <span><span class="print-view-swatch protection"></span> Blue = state law protects contract pharmacy</span>
           <span><span class="print-view-swatch no-protection"></span> Gray = no state law yet</span>
         </div>
         </div>
@@ -101,11 +101,16 @@
         <p id="pv-states-without-list" class="print-view-state-list"></p>
         <h3 class="print-view-subhead">Recent legal signals</h3>
         <div class="print-view-trends">
-          <p><strong>Courts:</strong> States including AR, LA, MO, MN, TN, and RI prevailed when manufacturers challenged contract pharmacy protections.</p>
-          <p><strong>2025 hybrid:</strong> CO, ME, OH, RI, and VT paired pharmacy protections with reporting requirements.</p>
-          <p><strong>Vetoes:</strong> Some governors vetoed proposed 340B protections, including in Virginia.</p>
+          <p><strong>Courts:</strong> AR, LA, MO, MN, TN, and RI have upheld state contract pharmacy protections against manufacturer challenges.</p>
+          <p><strong>Hybrid model:</strong> CO, ME, OH, RI, and VT paired protection with reporting requirements in 2025.</p>
+          <p><strong>Vetoes:</strong> Some governors vetoed proposed 340B protections, including Virginia.</p>
         </div>
         <p class="print-view-sources">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
+      </section>
+      <section class="print-view-block print-view-pa-district-map">
+        <p class="print-view-card-title">Pennsylvania district map</p>
+        <p>340B hospitals by PA legislative district (hospital points + district boundaries).</p>
+        <div id="pv-pa-district-map-container" class="print-view-map-wrap"></div>
       </section>
 
       <section class="print-view-kpi-strip">
@@ -156,8 +161,8 @@
       <section class="print-view-block">
         <p class="print-view-card-title">Pennsylvania operating stakes</p>
         <h2>340B remains materially relevant in PA</h2>
-        <p><strong>72 hospitals (30%)</strong> participate, making Pennsylvania a serious operating and policy example for this dashboard:</p>
-        <p>Rural 49% · Operating at a loss 53% · Labor &amp; delivery 49%</p>
+        <p><strong>72 hospitals (30%)</strong> participate. These operating signals show why PA is a high-stakes case study.</p>
+        <p><strong>Rural</strong> 49% · <strong>Operating at a loss</strong> 53% · <strong>Labor &amp; delivery</strong> 49%</p>
       </section>
 
       <section class="print-view-block print-view-community-benefit">
@@ -171,7 +176,9 @@
       <section class="print-view-block">
         <p class="print-view-card-title">Access to care</p>
         <h2>Contract pharmacy restrictions hit patient access</h2>
-        <p>Federal rules allow hospitals to use in-house or community pharmacies for 340B. Some drugmakers limit hospitals to <strong>one contract pharmacy</strong>, which hurts rural and underserved patients when hospitals rely on local pharmacy networks.</p>
+        <p>Federal rules allow hospitals to use in-house or community pharmacies for 340B.</p>
+        <p><strong>Restriction:</strong> limiting hospitals to <strong>one contract pharmacy</strong>.</p>
+        <p><strong>Result:</strong> fewer local pickup options and longer travel—especially in rural areas.</p>
       </section>
 
       <section class="print-view-block">
@@ -180,8 +187,9 @@
         <ul>
           <li>Manufacturers are not required to give both a 340B discount and a Medicaid rebate for the same drug.</li>
           <li>State DHS (Department of Human Services) runs the <strong>340B Drug Exclusion List</strong> and bills manufacturers for Medicaid rebates, so hospitals may not use 340B-priced drugs on this list.</li>
-          <li>Contract pharmacies give non-340B drugs to Medicare Advantage patients, and DHS bills manufacturers for rebates.</li>
+          <li>Contract pharmacy claims are structured to avoid duplicate discounts; DHS bills manufacturers for rebates where applicable.</li>
         </ul>
+        <p class="print-view-sources">Source: 42 U.S.C. § 256b; HRSA-CMS guidance. For questions: HAP Finance &amp; Legal Affairs | (717) 564-9200</p>
       </section>
     </main>
   </div>
@@ -196,6 +204,7 @@
       var KEY_LEGACY = "hap340bPrint";
       var root = document.getElementById("print-view-root");
       var mapContainer = document.getElementById("pv-map-container");
+      var paDistrictMapContainer = document.getElementById("pv-pa-district-map-container");
 
       function getPayload() {
         try {
@@ -213,6 +222,7 @@
         if (!payload || typeof payload !== "object") return false;
         if (payload.payloadVersion != null && payload.payloadVersion !== 1) return false;
         if (payload.mapSvg != null && (typeof payload.mapSvg !== "string" || payload.mapSvg.length > MAX_MAP_SVG_LENGTH)) return false;
+        if (payload.paDistrictMapSvg != null && (typeof payload.paDistrictMapSvg !== "string" || payload.paDistrictMapSvg.length > MAX_MAP_SVG_LENGTH)) return false;
         var textFields = [
           "selectionTitle", "selectionText", "mapHeroSub", "landscapeValue",
           "statesWithList", "statesWithoutList", "kpiDrug", "kpiBenefit", "kpiOversight",
@@ -267,6 +277,34 @@
             fallback.textContent = "Map not available. Load the dashboard and use Print / PDF to include the map.";
             mapContainer.appendChild(fallback);
           }
+        }
+        if (payload.paDistrictMapSvg && paDistrictMapContainer && typeof payload.paDistrictMapSvg === "string" && payload.paDistrictMapSvg.trim().length > 50) {
+          try {
+            var paSvg = payload.paDistrictMapSvg.trim();
+            if (/<svg[\s>]/i.test(paSvg)) {
+              if (!paSvg.match(/xmlns\s*=/i)) {
+                paSvg = paSvg.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+              }
+              var paImg = document.createElement("img");
+              paImg.setAttribute("alt", "Pennsylvania legislative district map with 340B hospital points");
+              paImg.style.cssText = "display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;height:auto!important;max-height:4.8cm!important;";
+              paImg.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(paSvg);
+              paDistrictMapContainer.replaceChildren();
+              paDistrictMapContainer.appendChild(paImg);
+            }
+          } catch (e3) {
+            paDistrictMapContainer.replaceChildren();
+            var paFallback = document.createElement("p");
+            paFallback.className = "print-view-map-fallback";
+            paFallback.textContent = "PA district map not available in this print snapshot.";
+            paDistrictMapContainer.appendChild(paFallback);
+          }
+        }
+        if (paDistrictMapContainer && !paDistrictMapContainer.querySelector("img") && !paDistrictMapContainer.querySelector("svg")) {
+          var paFallback2 = document.createElement("p");
+          paFallback2.className = "print-view-map-fallback";
+          paFallback2.textContent = "PA district map not available. Open the district map on dashboard and retry Export leave-behind.";
+          paDistrictMapContainer.appendChild(paFallback2);
         }
         if (mapContainer && !mapContainer.querySelector("img") && !mapContainer.querySelector("svg")) {
           var fallback = document.createElement("p");
@@ -330,6 +368,25 @@
         window.print();
       }
 
+      function waitForMapsThenPrint(timeoutMs) {
+        var start = Date.now();
+        function ready(container) {
+          if (!container) return true;
+          var img = container.querySelector("img");
+          if (!img) return true;
+          return !!img.complete;
+        }
+        function tick() {
+          var ok = ready(mapContainer) && ready(paDistrictMapContainer);
+          if (ok || (Date.now() - start) > timeoutMs) {
+            runPrint();
+            return;
+          }
+          setTimeout(tick, 120);
+        }
+        tick();
+      }
+
       /** Mobile browsers often ignore window.print() when it is not tied directly to a user tap. */
       function isMobileScreenForPrint() {
         try {
@@ -352,7 +409,8 @@
         // Clear payload after a delay so the map has time to render; phones may need longer before user taps Print.
         setTimeout(function () {
           try {
-            localStorage.removeItem(KEY);
+            localStorage.removeItem(KEY_PRIMARY);
+            localStorage.removeItem(KEY_LEGACY);
           } catch (e) {}
         }, mobileUi ? 20000 : 5000);
 
@@ -393,8 +451,8 @@
           } else {
             setTimeout(function () {
               if (mapContainer) mapContainer.offsetHeight;
-              runPrint();
-            }, 1500);
+              waitForMapsThenPrint(5000);
+            }, 700);
           }
         }
       }
