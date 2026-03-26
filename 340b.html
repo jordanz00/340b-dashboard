@@ -332,7 +332,6 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <div class="utility-toolbar-actions">
     <button type="button" id="btn-print" class="utility-btn utility-btn--primary" aria-label="Print or save as PDF">Print / PDF</button>
     <button type="button" id="btn-leave-behind-export" class="utility-btn" aria-label="Export leave-behind (2-page)" data-track="leave_behind_export">📄 Export leave-behind (2-page)</button>
-    <button type="button" id="btn-download-pdf" class="utility-btn" aria-label="Download dashboard as PDF image">Download PDF (image)</button>
     <div class="utility-share-wrap">
       <button type="button" id="btn-share" class="utility-btn" aria-expanded="false" aria-controls="share-drawer" aria-haspopup="true" aria-label="Share — open sharing options">Share</button>
       <div id="share-drawer" class="share-drawer" hidden role="region" aria-label="Share this dashboard">
@@ -547,9 +546,6 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
               </div>
             </li>
           </ul>
-          <hr class="hap-hapac-note__rule" aria-hidden="true" />
-          <p class="hap-hapac-note">HAPAC supports candidates who champion hospital community care and patient access to affordable medications. Learn more: <a href="https://www.haponline.org/hapac" target="_blank" rel="noopener noreferrer">haponline.org/hapac</a></p>
-          <p class="hap-hapac-note">Political engagement: HAP Political Engagement team | (717) 564-9200</p>
           <p class="hap-asks-sources"><a href="#methodology-section">Data sources &amp; methodology</a> — state law verification, community benefit totals, and HRSA oversight figures cited on this page.</p>
         </div>
       </article>
@@ -783,7 +779,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <p class="kpi-impact">Impact: Federal compliance review load for covered entities. See methodology for manufacturer audits.</p>
         <p class="stat-verified" data-verified-key="hrsaAudits"></p>
       </div>
-      <div class="kpi-card kpi-card--oversight kpi-card--support">
+      <div class="kpi-card kpi-card--oversight kpi-card--oversight-gap kpi-card--support">
         <p class="kpi-label">Oversight gap <span class="decision-badge decision-badge--risk">Risk</span></p>
         <p class="kpi-value ban-stat primary kpi-value--mega">36×</p>
         <p class="kpi-desc">More hospital audits than manufacturer audits (179 vs. 5, HRSA FY 2024)</p>
@@ -996,7 +992,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <aside class="federal-statute-callout" aria-label="Federal statutory basis">
           <p class="federal-statute-callout__title">Federal statutory basis</p>
           <p class="federal-statute-callout__body">The 340B program is established under 42 U.S.C. § 256b (Veterans Health Care Act of 1992). The duplicate discount prohibition is codified in the same statute and enforced through HRSA-CMS Medicaid exclusion file coordination. Manufacturer restrictions on contract pharmacies have no explicit statutory authorization under § 256b.</p>
-          <p class="federal-statute-callout__cite">Source: 42 U.S.C. § 256b; HRSA Office of Pharmacy Affairs guidance. Verified by HAP Finance &amp; Legal Affairs. (717) 564-9200</p>
+          <p class="federal-statute-callout__cite">Source: 42 U.S.C. § 256b; HRSA Office of Pharmacy Affairs guidance.</p>
         </aside>
       </section>
       <div id="legal-trends" class="legal-trends-anchor" aria-labelledby="legal-trends-heading">
@@ -1043,7 +1039,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
       </div>
       <div id="legal-trends-footnotes" class="legal-trends-footnotes" role="note">
-        <p>[1] Case citations are for reference only and reflect rulings as of March 2026. These are not legal advice. Consult legal counsel for current status and applicability. HAP Finance &amp; Legal Affairs: (717) 564-9200</p>
+        <p>[1] Case citations are for reference only and reflect rulings as of March 2026.</p>
       </div>
       </div>
       <section id="counterarguments" class="counterarguments-section" aria-labelledby="counterarguments-heading">
@@ -1221,16 +1217,16 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <strong><span class="ban-inline ban-inline--insurance">72</span> hospitals (30%)</strong> participate.
           <span class="pa-impact-lede__sub">These operating signals show why PA is a high-stakes case study.</span>
         </p>
-        <div class="stat-block">
-          <div class="stat">
+        <div class="stat-block stat-block--rows">
+          <div class="stat stat--row">
             <p class="stat-label">Rural</p>
             <p class="stat-value ban-stat count-up" data-count-up="49" data-suffix="%">49%</p>
           </div>
-          <div class="stat">
+          <div class="stat stat--row">
             <p class="stat-label">Operating at a loss</p>
             <p class="stat-value ban-stat count-up stat--perf-negative" data-count-up="53" data-suffix="%">53%</p>
           </div>
-          <div class="stat">
+          <div class="stat stat--row">
             <p class="stat-label">Labor &amp; delivery</p>
             <p class="stat-value ban-stat count-up" data-count-up="49" data-suffix="%">49%</p>
           </div>
@@ -1278,9 +1274,6 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           </blockquote>
           <cite>— Pennsylvania patient, 
           safety-net hospital (name withheld)</cite>
-          <p class="story-cta">
-            Share your 340B story with HAP: call (717) 564-9200.
-          </p>
         </div>
         <p class="big-stat-value ban-stat">$<span class="count-up" data-count-up="7.95" data-decimals="2">7.95</span>B</p>
         <p class="big-stat-desc">9% increase over 2023 — reinvested in community health</p>
@@ -1556,12 +1549,24 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <section class="policy-triad span-12 scroll-reveal ow-section ow-section--band-a" aria-label="Duplicate discount and access context">
       <article id="duplicate-discount-national" class="card policy-triad-card policy-myth-callout" aria-labelledby="duplicate-discount-national-heading">
         <header class="policy-triad-card__head policy-myth-callout__header">
-          <p class="policy-triad-kicker">Myth vs. fact</p>
-          <h2 id="duplicate-discount-national-heading" class="policy-triad-title">How duplicate discounts are prevented</h2>
+          <div class="policy-triad-headline">
+            <p class="policy-triad-kicker">Myth vs. fact</p>
+            <h2 id="duplicate-discount-national-heading" class="policy-triad-title">How duplicate discounts are prevented</h2>
+          </div>
+          <div class="card-icon card-icon--check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 12h18"/><path d="M12 3v18"/><circle cx="12" cy="12" r="9"/></svg></div>
         </header>
         <div class="policy-triad-body">
+          <div class="policy-myth-fact-row" role="list" aria-label="Myth and fact summary">
+            <p class="policy-myth-fact-item policy-myth-fact-item--myth" role="listitem">
+              <span class="policy-myth-fact-icon" aria-hidden="true">⚠</span>
+              <span><strong>Myth:</strong> duplicate discounts are not already addressed.</span>
+            </p>
+            <p class="policy-myth-fact-item policy-myth-fact-item--fact" role="listitem">
+              <span class="policy-myth-fact-icon" aria-hidden="true">✔</span>
+              <span><strong>Fact:</strong> federal law already prohibits duplicate discounts; HRSA/CMS coordinate exclusion files.</span>
+            </p>
+          </div>
           <ul class="policy-triad-bullets" role="list">
-            <li><strong>Federal rule:</strong> law already prohibits duplicate discounts; HRSA/CMS coordinate exclusion files.</li>
             <li><strong>Policy question:</strong> whether manufacturers can restrict contract pharmacy access as an enforcement tool (beyond what the statute requires).</li>
           </ul>
           <p class="policy-triad-why">Why it matters: access restrictions hit patients first—especially rural and underserved communities.</p>
@@ -1860,20 +1865,15 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       <li><a href="https://www.haponline.org/340b" class="footer-pill footer-pill--ghost" target="_blank" rel="noopener noreferrer">340B resources at HAP</a></li>
     </ul>
   </nav>
-  <div class="footer-contact-lines" aria-label="Media inquiries and member communications">
-    <p>Media inquiries: HAP Communications | (717) 564-9200</p>
-    <p>Member communications: HAP Advocacy &amp; Member Communications | (717) 564-9200</p>
-  </div>
   <p class="footer-org">
     <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64" loading="lazy">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
   </p>
-  <p class="footer-design">Design Mark X — Continuous Optimization System</p>
+  <p class="footer-design">Design Mark XII — Continuous Optimization System</p>
 </footer>
 </div>
 
 <!-- ========== SECTION: Scripts — PDF libs (CDN), main app, then simulator modules ========== -->
-<!-- Download PDF (image) uses local html2canvas + jsPDF copies for deterministic offline behavior. -->
   <script src="utils/performance-patch.js"></script>
   <script src="assets/vendor/html2canvas.min.js"></script>
   <script src="assets/vendor/jspdf.umd.min.js"></script>
@@ -1884,6 +1884,8 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <script src="modules/pa-impact-ui.js" defer></script>
   <script src="data/pa-districts/PaHouse2024_03.js" defer></script>
   <script src="data/pa-districts/PaSenatorial2024_03.js" defer></script>
+  <script src="data/pa-districts/pa-340b-hospitals.js" defer></script>
+  <script src="data/pa-districts/pa-zip-centroids.js" defer></script>
   <script src="modules/pa-district-map.js" defer></script>
   <!-- Policy Impact Simulator — loads after main dashboard; fully isolated -->
   <script src="modules/impact-data.js"></script>
