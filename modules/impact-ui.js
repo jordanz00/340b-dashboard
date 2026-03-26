@@ -25,6 +25,18 @@
      */
   var CONTAINER_ID = "policy-impact-simulator-root";
   var SCENARIO_BTN_PREFIX = "impact-scenario-btn-";
+  var ROOT_SCENARIO_ATTR = "data-impact-scenario";
+
+  function scenarioToken(id) {
+    if (id === IMPACT.SCENARIO_EXPAND) return "protect";
+    if (id === IMPACT.SCENARIO_REMOVE) return "remove";
+    return "mix";
+  }
+
+  function applyScenarioVisualState(root, scenarioId) {
+    if (!root) return;
+    root.setAttribute(ROOT_SCENARIO_ATTR, scenarioToken(scenarioId));
+  }
 
   /**
    * Strip control characters. Use for any dynamic text.
@@ -65,8 +77,8 @@
     header.className = "impact-simulator-header";
     header.appendChild(makeEl("span", "impact-simulator-badge", "Advocacy tool"));
     header.appendChild(makeEl("p", "impact-simulator-title", "Policy Impact Simulator"));
-    header.appendChild(makeEl("h2", "impact-simulator-headline", "What happens if we protect the discount—or don’t?"));
-    header.appendChild(makeEl("p", "impact-simulator-sub", "Tap a scenario below. See how each path affects hospitals, pharmacies, and patients—in plain terms."));
+    header.appendChild(makeEl("h2", "impact-simulator-headline", "Protect the discount—or shrink access"));
+    header.appendChild(makeEl("p", "impact-simulator-sub", "Choose a scenario. This is an illustrative briefing view (not a forecast)."));
     root.appendChild(header);
 
     var scenarioIds = IMPACT.getScenarioIds();
@@ -79,11 +91,12 @@
       var data = IMPACT.getScenarioImpact(id);
       if (!data) return;
 
-      var slug = id === IMPACT.SCENARIO_EXPAND ? "expand" : id === IMPACT.SCENARIO_REMOVE ? "rollback" : "current";
+      var slug = scenarioToken(id);
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "impact-scenario-btn impact-scenario-btn--" + slug + (index === 1 ? " active" : "");
       btn.id = SCENARIO_BTN_PREFIX + id;
+      btn.setAttribute("data-impact-scenario-btn", slug);
       btn.setAttribute("aria-pressed", index === 1 ? "true" : "false");
       btn.setAttribute("aria-label", "Show " + safeText(data.label) + " scenario");
       btn.textContent = data.label;
@@ -112,8 +125,9 @@
     if (!data) return;
 
     container.replaceChildren();
-    var scenarioSlug = scenarioId === IMPACT.SCENARIO_EXPAND ? "expand" : scenarioId === IMPACT.SCENARIO_REMOVE ? "rollback" : "current";
+    var scenarioSlug = scenarioToken(scenarioId);
     container.setAttribute("data-scenario", scenarioSlug);
+    container.className = "impact-simulator-results impact-simulator-results--" + scenarioSlug;
 
     if (data.takeaway) {
       var takeawayEl = document.createElement("p");
@@ -173,6 +187,7 @@
     var scenarioIds = IMPACT.getScenarioIds();
     var activeIndex = 1;
 
+    applyScenarioVisualState(root, IMPACT.SCENARIO_CURRENT);
     renderResults(resultsEl, IMPACT.SCENARIO_CURRENT);
 
     scenarioIds.forEach(function (id, index) {
@@ -188,6 +203,7 @@
           }
         });
         activeIndex = index;
+        applyScenarioVisualState(root, id);
         renderResults(resultsEl, id);
       });
     });

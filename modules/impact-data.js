@@ -23,24 +23,24 @@
   IMPACT_NS.SCENARIOS = {
     EXPAND_PROTECTIONS: {
       id: "EXPAND_PROTECTIONS",
-      label: "Protect the discount everywhere",
-      description: "Every state protects hospitals’ ability to use the 340B discount with community pharmacies.",
-      narrative: "More patients get affordable meds. Hospitals and pharmacies work together in every state. Programs grow.",
-      takeaway: "Maximum stability for hospitals and patients.",
+      label: "Protect the discount",
+      description: "Every state protects hospital–pharmacy partnerships.",
+      narrative: "Access improves. Partnerships stabilize. Programs can expand.",
+      takeaway: "Best-case stability and access.",
     },
     CURRENT_STATUS: {
       id: "CURRENT_STATUS",
       label: "Keep today’s mix",
       description: "Some states protect the discount; many don’t.",
-      narrative: "Patchwork: some hospitals and patients benefit; many stay exposed.",
-      takeaway: "Programs continue with moderate risk.",
+      narrative: "Patchwork: some patients benefit; many stay exposed.",
+      takeaway: "Uneven access; ongoing risk.",
     },
     REMOVE_PROTECTIONS: {
       id: "REMOVE_PROTECTIONS",
-      label: "Weaken or remove protections",
+      label: "Remove protections",
       description: "States roll back laws that protect the discount.",
-      narrative: "Fewer patients get the benefit. Hospital programs at risk. Harder to serve our communities.",
-      takeaway: "Access and hospital programs at high risk.",
+      narrative: "Access shrinks. Partnerships unwind. Safety-net programs destabilize.",
+      takeaway: "High risk for patients and hospitals.",
     },
   };
 

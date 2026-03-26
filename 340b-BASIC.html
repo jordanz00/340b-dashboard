@@ -4,17 +4,90 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self';">
   <title>340B Drug Pricing Program | HAP Advocacy Dashboard (Basic)</title>
   <meta name="description" content="HAP 340B Advocacy Dashboard — safe for employer hosting. Interactive map, full content, local scripts only.">
   <link rel="stylesheet" href="hap-design-tokens.css">
   <link rel="stylesheet" href="340b.css?v=dmx-9">
-  <!-- Local scripts only; performance hint loads first (no global listener monkey-patch). -->
-  <script src="utils/performance-patch.js"></script>
-  <script src="state-data.js"></script>
-  <script src="assets/vendor/d3.min.js"></script>
-  <script src="assets/vendor/topojson-client.min.js"></script>
-  <script src="assets/vendor/states-10m.js"></script>
+  <style>
+    /* BASIC (static) — no scripts. Keep lightweight tooltip + sparklines inline. */
+    .basic-static-note {
+      margin: var(--space-3) 0 0;
+      color: var(--text-muted);
+      font-size: var(--text-sm);
+      line-height: 1.45;
+    }
+    .basic-sparkline {
+      margin-top: 0.35rem;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+    .basic-sparkline svg { display: block; }
+    .basic-sparkline-label {
+      margin: 0;
+      font-size: var(--text-xs);
+      color: var(--text-muted);
+      line-height: 1.25;
+    }
+    .kpi-pa-tooltip-basic {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+    .kpi-pa-tooltip-basic > summary {
+      list-style: none;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 0.35rem;
+      margin: 0;
+      border: none;
+      background: transparent;
+      color: var(--hap-brand-primary, #0072bc);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .kpi-pa-tooltip-basic > summary::-webkit-details-marker { display: none; }
+    .kpi-pa-tooltip-basic > summary:focus-visible {
+      outline: 2px solid var(--hap-brand-primary, #0072bc);
+      outline-offset: 2px;
+    }
+    .kpi-pa-tooltip-basic-panel {
+      position: absolute;
+      z-index: 50;
+      left: 0;
+      top: calc(100% + 6px);
+      width: min(320px, calc(100vw - 2rem));
+      max-height: 70vh;
+      overflow-y: auto;
+      padding: var(--space-3);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      font-size: var(--text-sm);
+      line-height: 1.45;
+      color: var(--text-secondary);
+    }
+    .kpi-pa-tooltip-basic-panel p { margin: 0 0 var(--space-2); }
+    .kpi-pa-tooltip-basic-panel p:last-child { margin-bottom: 0; }
+    .kpi-pa-tooltip-basic-lead { font-weight: 800; color: var(--text); }
+    @media (hover: hover) and (pointer: fine) {
+      .kpi-pa-tooltip-basic:not([open]):hover { }
+    }
+    @media print {
+      .kpi-pa-tooltip-basic,
+      .kpi-pa-tooltip-basic-panel {
+        display: none !important;
+      }
+    }
+  </style>
 </head>
 <body class="basic-dashboard">
 <div class="dashboard">
@@ -177,27 +250,68 @@
                 <p class="key-finding-caption">Not yet enacted</p>
               </div>
             </div>
+            <div class="basic-sparkline" aria-hidden="true">
+              <svg width="80" height="30" viewBox="0 0 80 30" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                <path d="M 2,28 L 21,23.5 L 40,19 L 59,11.5 L 78,2" fill="none" stroke="var(--hap-brand-primary, #0072bc)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="78" cy="2" r="2.5" fill="var(--hap-brand-primary, #0072bc)"/>
+              </svg>
+              <p class="basic-sparkline-label">↑ 3 new states in 2024</p>
+            </div>
             <p class="key-finding-impact">Impact: The map shows where state law backs contract pharmacy networks.</p>
           </article>
           <article class="key-finding-card key-finding-card--finance hap-card-interactive">
             <p class="key-finding-label">Community benefit (340B hospitals)</p>
             <p class="key-finding-value ban-stat ban-stat--finance">$7.95B</p>
+            <div class="basic-sparkline" aria-hidden="true">
+              <svg width="80" height="30" viewBox="0 0 80 30" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                <path d="M 2,28 L 21,23.2727272727 L 40,17.3636363636 L 59,8.9090909091 L 78,2" fill="none" stroke="var(--hap-brand-primary, #0072bc)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="78" cy="2" r="2.5" fill="var(--hap-brand-primary, #0072bc)"/>
+              </svg>
+              <p class="basic-sparkline-label">↑ 9% from 2023</p>
+            </div>
             <p class="key-finding-meta">2024</p>
             <p class="key-finding-impact">Impact: Dollars hospitals report putting back into community programs and care.</p>
           </article>
           <article class="key-finding-card key-finding-card--pa hap-card-interactive">
             <p class="key-finding-label">Pennsylvania hospitals in 340B</p>
-            <p class="key-finding-value ban-stat ban-stat--pa">72</p>
+            <div class="kpi-value-with-info">
+              <p class="key-finding-value ban-stat ban-stat--pa">72</p>
+              <details class="kpi-pa-tooltip-basic" aria-label="Illustrative per-hospital context (national scale math)">
+                <summary aria-label="Illustrative per-hospital context">ⓘ</summary>
+                <div class="kpi-pa-tooltip-basic-panel" role="note">
+                  <p class="kpi-pa-tooltip-basic-lead">Illustrative context only</p>
+                  <p>$7.95B national community benefit ÷ 72 PA hospitals = ~$110M per hospital. This is a mathematical illustration of national program scale applied to Pennsylvania's footprint — not HAP's estimate of any specific hospital's 340B savings, margin, or community benefit.</p>
+                  <p>Actual amounts vary widely by hospital size, DSH percentage, payer mix, drug category mix, and contract pharmacy network configuration.</p>
+                  <p>Do not use this figure in testimony, press statements, or regulatory filings without facility-specific data.</p>
+                  <p>For hospital-specific 340B impact analysis: HAP Strategic Analytics | (717) 564-9200</p>
+                </div>
+              </details>
+            </div>
+            <div class="basic-sparkline" aria-hidden="true">
+              <svg width="80" height="30" viewBox="0 0 80 30" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                <path d="M 2,28 L 21,21.3333333333 L 40,14.6666666667 L 59,8 L 78,2" fill="none" stroke="var(--hap-brand-primary, #0072bc)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="78" cy="2" r="2.5" fill="var(--hap-brand-primary, #0072bc)"/>
+              </svg>
+              <p class="basic-sparkline-label">↑ Steady participation growth</p>
+            </div>
             <p class="key-finding-caption">Hospitals serving patients</p>
             <p class="key-finding-impact">Impact: Pennsylvania’s scale in the program for statewide advocacy.</p>
           </article>
           <article class="key-finding-card key-finding-card--market hap-card-interactive">
             <p class="key-finding-label">Share of U.S. outpatient drug spend</p>
             <p class="key-finding-value ban-stat ban-stat--market">7%</p>
+            <div class="basic-sparkline" aria-hidden="true">
+              <svg width="80" height="30" viewBox="0 0 80 30" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                <path d="M 2,28 L 21,19.6666666667 L 40,14.3333333333 L 59,8 L 78,2" fill="none" stroke="var(--hap-brand-primary, #0072bc)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="78" cy="2" r="2.5" fill="var(--hap-brand-primary, #0072bc)"/>
+              </svg>
+              <p class="basic-sparkline-label">↑ Growing program scale</p>
+            </div>
             <p class="key-finding-caption">Uses the 340B discount</p>
             <p class="key-finding-impact">Impact: It quantifies how much national outpatient drug spend flows through the program.</p>
           </article>
         </div>
+        <p class="basic-static-note"><em>Trend lines based on published annual figures. Source years and methodologies vary by metric — see methodology section. Data: HAP Strategic Analytics.</em></p>
       </section>
 
       <!-- ========== BOTTOM LINE TAKEAWAY ========== -->
@@ -224,7 +338,7 @@
         </article>
       </section>
 
-      <!-- ========== STATE MAP: Interactive US map (only interactive part; script at bottom) ========== -->
+      <!-- ========== STATE MAP: BASIC is static (no scripts) ========== -->
       <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a">
         <div class="map-hero-inner">
           <article class="map-hero-card">
@@ -239,19 +353,18 @@
               <p class="section-insight-text">Manufacturers sometimes restrict contract pharmacy arrangements; state protections reduce that friction for patients and hospitals.</p>
             </div>
           </article>
-          <div id="basic-map-tooltip" class="basic-map-tooltip" aria-hidden="true"></div>
           <div class="basic-map-shell">
             <div class="us-map-wrap visible map-visible basic-map-wrap">
-              <div id="basic-us-map" class="basic-map-canvas" role="group" aria-label="Interactive U.S. map showing state contract pharmacy protection status" aria-describedby="map-how-to-use basic-map-keyboard-hint"></div>
+              <div class="basic-map-canvas" role="img" aria-label="Map placeholder (static BASIC)">
+                <p class="basic-static-note" style="margin:0;">Interactive map is available in the full dashboard. Use “Full dashboard” in the header or footer.</p>
+              </div>
             </div>
-            <p id="basic-state-selection-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
-            <p id="basic-map-keyboard-hint" class="sr-only">Tab to move between states. Press Enter or Space to select a state.</p>
             <div class="map-legend-compact" aria-label="Map colors">
               <span class="map-legend-compact-item"><span class="map-legend-swatch protection" aria-hidden="true"></span> Blue = contract pharmacy protection</span>
               <span class="map-legend-compact-sep" aria-hidden="true">·</span>
               <span class="map-legend-compact-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> Gray = no state law yet</span>
             </div>
-            <div id="basic-state-detail" class="basic-state-detail" role="status" aria-live="polite">No state selected yet. Click a state on the map to see protection status.</div>
+            <div class="basic-state-detail" role="note">This BASIC view is static for employer/IT-safe hosting. For state-level notes and interactive detail, open the full dashboard.</div>
           </div>
 
           <!-- ========== RECENT LEGAL SIGNALS ========== -->
@@ -340,7 +453,6 @@
           <p class="kpi-desc">PA hospitals in 340B</p>
           <p class="kpi-meaning">Impact: It frames Pennsylvania’s footprint in the program for statewide discussion.</p>
         </div>
-        <p class="data-benchmark"><strong>Illustrative context:</strong> ~$110M community benefit per participating PA hospital if national totals were divided evenly across 72 hospitals—actuals vary by facility.</p>
       </section>
 
       <!-- ========== WHY THIS MATTERS: 3 cards (Eligible providers, Oversight, PA stakes) ========== -->
@@ -564,8 +676,5 @@
     <p class="footer-design">Design Mark X — Continuous Optimization System · BASIC (local scripts only)</p>
   </footer>
 </div>
-<!-- Map script (local). hap-nav-shared scroll-active nav; no 340b.js. -->
-<script src="hap-nav-shared.js?v=dmx-9"></script>
-<script src="340b-basic-map.js"></script>
 </body>
 </html>

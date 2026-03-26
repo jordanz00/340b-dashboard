@@ -16,6 +16,17 @@
   var CONTAINER_ID = "pa-impact-mode-root";
   var SCENARIO_BTN_PREFIX = "pa-impact-btn-";
 
+  function scenarioToken(id) {
+    if (id === "EXPAND_PROTECTIONS") return "expand";
+    if (id === "REMOVE_PROTECTIONS") return "remove";
+    return "current";
+  }
+
+  function applyScenarioVisualState(root, scenarioId) {
+    if (!root) return;
+    root.setAttribute("data-pa-scenario", scenarioToken(scenarioId));
+  }
+
   function safeText(val) {
     if (val == null || typeof val !== "string") return "";
     return String(val).replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, "");
@@ -54,8 +65,9 @@
       if (!est) return;
       var btn = document.createElement("button");
       btn.type = "button";
-      btn.className = "pa-impact-btn" + (i === 1 ? " active" : "");
+      btn.className = "pa-impact-btn pa-impact-btn--" + scenarioToken(id) + (i === 1 ? " active" : "");
       btn.id = SCENARIO_BTN_PREFIX + id;
+      btn.setAttribute("data-pa-scenario-btn", scenarioToken(id));
       btn.setAttribute("aria-pressed", i === 1 ? "true" : "false");
       btn.setAttribute("aria-label", "Show " + safeText(id.replace(/_/g, " ").toLowerCase()) + " scenario");
       btn.textContent = id === "EXPAND_PROTECTIONS" ? "Expand protections" : id === "CURRENT_STATUS" ? "Current status" : "Remove protections";
@@ -80,9 +92,11 @@
     if (!data) return;
 
     container.replaceChildren();
+    var modeToken = scenarioToken(scenarioId);
+    container.className = "pa-impact-results pa-impact-results--" + modeToken;
 
     var grid = document.createElement("div");
-    grid.className = "pa-impact-grid";
+    grid.className = "pa-impact-grid pa-impact-grid--" + modeToken;
 
     var metrics = [
       { label: "72 PA hospitals — program status", value: safeText(data.hospitalProgramStatus), note: data.hospitalsNote },
@@ -93,7 +107,7 @@
 
     metrics.forEach(function (m) {
       var card = document.createElement("div");
-      card.className = "pa-impact-card";
+      card.className = "pa-impact-card pa-impact-card--" + modeToken;
       card.appendChild(makeEl("p", "pa-impact-label", m.label));
       card.appendChild(makeEl("p", "pa-impact-value", m.value));
       card.appendChild(makeEl("p", "pa-impact-note", safeText(m.note)));
@@ -116,6 +130,7 @@
     if (!resultsEl) return;
 
     var ids = PA.getScenarioIds();
+    applyScenarioVisualState(root, PA.SCENARIO_CURRENT);
     renderResults(resultsEl, PA.SCENARIO_CURRENT);
 
     ids.forEach(function (id, index) {
@@ -130,6 +145,7 @@
             b.setAttribute("aria-pressed", i === index ? "true" : "false");
           }
         });
+        applyScenarioVisualState(root, id);
         renderResults(resultsEl, id);
       });
     });

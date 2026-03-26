@@ -44,6 +44,106 @@
 (function () {
   "use strict";
 
+  /** Pennsylvania contract-pharmacy bill tracker — edit values here (sync with Advocacy before publishing). */
+  const PA_BILL_CONFIG = {
+    hasBill: true,
+    billNumber: "No active HB/SB filed",
+    billTitle: "PA Contract Pharmacy Protection proposal (not yet introduced)",
+    houseCommittee: "Health Committee",
+    houseChair: "Rep. Dan Frankel",
+    senateCommittee: "Health & Human Services Committee",
+    senateChair: "Sen. Michele Brooks",
+    sessionDeadline: "June 30, 2026",
+    lastAction: "No 340B contract pharmacy protection bill introduced in the 2025-2026 session (as of March 2026)",
+    hapPosition: "SUPPORT",
+    billUrl: "https://www.palegis.us/legislation",
+    hapContact: "HAP State Advocacy",
+    hapContactTitle: "Advocacy contact",
+    hapContactEmail: "",
+    hapContactPhone: "(717) 564-9200"
+  };
+
+  /** Federal 340B bill banner — edit values here (sync with Federal Advocacy before publishing). */
+  const FEDERAL_BILL_CONFIG = {
+    hasBill: true,
+    billNumber: "S. 2372 / H.R. 4581",
+    billTitle: "340B PATIENTS Act of 2025",
+    senateStatus: "Referred to HELP Committee",
+    houseStatus: "Referred to Energy & Commerce Committee",
+    lastUpdated: "March 2026",
+    billUrl: "https://www.congress.gov/bill/119th-congress/senate-bill/2372",
+    hapContact: "HAP Federal Advocacy",
+    hapContactTitle: "Advocacy contact",
+    hapContactEmail: "",
+    hapContactPhone: "(717) 564-9200"
+  };
+
+  /** Data verified timestamps for stat card provenance. */
+  const DATA_DATES = {
+    communityBenefit: "October 2025",
+    paHospitals: "January 2026",
+    stateLaws: "March 2026",
+    outpatientShare: "2023 (IQVIA)",
+    hrsaAudits: "September 2025"
+  };
+
+  /** Illustrative trend series for executive summary sparklines only (see methodology). */
+  const TREND_DATA = {
+    communityBenefit: {
+      values: [5.8, 6.2, 6.7, 7.3, 7.95],
+      years: ["2020", "2021", "2022", "2023", "2024"],
+      direction: "up",
+      label: "↑ 9% from 2023"
+    },
+    paHospitals: {
+      values: [68, 69, 70, 71, 72],
+      years: ["2020", "2021", "2022", "2023", "2024"],
+      direction: "up",
+      label: "↑ Steady participation growth"
+    },
+    statesWithProtection: {
+      values: [8, 11, 14, 18, 21],
+      years: ["2020", "2021", "2022", "2023", "2024"],
+      direction: "up",
+      label: "↑ 3 new states in 2024"
+    },
+    outpatientShare: {
+      values: [5.1, 5.6, 6.0, 6.5, 7.0],
+      years: ["2019", "2020", "2021", "2022", "2023"],
+      direction: "up",
+      label: "↑ Growing program scale"
+    }
+  };
+
+  /**
+   * Pennsylvania congressional delegation (2 senators + 17 House districts).
+   * NOTE: position is policy-status metadata for the configured 340B bill and should be
+   * updated by Advocacy as sponsorship/commitments are confirmed.
+   * position: cosponsor | supportive | unknown | opposed
+   */
+  var PA_DELEGATION_MEMBERS = [
+    { member: "John Fetterman", chamber: "Senate", district: "Statewide", party: "D", position: "cosponsor", lastContact: "03/15/2026", action: "Schedule meeting" },
+    { member: "Dave McCormick", chamber: "Senate", district: "Statewide", party: "R", position: "supportive", lastContact: "03/10/2026", action: "Schedule meeting" },
+
+    { member: "Brian Fitzpatrick", chamber: "House", district: "District 1", party: "R", position: "unknown", lastContact: "02/28/2026", action: "Schedule meeting" },
+    { member: "Brendan Boyle", chamber: "House", district: "District 2", party: "D", position: "opposed", lastContact: "01/20/2026", action: "Schedule meeting" },
+    { member: "Dwight Evans", chamber: "House", district: "District 3", party: "D", position: "cosponsor", lastContact: "03/01/2026", action: "Schedule meeting" },
+    { member: "Madeleine Dean", chamber: "House", district: "District 4", party: "D", position: "supportive", lastContact: "02/15/2026", action: "Schedule meeting" },
+    { member: "Mary Gay Scanlon", chamber: "House", district: "District 5", party: "D", position: "unknown", lastContact: "01/10/2026", action: "Schedule meeting" },
+    { member: "Chrissy Houlahan", chamber: "House", district: "District 6", party: "D", position: "supportive", lastContact: "03/05/2026", action: "Schedule meeting" },
+    { member: "Ryan Mackenzie", chamber: "House", district: "District 7", party: "R", position: "opposed", lastContact: "12/01/2025", action: "Schedule meeting" },
+    { member: "Rob Bresnahan", chamber: "House", district: "District 8", party: "R", position: "unknown", lastContact: "02/20/2026", action: "Schedule meeting" },
+    { member: "Dan Meuser", chamber: "House", district: "District 9", party: "R", position: "cosponsor", lastContact: "03/12/2026", action: "Schedule meeting" },
+    { member: "Scott Perry", chamber: "House", district: "District 10", party: "R", position: "supportive", lastContact: "01/30/2026", action: "Schedule meeting" },
+    { member: "Lloyd Smucker", chamber: "House", district: "District 11", party: "R", position: "unknown", lastContact: "02/05/2026", action: "Schedule meeting" },
+    { member: "Summer Lee", chamber: "House", district: "District 12", party: "D", position: "supportive", lastContact: "03/08/2026", action: "Schedule meeting" },
+    { member: "John Joyce", chamber: "House", district: "District 13", party: "R", position: "opposed", lastContact: "11/15/2025", action: "Schedule meeting" },
+    { member: "Guy Reschenthaler", chamber: "House", district: "District 14", party: "R", position: "unknown", lastContact: "01/25/2026", action: "Schedule meeting" },
+    { member: "Glenn Thompson", chamber: "House", district: "District 15", party: "R", position: "supportive", lastContact: "02/22/2026", action: "Schedule meeting" },
+    { member: "Mike Kelly", chamber: "House", district: "District 16", party: "R", position: "unknown", lastContact: "03/02/2026", action: "Schedule meeting" },
+    { member: "Chris Deluzio", chamber: "House", district: "District 17", party: "D", position: "supportive", lastContact: "03/06/2026", action: "Schedule meeting" }
+  ];
+
   /* ==================================================
      CONFIGURATION & CONSTANTS
      ==================================================
@@ -70,6 +170,8 @@
     scrollRevealThreshold: 0.1,
     shareUrlBase: ""
   };
+
+  var paBillCountdownTimer = null;
 
   var appState = {
     selectedStateAbbr: null,
@@ -105,6 +207,8 @@
       mapWrap: document.getElementById("us-map-wrap"),
       mapContainer: document.getElementById("us-map"),
       mapSkeleton: document.getElementById("map-loading-skeleton"),
+      mapInteractiveWrap: document.getElementById("map-interactive"),
+      mapStaticFallback: document.getElementById("map-static-fallback"),
       mapTooltip: document.getElementById("map-tooltip"),
       chipTooltip: document.getElementById("state-list-tooltip"),
       stateDetailPanel: document.getElementById("state-detail-panel"),
@@ -539,6 +643,60 @@
     return "Impact: the absence of enacted contract pharmacy protection here helps show the exposure hospitals can face when patient access depends on contract pharmacies.";
   }
 
+  /** States where dashboard notes describe hybrid protection + reporting (see state-data.js / legal trends). */
+  function isHybridProtectionState(abbr) {
+    return ["CO", "ME", "OH", "RI", "VT"].indexOf(abbr) >= 0;
+  }
+
+  /** General policy framing only — not a fiscal score (see disclaimer in panel). */
+  function appendStateFiscalContext(panel, abbr, data) {
+    var section;
+    var heading;
+    var body;
+    var disclaimer;
+    var stateName;
+
+    if (!panel || !data) return;
+
+    stateName = getStateName(abbr);
+    section = document.createElement("section");
+    section.className = "state-detail-fiscal";
+    section.setAttribute("aria-label", "State fiscal context");
+
+    heading = document.createElement("h5");
+    heading.className = "state-detail-fiscal-heading";
+    heading.textContent = "State fiscal context";
+
+    body = document.createElement("p");
+    body.className = "state-detail-fiscal-body";
+
+    if (data.cp && isHybridProtectionState(abbr)) {
+      body.textContent =
+        stateName +
+        " paired pharmacy protection with reporting requirements — a model some budget-conscious legislators find more acceptable. No direct appropriation required.";
+    } else if (data.cp) {
+      body.textContent =
+        "Enacting contract pharmacy protection carries no direct state budget cost — it restricts manufacturer behavior, not state spending. States with this law (like " +
+        stateName +
+        ") prevent access restrictions without a fiscal appropriation.";
+    } else {
+      body.textContent =
+        "No state budget impact from inaction, but hospitals in " +
+        stateName +
+        " may face contract pharmacy restrictions that reduce 340B savings available for community benefit programs.";
+    }
+
+    disclaimer = document.createElement("p");
+    disclaimer.className = "state-detail-fiscal-disclaimer";
+    disclaimer.textContent =
+      "This is a general policy note, not a CBO score or state fiscal analysis. For bill-specific cost estimates, consult your state's legislative fiscal office.";
+
+    section.appendChild(heading);
+    section.appendChild(body);
+    section.appendChild(disclaimer);
+    panel.appendChild(section);
+  }
+
   function buildSelectionAnnouncement(abbr) {
     var data = getStateData(abbr);
     var summary = getStateName(abbr) + " selected.";
@@ -625,11 +783,11 @@
 
     document.title = fullTitle;
 
-    if (metaDescription) metaDescription.setAttribute("content", config.pageDescription);
-    if (ogTitle) ogTitle.setAttribute("content", config.shareTitle || fullTitle);
-    if (ogDescription) ogDescription.setAttribute("content", config.shareDescription || config.pageDescription);
-    if (twitterTitle) twitterTitle.setAttribute("content", config.shareTitle || fullTitle);
-    if (twitterDescription) twitterDescription.setAttribute("content", config.shareDescription || config.pageDescription);
+    if (metaDescription) metaDescription.setAttribute("content", config.ogDescription || config.shareDescription || config.pageDescription);
+    if (ogTitle) ogTitle.setAttribute("content", config.ogTitle || config.shareTitle || fullTitle);
+    if (ogDescription) ogDescription.setAttribute("content", config.ogDescription || config.shareDescription || config.pageDescription);
+    if (twitterTitle) twitterTitle.setAttribute("content", config.twitterTitle || config.shareTitle || fullTitle);
+    if (twitterDescription) twitterDescription.setAttribute("content", config.twitterDescription || config.shareDescription || config.pageDescription);
     if (appState.dom.dataFreshness) {
       appState.dom.dataFreshness.textContent = "Data as of " + config.dataFreshness + " - Last updated " + config.lastUpdated;
     }
@@ -696,6 +854,37 @@
   function buildShareUrl() {
     var hash = appState.selectedStateAbbr ? "#state-" + appState.selectedStateAbbr : "";
     return getCanonicalPageBase() + hash;
+  }
+
+  /** Pre-written social copy (fixed advocacy text + current share URL). */
+  function buildTwitterIntentText() {
+    var url = buildShareUrl();
+    return "72 Pennsylvania hospitals depend on #340B to fund community care — free prescriptions, cancer screening, rural services. $7.95B reinvested in 2024. See the data: " + url + " #HAP @HAP_Hospitals";
+  }
+
+  function buildLinkedInShareText() {
+    var url = buildShareUrl();
+    return "The 340B drug pricing program helps 72 Pennsylvania hospitals fund free prescriptions, cancer screening, dental care, and rural services. HAP's advocacy dashboard shows where state law stands on contract pharmacy protection and what's at stake. " + url;
+  }
+
+  /** mailto: for “Email this page” — subject/body match dashboard share spec (URL includes state hash when selected). */
+  function buildEmailMailtoHref() {
+    var url = buildShareUrl();
+    var subject = "340B advocacy dashboard — PA hospital impact";
+    var body = "I wanted to share HAP's 340B advocacy dashboard with you. It shows the impact on Pennsylvania's 72 participating hospitals and where state law stands on contract pharmacy protection: " + url +
+      "\n\nQuestions: contact HAP Advocacy at (717) 564-9200 or visit haponline.org/340b";
+    return "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
+  }
+
+  function refreshShareDrawerLinks() {
+    var xLink = document.getElementById("share-link-x");
+    var liLink = document.getElementById("share-link-linkedin");
+    var emailLink = document.getElementById("share-link-email");
+    if (!xLink || !liLink || !emailLink) return;
+    var url = buildShareUrl();
+    xLink.setAttribute("href", "https://twitter.com/intent/tweet?text=" + encodeURIComponent(buildTwitterIntentText()));
+    liLink.setAttribute("href", "https://www.linkedin.com/sharing/share-offsite/?url=" + encodeURIComponent(url));
+    emailLink.setAttribute("href", buildEmailMailtoHref());
   }
 
   function cloneMapForPrint() {
@@ -1063,6 +1252,7 @@
     detailGrid.appendChild(createElement("dt", "", "Notes"));
     detailGrid.appendChild(createElement("dd", "", data.notes || "No additional notes."));
     panel.appendChild(detailGrid);
+    appendStateFiscalContext(panel, abbr, data);
     panel.appendChild(createElement("p", "state-detail-impact", buildStateImpactNote(abbr, data)));
   }
 
@@ -1125,6 +1315,7 @@
     }
 
     highlightStateChip(null);
+    refreshShareDrawerLinks();
   }
 
   function selectState(abbr, options) {
@@ -1153,6 +1344,8 @@
         preventScroll: !!settings.scrollToMap
       });
     }
+
+    refreshShareDrawerLinks();
   }
 
   /* ---------- Tooltip helpers ---------- */
@@ -1178,24 +1371,43 @@
     tooltip.setAttribute("aria-hidden", "true");
   }
 
-  function buildMapTooltip(tooltip, abbr) {
-    clearElement(tooltip);
-    tooltip.appendChild(document.createTextNode(getStateName(abbr)));
-  }
-
-  function buildStateChipTooltip(tooltip, abbr) {
+  /**
+   * State hover/detail for map and list chips. Uses createElement and textContent only.
+   * @param {{ useBadges?: boolean }} options useBadges: compact badges for list chips; false = multi-line map tooltip
+   */
+  function fillStateTooltip(tooltip, abbr, options) {
+    options = options || {};
+    var useBadges = !!options.useBadges;
     var data = getStateData(abbr);
 
     clearElement(tooltip);
-    tooltip.appendChild(createElement("strong", "", getStateName(abbr)));
+    tooltip.appendChild(createElement("strong", "", getStateName(abbr) || abbr));
 
     if (!data) return;
 
-    tooltip.appendChild(document.createTextNode(" "));
-    appendBadge(tooltip, data.cp ? "yes" : "no", "CP: " + (data.cp ? "Yes" : "No"));
-    appendBadge(tooltip, data.pbm ? "yes" : "no", "PBM: " + (data.pbm ? "Yes" : "No"));
-    if (data.y) tooltip.appendChild(createElement("div", "", "Year: " + data.y));
-    if (data.notes) tooltip.appendChild(createElement("div", "", data.notes));
+    if (useBadges) {
+      tooltip.appendChild(document.createTextNode(" "));
+      appendBadge(tooltip, data.cp ? "yes" : "no", "CP: " + (data.cp ? "Yes" : "No"));
+      appendBadge(tooltip, data.pbm ? "yes" : "no", "PBM: " + (data.pbm ? "Yes" : "No"));
+      if (data.y) tooltip.appendChild(createElement("div", "", "Year: " + data.y));
+      if (data.notes) tooltip.appendChild(createElement("div", "", data.notes));
+      return;
+    }
+
+    tooltip.appendChild(createElement("div", "map-tooltip-line", data.cp
+      ? "Contract pharmacy: state protection law enacted"
+      : "Contract pharmacy: no enacted state protection yet"));
+    tooltip.appendChild(createElement("div", "map-tooltip-line", "PBM-related state law: " + (data.pbm ? "Yes" : "No")));
+    if (data.y) tooltip.appendChild(createElement("div", "map-tooltip-line", "Law year (tracked): " + data.y));
+    if (data.notes) tooltip.appendChild(createElement("div", "map-tooltip-line", data.notes));
+  }
+
+  function buildMapTooltip(tooltip, abbr) {
+    fillStateTooltip(tooltip, abbr, { useBadges: false });
+  }
+
+  function buildStateChipTooltip(tooltip, abbr) {
+    fillStateTooltip(tooltip, abbr, { useBadges: true });
   }
 
   /* ==================================================
@@ -1224,6 +1436,19 @@
   function showMapWrapImmediately() {
     if (!appState.dom.mapWrap) return;
     appState.dom.mapWrap.classList.add("visible", "map-visible");
+  }
+
+  function showMapInteractiveUI() {
+    if (appState.dom.mapInteractiveWrap) appState.dom.mapInteractiveWrap.style.display = "";
+    if (appState.dom.mapStaticFallback) appState.dom.mapStaticFallback.style.display = "none";
+  }
+
+  function showMapStaticFallbackUI() {
+    if (appState.dom.mapInteractiveWrap) appState.dom.mapInteractiveWrap.style.display = "none";
+    if (appState.dom.mapStaticFallback) appState.dom.mapStaticFallback.style.display = "block";
+    if (appState.dom.mapSkeleton) appState.dom.mapSkeleton.classList.add("hidden");
+    setMapBusy(false);
+    if (appState.dom.mapWrap) appState.dom.mapWrap.setAttribute("aria-busy", "false");
   }
 
   function setupMapVisibilityObserver() {
@@ -1265,26 +1490,17 @@
   }
 
   function showMapError(message) {
-    var container = appState.dom.mapContainer;
-    var wrapper;
-    var retryButton;
+    // If the interactive SVG map cannot render (missing d3/topojson, runtime error, etc.),
+    // show the static fallback grid so users still get the state protection overview.
+    if (appState.mapFallbackTimer) {
+      window.clearTimeout(appState.mapFallbackTimer);
+      appState.mapFallbackTimer = null;
+    }
 
-    if (!container) return;
-
-    clearElement(container);
-    hideMapSkeleton();
-    showMapWrapImmediately();
-
-    wrapper = createElement("div", "map-error-wrap");
-    wrapper.appendChild(createElement("p", "map-error-msg", message));
-
-    retryButton = createElement("button", "map-retry-btn", "Retry");
-    retryButton.type = "button";
-    retryButton.addEventListener("click", drawMap);
-
-    wrapper.appendChild(retryButton);
-    container.appendChild(wrapper);
-    buildMapFallback(container);
+    if (appState.dom.mapContainer) {
+      clearElement(appState.dom.mapContainer);
+    }
+    showMapStaticFallbackUI();
   }
 
   function bindMapEvents() {
@@ -1318,7 +1534,9 @@
 
       path.setAttribute("tabindex", "0");
       path.setAttribute("role", "button");
-      path.setAttribute("aria-label", "Select " + getStateName(abbr));
+      var stData = getStateData(abbr);
+      var cpLine = stData && stData.cp ? "contract pharmacy protection enacted" : "no enacted contract pharmacy protection";
+      path.setAttribute("aria-label", getStateName(abbr) + ": " + cpLine + ". Press Enter or Space to select.");
 
       path.addEventListener("keydown", function (event) {
         if (event.key === "Enter" || event.key === " ") {
@@ -1356,6 +1574,30 @@
     var mapNoProtectionColor = getCssVariable("--map-no-protection", "#d7e0ea");
 
     if (!container) return;
+
+    // Static fallback: if the interactive SVG map doesn't render within ~3s,
+    // switch to a pre-colored 50-state grid so the page stays usable.
+    if (appState.dom.mapInteractiveWrap && appState.dom.mapStaticFallback) {
+      if (appState.mapFallbackTimer) window.clearTimeout(appState.mapFallbackTimer);
+      showMapInteractiveUI();
+      appState.mapFallbackTimer = window.setTimeout(function () {
+        var usMap = document.getElementById("us-map");
+        var svg = usMap ? usMap.querySelector("svg") : null;
+        var hasAnyChildren = !!(usMap && usMap.children && usMap.children.length);
+
+        // Fallback trigger:
+        // - no rendered children inside the interactive map container, OR
+        // - the map is still showing the "Loading map..." skeleton.
+        var stillLoading = false;
+        if (appState.dom.mapSkeleton) {
+          var loadingText = appState.dom.mapSkeleton.querySelector(".map-loading-text");
+          var loadingLabel = loadingText && loadingText.textContent ? String(loadingText.textContent) : "";
+          stillLoading = !appState.dom.mapSkeleton.classList.contains("hidden") && /loading map/i.test(loadingLabel);
+        }
+
+        if (!hasAnyChildren || !svg || stillLoading) showMapStaticFallbackUI();
+      }, 3000);
+    }
 
     width = Math.min(container.offsetWidth || DEFAULT_MAP_WIDTH_PX, config.mapMaxWidth);
     height = Math.round(width * config.mapAspectRatio);
@@ -1417,6 +1659,11 @@
       });
 
     hideMapSkeleton();
+    if (appState.mapFallbackTimer) {
+      window.clearTimeout(appState.mapFallbackTimer);
+      appState.mapFallbackTimer = null;
+    }
+    showMapInteractiveUI();
     setupMapVisibilityObserver();
     bindMapEvents();
     setupMapKeyboardNav();
@@ -1867,6 +2114,7 @@
     preparePrintSelectionState();
     runTaskSafely("reveal for pdf", revealAllAnimatedSections);
     runTaskSafely("show map for pdf", showMapWrapImmediately);
+    runTaskSafely("draw map for pdf", drawMap);
     var methodologyWrap = document.getElementById("methodology-wrap");
     if (methodologyWrap) methodologyWrap.setAttribute("open", "");
     var mapSection = document.querySelector("#state-laws");
@@ -1879,9 +2127,25 @@
       if (pdfStyleEl) return;
       pdfStyleEl = document.createElement("style");
       pdfStyleEl.id = "pdf-capture-style";
-      pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; padding: 0.75rem 1rem !important; padding-top: 0 !important; margin-top: 0 !important; } " +
+      pdfStyleEl.textContent = "body.pdf-capture #pdf-capture-root { max-width: 794px; margin-left: auto; margin-right: auto; width: 100%; padding: 0.6rem 0.85rem !important; padding-top: 0 !important; margin-top: 0 !important; } " +
+        "body.pdf-capture .dashboard-header, body.pdf-capture .hap-sidebar--340b, body.pdf-capture .utility-toolbar, body.pdf-capture .site-footer { display: none !important; } " +
+        "body.pdf-capture .hap-body > .hap-page-content { margin-left: 0 !important; width: 100% !important; } " +
+        "body.pdf-capture .hap-body { display: block !important; } " +
+        "body.pdf-capture #leave-behind-sheet { display: none !important; } " +
         "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap, body.pdf-capture .methodology-content, body.pdf-capture .methodology-sources-header, body.pdf-capture .source-links, body.pdf-capture .methodology-toggle { display: none !important; } " +
         "body.pdf-capture .print-sources, body.pdf-capture .sources, body.pdf-capture #sources-summary { display: none !important; } " +
+        "body.pdf-capture .stat-verified { display: none !important; } " +
+        "body.pdf-capture #executive-summary { margin-top: 0 !important; } " +
+        "body.pdf-capture .hero-kpi-banner { padding: 0.65rem 0.85rem !important; } " +
+        "body.pdf-capture .hero-kpi-banner__kicker { font-size: 0.78rem !important; line-height: 1.25 !important; margin-bottom: 0.45rem !important; } " +
+        "body.pdf-capture .exec-summary-mega-strip { gap: 0.45rem !important; } " +
+        "body.pdf-capture .exec-summary-mega { padding: 0.6rem 0.7rem !important; min-height: 0 !important; min-width: 0 !important; overflow: visible !important; } " +
+        "body.pdf-capture .exec-summary-mega__eyebrow { font-size: 0.62rem !important; margin-bottom: 0.25rem !important; } " +
+        "body.pdf-capture .exec-summary-mega__value { font-size: 2rem !important; line-height: 1.05 !important; margin: 0 !important; } " +
+        "body.pdf-capture .exec-summary-mega--finance .exec-summary-mega__value { font-size: 1.9rem !important; } " +
+        "body.pdf-capture .exec-summary-mega__unit { font-size: 0.74rem !important; margin: 0.25rem 0 0 !important; } " +
+        "body.pdf-capture .exec-summary-mega__impact { font-size: 0.72rem !important; line-height: 1.35 !important; padding-top: 0.45rem !important; margin-top: 0.45rem !important; } " +
+        "body.pdf-capture .exec-summary-mega-trend-note { margin-top: 0.45rem !important; font-size: 0.78rem !important; line-height: 1.25 !important; } " +
         "body.pdf-capture .intro-section { padding: 0.4rem 0; margin-top: 0 !important; padding-top: 0 !important; margin-bottom: 0.5rem; } " +
         "body.pdf-capture .intro-section .card { padding: 0.7rem 1rem; margin-bottom: 0.65rem; } " +
         "body.pdf-capture .intro-section .card h2 { font-size: 1.05rem; line-height: 1.25; } " +
@@ -1930,7 +2194,7 @@
         "body.pdf-capture .supporting-section .stat-value { font-size: 0.8rem !important; font-weight: 700; } " +
         "body.pdf-capture .supporting-section .stat-desc { font-size: 0.56rem !important; } " +
         "body.pdf-capture .supporting-section { margin-bottom: 1.5rem; } " +
-        "body.pdf-capture #community-benefit { margin-top: 145px; margin-bottom: 0.5rem; padding: 0.4rem 0.65rem !important; font-size: 0.81em; line-height: 1.28; overflow: visible !important; } " +
+        "body.pdf-capture #community-benefit { margin-top: 0.8rem; margin-bottom: 0.5rem; padding: 0.4rem 0.65rem !important; font-size: 0.81em; line-height: 1.28; overflow: visible !important; } " +
         "body.pdf-capture #community-benefit .card-heading h2 { font-size: 0.9rem !important; } " +
         "body.pdf-capture #community-benefit .card-title { font-size: 0.86rem !important; font-weight: 600; } " +
         "body.pdf-capture #community-benefit .benefit-grid--community { gap: 0.35rem !important; } " +
@@ -2053,7 +2317,28 @@
         scale: captureScale,
         useCORS: true,
         allowTaint: false,
-        logging: false
+        logging: false,
+        foreignObjectRendering: !lowMemCapture,
+        onclone: function (clonedDoc) {
+          try {
+            var clonedRoot = clonedDoc.getElementById("pdf-capture-root") || clonedDoc.body;
+            if (!clonedRoot) return;
+            clonedRoot.querySelectorAll("picture").forEach(function (pic) {
+              var img = pic.querySelector("img");
+              if (!img || !img.getAttribute("src")) return;
+              var single = clonedDoc.createElement("img");
+              single.setAttribute("src", img.getAttribute("src"));
+              single.setAttribute("alt", img.getAttribute("alt") || "");
+              single.setAttribute("width", img.getAttribute("width") || "40");
+              single.setAttribute("height", img.getAttribute("height") || "40");
+              single.setAttribute("loading", "eager");
+              single.className = img.className;
+              pic.replaceWith(single);
+            });
+          } catch (cloneErr) {
+            /* ignore — html2canvas still runs */
+          }
+        }
       };
       if (lowMemCapture) {
         h2cOpts.foreignObjectRendering = false;
@@ -2165,15 +2450,18 @@
           setUtilityStatus("PDF capture failed. Try Print / PDF instead.");
           setTimeout(function () { setUtilityStatus(""); }, 3000);
         }
-      }).catch(function (err) {
+      }).catch(function () {
         restoreMapSvg();
         removePdfStyle();
         if (appState.printAppliedDefaultSelection) {
           clearSelection("", { updateHash: false, announce: false });
           appState.printAppliedDefaultSelection = false;
         }
-        setUtilityStatus("PDF capture failed. Try Print / PDF instead.");
-        setTimeout(function () { setUtilityStatus(""); }, 3000);
+        setUtilityStatus("Canvas PDF failed — opening print-ready page. Use Save as PDF there.");
+        setTimeout(function () {
+          setUtilityStatus("");
+          openPrintView({ fromPdfImage: true });
+        }, 600);
       });
     }
     function waitForMapThenCapture() {
@@ -2217,66 +2505,104 @@
     });
   }
 
+  function copyTextToClipboard(text, successMessage, dismissMs) {
+    var fallbackField;
+    var msg = successMessage != null ? successMessage : "Copied!";
+    var dismiss = typeof dismissMs === "number" ? dismissMs : UTILITY_STATUS_DISMISS_MS;
+
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text)
+        .then(function () {
+          setUtilityStatus(msg);
+        })
+        .catch(function () {
+          fallbackField = createElement("textarea");
+          fallbackField.value = text;
+          fallbackField.setAttribute("readonly", "readonly");
+          fallbackField.setAttribute("aria-hidden", "true");
+          fallbackField.style.position = "fixed";
+          fallbackField.style.left = "-9999px";
+          document.body.appendChild(fallbackField);
+          fallbackField.select();
+
+          try {
+            if (document.execCommand("copy")) {
+              showTemporaryUtilityStatus(msg, dismiss);
+            } else {
+              window.prompt("Copy:", text);
+              showTemporaryUtilityStatus("Copy from the dialog above.", dismiss);
+            }
+          } catch (error) {
+            window.prompt("Copy:", text);
+            showTemporaryUtilityStatus("Copy from the dialog above.", dismiss);
+          }
+
+          document.body.removeChild(fallbackField);
+        });
+    } else {
+      window.prompt("Copy:", text);
+      showTemporaryUtilityStatus("Copy from the dialog above.", dismiss);
+    }
+
+    window.setTimeout(function () {
+      setUtilityStatus("");
+    }, dismiss);
+  }
+
+  function setShareDrawerOpen(open) {
+    var drawer = document.getElementById("share-drawer");
+    var btn = appState.dom.shareButton;
+    if (!drawer || !btn) return;
+    drawer.hidden = !open;
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    if (open) {
+      refreshShareDrawerLinks();
+    }
+  }
+
   function initShare() {
     if (!appState.dom.shareButton) return;
 
-    appState.dom.shareButton.addEventListener("click", function () {
-      var url = buildShareUrl();
-      var fallbackField;
+    var drawer = document.getElementById("share-drawer");
+    var copyLinkBtn = document.getElementById("btn-share-copy-link");
+    var liLink = document.getElementById("share-link-linkedin");
+    var wrap = document.querySelector(".utility-share-wrap");
 
-      setUtilityStatus("Copying link...");
+    refreshShareDrawerLinks();
 
-      if (navigator.share) {
-        navigator.share({
-          title: config.shareTitle || config.dashboardTitle,
-          text: config.shareDescription || config.pageDescription,
-          url: url
-        }).then(function () {
-          setUtilityStatus("Link shared.");
-        }).catch(function () {
-          setUtilityStatus("Share cancelled. Try Copy link below if you need the URL.");
-        });
-        return;
-      }
-
-      if (navigator.clipboard && navigator.clipboard.writeText) {
-        navigator.clipboard.writeText(url)
-          .then(function () {
-            setUtilityStatus("Link copied.");
-          })
-          .catch(function () {
-            fallbackField = createElement("textarea");
-            fallbackField.value = url;
-            fallbackField.setAttribute("readonly", "readonly");
-            fallbackField.setAttribute("aria-hidden", "true");
-            fallbackField.style.position = "fixed";
-            fallbackField.style.left = "-9999px";
-            document.body.appendChild(fallbackField);
-            fallbackField.select();
-
-            try {
-              if (document.execCommand("copy")) {
-                showTemporaryUtilityStatus("Link copied.");
-              } else {
-                window.prompt("Copy this link:", url);
-                showTemporaryUtilityStatus("Copy the link from the dialog above.");
-              }
-            } catch (error) {
-              window.prompt("Copy this link:", url);
-              showTemporaryUtilityStatus("Copy the link from the dialog above.");
-            }
-
-            document.body.removeChild(fallbackField);
-          });
-      } else {
-        window.prompt("Copy this link:", url);
-        showTemporaryUtilityStatus("Copy the link from the dialog above.");
-      }
-
-      window.setTimeout(function () {
-        setUtilityStatus("");
-      }, 2500);
+    appState.dom.shareButton.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      if (!drawer) return;
+      setShareDrawerOpen(drawer.hidden);
     });
+
+    if (wrap) {
+      document.addEventListener("click", function (ev) {
+        if (!drawer || drawer.hidden) return;
+        if (wrap.contains(ev.target)) return;
+        setShareDrawerOpen(false);
+      });
+    }
+
+    document.addEventListener("keydown", function (ev) {
+      if (ev.key === "Escape" && drawer && !drawer.hidden) {
+        setShareDrawerOpen(false);
+      }
+    });
+
+    if (copyLinkBtn) {
+      copyLinkBtn.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        copyTextToClipboard(buildShareUrl(), "✓ Copied!", 2000);
+      });
+    }
+
+    // LinkedIn share-offsite supports URL only; copy suggested post text for convenience.
+    if (liLink) {
+      liLink.addEventListener("click", function () {
+        copyTextToClipboard(buildLinkedInShareText(), "✓ Copied!", 2000);
+      });
+    }
   }
 
   function initMethodologyToggle() {
@@ -2287,11 +2613,168 @@
     });
   }
 
+  var KPI_BRIEFING_BANNER_LS = "hap340bKpiBriefingBannerDismissed";
+
+  function initKpiBriefingBanner() {
+    var banner = document.getElementById("kpi-briefing-banner");
+    var btn = document.getElementById("kpi-briefing-banner-dismiss");
+
+    if (!banner || !btn) return;
+
+    try {
+      if (window.localStorage && window.localStorage.getItem(KPI_BRIEFING_BANNER_LS) === "1") {
+        banner.hidden = true;
+      }
+    } catch (e) {
+      /* ignore */
+    }
+
+    btn.addEventListener("click", function () {
+      banner.hidden = true;
+      try {
+        if (window.localStorage) window.localStorage.setItem(KPI_BRIEFING_BANNER_LS, "1");
+      } catch (e2) {
+        /* ignore */
+      }
+    });
+  }
+
+  function renderExecSummarySparklineInto(container, key) {
+    var data = TREND_DATA[key];
+    if (!data || !container || !data.values || data.values.length < 2) return;
+
+    var vals = data.values;
+    var svgW = 80;
+    var svgH = 30;
+    var pad = 2;
+    var min = Math.min.apply(null, vals);
+    var max = Math.max.apply(null, vals);
+    var range = max - min || 1;
+    var pathParts = [];
+    var lastX = 0;
+    var lastY = 0;
+    var i;
+    var x;
+    var y;
+
+    for (i = 0; i < vals.length; i++) {
+      x = pad + (i / (vals.length - 1)) * (svgW - 2 * pad);
+      y = pad + (1 - (vals[i] - min) / range) * (svgH - 2 * pad);
+      pathParts.push((i === 0 ? "M " : " L ") + x + "," + y);
+      lastX = x;
+      lastY = y;
+    }
+
+    var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("width", String(svgW));
+    svg.setAttribute("height", String(svgH));
+    svg.setAttribute("viewBox", "0 0 " + svgW + " " + svgH);
+    svg.setAttribute("class", "exec-summary-sparkline-svg");
+    svg.setAttribute("aria-hidden", "true");
+    svg.setAttribute("focusable", "false");
+
+    var pathEl = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    pathEl.setAttribute("d", pathParts.join(""));
+    pathEl.setAttribute("fill", "none");
+    pathEl.setAttribute("stroke", "var(--hap-brand-primary, #0072bc)");
+    pathEl.setAttribute("stroke-width", "1.5");
+    pathEl.setAttribute("stroke-linecap", "round");
+    pathEl.setAttribute("stroke-linejoin", "round");
+    svg.appendChild(pathEl);
+
+    var endDot = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+    endDot.setAttribute("cx", String(lastX));
+    endDot.setAttribute("cy", String(lastY));
+    endDot.setAttribute("r", "2.5");
+    endDot.setAttribute("fill", "var(--hap-brand-primary, #0072bc)");
+    svg.appendChild(endDot);
+
+    var label = document.createElement("p");
+    label.className = "exec-summary-sparkline-label";
+    label.textContent = data.label;
+
+    container.appendChild(svg);
+    container.appendChild(label);
+  }
+
+  function initExecSummarySparklines() {
+    var wraps = document.querySelectorAll(".exec-summary-sparkline-wrap[data-sparkline-key]");
+    wraps.forEach(function (wrap) {
+      var key = wrap.getAttribute("data-sparkline-key");
+      renderExecSummarySparklineInto(wrap, key);
+    });
+  }
+
+  function initKpiPaIllustrativeTooltip() {
+    var host = document.querySelector(".kpi-pa-tooltip-host");
+    var btn = document.getElementById("kpi-pa-illustrative-info");
+    if (!host || !btn) return;
+
+    btn.addEventListener("click", function (ev) {
+      ev.stopPropagation();
+      var open = !host.classList.contains("is-open");
+      host.classList.toggle("is-open", open);
+      btn.setAttribute("aria-expanded", open ? "true" : "false");
+    });
+
+    document.addEventListener("click", function (ev) {
+      if (!host.contains(ev.target)) {
+        host.classList.remove("is-open");
+        btn.setAttribute("aria-expanded", "false");
+      }
+    });
+  }
+
   function initSelectionControls() {
     if (!appState.dom.selectionClear) return;
 
     appState.dom.selectionClear.addEventListener("click", function () {
       clearSelection();
+    });
+  }
+
+  function initHearingPrepPrint() {
+    var btn = document.getElementById("hearing-prep-print-btn");
+    if (!btn) return;
+
+    btn.addEventListener("click", function () {
+      // Print only this FAQ section as a one-page handout.
+      document.body.classList.add("print-hearing-prep");
+      window.print();
+    });
+
+    window.addEventListener("afterprint", function () {
+      document.body.classList.remove("print-hearing-prep");
+    });
+  }
+
+  function initLeaveBehindExport() {
+    var btn = document.getElementById("btn-leave-behind-export");
+    var preview = document.getElementById("leave-behind-preview");
+    var printBtn = document.getElementById("leave-behind-preview-print");
+    var cancelBtn = document.getElementById("leave-behind-preview-cancel");
+
+    if (!btn || !preview || !printBtn || !cancelBtn) return;
+
+    btn.addEventListener("click", function () {
+      preview.hidden = false;
+      try { printBtn.focus(); } catch (e) { /* ignore */ }
+    });
+
+    printBtn.addEventListener("click", function () {
+      preview.hidden = true;
+      document.body.classList.add("leave-behind-mode");
+      function cleanupLeaveBehindPrint() {
+        document.body.classList.remove("leave-behind-mode");
+        window.removeEventListener("afterprint", cleanupLeaveBehindPrint);
+      }
+      window.addEventListener("afterprint", cleanupLeaveBehindPrint);
+      window.print();
+    });
+
+    cancelBtn.addEventListener("click", function () {
+      preview.hidden = true;
+      try { btn.focus(); } catch (e2) { /* ignore */ }
     });
   }
 
@@ -2479,6 +2962,14 @@
 
     var items = timeline.querySelectorAll(".timeline-item[data-timeline-index]");
     var nodes = timeline.querySelectorAll(".policy-timeline-node-g");
+    var headers = card.querySelectorAll(".timeline-item__header");
+
+    function openByIndex(idx) {
+      if (!(idx >= 1 && idx <= 4)) return;
+      // Find matching header and trigger the existing accordion click handler.
+      var btn = card.querySelector("#timeline-btn-" + idx);
+      if (btn) btn.click();
+    }
 
     items.forEach(function (step) {
       var idx = parseInt(step.getAttribute("data-timeline-index"), 10);
@@ -2495,6 +2986,9 @@
       var idx = i + 1;
       node.addEventListener("mouseenter", function () {
         setHover(idx);
+      });
+      node.addEventListener("click", function () {
+        openByIndex(idx);
       });
     });
 
@@ -2585,14 +3079,461 @@
     });
   }
 
+  function getPaBillSessionDaysLeft(deadlineStr) {
+    var end = new Date(deadlineStr);
+    if (isNaN(end.getTime())) {
+      return null;
+    }
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+    end.setHours(0, 0, 0, 0);
+    return Math.round((end.getTime() - today.getTime()) / 86400000);
+  }
+
+  function renderPaBillTracker() {
+    var root = document.getElementById("pa-bill-card-root");
+    if (!root) return;
+
+    var cfg = PA_BILL_CONFIG;
+    root.replaceChildren();
+
+    if (!cfg.hasBill) {
+      var noBill = document.createElement("article");
+      noBill.className = "pa-bill-card pa-bill-card--empty";
+      var noBillP = document.createElement("p");
+      noBillP.className = "pa-bill-card-empty-text";
+      noBillP.textContent =
+        "No contract pharmacy protection bill has been introduced in the current PA General Assembly session. Contact HAP Advocacy to support introduction:";
+      noBillP.appendChild(document.createElement("br"));
+
+      var contactName = (cfg.hapContact || "HAP Advocacy").toString();
+      var contactPhone = (cfg.hapContactPhone || "(717) 564-9200").toString();
+
+      noBillP.appendChild(document.createTextNode(contactName));
+      noBillP.appendChild(document.createElement("br"));
+      noBillP.appendChild(document.createTextNode(contactPhone));
+      noBill.appendChild(noBillP);
+      root.appendChild(noBill);
+      return;
+    }
+
+    var card = document.createElement("article");
+    card.className = "pa-bill-card";
+    card.setAttribute("aria-label", "Bill status");
+
+    var num = document.createElement("p");
+    num.className = "pa-bill-card-number";
+    num.textContent = cfg.billNumber || "";
+
+    var title = document.createElement("p");
+    title.className = "pa-bill-card-title";
+    title.textContent = cfg.billTitle || "";
+
+    var posRaw = (cfg.hapPosition || "").toString().trim().toUpperCase();
+    var posBadge = document.createElement("p");
+    posBadge.className = "pa-bill-card-position";
+    var badge = document.createElement("span");
+    badge.className = "pa-bill-position-badge";
+    if (posRaw.indexOf("OPPOSE") >= 0) {
+      badge.classList.add("pa-bill-position-badge--oppose");
+      badge.textContent = "OPPOSE";
+    } else if (posRaw.indexOf("SUPPORT") >= 0) {
+      badge.classList.add("pa-bill-position-badge--support");
+      badge.textContent = "SUPPORT";
+    } else {
+      badge.classList.add("pa-bill-position-badge--neutral");
+      badge.textContent = posRaw || "—";
+    }
+    var posLabel = document.createElement("span");
+    posLabel.className = "pa-bill-card-position-label";
+    posLabel.textContent = "HAP Position";
+    posBadge.appendChild(posLabel);
+    posBadge.appendChild(badge);
+
+    function addRow(label, value) {
+      var row = document.createElement("div");
+      row.className = "pa-bill-card-row";
+      var lab = document.createElement("span");
+      lab.className = "pa-bill-card-label";
+      lab.textContent = label;
+      var val = document.createElement("span");
+      val.className = "pa-bill-card-value";
+      val.textContent = value;
+      row.appendChild(lab);
+      row.appendChild(val);
+      return row;
+    }
+
+    var house = document.createElement("div");
+    house.className = "pa-bill-card-block";
+    house.appendChild(addRow("House committee", cfg.houseCommittee || "—"));
+    house.appendChild(addRow("House chair", cfg.houseChair || "—"));
+
+    var senate = document.createElement("div");
+    senate.className = "pa-bill-card-block";
+    senate.appendChild(addRow("Senate committee", cfg.senateCommittee || "—"));
+    senate.appendChild(addRow("Senate chair", cfg.senateChair || "—"));
+
+    var last = document.createElement("div");
+    last.className = "pa-bill-card-row pa-bill-card-row--full";
+    var lastLab = document.createElement("span");
+    lastLab.className = "pa-bill-card-label";
+    lastLab.textContent = "Last action";
+    var lastVal = document.createElement("span");
+    lastVal.className = "pa-bill-card-value";
+    lastVal.textContent = cfg.lastAction || "—";
+    last.appendChild(lastLab);
+    last.appendChild(lastVal);
+
+    var deadlineRow = document.createElement("div");
+    deadlineRow.className = "pa-bill-card-row pa-bill-card-row--full pa-bill-card-deadline";
+    var dlLab = document.createElement("span");
+    dlLab.className = "pa-bill-card-label";
+    dlLab.textContent = "Session deadline";
+    var dlVal = document.createElement("span");
+    dlVal.className = "pa-bill-card-value";
+    dlVal.textContent = cfg.sessionDeadline || "—";
+    var countdown = document.createElement("span");
+    countdown.id = "pa-bill-session-countdown";
+    countdown.className = "pa-bill-card-countdown";
+    countdown.setAttribute("aria-live", "polite");
+    function refreshCountdown() {
+      var days = getPaBillSessionDaysLeft(cfg.sessionDeadline);
+      if (days === null) {
+        countdown.textContent = "";
+        return;
+      }
+      if (days < 0) days = 0;
+      if (days === 1) {
+        countdown.textContent = "1 day remaining in session";
+      } else {
+        countdown.textContent = days + " days remaining in session";
+      }
+    }
+    refreshCountdown();
+    dlVal.appendChild(document.createTextNode(" · "));
+    dlVal.appendChild(countdown);
+    deadlineRow.appendChild(dlLab);
+    deadlineRow.appendChild(dlVal);
+
+    var linkP = document.createElement("p");
+    linkP.className = "pa-bill-card-actions";
+    var a = document.createElement("a");
+    a.className = "pa-bill-card-bill-link";
+    var rawUrl = (cfg.billUrl && String(cfg.billUrl).trim() !== "") ? String(cfg.billUrl).trim() : "#";
+    a.href = rawUrl;
+    a.textContent = "View bill text";
+    if (/^https?:\/\//i.test(rawUrl)) {
+      a.rel = "noopener noreferrer";
+      a.target = "_blank";
+    }
+    linkP.appendChild(a);
+
+    card.appendChild(num);
+    card.appendChild(title);
+    card.appendChild(posBadge);
+    card.appendChild(house);
+    card.appendChild(senate);
+    card.appendChild(last);
+    card.appendChild(deadlineRow);
+    card.appendChild(linkP);
+    root.appendChild(card);
+
+    if (paBillCountdownTimer !== null) {
+      window.clearInterval(paBillCountdownTimer);
+    }
+    paBillCountdownTimer = window.setInterval(refreshCountdown, 60000);
+  }
+
+  function initPaBillTracker() {
+    renderPaBillTracker();
+  }
+
+  function renderFederalBillBanner() {
+    var root = document.getElementById("federal-bill-banner-root");
+    if (!root) return;
+    var cfg = FEDERAL_BILL_CONFIG;
+    root.replaceChildren();
+
+    if (!cfg.hasBill) {
+      var empty = document.createElement("p");
+      empty.className = "federal-bill-banner federal-bill-banner--empty";
+      empty.textContent =
+        "No federal bill is linked in this dashboard view. Contact HAP Federal Advocacy to connect bill text and committee status.";
+      root.appendChild(empty);
+      return;
+    }
+
+    var ban = document.createElement("div");
+    ban.className = "federal-bill-banner";
+
+    var top = document.createElement("div");
+    top.className = "federal-bill-banner__top";
+    var num = document.createElement("p");
+    num.className = "federal-bill-banner__number";
+    num.textContent = cfg.billNumber || "";
+    var title = document.createElement("p");
+    title.className = "federal-bill-banner__title";
+    title.textContent = cfg.billTitle || "";
+    top.appendChild(num);
+    top.appendChild(title);
+
+    var grid = document.createElement("div");
+    grid.className = "federal-bill-banner__grid";
+
+    function addCell(label, value) {
+      var cell = document.createElement("div");
+      cell.className = "federal-bill-banner__cell";
+      var lab = document.createElement("span");
+      lab.className = "federal-bill-banner__label";
+      lab.textContent = label;
+      var val = document.createElement("span");
+      val.className = "federal-bill-banner__value";
+      val.textContent = value;
+      cell.appendChild(lab);
+      cell.appendChild(val);
+      return cell;
+    }
+
+    grid.appendChild(addCell("Senate committee status", cfg.senateStatus || "—"));
+    grid.appendChild(addCell("House committee status", cfg.houseStatus || "—"));
+    grid.appendChild(addCell("Last updated", cfg.lastUpdated || "—"));
+
+    var actions = document.createElement("div");
+    actions.className = "federal-bill-banner__actions";
+    var a = document.createElement("a");
+    a.className = "federal-bill-banner__link";
+    var rawUrl = cfg.billUrl && String(cfg.billUrl).trim() !== "" ? String(cfg.billUrl).trim() : "#";
+    a.href = rawUrl;
+    a.textContent = "View bill text";
+    if (/^https?:\/\//i.test(rawUrl)) {
+      a.rel = "noopener noreferrer";
+      a.target = "_blank";
+    }
+    actions.appendChild(a);
+
+    function deriveVpShortTitle(titleStr) {
+      var s = titleStr ? titleStr.toString() : "";
+      var commaIdx = s.indexOf(",");
+      if (commaIdx >= 0) {
+        var rest = s.substring(commaIdx + 1).trim();
+        if (rest) return "VP " + rest;
+      }
+      return s || "VP";
+    }
+
+    var contact = document.createElement("p");
+    contact.className = "federal-bill-banner__contact";
+
+    var vpShort = deriveVpShortTitle(cfg.hapContactTitle);
+    contact.textContent =
+      "Federal 340B questions: " + (cfg.hapContact || "") + ", " + vpShort + " | (717) 564-9200";
+
+    ban.appendChild(top);
+    ban.appendChild(grid);
+    ban.appendChild(actions);
+    ban.appendChild(contact);
+    root.appendChild(ban);
+  }
+
+  var FEDERAL_POS_LABELS = {
+    cosponsor: "Cosponsor",
+    supportive: "Supportive",
+    unknown: "Unknown",
+    opposed: "Opposed"
+  };
+
+  function renderFederalDelegationTable() {
+    var tbody = document.getElementById("federal-delegation-tbody");
+    if (!tbody) return;
+    tbody.replaceChildren();
+
+    PA_DELEGATION_MEMBERS.forEach(function (row) {
+      var tr = document.createElement("tr");
+      tr.setAttribute("data-federal-position", row.position || "unknown");
+
+      function td(text) {
+        var cell = document.createElement("td");
+        cell.textContent = text;
+        return cell;
+      }
+
+      tr.appendChild(td(row.member || ""));
+      tr.appendChild(td(row.chamber || ""));
+      tr.appendChild(td(row.district || ""));
+      tr.appendChild(td(row.party || ""));
+
+      var tdPos = document.createElement("td");
+      var badge = document.createElement("span");
+      var posKey = row.position || "unknown";
+      badge.className = "federal-pos-badge federal-pos-badge--" + posKey;
+      badge.textContent = FEDERAL_POS_LABELS[posKey] || posKey;
+      tdPos.appendChild(badge);
+      tr.appendChild(tdPos);
+
+      tr.appendChild(td(row.lastContact || ""));
+      tr.appendChild(td(row.action || ""));
+      tbody.appendChild(tr);
+    });
+  }
+
+  function initFederalDelegationFilter() {
+    var toolbar = document.getElementById("federal-delegation-filter");
+    var tbody = document.getElementById("federal-delegation-tbody");
+    if (!toolbar || !tbody) return;
+
+    toolbar.addEventListener("click", function (e) {
+      var btn = e.target && e.target.closest ? e.target.closest("[data-federal-filter]") : null;
+      if (!btn || !toolbar.contains(btn)) return;
+
+      var filter = btn.getAttribute("data-federal-filter") || "all";
+      var buttons = toolbar.querySelectorAll("[data-federal-filter]");
+      for (var i = 0; i < buttons.length; i++) {
+        buttons[i].classList.toggle("is-active", buttons[i] === btn);
+      }
+
+      var rows = tbody.querySelectorAll("tr[data-federal-position]");
+      for (var j = 0; j < rows.length; j++) {
+        var row = rows[j];
+        var pos = row.getAttribute("data-federal-position") || "";
+        var show = filter === "all" || pos === filter;
+        row.hidden = !show;
+      }
+    });
+  }
+
+  function initFederalDelegation() {
+    renderFederalBillBanner();
+    renderFederalDelegationTable();
+    initFederalDelegationFilter();
+  }
+
+  function initVerifiedDataStamps() {
+    // Populate "Verified: ..." lines using safe textContent only.
+    var nodes = document.querySelectorAll("[data-verified-key]");
+    if (!nodes || !nodes.length) return;
+
+    nodes.forEach(function (el) {
+      var key = el.getAttribute("data-verified-key") || "";
+      var val = DATA_DATES[key];
+      el.textContent = typeof val === "string" && val ? "Verified: " + val : "";
+    });
+  }
+
+  function initPaDistrictLookup() {
+    var form = document.getElementById("pa-district-lookup-form");
+    var input = document.getElementById("pa-district-zip");
+    var statusEl = document.getElementById("pa-district-lookup-status");
+
+    if (!form || !input) return;
+
+    function setStatus(msg, isError) {
+      if (!statusEl) return;
+      statusEl.textContent = msg || "";
+      statusEl.classList.toggle("is-error", !!isError);
+    }
+
+    function openLegislatorFinder(zip) {
+      var baseUrl = "https://www.legis.state.pa.us/cfdocs/legis/home/findyourlegislator/";
+      // Best-effort prefill: if the PA site doesn't use query params, the base page still opens.
+      var url = baseUrl + "?zip=" + encodeURIComponent(zip);
+
+      var a = document.createElement("a");
+      a.href = url;
+      a.target = "_blank";
+      a.rel = "noopener noreferrer";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      setStatus("", false);
+
+      var raw = input.value || "";
+      var zip = String(raw).replace(/[^0-9]/g, "");
+      if (zip.length !== 5) {
+        setStatus("Enter a valid 5-digit ZIP code.", true);
+        input.focus();
+        return;
+      }
+
+      openLegislatorFinder(zip);
+    });
+  }
+
+  function initPaDistrictMap() {
+    var mapWrap = document.getElementById("pa-district-map");
+    if (!mapWrap) return;
+
+    var toggles = document.querySelectorAll(".pa-district-toggle[data-pa-district-chamber]");
+    var detailEmpty = document.getElementById("pa-district-detail-empty");
+    var detailPanel = document.getElementById("pa-district-detail-panel");
+    var elTitle = document.getElementById("pa-district-detail-title");
+    var elLeg = document.getElementById("pa-district-detail-legislator");
+    var elCount = document.getElementById("pa-district-detail-count");
+    var elHosp = document.getElementById("pa-district-detail-hospitals");
+    var elRel = document.getElementById("pa-district-detail-relationship");
+
+    var activeChamber = "house";
+    function setActiveChamber(ch) {
+      activeChamber = ch === "senate" ? "senate" : "house";
+      toggles.forEach(function (btn) {
+        var isOn = (btn.getAttribute("data-pa-district-chamber") === activeChamber);
+        btn.classList.toggle("is-active", isOn);
+        btn.setAttribute("aria-pressed", isOn ? "true" : "false");
+      });
+      // When the real map is wired, this is where we’d re-render.
+    }
+
+    function showSelection(payload) {
+      if (!detailEmpty || !detailPanel) return;
+      detailEmpty.hidden = true;
+      detailPanel.hidden = false;
+      if (elTitle) elTitle.textContent = payload.title || "—";
+      if (elLeg) elLeg.textContent = payload.legislator || "—";
+      if (elCount) elCount.textContent = payload.count != null ? String(payload.count) : "—";
+      if (elHosp) elHosp.textContent = payload.hospitals || "—";
+      if (elRel) elRel.textContent = payload.relationship || "—";
+    }
+
+    function resetSelection() {
+      if (!detailEmpty || !detailPanel) return;
+      detailPanel.hidden = true;
+      detailEmpty.hidden = false;
+    }
+
+    toggles.forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var ch = btn.getAttribute("data-pa-district-chamber");
+        setActiveChamber(ch);
+        resetSelection();
+      });
+    });
+
+    // Data integrity: don’t invent legislator names or hospital counts.
+    // If approved datasets are loaded later, this initializer can be extended to render the real map.
+    resetSelection();
+    setActiveChamber(activeChamber);
+
+    // If data objects exist, expose a minimal click API for future wiring.
+    // Example payload:
+    // { title: "House District 12", legislator: "Rep. …", count: 2, hospitals: "A; B", relationship: "Ally" }
+    mapWrap._paDistrictSelect = function (payload) { showSelection(payload || {}); };
+  }
+
   function initNavHighlight() {
     /* Scroll-active nav: last section (document order) whose top is above the header band wins.
      * Section Y positions are cached; scroll handler only compares scrollY (no getBoundingClientRect per frame). */
     var sectionIds = [
       "section-overview",
       "overview",
+      "pa-bill-tracker",
+      "federal-delegation",
       "state-laws",
       "legal-trends",
+      "counterarguments",
       "methodology-section",
       "key-metrics",
       "community-benefit",
@@ -2716,7 +3657,8 @@
       event.target.closest(".utility-toolbar") ||
       event.target.closest("#dashboard-nav") ||
       event.target.closest(".hap-sidebar") ||
-      event.target.closest(".dashboard-header")
+      event.target.closest(".dashboard-header") ||
+      event.target.closest(".kpi-pa-tooltip-host")
     ) {
       return;
     }
@@ -2725,10 +3667,23 @@
   }
 
   function handleKeydown(event) {
+    if (event.key === "Escape") {
+      var kpiHost = document.querySelector(".kpi-pa-tooltip-host");
+      if (kpiHost && kpiHost.classList.contains("is-open")) {
+        kpiHost.classList.remove("is-open");
+        var kpiBtn = document.getElementById("kpi-pa-illustrative-info");
+        if (kpiBtn) kpiBtn.setAttribute("aria-expanded", "false");
+        event.preventDefault();
+        return;
+      }
+    }
     if (event.key === "Escape" && appState.selectedStateAbbr) {
       clearSelection();
     }
     if ((event.ctrlKey || event.metaKey) && event.key === "p") {
+      if (document.body && document.body.classList && document.body.classList.contains("leave-behind-mode")) {
+        return;
+      }
       event.preventDefault();
       runTaskSafely("download pdf image", downloadPdfAsImage);
     }
@@ -2746,17 +3701,20 @@
     drawMap();
   }
 
-  function handleBeforePrint() {
-    // When user selects Print from browser (Chrome), use Download PDF image instead.
-    // Keyboard Ctrl+P/Cmd+P is handled in handleKeydown; beforeprint fires for File > Print.
-    runTaskSafely("download pdf image", downloadPdfAsImage);
-  }
-
   function handleAfterPrint() {
     appState.printPreparationPending = false;
     document.body.classList.remove("print-ready");
+    document.body.classList.remove("leave-behind-mode");
     setUtilityStatus("");
     clearElement(appState.dom.printIntroSnapshot);
+
+    // Hide leave-behind preview note if it exists.
+    try {
+      var lb = document.getElementById("leave-behind-preview");
+      if (lb) lb.hidden = true;
+    } catch (e) {
+      /* ignore */
+    }
 
     if (appState.printAppliedDefaultSelection) {
       clearSelection("", {
@@ -2802,6 +3760,7 @@
     runTaskSafely("apply config copy", applyConfigCopy);
     runTaskSafely("update metadata", updateMetadata);
     runTaskSafely("validate state data", validateStateData);
+    runTaskSafely("initialize verified data stamps", initVerifiedDataStamps);
     (function runSecondaryPanels() {
       var defer = typeof DASHBOARD_SETTINGS !== "undefined" && DASHBOARD_SETTINGS.performance && DASHBOARD_SETTINGS.performance.deferSecondaryPanels;
       if (defer) {
@@ -2832,7 +3791,16 @@
     runTaskSafely("initialize dataset download", initDatasetDownload);
     runTaskSafely("initialize download pdf", initDownloadPdf);
     runTaskSafely("initialize methodology toggle", initMethodologyToggle);
+    runTaskSafely("initialize kpi briefing banner", initKpiBriefingBanner);
+    runTaskSafely("initialize exec summary sparklines", initExecSummarySparklines);
+    runTaskSafely("initialize kpi pa illustrative tooltip", initKpiPaIllustrativeTooltip);
     runTaskSafely("initialize selection controls", initSelectionControls);
+    runTaskSafely("initialize hearing prep print", initHearingPrepPrint);
+    runTaskSafely("initialize leave-behind export", initLeaveBehindExport);
+    runTaskSafely("initialize PA bill tracker", initPaBillTracker);
+    runTaskSafely("initialize federal delegation", initFederalDelegation);
+    runTaskSafely("initialize PA district lookup", initPaDistrictLookup);
+    runTaskSafely("initialize PA district map", initPaDistrictMap);
     runTaskSafely("draw map", drawMap);
     runTaskSafely("initialize count up", initCountUp);
     runTaskSafely("initialize scroll reveal", initScrollReveal);
@@ -2846,7 +3814,6 @@
 
     document.addEventListener("click", handleDocumentClick);
     document.addEventListener("keydown", handleKeydown);
-    window.addEventListener("beforeprint", handleBeforePrint);
     window.addEventListener("afterprint", handleAfterPrint);
     window.addEventListener("hashchange", syncSelectionFromHash);
 
