@@ -202,6 +202,8 @@
     (function () {
       var KEY_PRIMARY = "hap340b:printSnapshot";
       var KEY_LEGACY = "hap340bPrint";
+      var params = new URLSearchParams(window.location.search);
+      var PAYLOAD_ID = params.get("pid");
       var root = document.getElementById("print-view-root");
       var mapContainer = document.getElementById("pv-map-container");
       var paDistrictMapContainer = document.getElementById("pv-pa-district-map-container");
@@ -209,10 +211,23 @@
       function getPayload() {
         try {
           var raw = localStorage.getItem(KEY_PRIMARY) || localStorage.getItem(KEY_LEGACY);
-          return raw ? JSON.parse(raw) : null;
+          if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        try {
+          if (PAYLOAD_ID) {
+            var sRaw = sessionStorage.getItem(KEY_PRIMARY + ":" + PAYLOAD_ID);
+            if (sRaw) return JSON.parse(sRaw);
+          }
+        } catch (e2) {}
+        try {
+          if (PAYLOAD_ID && window.opener && window.opener.__hapPrintPayloadCache) {
+            var o = window.opener.__hapPrintPayloadCache[PAYLOAD_ID];
+            if (o && typeof o === "object") return o;
+          }
         } catch (e) {
           return null;
         }
+        return null;
       }
 
       var MAX_MAP_SVG_LENGTH = 500000;
@@ -411,10 +426,13 @@
           try {
             localStorage.removeItem(KEY_PRIMARY);
             localStorage.removeItem(KEY_LEGACY);
+            if (PAYLOAD_ID) sessionStorage.removeItem(KEY_PRIMARY + ":" + PAYLOAD_ID);
+            if (PAYLOAD_ID && window.opener && window.opener.__hapPrintPayloadCache) {
+              delete window.opener.__hapPrintPayloadCache[PAYLOAD_ID];
+            }
           } catch (e) {}
         }, mobileUi ? 20000 : 5000);
 
-        var params = new URLSearchParams(window.location.search);
         var fromPdfImage = params.get("from") === "pdfimage";
         if (params.get("auto") === "1") {
           if (mobileUi) {

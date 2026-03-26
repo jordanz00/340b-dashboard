@@ -1112,19 +1112,33 @@
 
     function doOpen() {
       var payload = getPrintViewPayload();
+      var payloadId = String(Date.now()) + "-" + Math.random().toString(36).slice(2, 8);
+      var canUseLocal = true;
       try {
         localStorage.setItem(PRINT_VIEW_STORAGE_KEY, JSON.stringify(payload));
       } catch (e) {
-        setUtilityStatus("Print data too large. Try closing other tabs.");
-        return;
+        canUseLocal = false;
       }
+      // Desktop fallback channel: print tab can read payload from opener cache.
+      try {
+        window.__hapPrintPayloadCache = window.__hapPrintPayloadCache || {};
+        window.__hapPrintPayloadCache[payloadId] = payload;
+      } catch (e2) { /* ignore */ }
+      // Same-tab/mobile fallback channel.
+      try {
+        sessionStorage.setItem(PRINT_VIEW_STORAGE_KEY + ":" + payloadId, JSON.stringify(payload));
+      } catch (e3) { /* ignore */ }
       var printQs = "auto=1" + (fromPdfImage ? "&from=pdfimage" : "");
+      printQs += "&pid=" + encodeURIComponent(payloadId);
       var printUrl = resolveAppUrl("print.html?" + printQs);
+      if (!canUseLocal) {
+        setUtilityStatus("Opening print view with fallback transport…");
+      }
       if (isMobileOrTabletBrowser()) {
         window.location.assign(printUrl);
         return;
       }
-      var printWin = window.open(printUrl, "_blank", "noopener");
+      var printWin = window.open(printUrl, "_blank");
       if (printWin) {
         setUtilityStatus("Print view opened. Use the browser print dialog to save as PDF.");
       } else {
