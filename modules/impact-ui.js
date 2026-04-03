@@ -28,22 +28,19 @@
   var ROOT_SCENARIO_ATTR = "data-impact-scenario";
   var SCENARIO_META = {
     protect: {
-      icon: "✓",
-      buttonIcon: "★",
-      status: "Healthy protections in place",
-      detail: "Hospitals and patients operate with steadier access, cleaner planning, and stronger outcomes."
+      status: "Protections strengthened",
+      detail: "Issue: weak state law. Impact: steadier access. Action: align states with full guardrails.",
+      buttonHint: "Full protections storyline"
     },
     mix: {
-      icon: "◐",
-      buttonIcon: "◐",
-      status: "Status quo: uneven mix",
-      detail: "Some states protect access while others remain exposed to disruption and uncertainty."
+      status: "Today’s mix",
+      detail: "Issue: patchwork law. Impact: uneven access. Action: close gaps state by state.",
+      buttonHint: "National picture now"
     },
     remove: {
-      icon: "!",
-      buttonIcon: "⚠",
-      status: "Emergency mode: protections removed",
-      detail: "Programs face acute pressure and patient access can shrink quickly without legal safeguards."
+      status: "Protections rolled back",
+      detail: "Issue: lost statutory shields. Impact: acute pressure on access. Action: avoid rollback.",
+      buttonHint: "High-risk storyline"
     }
   };
 
@@ -95,17 +92,40 @@
 
     var header = document.createElement("header");
     header.className = "impact-simulator-header";
-    header.appendChild(makeEl("span", "impact-simulator-badge", "Advocacy tool"));
-    header.appendChild(makeEl("p", "impact-simulator-title", "Policy Impact Simulator"));
-    header.appendChild(makeEl("h2", "impact-simulator-headline", "Protect the discount—or shrink access"));
-    header.appendChild(makeEl("p", "impact-simulator-sub", "Choose a scenario. This is an illustrative briefing view (not a forecast)."));
+    header.appendChild(makeEl("p", "impact-simulator-kicker hap-section-eyebrow hap-section-eyebrow--on-light", "Policy simulator"));
+    var title = document.createElement("h2");
+    title.className = "impact-simulator-headline";
+    title.id = "impact-simulator-heading";
+    title.textContent = "Instant read: strengthen, hold, or roll back protections";
+    header.appendChild(title);
+    header.appendChild(
+      makeEl(
+        "p",
+        "impact-simulator-lead",
+        "Issue: how far state law goes. Impact: partnerships, access, stability. Action: pick a path to see the built-in storyline (not a live forecast)."
+      )
+    );
+    var note = document.createElement("p");
+    note.className = "impact-simulator-disclosure";
+    note.setAttribute("role", "note");
+    note.textContent =
+      "Not a forecast or official estimate. Rounded counts and labels come from HAP’s built-in scenario table for advocacy briefings.";
+    header.appendChild(note);
     root.appendChild(header);
 
     var scenarioIds = IMPACT.getScenarioIds();
+    var toolbar = document.createElement("div");
+    toolbar.className = "impact-simulator-toolbar";
+    var toolbarLabel = document.createElement("p");
+    toolbarLabel.className = "impact-simulator-toolbar-label";
+    toolbarLabel.id = "impact-simulator-scenario-label";
+    toolbarLabel.textContent = "Scenario";
+    toolbar.appendChild(toolbarLabel);
+
     var buttonGroup = document.createElement("div");
-    buttonGroup.className = "impact-simulator-buttons";
+    buttonGroup.className = "impact-simulator-buttons impact-simulator-buttons--segmented";
     buttonGroup.setAttribute("role", "group");
-    buttonGroup.setAttribute("aria-label", "Select policy scenario");
+    buttonGroup.setAttribute("aria-labelledby", "impact-simulator-scenario-label");
 
     scenarioIds.forEach(function (id, index) {
       var data = IMPACT.getScenarioImpact(id);
@@ -118,12 +138,23 @@
       btn.id = SCENARIO_BTN_PREFIX + id;
       btn.setAttribute("data-impact-scenario-btn", slug);
       btn.setAttribute("aria-pressed", index === 1 ? "true" : "false");
-      btn.setAttribute("aria-label", "Show " + safeText(data.label) + " scenario");
-      btn.textContent = SCENARIO_META[slug].buttonIcon + " " + data.label;
+      btn.setAttribute("aria-label", safeText(data.label) + ". " + safeText(SCENARIO_META[slug].buttonHint));
+
+      var labelSpan = document.createElement("span");
+      labelSpan.className = "impact-scenario-btn__label";
+      labelSpan.textContent = safeText(data.label);
+      btn.appendChild(labelSpan);
+
+      var hintSpan = document.createElement("span");
+      hintSpan.className = "impact-scenario-btn__hint";
+      hintSpan.textContent = safeText(SCENARIO_META[slug].buttonHint);
+      btn.appendChild(hintSpan);
+
       buttonGroup.appendChild(btn);
     });
 
-    root.appendChild(buttonGroup);
+    toolbar.appendChild(buttonGroup);
+    root.appendChild(toolbar);
 
     var results = document.createElement("div");
     results.className = "impact-simulator-results";
@@ -152,11 +183,10 @@
     var scenarioSignal = document.createElement("div");
     scenarioSignal.className = "impact-scenario-signal";
 
-    var signalIcon = document.createElement("span");
-    signalIcon.className = "impact-scenario-signal-icon";
-    signalIcon.textContent = SCENARIO_META[scenarioSlug].icon;
-    signalIcon.setAttribute("aria-hidden", "true");
-    scenarioSignal.appendChild(signalIcon);
+    var signalAccent = document.createElement("div");
+    signalAccent.className = "impact-scenario-signal-accent";
+    signalAccent.setAttribute("aria-hidden", "true");
+    scenarioSignal.appendChild(signalAccent);
 
     var signalBody = document.createElement("div");
     signalBody.className = "impact-scenario-signal-body";
@@ -180,23 +210,23 @@
     var card1Note = data.pharmaciesNote != null ? data.pharmaciesNote : safeText(data.pharmaciesLabel);
 
     var card1 = document.createElement("div");
-    card1.className = "impact-result-card";
-    card1.appendChild(makeEl("p", "impact-result-label", card1Label));
+    card1.className = "impact-result-card hap-card-interactive";
     card1.appendChild(makeEl("p", "impact-result-value", card1Value));
+    card1.appendChild(makeEl("p", "impact-result-label", card1Label));
     card1.appendChild(makeEl("p", "impact-result-note", safeText(card1Note)));
     grid.appendChild(card1);
 
     var card2 = document.createElement("div");
-    card2.className = "impact-result-card";
-    card2.appendChild(makeEl("p", "impact-result-label", "Patient access to affordable meds"));
+    card2.className = "impact-result-card hap-card-interactive";
     card2.appendChild(makeEl("p", "impact-result-value", safeText(data.patientAccessImpact)));
+    card2.appendChild(makeEl("p", "impact-result-label", "Patient access to affordable medications"));
     card2.appendChild(makeEl("p", "impact-result-note", safeText(data.patientAccessNote)));
     grid.appendChild(card2);
 
     var card3 = document.createElement("div");
-    card3.className = "impact-result-card";
-    card3.appendChild(makeEl("p", "impact-result-label", "Hospital program stability"));
+    card3.className = "impact-result-card hap-card-interactive";
     card3.appendChild(makeEl("p", "impact-result-value", safeText(data.hospitalFundingImpact)));
+    card3.appendChild(makeEl("p", "impact-result-label", "Hospital program stability"));
     card3.appendChild(makeEl("p", "impact-result-note", safeText(data.hospitalFundingNote)));
     grid.appendChild(card3);
 

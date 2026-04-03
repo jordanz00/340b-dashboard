@@ -37,6 +37,8 @@
       communityBenefitImpact: estimates.communityBenefitImpact,
       communityBenefitNote: estimates.communityBenefitNote,
       narrative: estimates.narrative,
+      narrativeLead: estimates.narrativeLead || "",
+      narrativeDetail: estimates.narrativeDetail || "",
     };
   }
 

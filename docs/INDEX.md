@@ -21,6 +21,7 @@ This is the **navigation hub** for the 340B Advocacy Dashboard. For day-to-day e
 | **Architecture overview** | [docs/README.md](README.md) (this folder’s architecture) |
 | **Operations (multi-agent, republishing)** | [OPERATIONS_MANUAL.md](OPERATIONS_MANUAL.md) |
 | **Security** | [SECURITY.md](../SECURITY.md), [SECURE-FORCE.md](../SECURE-FORCE.md) |
+| **Power BI + warehouse (internal BI)** | [POWER-BI-READINESS-PLAYBOOK.md](POWER-BI-READINESS-PLAYBOOK.md) → [POWER-BI-IT-DISCOVERY-CHECKLIST.md](POWER-BI-IT-DISCOVERY-CHECKLIST.md) → [POWER-BI-DATA-MODEL-MAPPING.md](POWER-BI-DATA-MODEL-MAPPING.md) → [../powerbi/README.md](../powerbi/README.md) |
 
 ---
 
@@ -45,3 +46,4 @@ This is the **navigation hub** for the 340B Advocacy Dashboard. For day-to-day e
 | [config/](../config/) | Settings and chart defaults (see CONFIG-INDEX) |
 | [data/](../data/) | Dataset metadata and provenance |
 | [assets/vendor/](../assets/vendor/) | D3, TopoJSON, map data |
+| [powerbi/](../powerbi/) | Power BI theme, DAX samples, Gold DDL reference |

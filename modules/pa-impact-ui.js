@@ -22,6 +22,12 @@
     return "current";
   }
 
+  function scenarioDisplayName(id) {
+    if (id === "EXPAND_PROTECTIONS") return "Expanded protections";
+    if (id === "REMOVE_PROTECTIONS") return "Rollback / protections removed";
+    return "Current Pennsylvania status";
+  }
+
   function applyScenarioVisualState(root, scenarioId) {
     if (!root) return;
     root.setAttribute("data-pa-scenario", scenarioToken(scenarioId));
@@ -49,10 +55,17 @@
 
     var header = document.createElement("header");
     header.className = "pa-impact-header";
-    header.appendChild(makeEl("p", "pa-impact-title", "Pennsylvania Impact Mode"));
-    header.appendChild(makeEl("h2", "pa-impact-headline", "340B impact estimates for PA"));
-    header.appendChild(makeEl("p", "pa-impact-sub", "See how policy scenarios affect Pennsylvania hospitals, pharmacies, and patient access. Values are illustrative for advocacy."));
-    root.appendChild(header);
+    header.appendChild(makeEl("p", "pa-impact-eyebrow", "PA operating stakes"));
+    header.appendChild(
+      makeEl("h2", "pa-impact-headline", "Three scenarios for Pennsylvania hospitals and patients")
+    );
+    header.appendChild(
+      makeEl(
+        "p",
+        "pa-impact-sub",
+        "Pick a scenario to compare upside, today's posture, and downside—illustrative for advocacy, not a forecast."
+      )
+    );
 
     var ids = PA.getScenarioIds();
     var btnGroup = document.createElement("div");
@@ -82,6 +95,24 @@
     results.setAttribute("aria-live", "polite");
     root.appendChild(results);
 
+    var stakes = document.createElement("aside");
+    stakes.className = "pa-impact-stakes";
+    stakes.setAttribute("aria-label", "Issue, impact, and action");
+    var stakesList = document.createElement("ul");
+    stakesList.className = "pa-impact-stakes-list";
+    [
+      "Issue: Pennsylvania has not enacted standalone contract pharmacy protection in state law.",
+      "Impact: Participating hospitals, pharmacy networks, and patient access follow manufacturer rules, not a Pennsylvania statutory shield.",
+      "Action: Use the three scenarios in staff briefings and lawmaker meetings.",
+    ].forEach(function (line) {
+      var li = document.createElement("li");
+      li.className = "pa-impact-stakes-item";
+      li.textContent = line;
+      stakesList.appendChild(li);
+    });
+    stakes.appendChild(stakesList);
+    root.appendChild(stakes);
+
     return results;
   }
 
@@ -94,6 +125,13 @@
     container.replaceChildren();
     var modeToken = scenarioToken(scenarioId);
     container.className = "pa-impact-results pa-impact-results--" + modeToken;
+
+    var ribbon = document.createElement("p");
+    ribbon.className = "pa-impact-scenario-ribbon";
+    ribbon.setAttribute("role", "status");
+    ribbon.appendChild(makeEl("span", "pa-impact-scenario-ribbon__eyebrow", "Viewing"));
+    ribbon.appendChild(makeEl("span", "pa-impact-scenario-ribbon__name", scenarioDisplayName(scenarioId)));
+    container.appendChild(ribbon);
 
     var grid = document.createElement("div");
     grid.className = "pa-impact-grid pa-impact-grid--" + modeToken;
@@ -116,10 +154,17 @@
 
     container.appendChild(grid);
 
-    var narrative = document.createElement("p");
-    narrative.className = "pa-impact-narrative";
-    narrative.textContent = safeText(data.narrative);
-    container.appendChild(narrative);
+    var narrBlock = document.createElement("div");
+    narrBlock.className = "pa-impact-narrative-block";
+    var lead = safeText(data.narrativeLead);
+    var detail = safeText(data.narrativeDetail);
+    if (lead) {
+      narrBlock.appendChild(makeEl("p", "pa-impact-narrative-lead", lead));
+      if (detail) narrBlock.appendChild(makeEl("p", "pa-impact-narrative-detail", detail));
+    } else {
+      narrBlock.appendChild(makeEl("p", "pa-impact-narrative pa-impact-narrative--plain", safeText(data.narrative)));
+    }
+    container.appendChild(narrBlock);
   }
 
   function init() {

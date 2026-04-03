@@ -9,6 +9,8 @@
  * - Edit PA_ANCHORS (baseline facts)
  * - Edit PA_SCENARIO_ESTIMATES
  * - Keep scenario keys aligned with impact-data.js
+ *
+ * PA_ANCHORS should match dashboard KPIs; scenario extras are storytelling — NOVICE-CODE-TOUR.md.
  */
 
 (function (global) {
@@ -52,6 +54,8 @@
       communityBenefitImpact: "Stable to growing",
       communityBenefitNote: "Program sustainability improves; community benefit expands",
       narrative: "PA enacts protection. All 72 hospitals operate with predictable networks. Patient access and community benefit strengthen.",
+      narrativeLead: "PA enacts protection.",
+      narrativeDetail: "All 72 hospitals operate with predictable networks. Patient access and community benefit strengthen.",
     },
     CURRENT_STATUS: {
       hospitalProgramStatus: "Exposed",
@@ -63,6 +67,8 @@
       communityBenefitImpact: "At risk",
       communityBenefitNote: "Exposed to manufacturer policy changes",
       narrative: "PA has no contract pharmacy protection. Programs operate under manufacturer limits. Community benefit and patient access remain vulnerable.",
+      narrativeLead: "PA has no contract pharmacy protection.",
+      narrativeDetail: "Programs operate under manufacturer limits. Community benefit and patient access remain vulnerable.",
     },
     REMOVE_PROTECTIONS: {
       hospitalProgramStatus: "At risk",
@@ -74,6 +80,8 @@
       communityBenefitImpact: "Declining",
       communityBenefitNote: "Community benefit threatened across PA hospitals",
       narrative: "National rollback. PA faces harsher limits. Networks shrink; patient access suffers.",
+      narrativeLead: "National rollback.",
+      narrativeDetail: "PA faces harsher limits. Networks shrink; patient access suffers.",
     },
   };
 

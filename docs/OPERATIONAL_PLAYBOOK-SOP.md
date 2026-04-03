@@ -6,7 +6,7 @@
 
 ## 1) Release Contract (Non-negotiables)
 - **No metric integrity drift:** Do not change HAP Pennsylvania metrics/state-law values unless explicitly approved.
-- **Apple/Jony Ive clarity:** Maintain executive readability, strong hierarchy, and restrained accents.
+- **Executive clarity:** Maintain readability, strong hierarchy, and restrained accents (calm briefing UI, not decorative chrome).
 - **Accessibility is required:** focus-visible cues, no color-only meaning for state/status, keyboard support for map interactions.
 - **Print/PDF stability:** do not change print/PDF pipeline logic unless explicitly allowed by a task.
 

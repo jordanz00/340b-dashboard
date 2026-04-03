@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link href="_content/OPAIS.Common.UI.Components/css/opais-theme.css?v=OcqniO_ATBKO-bVsTEIRxXajP6N3JTMCJDZMGo-JBAI" rel="stylesheet" />
+    <link href="_content/OPAIS.Common.UI.Components/css/hs.css?v=hZKsZhDx-TiMRD8uvE6GbPVkQ5kgxmqBG0coF7P7hhM" rel="stylesheet" />
+    <dxbl-resource-script src="./_content/DevExpress.Blazor.Resources/js/analytics-core/knockout-latest.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor/modules/dx-blazor-quill.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Resources/js/devextreme/dx.all.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Resources/js/analytics-core/jquery.min.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Resources/js/analytics-core/ace.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Resources/js/analytics-core/ext-language_tools.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Resources/js/analytics-core/dx-analytics-core.min.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Resources/js/analytics-core/dx-querybuilder.min.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Reporting.JSBasedControls.Common/dx-webdocumentviewer.min.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Reporting.JSBasedControls.Common/dx-reportdesigner.min.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Reporting.JSBasedControls.Common/dx-blazor-webdocumentviewer.js?v=24.2.7.0"></dxbl-resource-script><dxbl-resource-script src="./_content/DevExpress.Blazor.Reporting.JSBasedControls.Common/dx-blazor-reportdesigner.js?v=24.2.7.0"></dxbl-resource-script><script type="module" src="./_content/DevExpress.Blazor.Resources/js/import-scripts.js?v=24.2.7.0"></script>
+    <title>340B-Reports & Files</title></head>
+<body><div class="maincontainer mx-2" b-i3hylrufuy><dxbl-grid-layout id="id4b06ee88-d788-44dc-ab66-55fa92242cbb" class="w-100 ch-480 dxbl-gridlayout" dxbl-render-guid="ida8cd3ffd-207f-4b23-b8fe-a9b8fde4905b">
+            
+            <script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+
+
+    <dxbl-grid-layout-root class="dxbl-gridlayout-root dxbl-invisible" dxbl-render-guid="id9e9ced92-2990-4854-ba02-7bebc6b84383" layout-info="{&quot;grid-template-areas&quot;:&quot;\u0022.\u0022\u0022.\u0022&quot;,&quot;grid-row-gap&quot;:null,&quot;grid-column-gap&quot;:null,&quot;grid-template-rows&quot;:&quot;min-content minmax(0, 1fr)&quot;,&quot;grid-template-columns&quot;:&quot;100%&quot;}">    <dxbl-grid-layout-item class="dxbl-gridlayout-item" dxbl-render-guid="id6fae3909-4114-41b9-826c-bf8662fefeb1" layout-info="{&quot;grid-row&quot;:&quot;1 / span 1&quot;,&quot;grid-column&quot;:&quot;1 / span 1&quot;}"><!--Blazor:{"type":"server","prerenderId":"b8aef1c99b0642d98759f8ebdc8375cc","key":{"locationHash":"76ED8863B5AB5FF1C93379BBF00C9D012AA8BA6CB862DCEE5B595EE87082416F:18","formattedComponentKey":""},"sequence":0,"descriptor":"CfDJ8EipZPGtFVREjDDQLtN/lbYgNkyASrpRYlJBb6/BaKw3Ih2NK\u002BrNjiqFOEj9ad6FW9rroXCwshFt7yW6vCgYHZH3fmhUm0mYoa6iIlRS1xRP1rb0FvZ1e6JsyqdglhjazMZqVphCDZkhlWpqDJTITUjZ9kT4nud59eDF6sNeBMV7REPRleR6tbHyfgQEWxcP3rVShcLjE9Nx\u002BCfouXiY2GtfoU80ftY4wgBKOJOW/T65FBIqdX8mocw7SUYY/MHwtbmpqRdtYevSgTBnFSGz5nAfb6Hw70R\u002BcNwdq\u002Byd3k9hazIM/7z0DGbkS2tvaGqF1y77CZTsHm5qJCQEhP/YNHvKAvgLH2/nvrjcE95i9mmG9S2mYd/FmN0EK4GAJo3q1i8BCbxH1mYavcA3FMLavmX30Zgv8X99GRX7cNiTFeB3yGxTaAwtX2Lwwcp8zxk5mLU0kQd1MDWaaIJjStlH\u002BuyFyhIRNgPaZKzjmgxwRzRpPy94Fg5rJycjJZNdVj6bBy6APkqbhGzkm5h8NulpKqBdKganLx9eCWC2jJp2I6KH83HQgERtUJPy6TCxnhkRqpKqzRFcW3VJCJsTG6yXpTo="}--><div class="hs-govsite-panel gray-footer"><dxbl-grid-layout id="id4c615ff6-3f48-4d9d-8bc9-0ceba13518d2" class="hs-govsite-panel dxbl-gridlayout" dxbl-render-guid="id8bc60e5a-195b-40bf-b412-fe9e4a288fb8">
+            
+            
+            
+            
+            
+            
+            <script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+
+
+    <dxbl-grid-layout-root class="dxbl-gridlayout-root dxbl-invisible" dxbl-render-guid="id774aa44d-3b11-457d-8a2c-f2125fa2917c" layout-info="{&quot;grid-template-areas&quot;:&quot;\u0022. . . . . . .\u0022\u0022. . . . . . .\u0022&quot;,&quot;grid-row-gap&quot;:null,&quot;grid-column-gap&quot;:null,&quot;grid-template-rows&quot;:&quot;min-content min-content&quot;,&quot;grid-template-columns&quot;:&quot;10% 5% 30% 10% 5% 30% 10%&quot;}">    <dxbl-grid-layout-item class="dxbl-gridlayout-item" dxbl-render-guid="id3aacf30b-143a-4da9-b2ec-32a60086892f" layout-info="{&quot;grid-row&quot;:&quot;1 / span 1&quot;,&quot;grid-column&quot;:&quot;1 / span 7&quot;}"><div class="hs-govsite-panel hs-govsite-header flex-row ml-1"><svg aria-hidden="true" class="hs-govsite-flag" viewBox="0 0 16 11" xmlns="http://www.w3.org/2000/svg"><g fill="none" fill-rule="evenodd"><path fill="#FFF" d="M0 0h16v11H0z"></path><path fill="#DB3E1F" d="M8 0h8v1H8z"></path><path fill="#1E33B1" d="M0 0h8v7H0z"></path><path fill="#DB3E1F" d="M8 2h8v1H8zM8 4h8v1H8zM8 6h8v1H8zM0 8h16v1H0zM0 10h16v1H0z"></path><path fill="#FFF" d="M1 1h1v1H1zM2 3h1v1H2zM1 5h1v1H1zM3 1h1v1H3zM4 3h1v1H4zM3 5h1v1H3zM5 1h1v1H5zM6 3h1v1H6zM5 5h1v1H5z"></path></g></svg>
+                        <div class="hs-govsite-headertext ml-1">An official website of the United States government</div>
+                        
+
+
+            <button class="dxbl-btn dxbl-btn-text-link dxbl-btn-standalone" id="id0a32c41e-08c8-4df5-a506-5f4692a1ca6f" type="button">
+                
+
+            <span class="dxbl-btn-caption">Here&#x27;s how you know</span>
+    
+            </button>
+</div></dxbl-grid-layout-item>
+</dxbl-grid-layout-root>
+</dxbl-grid-layout></div><!--Blazor:{"prerenderId":"b8aef1c99b0642d98759f8ebdc8375cc"}-->
+                    <div class="gridlayout-header gridlayout-item" b-i3hylrufuy><!--Blazor:{"type":"server","prerenderId":"ce7809e75d014ec3bedd854264b869bc","key":{"locationHash":"9D3EEA39D72EFDFF7E8BF00A128E00D2D498687B1F94CAC8239DF0AC89C56864:23","formattedComponentKey":""},"sequence":1,"descriptor":"CfDJ8EipZPGtFVREjDDQLtN/lbZq2gmMUAIsJctDFv8c1Sn56a7AJWGdkJhSH5C/SF6d34XhjLvzqAimTLa8xnCAQrL1woYcYrgSz3fe04D9KX\u002B0U07RYD4hcea9xdeGtl24ZXo1ZEaEvPtD9lyfqExRcDPOJp1jT2Fbm\u002B2GmXWMR9S\u002BZssiDuwBznUWIgI/Soi6S4w0canP2UJXPvvmS0k7PkLj9noub5Uf8J8Emo2L7bvvrQkYD4x9TFKp9FJbeBwOH/LnWgRdanWKCoxTceZyYSW6bV/wvrCB0sfuQ9Ry1ZvhTeE5tYfFY4JTqJVuiKpTSQ9AWxkyH9HSF5ysF/wH8yfD9FI\u002B/\u002Bz046cjI/qDzmPpEQa4grlOuijJ5gUrIUjohK8FB9bFNfwCaCIP3kkE7\u002BJ4e3zTItovZuu9vThPhNzYwpXdagUe9\u002BZZHRrlE7aRL82ARBNfOFF13cn4bRqD\u002BDva06B9jbEH2SoBNJXhlvpqnflV4Axd0oSPluR1\u002B7IOk8PhTforPREqgRgHI9asZpy\u002Bnq0v9nC/3CnulnDTyLuVMfk0JHsglykg9dRHhJd4UauqGCx9xy53O2zjtdS/Cg0="}--><div class="row hs-officeOfPharmaLogo-container m-2" b-4u9ssgk13v><div class="hs-float-left col-10" b-4u9ssgk13v><img src="_content/OPAIS.Common.UI.Components/Images/NewHeader.png" alt="Office of Pharmacy Affairs Logo" b-4u9ssgk13v></div>
+    <div class="hs-float-right col-2 hs-icon-inline-center" b-4u9ssgk13v><a href="https://www.hrsa.gov/opa" target="_blank" title="About 340B OPAIS. Navigation launches in a new window or tab" b-4u9ssgk13v>
+            About 340B OPAIS
+        </a></div></div>
+
+<div class="hs-green-bar" b-4u9ssgk13v></div>
+
+<div b-4u9ssgk13v><dxbl-menu data-dxmenu-id="id014ae03c-2d39-4510-ae18-aea46150a296" size-mode="Medium" id="id8f58a6fc-1b2c-44e4-a4b3-c53799a8f3c7" class="dxbl-menu dxbl-menu-horizontal" dxbl-render-guid="id8d84a71f-24ba-4543-bbbf-b686f1bbba9c">
+            
+                    
+                    
+            
+            
+            <script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+    <dxbl-menu-preloader menu-id="id014ae03c-2d39-4510-ae18-aea46150a296"></dxbl-menu-preloader>
+
+
+    
+            <div class="dxbl-menu-bar">
+    
+    <ul class="dxbl-menu-item-list" role="menu" aria-orientation="horizontal" aria-labelledby="">
+    
+        
+    <li data-dxmenu-item-id="id059ceae1-ab1f-4bef-8c2d-b5f629d3c341" class="dxbl-menu-list-item dxbl-menu-item-pos-start" role="none">
+    
+        <dxbl-menu-item id="id059ceae1-ab1f-4bef-8c2d-b5f629d3c341" adaptive-priority="0" class="dxbl-menu-item" style="--dxbl-menu-item-indent-count: 0" dxbl-render-guid="id7f49e1b1-811b-49d5-821d-007d363e6cc3">
+    
+            
+
+
+
+            <button class="dxbl-btn dxbl-btn-text-none" id="id0c5f3ebb-b755-4aa6-8c2f-53b7eb69193c" __internal_preventDefault_onclick role="menuitem" aria-label="Home" type="button">
+                
+            
+        
+    <div class="dxbl-menu-item-text-container">
+        <span class="dxbl-menu-item-text">Home</span>
+    </div>
+
+        
+    
+        
+            </button>
+                
+        
+
+</dxbl-menu-item>
+    
+</li>
+
+    
+        
+    <li data-dxmenu-item-id="ida596d655-ff88-4096-8d8a-ef68cfcf232f" class="dxbl-menu-list-item dxbl-menu-item-pos-start" role="none">
+    
+        <dxbl-menu-item id="ida596d655-ff88-4096-8d8a-ef68cfcf232f" adaptive-priority="0" class="dxbl-menu-item" style="--dxbl-menu-item-indent-count: 0" dxbl-render-guid="id190b3bf2-edf4-410e-803e-74c9e15cf0e7">
+    
+            
+
+
+
+            <button class="dxbl-btn dxbl-btn-text-none" id="id3198484a-2deb-4324-8b23-a9acbe1e9328" __internal_preventDefault_onclick role="menuitem" aria-label="Search" data-has-popup aria-expanded="false" type="button">
+                
+            
+        
+    <div class="dxbl-menu-item-text-container">
+        <span class="dxbl-menu-item-text">Search</span>
+    </div>
+
+        
+                        
+<svg class="dxbl-image dxbl-menu-dropdown-toggle" aria-hidden="true" focusable="false">
+    <use class="dxbl-icon-set-default" href="_content/DevExpress.Blazor/dx-blazor.svg?v=24.2.7.0#dx-chevron-down-small"></use><use class="dxbl-icon-set-fluent" href="_content/DevExpress.Blazor/dx-blazor.svg?v=24.2.7.0#dx-chevron-down-small-fluent"></use>
+</svg>
+
+
+        
+    
+        
+            </button>
+                
+        
+
+</dxbl-menu-item>
+    
+</li>
+
+    
+        
+    <li data-dxmenu-item-id="id0fd4b3e2-f9f2-4e68-92eb-1785b57720bc" class="dxbl-menu-list-item dxbl-menu-item-pos-start" role="none">
+    
+        <dxbl-menu-item id="id0fd4b3e2-f9f2-4e68-92eb-1785b57720bc" adaptive-priority="0" class="dxbl-menu-item" style="--dxbl-menu-item-indent-count: 0" dxbl-render-guid="id5359192a-faef-4dad-be8c-f04cff24c4fd">
+    
+            
+
+
+
+            <button class="dxbl-btn dxbl-btn-text-none" id="idf5dedf65-365f-448e-a427-174efb3d3ea5" __internal_preventDefault_onclick role="menuitem" aria-label="Reports" type="button">
+                
+            
+        
+    <div class="dxbl-menu-item-text-container">
+        <span class="dxbl-menu-item-text">Reports</span>
+    </div>
+
+        
+    
+        
+            </button>
+                
+        
+
+</dxbl-menu-item>
+    
+</li>
+
+                <li class="dxbl-menu-spacing" role="none"></li>
+
+        
+    <li data-dxmenu-item-id="id43e61981-d025-4bcb-a7d9-c5ec80823f38" class="dxbl-menu-list-item dxbl-menu-item-pos-end" role="none">
+    
+        <dxbl-menu-item id="id43e61981-d025-4bcb-a7d9-c5ec80823f38" adaptive-priority="0" class="dxbl-menu-item" style="--dxbl-menu-item-indent-count: 0" dxbl-render-guid="ida25d2a4e-49d5-4857-ae63-52afa687c3d6">
+    
+            
+
+
+
+            <a href="https://340bregistration.hrsa.gov" id="id4709ad64-dda4-4f5b-a52a-0ccb255a1311" class="dxbl-btn dxbl-btn-text-none" target="_blank" rel="noopener" role="menuitem" aria-label="Login">
+                
+            
+        
+    <div class="dxbl-menu-item-text-container">
+        <span class="dxbl-menu-item-text">Login</span>
+    </div>
+
+        
+    
+        
+            </a>
+                
+        
+
+</dxbl-menu-item>
+    
+</li>
+
+    
+        
+    <li data-dxmenu-item-id="id3189155a-80ad-4cf0-91cf-00b7a8f3c818" class="dxbl-menu-list-item dxbl-menu-item-pos-end" role="none">
+    
+        <dxbl-menu-item id="id3189155a-80ad-4cf0-91cf-00b7a8f3c818" adaptive-priority="0" class="dxbl-menu-item" style="--dxbl-menu-item-indent-count: 0" dxbl-render-guid="ida913f044-7417-41aa-ba13-691c6130a4bf">
+    
+            
+
+
+
+            <a href="/Help/home.htm" id="id76973b03-0ee6-419f-8feb-196a48429320" class="dxbl-btn dxbl-btn-text-none" target="_blank" rel="noopener" role="menuitem" aria-label="Help">
+                
+            
+        
+    <div class="dxbl-menu-item-text-container">
+        <span class="dxbl-menu-item-text">Help</span>
+    </div>
+
+        
+    
+        
+            </a>
+                
+        
+
+</dxbl-menu-item>
+    
+</li>
+
+    
+</ul>
+</div>
+<dxbl-keyboard-navigator class="dxbl-display-none" reactivate-mode="NearestItem"></dxbl-keyboard-navigator>
+            <dxbl-menu-navbar class="dxbl-menu-nav" role="menu" aria-orientation="horizontal" aria-labelledby="">
+    
+            <div class="dxbl-menu-nav-bar dxbl-menu-hamburger-btn-pos-right">
+                
+                
+
+
+            <button class="dxbl-btn dxbl-btn-text-none" id="id4f24e805-b95a-4146-bbaf-277e942e3bdc" role="menuitem" aria-label="A11y_Menu_HamburgerButton" aria-haspopup="true" aria-expanded="false" type="button">
+                
+                            
+<svg class="dxbl-image dxbl-menu-hamburger" aria-hidden="true" focusable="false">
+    <use class="dxbl-icon-set-default" href="_content/DevExpress.Blazor/dx-blazor.svg?v=24.2.7.0#dx-hamburger"></use><use class="dxbl-icon-set-fluent" href="_content/DevExpress.Blazor/dx-blazor.svg?v=24.2.7.0#dx-hamburger-fluent"></use>
+</svg>
+
+
+        
+            </button>
+
+            </div>
+        
+
+    <dxbl-keyboard-navigator class="dxbl-display-none" reactivate-mode="NearestItem"></dxbl-keyboard-navigator>
+</dxbl-menu-navbar>
+
+    
+</dxbl-menu></div><!--Blazor:{"prerenderId":"ce7809e75d014ec3bedd854264b869bc"}--></div>
+                    <!--Blazor:{"type":"server","key":{"locationHash":"F8AEBE3C91F4109168BECC422221DDAB8FF53EB0129E93C3FB57F1DB136B1509:25","formattedComponentKey":""},"sequence":2,"descriptor":"CfDJ8EipZPGtFVREjDDQLtN/lbbc65gGjCG\u002B5JhMC9FBzwC//e7cVXMnsjEi1ND6jmci0BitGwVH164iIP\u002BBgXsMoyc6qA/Hfqd8rYwP0hcNR3wBBpg22P6HXqP3RlPcpz3NclvEKvXdt5HmqzAZBDrCz9WxhnKsWqVFzkNQ1\u002BoqSd\u002BSzwZHxhOaPZpI\u002BcQRS1v6gAywYEjj2kzcyvIpMQQZCLNK5hNS0wsxIVSigy9zxfBfMRfu6D/x31/G/D6oFmpKPSHDqNkAwgBQHCUZ0\u002BYJX6eXIsIOlPg8vXKtXhe5pMHMH8VyaxKs/v4PXNqUarGLuKc2Qv1kBfwEUZn1o\u002Br/sl1jxxTSa7L90hUjiD\u002BHBVWlJmzCSL281nexuj3WZLvvnSz9uuNW4asmhs9HL/qCz1bfDYYPwosRo\u002BHEg8mVyK5k3Z82wX2Mqg6OxnhPFpiJt1k/KHdJr3o0X4dAJsJVi2xcSYDZINI9aNMHxkd4HZjOENM8pGhDQt3a8UaXD6qQZJs7yCRM8MOgJw6a2WrFOF2zf6WTKrwJN1AKkL9E8KmUhyAA12INDb9nPwG\u002BN01/s15fWE\u002BdOMG2lBjQJ9xu1u0="}--></dxbl-grid-layout-item>
+    <dxbl-grid-layout-item class="dxbl-gridlayout-item" dxbl-render-guid="id0765add0-32dd-42e3-a814-695a39c38110" layout-info="{&quot;grid-row&quot;:&quot;2 / span 1&quot;,&quot;grid-column&quot;:&quot;1 / span 1&quot;}"><div class="gridlayout-content gridlayout-item" b-i3hylrufuy><!--Blazor:{"type":"server","prerenderId":"d9403cd7e69340449ea54f3ecf6b6bce","key":{"locationHash":"D476EAA3A7ABC5969BA3891EBEC8CE4F2C4F6F2259DAACC0DEAB2BF471E7B9BB:0","formattedComponentKey":""},"sequence":3,"descriptor":"CfDJ8EipZPGtFVREjDDQLtN/lbbYpgvuFCpUmVTdV6WjjM3ozea3rzQPbVkuMHpaNlxQTvpOMHlWIHRBhImI6ZF2Vqxbtz/rWoG2nmN6/eiJZegzORLsPLLrR6PCdGzbw7EeUHvBps/jPapfcOXwodX3sC1Du55raBw18T2yIQOY4gt4n/EwUhFQtgnnNzuB5H5Z0/e2dC7KVK5ZEUC/8rPzFrmdcfmXM9Sdo9AgHBysnpB7upIQ/1d6V62v7tKnCIzqiL/SHANWAwt8RUS1x/6S5rrjlBQctL/o3QiSHWOvEges45y\u002BNg7z6q385FfOnI8VaxW\u002BchVuIdPQmVco6Z\u002BtDla3P\u002B1UdTc3nvUS7wf4MLFTvtVb7na86dj8PRJiA0/JGXSB97nRzPljLBO6lZUnHCk6pajXpwikxJUaXnG4kKBsdYgFZxkiT1Ym4EZOm9JZGA3lNf\u002BWnyIwfs0TQgZ9eVH1H6VrHdRr6DVZcDWTfK7MTcGU76ZeW28bPDUj59XUXIjBjYx4F31\u002BwT/FyKpBew2nlzzfduGjOWo/x5x6PE2\u002BK542iZ\u002BjYEXnogcrdlTuVA=="}-->
+<script>
+    function timeOutCall(dotnethelper) {
+        document.onmousedown = resetTimeDelay;
+        document.onkeypress = resetTimeDelay;
+
+        function resetTimeDelay() {
+            dotnethelper.invokeMethodAsync("TimerInterval");
+        }
+    }
+</script>
+
+
+<dxbl-grid-layout id="ide569b168-b985-480f-af67-4eee37003181" class="w-100 hs-reports-page dxbl-gridlayout" dxbl-render-guid="idd32b3b77-6532-431e-ad86-cb138e6cb260">
+        
+        
+        <script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+
+
+    <dxbl-grid-layout-root class="dxbl-gridlayout-root dxbl-invisible" dxbl-render-guid="id43a6c559-2d1d-4f91-94f3-3ad92d0e4342" layout-info="{&quot;grid-template-areas&quot;:&quot;\u0022. . .\u0022&quot;,&quot;grid-row-gap&quot;:null,&quot;grid-column-gap&quot;:null,&quot;grid-template-rows&quot;:&quot;min-content&quot;,&quot;grid-template-columns&quot;:&quot;% 15% 25%&quot;}">    <dxbl-grid-layout-item class="dxbl-gridlayout-item" dxbl-render-guid="idb12a27da-6c73-4b73-b044-5e633f52c1dc" layout-info="{&quot;grid-row&quot;:&quot;1 / span 1&quot;,&quot;grid-column&quot;:&quot;2 / span 1&quot;}"><div class="card m-4" b-mdkl43dnpx><div class="card-header" b-mdkl43dnpx>
+                        Daily Reports
+                    </div>
+                    <div class="card-body" b-mdkl43dnpx><div class="d-flex justify-content-start mt-2" b-mdkl43dnpx>
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone hs-wide-button" id="id9513ed97-b8f1-4855-a279-37ac98d9e15a" type="button">
+                
+
+            <span class="dxbl-btn-caption">Covered Entity Daily Export</span>
+    
+            </button>
+
+                            
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone ml-2" id="id2fe54d81-949c-4f07-b2c9-119f935ceccb" type="button">
+                
+
+            <span class="dxbl-btn-caption">Help</span>
+    
+            </button>
+</div>
+                        <div class="d-flex justify-content-start mt-2" b-mdkl43dnpx>
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone hs-wide-button" id="ided70768a-7c07-4b96-b8f0-8437b423ad91" type="button">
+                
+
+            <span class="dxbl-btn-caption">Covered Entity Daily Export (JSON)</span>
+    
+            </button>
+
+                            
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone ml-2" id="idcbf8f3e8-7a4e-46d3-a6d6-e260fa026687" type="button">
+                
+
+            <span class="dxbl-btn-caption">Help</span>
+    
+            </button>
+</div>
+                        <div class="d-flex justify-content-start mt-2" b-mdkl43dnpx>
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone hs-wide-button" id="id78fedccb-07ae-42a2-991a-7969b05460e3" type="button">
+                
+
+            <span class="dxbl-btn-caption">Contract Pharmacy Daily Report</span>
+    
+            </button>
+</div>
+                        <div class="d-flex justify-content-start mt-2" b-mdkl43dnpx>
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone hs-wide-button" id="id9a77d329-c7ea-4b62-be34-6f74f72d2477" type="button">
+                
+
+            <span class="dxbl-btn-caption">Manufacturer Report</span>
+    
+            </button>
+</div></div></div></dxbl-grid-layout-item>
+    <dxbl-grid-layout-item class="dxbl-gridlayout-item" dxbl-render-guid="idd9c4f73c-d188-46b9-a445-ccb369823353" layout-info="{&quot;grid-row&quot;:&quot;1 / span 1&quot;,&quot;grid-column&quot;:&quot;3 / span 1&quot;}"><div class="card d-inline-grid m-4" b-mdkl43dnpx><div class="card-header" b-mdkl43dnpx>
+                        Other Reports
+                    </div>
+                    <div class="card-body" b-mdkl43dnpx><div class="d-flex justify-content-start mt-2" b-mdkl43dnpx>
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone hs-wide-button" id="id29bf61bc-4562-4f81-b0ad-baa23c73edce" type="button">
+                
+
+            <span class="dxbl-btn-caption">Medicaid Exclusion Files</span>
+    
+            </button>
+</div>
+                        <div class="d-flex justify-content-start mt-2" b-mdkl43dnpx>
+
+
+            <button class="dxbl-btn dxbl-btn-primary dxbl-btn-standalone hs-wide-button" id="id9b35d9b7-893f-4c53-885a-128b8bcf7258" type="button">
+                
+
+            <span class="dxbl-btn-caption">Contract Pharmacy Carve-Ins</span>
+    
+            </button>
+</div></div></div></dxbl-grid-layout-item>
+</dxbl-grid-layout-root>
+</dxbl-grid-layout>
+
+
+<script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+<dxbl-popup-portal branch-id="id2b59af58-9ec8-4709-a47f-3de64791d17d" class="dxbl-popup-portal">
+    <dxbl-modal class="dxbl-modal" shading auto-z-index close-on-pointer-up branch-id="id2b59af58-9ec8-4709-a47f-3de64791d17d">
+        <div slot="shadow" class="dxbl-modal-back"></div>
+    </dxbl-modal>
+</dxbl-popup-portal>
+
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+
+<script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+<dxbl-popup-portal branch-id="id40f5313b-30ec-4cac-977d-4ec8e4f2b178" class="dxbl-popup-portal">
+    <dxbl-modal class="dxbl-modal" shading auto-z-index close-on-pointer-up branch-id="id40f5313b-30ec-4cac-977d-4ec8e4f2b178">
+        <div slot="shadow" class="dxbl-modal-back"></div>
+    </dxbl-modal>
+</dxbl-popup-portal>
+
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+
+<script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+<dxbl-popup-portal branch-id="id31b916ff-096c-4a75-807e-29ff6ce62ed6" class="dxbl-popup-portal">
+    <dxbl-modal class="dxbl-modal" shading auto-z-index close-on-pointer-up branch-id="id31b916ff-096c-4a75-807e-29ff6ce62ed6">
+        <div slot="shadow" class="dxbl-modal-back"></div>
+    </dxbl-modal>
+</dxbl-popup-portal>
+
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+
+<script type="module" src="./_content/DevExpress.Blazor/modules/dx-blazor-all.js?v=24.2.7.0"></script>
+<dxbl-popup-portal branch-id="id64813322-13ea-446f-b809-c829b9e862b1" class="dxbl-popup-portal">
+    <dxbl-modal class="dxbl-modal" shading auto-z-index close-on-pointer-up branch-id="id64813322-13ea-446f-b809-c829b9e862b1">
+        <div slot="shadow" class="dxbl-modal-back"></div>
+    </dxbl-modal>
+</dxbl-popup-portal>
+
+<script>
+    window.downloadFileFromStream = async (fileName, contentStreamReference) => {
+        const arrayBuffer = await contentStreamReference.arrayBuffer();
+        const blob = new Blob([arrayBuffer]);
+        const url = URL.createObjectURL(blob);
+        const anchorElement = document.createElement('a');
+        anchorElement.href = url;
+        anchorElement.download = fileName ?? '';
+        anchorElement.click();
+        anchorElement.remove();
+        URL.revokeObjectURL(url);
+    }
+</script><!--Blazor:{"prerenderId":"d9403cd7e69340449ea54f3ecf6b6bce"}--></div></dxbl-grid-layout-item>
+</dxbl-grid-layout-root>
+</dxbl-grid-layout>
+    <div class="footer" b-i3hylrufuy><div class="row green-footer hs-footer"><div class="col-md-4 hs-text-align-left"><span>Thursday, March 26, 2026</span>
+        <span>11:06 AM</span></div>
+    <div class="col-md-4"><a href="mailto:ApexusAnswers@340bpvp.com" title="Email Apexus at ApexusAnswers@340bpvp.com for assistance; this link will launch an external application">ApexusAnswers@340bpvp.com</a> |
+        <a href="tel:+18883402787" title="Call Apexus at 1-888-340-2787 for assistance; this link will launch an external application">1-888-340-2787</a></div>
+    <div class="col-md-4 hs-text-align-right"><span>OMB Number: 0915-0327, Expiration: 01/31/2026</span></div></div>
+<div class="row blue-footer"><div class="col-md-12 text-center"><a href="http://www.hhs.gov/plugins.html" target="_blank">Viewers &amp; Players</a> |
+        <a href="http://www.hhs.gov/Privacy.html" target="_blank">Privacy Policy</a> |
+        <a href="http://www.hhs.gov/disclaimer.html" target="_blank">Disclaimers</a> |
+        <a href="http://www.hrsa.gov/about/508Resources.html" target="_blank">Accessibility</a> |
+        <a href="http://www.hrsa.gov/foia/index.html" target="_blank">Freedom of Information Act</a> |
+        <a href="http://www.hrsa.gov/hr/nofearact/" target="_blank">No Fear Act</a> |
+        <a href="https://www.hhs.gov/vulnerability-disclosure-policy/index.html" target="_blank">Vulnerability Disclosure Policy</a> |
+        <a href="http://www.usa.gov/" target="_blank">USA.gov</a> |
+        <a href="http://www.whitehouse.gov/" target="_blank">WhiteHouse.gov</a></div></div></div></div>
+    <script src="_framework/blazor.web.js"></script></body></html><!--Blazor-Server-Component-State:CfDJ8EipZPGtFVREjDDQLtN/lbbTILZiWXS2Pe/PNJHyDHDjeY0+VQtPcU08om5rl/NUlPnOlVTArfZCeglSxE3bg42wOIkOMFgsbzJ71JK3Rswekud2MnvIllnQquMQS4HlzUZujIweGskk5HY+cYThxZib7CHsN8QxQfS+D+hwddtVschYbTtBy3/+iCVrHzGy9S2oToNd9Lqf1EB+q9bvmTYXqPM+qSriXi2ark0Q9TUxUhOtY7FnpsuuxGRpELPGagXHmF56tl3PZvEt7PDVII7y/xxIq3jmd6BU10Hnx4SREu0zUqNnm4bbVDBiGYytyPkeM5LUMlZ4gxsh+uJYiNBjeqFD5E3V919YZTUmN1LnTaYea3AMYr5HdyphhPrmtFB5BnNR4XeBzXC4SGkeB7TLk7AqNZrCvDIGl7jW89uvw6GbNXQee21IsR4LFzJOOk0OE2jdcUfoP5k1alY79hqXhfRaplYl8+EqNv/sTCtYdsDgq2fxryZInluJiqTK2EX3bLaTU0pYWGiOiIKGpXdyIbAY58W1VWdNGOF1x+Mi-->

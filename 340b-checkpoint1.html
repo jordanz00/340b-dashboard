@@ -399,7 +399,6 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </header>
 
       <div class="hero-kpi-banner" role="region" aria-label="Executive KPI scan">
-        <p class="hero-kpi-banner__kicker">Cited program-scale figures at a glance—use the map for each state’s contract pharmacy law status.</p>
         <div class="exec-summary-mega-strip" aria-label="Key figures at a glance">
         <article class="exec-summary-mega exec-summary-mega--finance">
           <p class="exec-summary-mega__eyebrow">Community benefit (2024)</p>
@@ -495,7 +494,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
               <h2 id="hap-position-heading">Protect the 340B discount and hospital–pharmacy partnerships.</h2>
               <blockquote class="hap-ceo-quote">
                 <p>"Pennsylvania hospitals reinvest every dollar of 340B savings into the communities that need it most. Restricting this program doesn't save money — it closes doors for patients who have nowhere else to go."</p>
-                <cite>— Nicole Stallings, President and CEO, Hospital and Healthsystem Association of Pennsylvania</cite>
+                <cite>— Nicole Stallings, President and Chief Executive Officer, Hospital and Healthsystem Association of Pennsylvania</cite>
               </blockquote>
               <p class="hap-position-kicker" id="hap-position-why">States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.</p>
             </div>
@@ -771,13 +770,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <h2 id="key-metrics-heading" class="kpi-strip-heading">Key metrics</h2>
         <p class="kpi-strip-subline">Defensible program-scale numbers—paired with the executive summary and map.</p>
       </header>
-      <div class="section-insight kpi-strip-intro">
-        <p class="section-insight-label">What this shows</p>
-        <p class="section-insight-text">National scale of 340B in the drug market, reinvested community benefit, federal oversight load, and Pennsylvania participation.</p>
-        <p class="section-insight-label">Why it matters</p>
-        <p class="section-insight-text">Leaders can anchor briefings in a few cited figures before state law detail or scenarios.</p>
-        <p class="kpi-trend-note"><span class="trend-indicator" aria-hidden="true">→</span> Snapshot metrics from cited sources—not a time series.</p>
-      </div>
+      <p class="kpi-strip-intro kpi-strip-intro--dek">National program scale, reported community benefit, federal oversight load, and Pennsylvania participation in one scan.</p>
       <div class="kpi-strip-grid">
       <div class="kpi-card kpi-card--market kpi-card--primary">
         <p class="kpi-label">National outpatient share (340B)</p>
@@ -836,12 +829,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <h2 class="map-hero-headline">Who protects contract pharmacy—and who doesn’t</h2>
           <p class="map-hero-sub" id="map-hero-sub">Blue states have a state law on contract pharmacy protection; gray states do not yet. Pick any state for notes.</p>
           <p class="map-how-to-use" id="map-how-to-use">Click the map or a state name in the lists. Use All, Protection, or No protection to filter; Clear resets your pick.</p>
-          <div class="section-insight" aria-label="How to read this map">
-            <p class="section-insight-label">What this shows</p>
-            <p class="section-insight-text">Contract pharmacy protection by state—where state law backs hospitals’ ability to use community pharmacies under 340B.</p>
-            <p class="section-insight-label">Why it matters</p>
-            <p class="section-insight-text">Manufacturers sometimes restrict contract pharmacy arrangements; state protections reduce that friction for patients and hospitals.</p>
-          </div>
+          <p class="map-reading-note">When state law is silent, hospitals depend on manufacturer rules—not a Pennsylvania statutory shield.</p>
       <div class="selection-summary" id="selection-summary">
         <div class="selection-summary-copy">
           <p class="selection-summary-label">State</p>
@@ -1013,12 +1001,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       </section>
       <div id="legal-trends" class="legal-trends-anchor" aria-labelledby="legal-trends-heading">
       <h3 id="legal-trends-heading" class="section-subhead">Recent legal signals</h3>
-      <div class="section-insight" aria-label="How to read trends">
-        <p class="section-insight-label">What this shows</p>
-        <p class="section-insight-text">A snapshot of how courts, legislatures, and governors are shaping 340B contract pharmacy rules—not a complete case list.</p>
-        <p class="section-insight-label">Why it matters</p>
-        <p class="section-insight-text">These signals preview where manufacturer challenges succeed or fail, and where states pair protections with new reporting rules.</p>
-      </div>
+      <p class="legal-trends-dek">Snapshot of courts, legislatures, and governors on contract pharmacy—not a complete case list.</p>
       <div class="trends-grid">
         <div class="trends-card trends-card--policy">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
@@ -1428,21 +1411,22 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <section id="policy-impact-simulator" class="impact-simulator-section span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Policy Impact Simulator">
       <article class="card impact-simulator-card">
         <details class="impact-simulator-methodology">
-          <summary>⚠️ Simulator methodology — read before presenting outputs</summary>
+          <summary>How this simulator works (read before briefing)</summary>
           <div class="impact-simulator-methodology__body">
-            <p>This simulator produces illustrative scenarios, not actuarial projections or official HAP estimates.</p>
-            <p><strong>How it works:</strong></p>
-            <p><strong>Input:</strong> User-selected % reduction in 340B savings (e.g., 20% restriction on contract pharmacy access)</p>
-            <p><strong>Calculation:</strong> Applies the input percentage to Pennsylvania's estimated aggregate 340B savings, derived from national community benefit totals pro-rated by PA hospital count (72) and PA participation rate (30%).</p>
-            <p><strong>Output:</strong> Estimated reduction in PA community benefit reinvestment (dollars) and illustrative count of hospitals moving from marginal to operating-loss status.</p>
-            <p><strong>Limitations:</strong></p>
+            <p>This tool shows <strong>three fixed advocacy scenarios</strong> for the 340B Program. It is a plain-language briefing aid, not a forecast or financial model.</p>
+            <p><strong>What you see for each scenario</strong></p>
             <ul>
-              <li>Does not account for individual hospital variation in drug mix, payer mix, or contract pharmacy reliance</li>
-              <li>Does not model behavioral responses (e.g., hospitals dropping contract pharmacies vs. absorbing cost reductions)</li>
-              <li>Not a CBO score, CMS estimate, or actuarial projection</li>
-              <li>Should not be cited as an official HAP estimate without HAP review</li>
+              <li><strong>Hospital–pharmacy partnerships:</strong> Rounded illustrative counts from the dashboard scenario data (about 12K under a full-protection storyline, about 4.5K under today’s national mix). The “remove protections” path labels partnerships as <strong>at risk</strong> instead of a count.</li>
+              <li><strong>Patient access</strong> and <strong>hospital program stability</strong> use the qualitative labels and notes defined in that same scenario data (for example, Strong / Mixed / Weak).</li>
             </ul>
-            <p>To request a facility-specific or scenario-specific model for testimony or member briefings, contact HAP through <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">haponline.org</a>.</p>
+            <p><strong>Limitations</strong></p>
+            <ul>
+              <li>Does not reflect individual hospital variation in drug mix, payer mix, or contract pharmacy reliance</li>
+              <li>Does not model behavioral responses (for example, hospitals changing pharmacy networks)</li>
+              <li>Not a CBO score, CMS estimate, or actuarial projection</li>
+              <li>Should not be cited as an official HAP facility-level estimate without HAP review</li>
+            </ul>
+            <p>For testimony, member briefings, or facility-specific analysis, contact HAP through <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">haponline.org</a>.</p>
           </div>
         </details>
         <div id="policy-impact-simulator-root"></div>
@@ -1455,7 +1439,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <p class="card-title">Policy context</p>
         <h2 class="policy-timeline-heading">Federal program to state protections</h2>
         <p id="policy-timeline-kicker" class="policy-timeline-kicker">Briefing anchors only—not legal advice or a full regulatory history.</p>
-        <p class="policy-timeline-why-now"><strong>Why it matters now:</strong> Federal contract pharmacy disputes keep pushing states to clarify protections—this arc is the backdrop for the map above.</p>
+        <p class="policy-timeline-why-now"><strong>Context:</strong> Federal contract pharmacy disputes keep pushing states to clarify protections—this arc is the backdrop for the map above.</p>
         <div class="policy-timeline policy-timeline--v2" data-ptl-interactive="true">
           <div class="policy-timeline-progress-bar" aria-hidden="true">
             <div class="policy-timeline-progress-fill"></div>
@@ -1651,7 +1635,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 
         <blockquote class="hap-ceo-quote leave-behind-quote">
           <p>"Pennsylvania hospitals reinvest every dollar of 340B savings into the communities that need it most. Restricting this program doesn't save money — it closes doors for patients who have nowhere else to go."</p>
-          <cite>— Nicole Stallings, President and CEO, Hospital and Healthsystem Association of Pennsylvania</cite>
+          <cite>— Nicole Stallings, President and Chief Executive Officer, Hospital and Healthsystem Association of Pennsylvania</cite>
         </blockquote>
 
         <div class="leave-behind-stats-grid" role="list" aria-label="Headline program-scale figures">

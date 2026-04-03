@@ -1,0 +1,78 @@
+{
+  "description": "Suggested MetricKey and provenance mapping for Gold fact_dashboard_kpi and static dashboard parity. IT may rename keys; keep a stable crosswalk in the warehouse or data catalog.",
+  "dashboardKey": "340B_ADVOCACY",
+  "staticReferences": {
+    "stateLaw": { "file": "state-data.js", "symbol": "STATE_340B" },
+    "stateNames": { "file": "state-data.js", "symbol": "STATE_NAMES" },
+    "configDates": { "file": "state-data.js", "path": "CONFIG.dataFreshness, CONFIG.lastUpdated" },
+    "provenanceLabels": { "file": "340b.js", "symbol": "DATA_DATES" },
+    "datasetMeta": { "file": "data/dataset-metadata.js", "symbol": "DATASET_METADATA" }
+  },
+  "metrics": [
+    {
+      "metricKey": "PA_HOSPITALS_340B_COUNT",
+      "provenanceLabel": "paHospitals",
+      "staticProvenanceDisplay": "January 2026",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "notes": "PA hospital participation count; must match org-approved source row in warehouse."
+    },
+    {
+      "metricKey": "COMMUNITY_BENEFIT_TOTAL_BILLIONS",
+      "provenanceLabel": "communityBenefit",
+      "staticProvenanceDisplay": "October 2025",
+      "unit": "USD_BILLIONS",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "notes": "Community benefit total; align with cited survey/source in Gold."
+    },
+    {
+      "metricKey": "OUTPATIENT_SHARE_PCT",
+      "provenanceLabel": "outpatientShare",
+      "staticProvenanceDisplay": "2023 (IQVIA)",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "notes": "IQVIA or org-standard share metric; confirm year in SourceCitation."
+    },
+    {
+      "metricKey": "HRSA_AUDIT_COUNT",
+      "provenanceLabel": "hrsaAudits",
+      "staticProvenanceDisplay": "September 2025",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "notes": "Must match HRSA Program Integrity reporting extract in warehouse."
+    },
+    {
+      "metricKey": "US_STATES_CP_PROTECTION_COUNT",
+      "provenanceLabel": "stateLaws",
+      "staticProvenanceDisplay": "March 2026",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "notes": "Optional stored KPI for audit; may be derived from dim_state_law instead — agree with Analytics."
+    },
+    {
+      "metricKey": "US_STATES_NO_CP_PROTECTION_COUNT",
+      "provenanceLabel": "stateLaws",
+      "staticProvenanceDisplay": "March 2026",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "notes": "Confirm DC exclusion vs IncludeInFiftyStateHeadline with Advocacy."
+    }
+  ],
+  "derivedInModel": [
+    {
+      "description": "States with contract pharmacy protection (all rows in dim)",
+      "daxMeasureName": "States With CP Protection",
+      "source": "gold_dim_state_law.ContractPharmacyProtected"
+    },
+    {
+      "description": "50-state headline counts",
+      "daxMeasureNames": ["States With CP Protection (50-state)", "States Without CP Protection (50-state)"],
+      "source": "gold_dim_state_law + IncludeInFiftyStateHeadline"
+    }
+  ],
+  "nonWarehouseContent": {
+    "configCopy": "CONFIG.copy in state-data.js — advocacy narrative; not loaded as facts unless IT maintains dim_report_copy.",
+    "trendSparklines": "TREND_DATA in 340b.js — illustrative unless fact_metric_trend exists in Gold.",
+    "delegationTracker": "PA_DELEGATION_MEMBERS in 340b.js — separate legislative tracker table if modeled in PBI."
+  }
+}

@@ -12,9 +12,14 @@
   --hap-brand-primary-hover: #005a94;
   --hap-brand-primary-muted: rgba(0, 114, 188, 0.08);
   --hap-brand-deep: #003087;
+  /* Orange: reserve for the single strongest number or alert per section (do not sprinkle). */
   --hap-accent-warm: #fbb040;
   --hap-accent-warm-alt: #fbb040;
   --hap-accent-soft: rgba(251, 176, 64, 0.14);
+  /* Rare urgency / risk callouts (legislative “watch” moments) — use sparingly */
+  --hap-accent-urgency: #ee2b7b;
+  --hap-accent-urgency-soft: rgba(238, 43, 123, 0.12);
+  --hap-accent-urgency-border: rgba(238, 43, 123, 0.35);
 
   /* —— Semantic topics (Oliver Wyman–style system — use these, avoid one-off hex) —— */
   /* Green = financial / savings / funding */
@@ -67,9 +72,27 @@
   --hap-border-default: rgba(0, 0, 0, 0.06);
   --hap-border-strong: rgba(0, 114, 188, 0.14);
 
-  /* —— Typography: Inter-first stack (system fallbacks; no external font file required) —— */
+  /* Neutral ramp + label steps (pair with semantic brand colors; avoid one-off grays in components) */
+  --hap-surface-page: #f5f5f7;
+  --hap-surface-subtle: #ebebef;
+  --hap-surface-raised: #ffffff;
+  --hap-label-primary: var(--hap-text-primary);
+  --hap-label-secondary: var(--hap-text-secondary);
+  --hap-label-tertiary: var(--hap-text-muted);
+  --hap-separator: rgba(60, 60, 67, 0.12);
+
+  /* —— HIG-inspired UI primitives (web analogy only; HAP brand + contrast still govern; no Apple affiliation in copy) —— */
+  --hap-ui-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --hap-ui-page-wash: #f5f5f7;
+  --hap-ui-card-radius: 14px;
+  --hap-ui-card-radius-lg: 18px;
+  --hap-ui-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.05);
+  --hap-ui-card-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06), 0 12px 28px rgba(0, 0, 0, 0.06);
+
+  /* —— Typography: UI/data = sans; print/PDF headings = serif (HAP memo standard) —— */
   --hap-font-sans: Tahoma, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --hap-font-display: "Montserrat", var(--hap-font-sans);
+  --hap-font-print-serif: Georgia, "Times New Roman", Times, serif;
   --hap-font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
 
   /* Scale: H1 ~32–36px, H2 ~24–28px, H3 ~18–22px, labels ~14–16px (fluid clamp) */
@@ -85,6 +108,8 @@
   --hap-leading-snug: 1.35;
   --hap-leading-body: 1.55;
   --hap-leading-relaxed: 1.6;
+  /* Tighter deks next to dense KPIs (opt-in per surface, e.g. .dashboard) */
+  --hap-leading-dek: 1.52;
 
   /* —— Spacing: 8px base —— */
   --hap-space-1: 0.25rem;
@@ -112,6 +137,8 @@
   /* —— Motion —— */
   --hap-ease-out: cubic-bezier(0, 0, 0.2, 1);
   --hap-ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Slight overshoot for card lift (not a bouncy loop) */
+  --hap-ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
   --hap-duration-fast: 0.15s;
   --hap-duration-normal: 0.22s;
 
@@ -189,7 +216,7 @@
 .hap-card-interactive {
   transition: box-shadow var(--hap-duration-normal) var(--hap-ease-standard),
     border-color var(--hap-duration-normal) var(--hap-ease-standard),
-    transform var(--hap-duration-normal) var(--hap-ease-out);
+    transform 0.32s var(--hap-ease-spring);
 }
 
 .hap-card-interactive:hover {

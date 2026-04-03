@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>340B Advocacy - HAP 2-Page Leave-Behind</title>
+  <!-- Canonical HAP 340B print/PDF layout (March 2026). Pair with print-view.css + print.html for dashboard snapshot exports. -->
+  <style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    /* Keep in sync with print-view.css :root (--hap-print-*) for snapshot + leave-behind parity */
+    --hap-blue: #0072bc;
+    --hap-blue-mid: #00aeef;
+    --hap-blue-light: #8ed8f8;
+    --hap-gold: #fbb040;
+    --hap-green: #00a9a4;
+    --hap-red: #c0392b;
+    --hap-gray-dark: #1a1a2e;
+    --hap-gray-mid: #4a4a6a;
+    --hap-gray-light: #f5f6fa;
+    --hap-border: #d0d8e8;
+    --font-main: Georgia, "Times New Roman", serif;
+    --font-ui: Tahoma, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --page-w: 8.5in;
+    --page-h: 11in;
+    --margin: 0.55in;
+  }
+  @page {
+    size: letter portrait;
+    margin: 0.55in 0.6in 0.5in 0.6in;
+  }
+  html, body {
+    width: var(--page-w);
+    font-family: var(--font-ui);
+    font-size: 9.5pt;
+    color: var(--hap-gray-dark);
+    background: #fff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .page {
+    width: 100%;
+    min-height: var(--page-h);
+    padding: 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .page-2 { page-break-before: always; }
+  @media screen {
+    body { background: #e8e8e8; padding: 24px; }
+    .page {
+      background: #fff;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.18);
+      margin: 0 auto 32px;
+      max-width: 8.5in;
+      padding: var(--margin);
+    }
+  }
+  @media print {
+    body { background: #fff; padding: 0; }
+    .page { min-height: 0; }
+    .screen-only { display: none !important; }
+  }
+  .doc-header {
+    display: flex;
+    align-items: center;
+    gap: 10pt;
+    padding-bottom: 8pt;
+    border-bottom: 2.5pt solid var(--hap-blue);
+    margin-bottom: 12pt;
+  }
+  .doc-header-logo {
+    width: 36pt;
+    height: 36pt;
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+  .doc-header-org {
+    font-size: 7pt;
+    color: var(--hap-gray-mid);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    line-height: 1.3;
+  }
+  .doc-header-title {
+    font-size: 11pt;
+    font-weight: 700;
+    color: var(--hap-blue);
+    line-height: 1.2;
+  }
+  .doc-header-badge {
+    margin-left: auto;
+    font-size: 6.5pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #fff;
+    background: var(--hap-blue);
+    padding: 2pt 6pt;
+    border-radius: 2pt;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .ceo-quote {
+    border-left: 3pt solid var(--hap-gold);
+    padding: 6pt 10pt;
+    margin-bottom: 12pt;
+    background: var(--hap-blue-light);
+    border-radius: 0 3pt 3pt 0;
+  }
+  .ceo-quote p {
+    font-style: italic;
+    font-size: 9pt;
+    color: var(--hap-gray-dark);
+    line-height: 1.5;
+  }
+  .ceo-quote cite {
+    display: block;
+    margin-top: 4pt;
+    font-size: 7.5pt;
+    font-style: normal;
+    font-variant: small-caps;
+    color: var(--hap-blue);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8pt;
+    margin-bottom: 12pt;
+  }
+  .stat-card {
+    background: var(--hap-blue);
+    color: #fff;
+    border-radius: 4pt;
+    padding: 8pt 7pt;
+    text-align: center;
+  }
+  .stat-card__label {
+    font-size: 6.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.85;
+    line-height: 1.3;
+    margin-bottom: 3pt;
+  }
+  .stat-card__value {
+    font-size: 22pt;
+    font-weight: 800;
+    line-height: 1;
+    margin-bottom: 3pt;
+    font-family: var(--font-ui);
+  }
+  .stat-card__impact {
+    font-size: 6pt;
+    opacity: 0.8;
+    line-height: 1.35;
+  }
+  .stat-card--gold { background: var(--hap-gold); }
+  .stat-card--green { background: var(--hap-green); }
+  .stat-card--mid { background: var(--hap-blue-mid); }
+  .section-heading {
+    font-size: 8pt;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--hap-blue);
+    border-bottom: 1pt solid var(--hap-border);
+    padding-bottom: 3pt;
+    margin-bottom: 8pt;
+  }
+  .ask-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 7pt;
+    margin-bottom: 10pt;
+    list-style: none;
+  }
+  .ask-item {
+    border: 1pt solid var(--hap-border);
+    border-top: 3pt solid var(--hap-blue);
+    border-radius: 3pt;
+    padding: 6pt 7pt;
+  }
+  .ask-item--gold { border-top-color: var(--hap-gold); }
+  .ask-item--green { border-top-color: var(--hap-green); }
+  .ask-item__title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--hap-blue);
+    margin-bottom: 3pt;
+    line-height: 1.3;
+  }
+  .ask-item--gold .ask-item__title { color: var(--hap-gold); }
+  .ask-item--green .ask-item__title { color: var(--hap-green); }
+  .ask-item__body {
+    font-size: 7pt;
+    color: var(--hap-gray-mid);
+    line-height: 1.4;
+  }
+  .patient-story {
+    background: #fffbf0;
+    border: 1pt solid #e8d5a0;
+    border-radius: 3pt;
+    padding: 6pt 8pt;
+    margin-bottom: 10pt;
+    display: flex;
+    gap: 8pt;
+    align-items: flex-start;
+  }
+  .patient-story__quote-mark {
+    font-size: 28pt;
+    color: var(--hap-gold);
+    line-height: 0.8;
+    flex-shrink: 0;
+    font-family: Georgia, serif;
+  }
+  .patient-story__text {
+    font-style: italic;
+    font-size: 8.5pt;
+    color: var(--hap-gray-dark);
+    line-height: 1.5;
+  }
+  .patient-story__cite {
+    display: block;
+    font-size: 7pt;
+    font-style: normal;
+    color: var(--hap-gray-mid);
+    margin-top: 3pt;
+  }
+  .page-footer {
+    margin-top: auto;
+    padding-top: 8pt;
+    border-top: 1pt solid var(--hap-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 6.5pt;
+    color: var(--hap-gray-mid);
+  }
+  .audit-block {
+    background: var(--hap-blue);
+    color: #fff;
+    border-radius: 4pt;
+    padding: 10pt 12pt;
+    margin-bottom: 12pt;
+    display: flex;
+    align-items: center;
+    gap: 16pt;
+  }
+  .audit-block__kicker {
+    font-size: 7pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    opacity: 0.8;
+    margin-bottom: 4pt;
+  }
+  .audit-cells {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    gap: 10pt;
+    flex: 1;
+  }
+  .audit-cell {
+    text-align: center;
+    min-width: 0;
+  }
+  .audit-cell__label {
+    font-size: 7pt;
+    opacity: 0.85;
+    margin-bottom: 3pt;
+    min-height: 16pt;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    text-align: center;
+    line-height: 1.2;
+  }
+  .audit-cell__value {
+    font-size: 28pt;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .audit-vs {
+    font-size: 14pt;
+    font-weight: 700;
+    opacity: 0.6;
+    line-height: 1;
+    align-self: center;
+  }
+  .audit-block__conclusion {
+    flex: 1.5;
+    font-size: 8pt;
+    line-height: 1.5;
+    opacity: 0.95;
+    border-left: 1.5pt solid rgba(255,255,255,0.3);
+    padding-left: 12pt;
+  }
+  .audit-block__conclusion strong {
+    display: block;
+    font-size: 9pt;
+    margin-bottom: 3pt;
+  }
+  .two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12pt;
+    margin-bottom: 12pt;
+  }
+  .trend-card {
+    border: 1pt solid var(--hap-border);
+    border-radius: 3pt;
+    padding: 7pt 8pt;
+    margin-bottom: 6pt;
+  }
+  .trend-card__title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--hap-blue);
+    margin-bottom: 3pt;
+  }
+  .trend-card__body {
+    font-size: 7pt;
+    color: var(--hap-gray-mid);
+    line-height: 1.45;
+  }
+  .trend-card--hybrid {
+    border-top: 3pt solid #6b46c1;
+    background: #faf7ff;
+  }
+  .trend-card--hybrid .trend-card__title { color: #6b46c1; }
+  .rebuttal-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 7pt;
+    margin-bottom: 10pt;
+  }
+  .rebuttal-table th {
+    background: var(--hap-blue);
+    color: #fff;
+    padding: 5pt 6pt;
+    text-align: left;
+    font-size: 6.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .rebuttal-table td {
+    padding: 5pt 6pt;
+    border-bottom: 1pt solid var(--hap-border);
+    vertical-align: top;
+    line-height: 1.4;
+    color: var(--hap-gray-dark);
+  }
+  .rebuttal-table tr:nth-child(even) td {
+    background: var(--hap-gray-light);
+  }
+  .rebuttal-table td:first-child {
+    color: var(--hap-red);
+    font-style: italic;
+  }
+  .rebuttal-table td:nth-child(2) {
+    color: var(--hap-green);
+    font-weight: 600;
+  }
+  .pa-safeguards {
+    background: var(--hap-blue-light);
+    border: 1pt solid var(--hap-blue);
+    border-radius: 3pt;
+    padding: 7pt 9pt;
+  }
+  .pa-safeguards__title {
+    font-size: 7.5pt;
+    font-weight: 700;
+    color: var(--hap-blue);
+    margin-bottom: 5pt;
+  }
+  .pa-safeguards ul {
+    padding-left: 12pt;
+  }
+  .pa-safeguards li {
+    font-size: 7pt;
+    color: var(--hap-gray-dark);
+    line-height: 1.5;
+    margin-bottom: 2pt;
+  }
+  .sources-line {
+    font-size: 6.5pt;
+    color: var(--hap-gray-mid);
+    text-align: center;
+    margin-top: 6pt;
+  }
+  .screen-only {
+    text-align: center;
+    padding: 16px 0 8px;
+  }
+  .print-btn {
+    background: #003087;
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    font-size: 14px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: var(--font-ui);
+  }
+  .print-btn:hover { background: #0057a8; }
+  .map-panel {
+    border: 1pt solid var(--hap-border);
+    border-top: 3pt solid var(--hap-blue);
+    border-radius: 3pt;
+    padding: 7pt 8pt;
+    margin-bottom: 10pt;
+    background: #f7fcff;
+  }
+  .map-panel__title {
+    font-size: 7.7pt;
+    font-weight: 700;
+    color: var(--hap-blue);
+    margin-bottom: 4pt;
+  }
+  .map-panel__sub {
+    font-size: 6.8pt;
+    color: var(--hap-gray-mid);
+    margin-bottom: 6pt;
+  }
+  .map-panel__wrap {
+    min-height: 150pt;
+    border: 1pt solid #cbe8f4;
+    border-radius: 2pt;
+    background: #fff;
+    padding: 4pt;
+  }
+  .map-panel__wrap img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: 220pt;
+  }
+  .map-panel__fallback {
+    font-size: 7pt;
+    color: var(--hap-gray-mid);
+  }
+  </style>
+</head>
+<body>
+<div class="screen-only">
+  <button class="print-btn" id="print-btn">Print / Save as PDF</button>
+  <p style="font-size:12px;color:#666;margin-top:8px;">
+    Use your browser's Print dialog.
+    Select "Save as PDF" as the destination.
+    Set margins to "None" or "Minimum" for best results.
+  </p>
+</div>
+
+<div class="page page-1">
+  <div class="doc-header">
+    <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="doc-header-logo" width="36" height="36">
+    <div>
+      <p class="doc-header-org">The Hospital and Healthsystem Association of Pennsylvania</p>
+      <p class="doc-header-title">340B: Protecting access to care in Pennsylvania</p>
+    </div>
+    <span class="doc-header-badge">Advocacy Dashboard - March 2026</span>
+  </div>
+
+  <blockquote class="ceo-quote">
+    <p>"Pennsylvania hospitals reinvest every dollar of 340B savings into the communities that need it most. Restricting this program doesn't save money - it closes doors for patients who have nowhere else to go."</p>
+    <cite>— Nicole Stallings, President and Chief Executive Officer, Hospital and Healthsystem Association of Pennsylvania</cite>
+  </blockquote>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <p class="stat-card__label">Reported community benefit (2024)</p>
+      <p class="stat-card__value">$7.95B</p>
+      <p class="stat-card__impact">Reinvested in patient care and community services - up 9% from 2023</p>
+    </div>
+    <div class="stat-card stat-card--mid">
+      <p class="stat-card__label">PA hospitals in 340B</p>
+      <p class="stat-card__value">72</p>
+      <p class="stat-card__impact">30% of Pennsylvania hospitals depend on the program</p>
+    </div>
+    <div class="stat-card stat-card--green">
+      <p class="stat-card__label">States with contract pharmacy protection</p>
+      <p class="stat-card__value">21</p>
+      <p class="stat-card__impact">29 states still lack enacted protection - including Pennsylvania</p>
+    </div>
+    <div class="stat-card stat-card--gold">
+      <p class="stat-card__label">National outpatient drug share (340B)</p>
+      <p class="stat-card__value">7%</p>
+      <p class="stat-card__impact">Share of U.S. outpatient drug purchases flowing through 340B</p>
+    </div>
+  </div>
+
+  <div class="patient-story">
+    <span class="patient-story__quote-mark">&ldquo;</span>
+    <div>
+      <p class="patient-story__text">
+        The pharmacy at my hospital is the only reason I can afford my insulin. Without 340B, I don't know what I would do.
+        <cite class="patient-story__cite">- Pennsylvania patient, safety-net hospital (name withheld)</cite>
+      </p>
+    </div>
+  </div>
+
+  <p class="section-heading">What HAP is asking Congress to do</p>
+  <ul class="ask-grid">
+    <li class="ask-item">
+      <p class="ask-item__title">Protect the 340B discount</p>
+      <p class="ask-item__body">Keep hospital access to the outpatient drug prices Congress set for charity care and community benefit.</p>
+    </li>
+    <li class="ask-item ask-item--gold">
+      <p class="ask-item__title">Defend contract pharmacy partnerships</p>
+      <p class="ask-item__body">Patients fill prescriptions through local and network pharmacies - not one distant site selected by manufacturers.</p>
+    </li>
+    <li class="ask-item ask-item--green">
+      <p class="ask-item__title">Oppose rules that shrink safety-net access</p>
+      <p class="ask-item__body">Rural and underserved communities keep an affordable path to medications hospitals are required to support.</p>
+    </li>
+  </ul>
+
+  <p class="section-heading">What HAP is asking Pennsylvania government to do</p>
+  <ul class="ask-grid">
+    <li class="ask-item">
+      <p class="ask-item__title">Governor Shapiro's Office</p>
+      <p class="ask-item__body">Direct PA DHS to maintain and strengthen the 340B Drug Exclusion List and oppose any federal waiver that would reduce 340B participation for PA Medicaid patients.</p>
+    </li>
+    <li class="ask-item ask-item--gold">
+      <p class="ask-item__title">PA Senate Health and Human Services</p>
+      <p class="ask-item__body">Advance contract pharmacy protection legislation this session. 21 states have already acted.</p>
+    </li>
+    <li class="ask-item ask-item--green">
+      <p class="ask-item__title">PA House Health Committee</p>
+      <p class="ask-item__body">Schedule hearings on contract pharmacy restriction impacts and move a companion bill before session ends.</p>
+    </li>
+  </ul>
+
+  <div class="map-panel">
+    <p class="map-panel__title">U.S. contract pharmacy protection map</p>
+    <p class="map-panel__sub">Live snapshot from dashboard at time of print.</p>
+    <div id="print-us-map" class="map-panel__wrap">
+      <p class="map-panel__fallback">Map loading from dashboard snapshot...</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>The Hospital and Healthsystem Association of Pennsylvania - haponline.org/340b</span>
+    <span>(717) 564-9200</span>
+    <span>Page 1 of 2 - March 2026</span>
+  </div>
+</div>
+
+<div class="page page-2">
+  <div class="doc-header">
+    <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="doc-header-logo" width="36" height="36">
+    <div>
+      <p class="doc-header-org">The Hospital and Healthsystem Association of Pennsylvania</p>
+      <p class="doc-header-title">340B: Key facts for your meeting</p>
+    </div>
+    <span class="doc-header-badge">Briefing Reference - March 2026</span>
+  </div>
+
+  <div class="audit-block">
+    <div>
+      <p class="audit-block__kicker">HRSA Program Integrity FY 2024</p>
+      <div class="audit-cells">
+        <div class="audit-cell">
+          <p class="audit-cell__label">Covered entity audits</p>
+          <p class="audit-cell__value">179</p>
+        </div>
+        <div class="audit-vs">vs.</div>
+        <div class="audit-cell">
+          <p class="audit-cell__label">Manufacturer audits</p>
+          <p class="audit-cell__value">5</p>
+        </div>
+      </div>
+    </div>
+    <div class="audit-block__conclusion">
+      <strong>36x more hospital audits than manufacturer audits</strong>
+      HAP supports parity - hospitals and manufacturers should face the same level of federal scrutiny. The current imbalance is not a compliance argument; it is an equity argument.
+    </div>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <p class="section-heading">Legal trends</p>
+      <div class="trend-card">
+        <p class="trend-card__title">Courts</p>
+        <p class="trend-card__body">States including AR, LA, MO, MN, TN, and RI prevailed when manufacturers challenged contract pharmacy protections. Key cases: PCMA v. Wehbi (8th Cir. 2022); LA Hospital Association v. Greenstein.</p>
+      </div>
+      <div class="trend-card trend-card--hybrid">
+        <p class="trend-card__title">Bipartisan compromise: protection + reporting (2025)</p>
+        <p class="trend-card__body">CO, ME, OH, RI, and VT paired pharmacy protections with reporting requirements - a workable bipartisan model for federal legislation.</p>
+      </div>
+      <div class="trend-card">
+        <p class="trend-card__title">Vetoes</p>
+        <p class="trend-card__body">Some governors vetoed proposed 340B protections, including Virginia. Pennsylvania has not enacted standalone contract pharmacy protection as of March 2026.</p>
+      </div>
+    </div>
+    <div>
+      <p class="section-heading">Pennsylvania safeguards</p>
+      <div class="pa-safeguards">
+        <p class="pa-safeguards__title">PA already prevents duplicate discounts</p>
+        <ul>
+          <li>Manufacturers are not required to give both a 340B discount and a Medicaid rebate for the same drug. (42 U.S.C. 256b)</li>
+          <li>PA DHS runs the 340B Drug Exclusion List and bills manufacturers for Medicaid rebates - hospitals may not use 340B-priced drugs on this list.</li>
+          <li>Contract pharmacies give non-340B drugs to Medicare Advantage patients, and DHS bills manufacturers for rebates.</li>
+        </ul>
+      </div>
+
+      <p class="section-heading" style="margin-top:10pt;">PA operating stakes</p>
+      <div class="pa-safeguards" style="border-color:var(--hap-gold);background:#fffbf0;">
+        <p class="pa-safeguards__title" style="color:var(--hap-gold);">Why 340B is not optional for PA hospitals</p>
+        <ul>
+          <li>49% of PA hospitals operating at a loss</li>
+          <li>53% losing money on labor and delivery</li>
+          <li>49% rural - contract pharmacies are the only access point for many patients</li>
+          <li>23 percent average savings on pharma purchases reinvested in care</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <p class="section-heading">What manufacturers argue - and the response</p>
+  <table class="rebuttal-table">
+    <thead>
+      <tr>
+        <th>Manufacturer claim</th>
+        <th>Hospital / HAP response</th>
+        <th>Evidence</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>340B creates duplicate discounts - hospitals collect both a 340B discount and a Medicaid rebate.</td>
+        <td>PA DHS runs the 340B Drug Exclusion List preventing this. Federal law (42 U.S.C. 256b) already prohibits duplicate discounts.</td>
+        <td>PA DHS Exclusion List; HRSA program integrity rules</td>
+      </tr>
+      <tr>
+        <td>Hospitals use 340B savings for profit, not patient care.</td>
+        <td>$7.95B in reported community benefit (2024, up 9%) funds free prescriptions, cancer screening, dental care, and rural services.</td>
+        <td>340B Health 2024 community benefit report</td>
+      </tr>
+      <tr>
+        <td>Contract pharmacy networks are too large and unaudited.</td>
+        <td>HRSA conducted 179 covered-entity audits vs. only 5 manufacturer audits in FY 2024. Hospitals face 36x more scrutiny than manufacturers.</td>
+        <td>HRSA Program Integrity FY 2024 audit results</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="sources-line sources-line--stewardship"><strong>Data stewardship:</strong> Questions about source interpretation, update cadence, or citation language can be directed to HAP policy and communications teams through haponline.org/contact.</p>
+  <p class="sources-line"><strong>Sources:</strong> MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · HRSA Program Integrity FY 2024 (audit counts) · 42 U.S.C. 256b (federal statutory basis)</p>
+  <p class="sources-line"><strong>Limitations:</strong> State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.</p>
+
+  <div class="map-panel">
+    <p class="map-panel__title">Pennsylvania district map</p>
+    <p class="map-panel__sub">Hospital points and district boundaries from live dashboard snapshot.</p>
+    <div id="print-pa-map" class="map-panel__wrap">
+      <p class="map-panel__fallback">Map loading from dashboard snapshot...</p>
+    </div>
+  </div>
+
+  <div class="page-footer">
+    <span>The Hospital and Healthsystem Association of Pennsylvania - haponline.org/340b</span>
+    <span>(717) 564-9200</span>
+    <span>Page 2 of 2 - March 2026</span>
+  </div>
+</div>
+
+<script>
+(function() {
+  var KEY_PRIMARY = "hap340b:printSnapshot";
+  var KEY_LEGACY = "hap340bPrint";
+  var params = new URLSearchParams(window.location.search);
+  var payloadId = params.get("pid");
+  var usMap = document.getElementById("print-us-map");
+  var paMap = document.getElementById("print-pa-map");
+  var blobUrls = [];
+
+  function getPayload() {
+    try {
+      if (payloadId) {
+        var sessionRaw = sessionStorage.getItem(KEY_PRIMARY + ":" + payloadId);
+        if (sessionRaw) return JSON.parse(sessionRaw);
+      }
+    } catch (e1) {}
+    try {
+      if (payloadId && window.opener && window.opener.__hapPrintPayloadCache) {
+        var openerPayload = window.opener.__hapPrintPayloadCache[payloadId];
+        if (openerPayload && typeof openerPayload === "object") return openerPayload;
+      }
+    } catch (e2) {}
+    try {
+      var raw = localStorage.getItem(KEY_PRIMARY) || localStorage.getItem(KEY_LEGACY);
+      if (raw) return JSON.parse(raw);
+    } catch (e3) {}
+    return null;
+  }
+
+  function setText(id, val) {
+    var el = document.getElementById(id);
+    if (el && val != null) el.textContent = String(val);
+  }
+
+  function injectSvgMap(container, svg, fallback) {
+    if (!container) return false;
+    while (container.firstChild) container.removeChild(container.firstChild);
+    if (!svg || typeof svg !== "string" || svg.trim().length < 40 || !/<svg[\s>]/i.test(svg)) {
+      var p = document.createElement("p");
+      p.className = "map-panel__fallback";
+      p.textContent = "Loading map from dashboard...";
+      container.appendChild(p);
+      return false;
+    }
+    var s = svg.trim();
+    if (!/xmlns\s*=/.test(s)) s = s.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+    try {
+      var parsed = new DOMParser().parseFromString(s, "image/svg+xml");
+      var svgEl = parsed && parsed.documentElement && parsed.documentElement.nodeName.toLowerCase() === "svg"
+        ? parsed.documentElement
+        : null;
+      if (svgEl) {
+        svgEl.setAttribute("width", "100%");
+        svgEl.setAttribute("height", "auto");
+        svgEl.style.display = "block";
+        svgEl.style.width = "100%";
+        svgEl.style.height = "auto";
+        container.appendChild(document.importNode(svgEl, true));
+        return true;
+      }
+    } catch (parseErr) { /* continue to blob fallback */ }
+    var img = document.createElement("img");
+    var blob = new Blob([s], { type: "image/svg+xml;charset=utf-8" });
+    var url = URL.createObjectURL(blob);
+    blobUrls.push(url);
+    img.src = url;
+    img.alt = fallback;
+    container.appendChild(img);
+    return true;
+  }
+
+  function injectRasterMap(container, dataUrl, fallback) {
+    if (!container) return false;
+    while (container.firstChild) container.removeChild(container.firstChild);
+    if (!dataUrl || typeof dataUrl !== "string" || dataUrl.indexOf("data:image/") !== 0) {
+      var p = document.createElement("p");
+      p.className = "map-panel__fallback";
+      p.textContent = "Loading map from dashboard...";
+      container.appendChild(p);
+      return false;
+    }
+    var img = document.createElement("img");
+    img.src = dataUrl;
+    img.alt = fallback;
+    container.appendChild(img);
+    return true;
+  }
+
+  function applyPayload(payload) {
+    if (!payload || typeof payload !== "object") return;
+    setText("pv-landscape", payload.landscapeValue);
+    setText("pv-protection", payload.protectionCount);
+    setText("pv-no-protection", payload.noProtectionCount);
+    setText("pv-kpi-drug", payload.kpiDrug);
+    setText("pv-kpi-benefit", payload.kpiBenefit);
+    setText("pv-kpi-pa", payload.kpiPA);
+    /* Prefer serialized SVG from the live dashboard. html2canvas often produces valid but
+       empty PNGs for D3/SVG maps; those used to win over SVG and hid the maps entirely. */
+    var usSvgOk = injectSvgMap(usMap, payload.mapSvg, "U.S. contract pharmacy protection map");
+    if (!usSvgOk) injectRasterMap(usMap, payload.mapPng, "U.S. contract pharmacy protection map");
+    var paSvgOk = injectSvgMap(paMap, payload.paDistrictMapSvg, "Pennsylvania district map");
+    if (!paSvgOk) injectRasterMap(paMap, payload.paDistrictMapPng, "Pennsylvania district map");
+  }
+
+  function readOpenerSvg(selector) {
+    try {
+      if (!window.opener || window.opener.closed) return "";
+      var doc = window.opener.document;
+      if (!doc) return "";
+      var svg = doc.querySelector(selector);
+      if (!svg) return "";
+      var clone = svg.cloneNode(true);
+      if (!clone.getAttribute("xmlns")) clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      return new XMLSerializer().serializeToString(clone);
+    } catch (e) {
+      return "";
+    }
+  }
+
+  function applyOpenerMapFallbacks() {
+    var usHasImg = usMap && usMap.querySelector("img");
+    var usHasSvg = usMap && usMap.querySelector("svg");
+    var paHasImg = paMap && paMap.querySelector("img");
+    var paHasSvg = paMap && paMap.querySelector("svg");
+    if (!usHasImg && !usHasSvg) {
+      var usSvg = readOpenerSvg("#us-map svg") || readOpenerSvg("#us-map-wrap svg") || readOpenerSvg(".us-map-wrap svg");
+      injectSvgMap(usMap, usSvg, "US map unavailable in this snapshot.");
+    }
+    if (!paHasImg && !paHasSvg) {
+      var paSvg = readOpenerSvg("#pa-district-map svg") || readOpenerSvg("#pa-district-map .pa-district-svg");
+      injectSvgMap(paMap, paSvg, "PA district map unavailable in this snapshot.");
+    }
+  }
+
+  function mapsVisible() {
+    var usVisible = !!(usMap && (usMap.querySelector("img") || usMap.querySelector("svg")));
+    var paVisible = !!(paMap && (paMap.querySelector("img") || paMap.querySelector("svg")));
+    return usVisible && paVisible;
+  }
+
+  function ensureMapsWithRetry(done) {
+    var attempts = 0;
+    function tick() {
+      if (mapsVisible() || attempts >= 360) {
+        if (done) done();
+        return;
+      }
+      try {
+        if (window.opener && !window.opener.closed) {
+          var usSection = window.opener.document.getElementById("state-laws");
+          var paSection = window.opener.document.getElementById("pa-district-section");
+          if (usSection && usSection.scrollIntoView) usSection.scrollIntoView({ block: "center", behavior: "auto" });
+          if (paSection && paSection.scrollIntoView) paSection.scrollIntoView({ block: "center", behavior: "auto" });
+          if (window.opener.dispatchEvent) window.opener.dispatchEvent(new Event("resize"));
+        }
+      } catch (e0) {}
+      var payloadRetry = getPayload();
+      if (payloadRetry) applyPayload(payloadRetry);
+      applyOpenerMapFallbacks();
+      attempts += 1;
+      setTimeout(tick, 120);
+    }
+    tick();
+  }
+
+  function waitForPayload(cb) {
+    var tries = 0;
+    (function tick() {
+      var payload = getPayload();
+      if (payload || tries > 80) {
+        cb(payload);
+        return;
+      }
+      tries += 1;
+      setTimeout(tick, 120);
+    })();
+  }
+
+  function waitForMapImagesThenPrint() {
+    var started = Date.now();
+    (function tick() {
+      var imgs = document.querySelectorAll(".map-panel__wrap img");
+      var svgs = document.querySelectorAll(".map-panel__wrap svg");
+      var usHasMap = !!(usMap && (usMap.querySelector("img") || usMap.querySelector("svg")));
+      var paHasMap = !!(paMap && (paMap.querySelector("img") || paMap.querySelector("svg")));
+      var ready = true;
+      for (var i = 0; i < imgs.length; i += 1) {
+        if (!imgs[i].complete) ready = false;
+      }
+      for (var j = 0; j < svgs.length; j += 1) {
+        var s = svgs[j];
+        if (!s.getAttribute("viewBox") && !s.getAttribute("width") && !s.getAttribute("height")) ready = false;
+      }
+      if ((ready && usHasMap && paHasMap) || Date.now() - started > 12000) {
+        window.print();
+        return;
+      }
+      setTimeout(tick, 100);
+    })();
+  }
+
+  var btn = document.getElementById("print-btn");
+  if (btn) {
+    btn.addEventListener("click", function() {
+      window.print();
+    });
+  }
+  window.addEventListener("load", function() {
+    waitForPayload(function(payload) {
+      applyPayload(payload);
+      ensureMapsWithRetry(function() {
+        if (window.location.search.indexOf("print=1") !== -1) {
+          setTimeout(waitForMapImagesThenPrint, 500);
+        }
+      });
+    });
+  });
+  window.addEventListener("beforeunload", function() {
+    for (var i = 0; i < blobUrls.length; i += 1) {
+      try { URL.revokeObjectURL(blobUrls[i]); } catch (e) {}
+    }
+  });
+})();
+</script>
+
+</body>
+</html>

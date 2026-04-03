@@ -8,9 +8,17 @@
   <title>340B Drug Pricing Program | HAP Advocacy Dashboard (Basic)</title>
   <meta name="description" content="HAP 340B Advocacy Dashboard — safe for employer hosting. Interactive map, full content, local scripts only.">
   <link rel="stylesheet" href="hap-design-tokens.css">
-  <link rel="stylesheet" href="340b.css?v=dmx-12">
+  <link rel="stylesheet" href="340b.css?v=dmx-27">
   <style>
     /* BASIC (static) — no scripts. Keep lightweight tooltip + sparklines inline. */
+    .basic-legal-scope {
+      margin: 0 0 var(--space-3);
+      font-size: var(--text-sm);
+      color: var(--text-secondary);
+      font-style: italic;
+      font-weight: 500;
+      line-height: 1.4;
+    }
     .basic-static-note {
       margin: var(--space-3) 0 0;
       color: var(--text-muted);
@@ -91,6 +99,44 @@
 </head>
 <body class="basic-dashboard">
 <div class="dashboard">
+<svg class="hap-icon-defs" aria-hidden="true" focusable="false" width="0" height="0">
+  <defs>
+    <linearGradient id="hap-igrad-access" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="0.45" stop-color="#0072bc"/>
+      <stop offset="1" stop-color="#003087"/>
+    </linearGradient>
+    <linearGradient id="hap-igrad-finance" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#5eead4"/>
+      <stop offset="0.5" stop-color="#00a9a4"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="hap-igrad-policy" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#7dd3fc"/>
+      <stop offset="0.4" stop-color="#00aeef"/>
+      <stop offset="1" stop-color="#0072bc"/>
+    </linearGradient>
+    <linearGradient id="hap-igrad-risk" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fde68a"/>
+      <stop offset="0.45" stop-color="#fbbf24"/>
+      <stop offset="1" stop-color="#ea580c"/>
+    </linearGradient>
+    <linearGradient id="hap-igrad-benefit" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fda4af"/>
+      <stop offset="0.45" stop-color="#fb7185"/>
+      <stop offset="1" stop-color="#0072bc"/>
+    </linearGradient>
+    <linearGradient id="hap-igrad-neutral" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#cbd5e1"/>
+      <stop offset="1" stop-color="#64748b"/>
+    </linearGradient>
+    <linearGradient id="hap-igrad-pa-loss-red" x1="0" y1="0" x2="1" y2="1" gradientUnits="objectBoundingBox">
+      <stop offset="0" stop-color="#fca5a5"/>
+      <stop offset="0.4" stop-color="#e74c3c"/>
+      <stop offset="1" stop-color="#922b21"/>
+    </linearGradient>
+  </defs>
+</svg>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- ========== HEADER + shell (OW hap-header pattern; BASIC has no PDF/simulators) ========== -->
@@ -107,7 +153,7 @@
       <a href="#section-overview" class="active" aria-current="page">Overview</a>
       <a href="#key-metrics">Key metrics</a>
       <a href="#state-laws">Map &amp; states</a>
-      <a href="#legal-trends">Legal trends</a>
+      <a href="#legal-trends">Legal landscape</a>
       <a href="#methodology-section">Sources</a>
       <a href="340b.html" title="Full 340B dashboard: print, PDF, share, state lists, map filters, and simulators">Full dashboard</a>
     </nav>
@@ -120,7 +166,7 @@
       <a href="#key-metrics">Key metrics</a>
       <a href="#community-benefit">Community benefit</a>
       <a href="#state-laws">Map &amp; states</a>
-      <a href="#legal-trends">Legal trends</a>
+      <a href="#legal-trends">Legal landscape</a>
       <a href="#methodology-section">Methodology</a>
       <a href="#overview">HAP position</a>
       <div class="hap-sidebar-divider" role="presentation"></div>
@@ -233,7 +279,7 @@
           <span class="key-findings-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
           <div class="key-findings-heading-text">
             <h2 class="key-findings-title">The numbers that matter</h2>
-            <p class="key-findings-subline">Four anchors—before you dive into the map and state detail.</p>
+            <p class="key-findings-subline">Four anchors before you open the map and state detail.</p>
           </div>
         </header>
         <div class="key-findings-grid">
@@ -267,7 +313,7 @@
                 <path d="M 2,28 L 21,23.2727272727 L 40,17.3636363636 L 59,8.9090909091 L 78,2" fill="none" stroke="var(--hap-brand-primary, #0072bc)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
                 <circle cx="78" cy="2" r="2.5" fill="var(--hap-brand-primary, #0072bc)"/>
               </svg>
-              <p class="basic-sparkline-label">↑ 9% from 2023</p>
+              <p class="basic-sparkline-label">↑ nine percent from 2023</p>
             </div>
             <p class="key-finding-meta">2024</p>
             <p class="key-finding-impact">Impact: Dollars hospitals report putting back into community programs and care.</p>
@@ -341,16 +387,11 @@
       <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a">
         <div class="map-hero-inner">
           <article class="map-hero-card">
-            <p class="map-hero-title">State-by-state</p>
-            <h2 class="map-hero-headline">Who protects contract pharmacy—and who doesn’t</h2>
-            <p class="map-hero-sub">Start with the map: see which states have enacted contract pharmacy protection and open any state for details.</p>
-            <p class="map-how-to-use" id="map-how-to-use">Click a state on the map for a brief status note. BASIC includes local map interaction only; use the full dashboard for filters and expanded analysis.</p>
-            <div class="section-insight" aria-label="How to read this map">
-              <p class="section-insight-label">What this shows</p>
-              <p class="section-insight-text">Contract pharmacy protection by state—where state law backs hospitals’ use of community pharmacies under 340B.</p>
-              <p class="section-insight-label">Why it matters</p>
-              <p class="section-insight-text">Manufacturers sometimes restrict contract pharmacy arrangements; state protections reduce that friction for patients and hospitals.</p>
-            </div>
+            <p class="map-hero-title">State map</p>
+            <h2 class="map-hero-headline">Who protects contract pharmacy, and who does not</h2>
+            <p class="map-hero-sub">Blue states have enacted protection; gray states have not. Open any state for a short status note.</p>
+            <p class="map-how-to-use" id="map-how-to-use">Click a state on the map. BASIC is local-only; use the full dashboard for filters and deeper analysis.</p>
+            <p class="map-reading-note">When state law is silent, hospitals depend on manufacturer rules—not a Pennsylvania statutory shield.</p>
           </article>
           <div class="basic-map-shell">
             <div class="us-map-wrap visible map-visible basic-map-wrap">
@@ -367,49 +408,42 @@
             <p id="basic-state-selection-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
           </div>
 
-          <!-- ========== RECENT LEGAL SIGNALS ========== -->
+          <!-- ========== LEGAL LANDSCAPE (abbrev.) ========== -->
           <div id="legal-trends" class="legal-trends-anchor" aria-labelledby="legal-trends-heading">
-          <h3 id="legal-trends-heading" class="section-subhead">Recent legal signals</h3>
-          <div class="section-insight" aria-label="How to read trends">
-            <p class="section-insight-label">What this shows</p>
-            <p class="section-insight-text">A snapshot of how courts, legislatures, and governors are shaping 340B contract pharmacy rules.</p>
-            <p class="section-insight-label">Why it matters</p>
-            <p class="section-insight-text">These signals preview where manufacturer challenges succeed or fail, and where states pair protections with reporting rules.</p>
-          </div>
+          <h3 id="legal-trends-heading" class="section-subhead">Legal landscape</h3>
+          <p class="basic-legal-scope">Abbreviated for IT-safe view. Not legal advice. March 2026.</p>
           <div class="trends-grid">
             <div class="trends-card trends-card--policy">
               <span class="trends-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
-              <div><h4>Courts</h4><p>States including AR, LA, MO, MN, TN, and RI prevailed when manufacturers challenged contract pharmacy protections.</p></div>
+              <div><h4>Judicial</h4><p>Federal courts have rejected manufacturer challenges to several state contract pharmacy protections; reported outcomes include ties to AR, LA, MO, MN, TN, and RI (e.g., <em>PCMA v. Wehbi</em>, 8th Cir. 2022). Confirm with HAP Legal.</p></div>
             </div>
             <div class="trends-card trends-card--impact">
               <span class="trends-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 15l2 2 4-4"/></svg></span>
-              <div><h4>2025 hybrid</h4><p>CO, ME, OH, RI, and VT paired pharmacy protections with reporting requirements.</p></div>
+              <div><h4>2025 enactments</h4><p>Colorado, Maine, Ohio, Rhode Island, and Vermont paired protections with reporting or transparency requirements.</p></div>
             </div>
             <div class="trends-card trends-card--neutral">
               <span class="trends-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="m15 9-6 6"/><path d="m9 9 6 6"/></svg></span>
-              <div><h4>Vetoes</h4><p>Some governors vetoed proposed 340B protections, including in Virginia.</p></div>
+              <div><h4>Executive; PA</h4><p>Some governors vetoed proposed protections (Virginia reported). Pennsylvania has no freestanding contract pharmacy shield statute as of March 2026; PA DHS runs the 340B Drug Exclusion List for duplicate Medicaid discounts.</p></div>
             </div>
           </div>
           </div>
-          <p class="sources">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
+          <div class="sources-cluster basic-sources-cluster">
+            <p class="sources sources--primary"><strong>Sources:</strong> MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · HRSA Program Integrity FY 2024 (audit counts)</p>
+            <p class="sources sources--limitations"><strong>Limitations:</strong> State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.</p>
+          </div>
 
           <h3 id="methodology-section" class="section-subhead">Data transparency &amp; methodology</h3>
-          <p class="methodology-lede">Metrics support advocacy storytelling. Figures combine published sources and HAP-curated state law flags. Per-hospital numbers labeled “illustrative” are for context only.</p>
+          <p class="methodology-lede">Figures combine published sources and HAP-curated state law flags. Per-hospital numbers labeled “illustrative” are for context only.</p>
+          <aside class="data-stewardship-callout methodology-stewardship-callout">
+            <p><strong>Data stewardship:</strong> Questions about source interpretation, update cadence, or citation language can be directed to HAP policy and communications teams through <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">haponline.org/contact</a>.</p>
+          </aside>
+          <p class="methodology-sources-block"><strong>Sources:</strong> MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · <a href="https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" target="_blank" rel="noopener noreferrer">HRSA Program Integrity FY 2024</a> (audit counts)</p>
+          <p class="methodology-verification-block"><strong>Verification order (state law):</strong> MultiState, then ASHP, then America's Essential Hospitals.</p>
+          <p class="methodology-limitations-block"><strong>Limitations:</strong> State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.</p>
+          <p class="methodology-supplement-block"><strong>Last updated:</strong> March 2026</p>
           <details class="methodology-wrap" id="methodology-wrap">
-            <summary class="methodology-toggle">About this data</summary>
+            <summary class="methodology-toggle">Primary source links</summary>
             <div class="methodology-content">
-              <div class="methodology-at-a-glance">
-                <p class="methodology-at-a-glance-title">At a glance</p>
-                <ul class="methodology-at-a-glance-list">
-                  <li><strong>State law:</strong> Protection flags compiled from MultiState, ASHP, and America’s Essential Hospitals; status as of the last update on this page.</li>
-                  <li><strong>Community benefit &amp; PA hospitals:</strong> Figures from 340B Health and AHA (HAP/PA where noted).</li>
-                  <li><strong>Oversight:</strong> HRSA Program Integrity FY 2024 audit counts.</li>
-                </ul>
-              </div>
-              <p><strong>Data sources:</strong> MultiState, ASHP, America's Essential Hospitals (state law); 340B Health, AHA (community benefit); HRSA (oversight).</p>
-              <p>State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2026.</p>
-              <p><strong>Limitations:</strong> State lists change as legislatures meet; community-benefit totals are reported aggregates.</p>
-              <p><strong>Last updated:</strong> March 2026</p>
               <ul class="source-links">
                 <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a></li>
                 <li><a href="https://www.ashp.org/" target="_blank" rel="noopener noreferrer">ASHP</a></li>
@@ -423,12 +457,7 @@
 
       <!-- ========== KPI STRIP: 4 key numbers ========== -->
       <section id="key-metrics" class="kpi-strip span-12 ow-section ow-section--band-b" aria-label="Key metrics">
-        <div class="section-insight kpi-strip-intro">
-          <p class="section-insight-label">What this shows</p>
-          <p class="section-insight-text">National scale of 340B, reinvested community benefit, oversight load, and Pennsylvania participation.</p>
-          <p class="section-insight-label">Why it matters</p>
-          <p class="section-insight-text">A compact briefing set before state law or qualitative context.</p>
-        </div>
+        <p class="kpi-strip-intro kpi-strip-intro--dek">National program scale, reported community benefit, federal oversight load, and Pennsylvania participation in one scan.</p>
         <div class="kpi-card kpi-card--market">
           <p class="kpi-label">U.S. Drug Market</p>
           <p class="kpi-value ban-stat">7%</p>
@@ -467,11 +496,80 @@
               </div>
               <div class="card-icon card-icon--people" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
             </div>
-            <p>340B supports safety-net providers in both rural and urban markets, including:</p>
-            <ul>
-              <li>Children's and cancer hospitals</li>
-              <li>Rural critical-access hospitals and safety-net hospitals</li>
-              <li>Federally qualified health centers</li>
+            <p class="depend-340b-dek">340B supports safety-net providers in both rural and urban markets, including:</p>
+            <ul class="depend-340b-list" role="list">
+              <li class="depend-340b-row">
+                <div class="depend-340b-glass-icon depend-340b-glass-icon--spec" aria-hidden="true">
+                  <svg class="depend-340b-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <defs>
+                      <linearGradient id="dependGradSpecB" x1="4" y1="4" x2="28" y2="30" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#5ec8ff"/>
+                        <stop offset="0.45" stop-color="#0072bc"/>
+                        <stop offset="1" stop-color="#003087"/>
+                      </linearGradient>
+                      <linearGradient id="dependGradSpecGlassB" x1="8" y1="6" x2="20" y2="18" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#ffffff" stop-opacity="0.55"/>
+                        <stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+                      </linearGradient>
+                    </defs>
+                    <rect x="7" y="14" width="18" height="14" rx="3.2" stroke="url(#dependGradSpecB)" stroke-width="1.35" fill="url(#dependGradSpecB)" fill-opacity="0.14"/>
+                    <path d="M16 5.5v5.2M12.6 8.1h6.8" stroke="url(#dependGradSpecB)" stroke-width="1.85" stroke-linecap="round"/>
+                    <rect x="10.5" y="18.2" width="2.4" height="2.4" rx="0.45" fill="url(#dependGradSpecB)"/>
+                    <rect x="14.8" y="18.2" width="2.4" height="2.4" rx="0.45" fill="url(#dependGradSpecB)"/>
+                    <rect x="19.1" y="18.2" width="2.4" height="2.4" rx="0.45" fill="url(#dependGradSpecB)"/>
+                    <path d="M16 25.4c-2-1.35-3.35-2.55-3.35-3.75a1.65 1.65 0 0 1 3.3-.2h.1a1.65 1.65 0 0 1 3.3.2c0 1.2-1.35 2.4-3.35 3.75z" fill="url(#dependGradSpecB)" opacity="0.92"/>
+                    <ellipse cx="12.5" cy="11" rx="6" ry="4" fill="url(#dependGradSpecGlassB)"/>
+                  </svg>
+                </div>
+                <span class="depend-340b-label">Children's and cancer hospitals</span>
+              </li>
+              <li class="depend-340b-row">
+                <div class="depend-340b-glass-icon depend-340b-glass-icon--rural" aria-hidden="true">
+                  <svg class="depend-340b-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <defs>
+                      <linearGradient id="dependGradRuralB" x1="2" y1="8" x2="30" y2="30" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#5eead4"/>
+                        <stop offset="0.5" stop-color="#00a9a4"/>
+                        <stop offset="1" stop-color="#0f766e"/>
+                      </linearGradient>
+                      <linearGradient id="dependGradRuralSunB" x1="20" y1="4" x2="28" y2="14" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#fef3c7"/>
+                        <stop offset="1" stop-color="#fbbf24" stop-opacity="0.5"/>
+                      </linearGradient>
+                    </defs>
+                    <circle cx="24" cy="9" r="4" fill="url(#dependGradRuralSunB)" opacity="0.85"/>
+                    <path d="M2.5 26.5 10 12l4.8 7.2L22 8l7.5 18.5H2.5z" fill="url(#dependGradRuralB)" fill-opacity="0.18" stroke="url(#dependGradRuralB)" stroke-width="1.35" stroke-linejoin="round"/>
+                    <path d="M13.5 19.5h5v7h-7v-7h2z" fill="url(#dependGradRuralB)" fill-opacity="0.35" stroke="url(#dependGradRuralB)" stroke-width="1.2" stroke-linejoin="round"/>
+                    <path d="M15.25 21.4v2.35M14.05 22.6h2.4" stroke="#fff" stroke-width="1.15" stroke-linecap="round" opacity="0.9"/>
+                  </svg>
+                </div>
+                <span class="depend-340b-label">Rural critical-access hospitals and safety-net hospitals</span>
+              </li>
+              <li class="depend-340b-row">
+                <div class="depend-340b-glass-icon depend-340b-glass-icon--fqhc" aria-hidden="true">
+                  <svg class="depend-340b-svg" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <defs>
+                      <linearGradient id="dependGradFqhcB" x1="3" y1="5" x2="29" y2="29" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#a78bfa"/>
+                        <stop offset="0.5" stop-color="#00aeef"/>
+                        <stop offset="1" stop-color="#0072bc"/>
+                      </linearGradient>
+                      <linearGradient id="dependGradFqhcRoofB" x1="8" y1="9" x2="24" y2="14" gradientUnits="userSpaceOnUse">
+                        <stop stop-color="#ffffff" stop-opacity="0.5"/>
+                        <stop offset="1" stop-color="#ffffff" stop-opacity="0.08"/>
+                      </linearGradient>
+                    </defs>
+                    <path d="M6 14h20l-10-6.5L6 14z" fill="url(#dependGradFqhcB)" fill-opacity="0.35" stroke="url(#dependGradFqhcB)" stroke-width="1.2" stroke-linejoin="round"/>
+                    <rect x="8" y="14" width="16" height="14.5" rx="1.5" stroke="url(#dependGradFqhcB)" stroke-width="1.35" fill="url(#dependGradFqhcB)" fill-opacity="0.12"/>
+                    <path d="M8 14h16v4H8v-4z" fill="url(#dependGradFqhcRoofB)"/>
+                    <path d="M11.5 22v4.5M16 20v6.5M20.5 22v4.5" stroke="url(#dependGradFqhcB)" stroke-width="1.25" stroke-linecap="round"/>
+                    <circle cx="10" cy="9.5" r="1.35" fill="url(#dependGradFqhcB)"/>
+                    <circle cx="16" cy="7.8" r="1.45" fill="url(#dependGradFqhcB)"/>
+                    <circle cx="22" cy="9.5" r="1.35" fill="url(#dependGradFqhcB)"/>
+                  </svg>
+                </div>
+                <span class="depend-340b-label">Federally qualified health centers</span>
+              </li>
             </ul>
           </article>
           <article class="card card--compact card--identity-policy">
@@ -506,18 +604,57 @@
               <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
             </div>
             <p><strong>72 hospitals (30%)</strong> participate, making Pennsylvania a serious operating and policy example for this dashboard:</p>
-            <div class="stat-block">
-              <div class="stat">
-                <p class="stat-label">Rural</p>
-                <p class="stat-value">49%</p>
+            <div class="stat-block stat-block--pa-stakes">
+              <div class="stat stat--pa-stakes">
+                <div class="pa-metric-row">
+                  <div class="pa-stakes-glass-icon pa-stakes-glass-icon--rural" aria-hidden="true">
+                    <svg class="pa-stakes-svg pa-stakes-svg--40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <circle cx="30" cy="10" r="5.5"/>
+                      <path d="M4 32 L11 14 l6.5 9.5 9-14L38 32H4z"/>
+                      <path d="M4 32h32" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="pa-metric-copy">
+                    <p class="stat-value">49%</p>
+                    <p class="stat-label">Rural</p>
+                  </div>
+                </div>
               </div>
-              <div class="stat">
-                <p class="stat-label">Operating at a loss</p>
-                <p class="stat-value">53%</p>
+              <div class="stat stat--pa-stakes">
+                <div class="pa-metric-row">
+                  <div class="pa-stakes-glass-icon pa-stakes-glass-icon--loss" aria-hidden="true">
+                    <svg class="pa-stakes-svg pa-stakes-svg--40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <path d="M3 34h34" stroke-linecap="round"/>
+                      <rect x="5" y="11" width="7" height="23" rx="1.4"/>
+                      <rect x="14" y="16" width="7" height="18" rx="1.4"/>
+                      <rect x="23" y="21" width="7" height="13" rx="1.4"/>
+                      <rect x="32" y="26" width="7" height="8" rx="1.4"/>
+                      <path d="M8.5 9 L17.5 15.5 L26.5 22 L33.5 29" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M28.5 29 L33.5 29 L33.5 24" stroke-linecap="round" stroke-linejoin="round"/>
+                    </svg>
+                  </div>
+                  <div class="pa-metric-copy">
+                    <p class="stat-value">53%</p>
+                    <p class="stat-label">Operating at a loss</p>
+                  </div>
+                </div>
               </div>
-              <div class="stat">
-                <p class="stat-label">Labor &amp; delivery</p>
-                <p class="stat-value">49%</p>
+              <div class="stat stat--pa-stakes">
+                <div class="pa-metric-row">
+                  <div class="pa-stakes-glass-icon pa-stakes-glass-icon--ld" aria-hidden="true">
+                    <svg class="pa-stakes-svg pa-stakes-svg--40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                      <circle cx="20" cy="11" r="7"/>
+                      <path d="M11.5 14.5 Q9 18 9.5 22" stroke-linecap="round"/>
+                      <path d="M28.5 14.5 Q31 18 30.5 22" stroke-linecap="round"/>
+                      <ellipse cx="20" cy="27" rx="10" ry="9.5"/>
+                      <path d="M14 33 Q20 30 26 33" stroke-linecap="round"/>
+                    </svg>
+                  </div>
+                  <div class="pa-metric-copy">
+                    <p class="stat-value">49%</p>
+                    <p class="stat-label">Labor &amp; delivery</p>
+                  </div>
+                </div>
               </div>
             </div>
           </article>
@@ -536,8 +673,8 @@
         <p class="community-impact-lead">Patient outcomes come first: lower-cost drugs, screening, and community services. The examples below are typical reinvestment areas; the total shows aggregate reported community benefit.</p>
         <div class="benefit-grid benefit-grid--community">
           <div class="benefit-item">
-            <div class="benefit-item-icon benefit-item-icon--dollar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/><text x="16" y="21" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif">$</text></svg></div>
-            <p class="benefit-item-text"><strong class="ban-inline ban-inline--finance">23%</strong> average savings on pharma purchases</p>
+            <div class="benefit-item-icon benefit-item-icon--dollar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/><text x="16" y="22" text-anchor="middle" font-size="21" font-weight="700" fill="currentColor" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif">$</text></svg></div>
+            <p class="benefit-item-text"><strong class="ban-inline ban-inline--finance">23 percent</strong> average savings on pharma purchases</p>
           </div>
           <div class="benefit-item">
             <div class="benefit-item-icon benefit-item-icon--rx-price" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="5" y="3" width="22" height="26" rx="3" stroke="currentColor" stroke-width="2"/><path d="M10 11h12M10 16h12M10 21h7" stroke="currentColor" stroke-width="1.75" stroke-linecap="round"/><path d="m22 22 6 6M28 22l-6 6" stroke="currentColor" stroke-width="2.25" stroke-linecap="round"/></svg></div>
@@ -548,7 +685,7 @@
             <p class="benefit-item-text">Mobile mammography &amp; cancer screening</p>
           </div>
           <div class="benefit-item">
-            <div class="benefit-item-icon benefit-item-icon--photo benefit-item-icon--dental" aria-hidden="true"><img src="assets/icons/tooth.png" alt="" width="96" height="96" loading="lazy" decoding="async"></div>
+            <div class="benefit-item-icon benefit-item-icon--dental" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false"><path d="M11 6.5h10a3 3 0 0 1 2.95 3.45l-1.35 11.1A2.65 2.65 0 0 1 20 23.5c-.85 0-1.6-.4-2.1-1.05l-.55-.75a.9.9 0 0 0-1.45 0l-.55.75c-.5.65-1.25 1.05-2.1 1.05a2.65 2.65 0 0 1-2.6-2.85L8.05 9.95A3 3 0 0 1 11 6.5z" stroke-width="1.45" stroke-linejoin="round"/><path d="M13.2 6.5V5.1a1.35 1.35 0 0 1 1.35-1.35h2.3A1.35 1.35 0 0 1 18.2 5.1v1.4" stroke-width="1.45" stroke-linecap="round"/></svg></div>
             <p class="benefit-item-text">Dental care &amp; preventive services</p>
           </div>
         </div>
@@ -596,13 +733,15 @@
       </section>
 
       <!-- ========== POLICY IMPACT SIMULATOR: Keep today's mix (static snapshot for BASIC) ========== -->
-      <section class="impact-simulator-section span-12" aria-label="Policy Impact Simulator">
+      <section class="impact-simulator-section span-12" aria-labelledby="impact-simulator-heading-basic">
         <article class="card impact-simulator-card">
-          <span class="impact-simulator-badge">Advocacy tool</span>
-          <h2 class="impact-simulator-title">Policy Impact Simulator</h2>
-          <h3 class="impact-simulator-headline">What happens if we protect the discount—or don't?</h3>
-          <p class="impact-simulator-sub">Below: &quot;Keep today's mix&quot; — the current national picture in plain terms.</p>
-          <p class="impact-takeaway">Programs continue with moderate risk.</p>
+          <header class="impact-simulator-header">
+            <p class="impact-simulator-kicker">Policy simulator · illustrative scenarios</p>
+            <h2 id="impact-simulator-heading-basic" class="impact-simulator-headline">Strengthen, hold, or roll back protections for the 340B discount</h2>
+            <p class="impact-simulator-lead">Static snapshot below: &quot;Keep today’s mix&quot; — the current national picture. The full dashboard lets you switch scenarios.</p>
+            <p class="impact-simulator-disclosure" role="note">Not a forecast or official estimate. Figures match the dashboard’s built-in scenario table.</p>
+          </header>
+          <p class="impact-takeaway">Uneven access; ongoing risk.</p>
           <div class="impact-simulator-results" data-scenario="current">
             <div class="impact-results-grid">
               <div class="impact-result-card">
@@ -633,7 +772,7 @@
             <p class="card-title">Access to care</p>
             <h2>Contract pharmacy restrictions hit patient access</h2>
           </div>
-          <div class="card-icon card-icon--rx" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 12h14"/></svg></div>
+          <div class="card-icon card-icon--rx" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M12 3v18"/><path d="M5 12h14"/><path d="m3 8 3-3 3 3"/><path d="m21 8-3-3-3 3"/><path d="m3 16 3 3 3-3"/><path d="m21 16-3 3-3-3"/></svg></div>
         </div>
         <p>Federal rules allow hospitals to use in-house or community pharmacies for 340B. Some drugmakers limit hospitals to <strong>one contract pharmacy</strong>, which hurts rural and underserved patients when hospitals rely on local pharmacy networks.</p>
       </article>
@@ -645,7 +784,7 @@
             <p class="card-title">Pennsylvania safeguards</p>
             <h2>PA already prevents duplicate discounts</h2>
           </div>
-          <div class="card-icon card-icon--check" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-2.09 2.09"/></svg></div>
+          <div class="card-icon card-icon--check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><path d="m22 4-2.09 2.09"/><path d="M22 4 12 14.01l-3-3"/></svg></div>
         </div>
         <ul>
           <li>Manufacturers are not required to give both a 340B discount and a Medicaid rebate for the same drug.</li>

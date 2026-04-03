@@ -1,0 +1,85 @@
+// HAP 340B — sample DAX measures (copy into Power BI Desktop)
+// =============================================================
+// Prerequisites:
+// - Import or DirectQuery tables match IT-published Gold names/columns.
+// - Rename table references below if your model uses different names.
+// See docs/POWER-BI-DATA-MODEL-MAPPING.md
+
+// --- Table assumptions (adjust to your semantic model) ---
+// gold_dim_state_law[StateCode], [ContractPharmacyProtected], [IncludeInFiftyStateHeadline]
+// gold_fact_dashboard_kpi[MetricKey], [ValueNumeric], [AsOfDate]
+// gold_dim_data_freshness[DashboardKey], [DisplayAsOfText]
+
+// Count of states with contract pharmacy protection (all jurisdictions in dim)
+States With CP Protection :=
+VAR T = FILTER(
+    gold_dim_state_law,
+    gold_dim_state_law[ContractPharmacyProtected] = TRUE()
+)
+RETURN COUNTROWS ( T )
+
+// 50-state headline: exclude rows flagged off headline (e.g. DC) — confirm with Advocacy
+States With CP Protection (50-state) :=
+VAR T = FILTER(
+    gold_dim_state_law,
+    gold_dim_state_law[ContractPharmacyProtected] = TRUE ()
+        && gold_dim_state_law[IncludeInFiftyStateHeadline] = TRUE ()
+)
+RETURN COUNTROWS ( T )
+
+States Without CP Protection (50-state) :=
+VAR T = FILTER(
+    gold_dim_state_law,
+    gold_dim_state_law[ContractPharmacyProtected] = FALSE ()
+        && gold_dim_state_law[IncludeInFiftyStateHeadline] = TRUE ()
+)
+RETURN COUNTROWS ( T )
+
+// Example: scalar KPI from fact table (use selected MetricKey slicer or hard-code for card)
+// Replace 'PA_HOSPITALS_340B_COUNT' with IT-approved key
+PA Hospitals 340B :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "PA_HOSPITALS_340B_COUNT"
+)
+
+// “Data as of” for title or subtitle (single-dashboard row)
+Data As Of Display :=
+CALCULATE (
+    MAX ( gold_dim_data_freshness[DisplayAsOfText] ),
+    gold_dim_data_freshness[DashboardKey] = "340B_ADVOCACY"
+)
+
+// --- Additional headline KPIs (see powerbi/metric-registry.json; keys must match Gold) ---
+
+Community Benefit Total (USD Billions) :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "COMMUNITY_BENEFIT_TOTAL_BILLIONS"
+)
+
+Outpatient Share Pct :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "OUTPATIENT_SHARE_PCT"
+)
+
+HRSA Audit Count :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "HRSA_AUDIT_COUNT"
+)
+
+US States CP Protection Count (stored KPI) :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "US_STATES_CP_PROTECTION_COUNT"
+)
+
+US States No CP Protection Count (stored KPI) :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "US_STATES_NO_CP_PROTECTION_COUNT"
+)
+
+// Generic pattern for new keys: duplicate and change the string literal after review with IT.

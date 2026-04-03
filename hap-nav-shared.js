@@ -1,10 +1,17 @@
 /**
- * hap-nav-shared.js — lightweight scroll-active highlighting for static dashboards
- * used by 340b-BASIC.html (no 340b.js). Keeps hash-only nav links in sync with scroll position.
+ * Sidebar / top nav: which link looks “active” while you scroll.
  *
- * Shared-code contract: `sectionIds` below must match real `id="..."` nodes on the page.
- * If you add/remove sections or rename #overview (HAP position), update this array and nav hrefs
- * together. Scroll margin is controlled in CSS (`[id] { scroll-margin-top: ... }`), not here.
+ * Used on pages that do NOT load the full 340b.js (e.g. 340b-BASIC.html). The full dashboard
+ * has its own scroll spy inside 340b.js — same idea, different file.
+ *
+ * What you must keep in sync:
+ * - Every `href="#something"` in the nav must match a real `id="something"` in the HTML.
+ * - If you add a new section, add its id to the nav AND ensure it appears in the fallback list
+ *   below (or build from nav links — see initNavHighlight).
+ *
+ * Scroll position under the sticky header is handled in CSS with scroll-margin-top, not here.
+ *
+ * Novice tour: NOVICE-CODE-TOUR.md
  */
 (function () {
   "use strict";
@@ -43,6 +50,7 @@
       "legal-trends",
       "counterarguments",
       "methodology-section",
+      "data-sources",
       "key-metrics",
       "community-benefit",
       "pa-impact-mode",

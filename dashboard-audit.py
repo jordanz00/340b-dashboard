@@ -323,7 +323,7 @@ def check_print_structure(results: list[str]) -> bool:
     required_snippets = [
         'class="print-report-header print-only"',
         'id="print-intro-snapshot"',
-        'class="executive-proof-strip span-12 scroll-reveal ow-section ow-section--band-b"',
+        "executive-proof-strip span-12 scroll-reveal ow-section ow-section--band-b",
         'id="executive-landscape-value"',
         'id="print-state-summary"',
         'class="print-sources print-only"',

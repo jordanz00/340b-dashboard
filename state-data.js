@@ -9,11 +9,13 @@
  * - CONFIG: titles, dates, share URL, copy, map/animation settings
  * - FIPS_TO_ABBR / STATE_NAMES: lookup tables for map and labels
  * - STATE_340B: one object per state (y, pbm, cp, notes)
- * - STATES_WITH_PROTECTION: derived list for filters
+ * - STATES_WITH_PROTECTION: derived list for filters (states with cp === true; D.C. can appear in STATE_340B but is omitted from 50-state headline counts in 340b.js)
  *
  * See DATA-UPDATE.md for instructions.
  *
  * CONFIG is the single source of truth for runtime copy/date metadata on 340B surfaces.
+ *
+ * Novice? Read NOVICE-CODE-TOUR.md (what this file means in the whole app).
  */
 
 /* ========== CONFIGURATION ========== */
@@ -34,6 +36,12 @@ var CONFIG = {
   configVersion: 1,
   printDefaultState: "PA",
   printDefaultStateReason: "HAP focal state for print.",
+  /**
+   * Official print/PDF: when set, toolbar Print/PDF and leave-behind print open this file instead of HTML print views.
+   * Put 340B_032726.pdf in the same folder as 340b.html on the server (or use a path relative to the page).
+   * Clear or set to "" to restore the previous live HTML print flow (print.html / 340b-print.html).
+   */
+  printCanonicalPdf: "340B_032726.pdf",
 
   /* Plain-language copy for advocates and lay audiences */
   copy: {
@@ -47,23 +55,24 @@ var CONFIG = {
     hapAskItems: [
       {
         label: "Protect the 340B discount",
-        impactLine: "Impact: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.",
+        impactLine: "Hospitals keep access to the outpatient drug prices Congress set for charity care, and community benefit.",
       },
       {
         label: "Defend contract pharmacy partnerships",
-        impactLine: "Impact: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.",
+        impactLine: "Patients fill prescriptions through local and network pharmacies hospitals contract with, not only one distant site.",
       },
       {
         label: "Oppose rules that shrink access for safety-net patients",
-        impactLine: "Impact: Rural and underserved communities keep an affordable path to medications hospitals are required to support.",
+        impactLine: "Rural and underserved communities keep an affordable path to medications hospitals are required to support.",
       },
     ],
     mapHeroSub: "Start with the map: see which states have enacted contract pharmacy protection and open any state for details.",
     mapHowToUse:
       "Click a state on the map or a state name in the lists. Use All / Protection / No protection to filter. Choose Clear to reset your selection.",
-    sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
-    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2026.",
-    printSourceSummary: "State law status is compiled from MultiState, ASHP, America's Essential Hospitals. Community benefit from 340B Health and AHA (HAP/PA figures). HRSA Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.",
+    sourceSummary:
+      "Sources: MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · HRSA Program Integrity FY 2024 (audit counts)",
+    sourcesLimitations:
+      "Limitations: State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.",
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
       priorityLabel: "What we're fighting for",
@@ -73,7 +82,7 @@ var CONFIG = {
       landscapeNote: "Map and state panel show who’s protected and who’s not.",
       trustLabel: "Why trust this",
       trustValue: "Sources and dates are right here",
-      trustNote: "MultiState, ASHP, America's Essential Hospitals."
+      trustNote: "Sources, verification order, and limitations are under Data transparency and methodology and Data sources."
     }
   },
 
@@ -173,7 +182,7 @@ var STATE_340B = {
   AK: { y: null, pbm: false, cp: false, notes: "" },
 };
 
-// STATES_WITH_PROTECTION: list of state codes with contract pharmacy protection (cp === true). Computed from STATE_340B; used for filters and counts.
+// STATES_WITH_PROTECTION: jurisdictions with contract pharmacy protection (cp === true). UI "without protection" counts use 50 states only (D.C. excluded) to match map chip lists; see getSortedStates() in 340b.js.
 var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   return STATE_340B[abbr] && STATE_340B[abbr].cp === true;
 });

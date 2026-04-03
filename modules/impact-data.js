@@ -9,6 +9,8 @@
  * - Edit scenario labels and copy in SCENARIOS
  * - Edit estimated values in SCENARIO_ESTIMATES
  * - Keep keys (EXPAND_PROTECTIONS, CURRENT_STATUS, REMOVE_PROTECTIONS) stable
+ *
+ * These numbers are illustrative advocacy scenarios, not HRSA statistics — see NOVICE-CODE-TOUR.md.
  */
 
 (function (global) {
@@ -25,22 +27,22 @@
       id: "EXPAND_PROTECTIONS",
       label: "Protect the discount",
       description: "Every state protects hospital–pharmacy partnerships.",
-      narrative: "Access improves. Partnerships stabilize. Programs can expand.",
-      takeaway: "Best-case stability and access.",
+      narrative: "Access improves, partnerships stabilize, and programs can expand.",
+      takeaway: "Best-case stability and access for safety-net care.",
     },
     CURRENT_STATUS: {
       id: "CURRENT_STATUS",
       label: "Keep today’s mix",
-      description: "Some states protect the discount; many don’t.",
+      description: "Some states protect the discount; many do not.",
       narrative: "Patchwork: some patients benefit; many stay exposed.",
-      takeaway: "Uneven access; ongoing risk.",
+      takeaway: "Uneven access and ongoing risk for hospitals.",
     },
     REMOVE_PROTECTIONS: {
       id: "REMOVE_PROTECTIONS",
       label: "Remove protections",
       description: "States roll back laws that protect the discount.",
-      narrative: "Access shrinks. Partnerships unwind. Safety-net programs destabilize.",
-      takeaway: "High risk for patients and hospitals.",
+      narrative: "Access shrinks, partnerships unwind, and safety-net programs destabilize.",
+      takeaway: "High risk for patients, hospitals, and communities.",
     },
   };
 
@@ -49,11 +51,11 @@
       pharmaciesImpacted: 12000,
       pharmaciesDisplayValue: null,
       pharmaciesLabel: "pharmacies",
-      pharmaciesNote: "Hospitals could partner with this many pharmacies to get discount meds to patients.",
+      pharmaciesNote: "Hospitals could partner with this many pharmacies to get discounted medications to patients.",
       patientAccessImpact: "Strong",
-      patientAccessNote: "More patients can get affordable medications close to home.",
+      patientAccessNote: "More patients get affordable medications close to home.",
       hospitalFundingImpact: "Stable",
-      hospitalFundingNote: "Predictable rules; programs can grow.",
+      hospitalFundingNote: "Predictable rules mean programs can grow.",
     },
     CURRENT_STATUS: {
       pharmaciesImpacted: 4500,
@@ -61,9 +63,9 @@
       pharmaciesLabel: "pharmacies",
       pharmaciesNote: "Roughly this many pharmacy partnerships today; many states lack protection.",
       patientAccessImpact: "Mixed",
-      patientAccessNote: "Depends on the state—some protected, many not.",
+      patientAccessNote: "Depends on the state: some protected, many not.",
       hospitalFundingImpact: "Uneven",
-      hospitalFundingNote: "Protected states are on firmer ground.",
+      hospitalFundingNote: "Protected states sit on firmer ground.",
     },
     REMOVE_PROTECTIONS: {
       pharmaciesImpacted: 0,

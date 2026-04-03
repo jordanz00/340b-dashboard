@@ -28,7 +28,8 @@
       { name: "HRSA", role: "FY 2024: 179 covered entity audits, 5 manufacturer audits", period: "2024" }
     ],
     /** Short methodology note for the About Data panel */
-    methodology: "State law data reflects enacted contract pharmacy and PBM protection laws. Verification order: MultiState → ASHP → America's Essential Hospitals. Community benefit from 340B Health and AHA (HAP/PA figures). HRSA Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.",
+    methodology:
+      "Sources: MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · HRSA Program Integrity FY 2024 (audit counts). Verification order (state law): MultiState, then ASHP, then America's Essential Hospitals. Limitations: state law counts change as legislatures meet; community benefit totals are self-reported aggregates, not independently audited. Additional metrics (PA hospital counts, IQVIA share, Oliver Wyman PA statistics) are mapped in the dashboard Data sources table. Data stewardship: HAP policy and communications via haponline.org/contact.",
     /** Optional: link to download raw or processed data (CSV/JSON). Leave empty if no public download. */
     downloadLink: "",
     /** License or use note */

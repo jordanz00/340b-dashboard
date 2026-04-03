@@ -1,0 +1,66 @@
+[
+  {
+    "name": "LICENSE",
+    "path": "LICENSE",
+    "sha": "2ad0dc75b0512ad7c76c409cf2a2e9db8cbe0cbc",
+    "size": 1071,
+    "url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/LICENSE?ref=master",
+    "html_url": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/LICENSE",
+    "git_url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/2ad0dc75b0512ad7c76c409cf2a2e9db8cbe0cbc",
+    "download_url": "https://raw.githubusercontent.com/millbj92/US-Zip-Codes-JSON/master/LICENSE",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/LICENSE?ref=master",
+      "git": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/2ad0dc75b0512ad7c76c409cf2a2e9db8cbe0cbc",
+      "html": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/LICENSE"
+    }
+  },
+  {
+    "name": "README.md",
+    "path": "README.md",
+    "sha": "d8c273dd1b9b698c5da59957fe43002e1e8a80ba",
+    "size": 1541,
+    "url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/README.md?ref=master",
+    "html_url": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/README.md",
+    "git_url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/d8c273dd1b9b698c5da59957fe43002e1e8a80ba",
+    "download_url": "https://raw.githubusercontent.com/millbj92/US-Zip-Codes-JSON/master/README.md",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/README.md?ref=master",
+      "git": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/d8c273dd1b9b698c5da59957fe43002e1e8a80ba",
+      "html": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/README.md"
+    }
+  },
+  {
+    "name": "USCities.json",
+    "path": "USCities.json",
+    "sha": "440ac52ba8150cd1f57126c4a6db0994a7b04c5f",
+    "size": 7332352,
+    "url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/USCities.json?ref=master",
+    "html_url": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/USCities.json",
+    "git_url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/440ac52ba8150cd1f57126c4a6db0994a7b04c5f",
+    "download_url": "https://raw.githubusercontent.com/millbj92/US-Zip-Codes-JSON/master/USCities.json",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/USCities.json?ref=master",
+      "git": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/440ac52ba8150cd1f57126c4a6db0994a7b04c5f",
+      "html": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/USCities.json"
+    }
+  },
+  {
+    "name": "bmb.png",
+    "path": "bmb.png",
+    "sha": "e102a78056120a56d17dc1bce3e3a5b5f1808f0f",
+    "size": 7460,
+    "url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/bmb.png?ref=master",
+    "html_url": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/bmb.png",
+    "git_url": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/e102a78056120a56d17dc1bce3e3a5b5f1808f0f",
+    "download_url": "https://raw.githubusercontent.com/millbj92/US-Zip-Codes-JSON/master/bmb.png",
+    "type": "file",
+    "_links": {
+      "self": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/contents/bmb.png?ref=master",
+      "git": "https://api.github.com/repos/millbj92/US-Zip-Codes-JSON/git/blobs/e102a78056120a56d17dc1bce3e3a5b5f1808f0f",
+      "html": "https://github.com/millbj92/US-Zip-Codes-JSON/blob/master/bmb.png"
+    }
+  }
+]

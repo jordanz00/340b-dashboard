@@ -19,6 +19,8 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 | `GLOSSARY.md` | Definitions for CONFIG, print snapshot, simulators, etc. |
 | `CONFIG-INDEX.md` | Which file holds each kind of setting |
 | `docs/INDEX.md` | Documentation navigation hub |
+| `docs/POWER-BI-READINESS-PLAYBOOK.md` | **Power BI + warehouse:** day-one readiness, IT handoff, links to `powerbi/` artifacts |
+| `powerbi/` | Theme JSON, DAX samples, Gold DDL/views reference, `metric-registry.json` — see [powerbi/README.md](powerbi/README.md) |
 | `docs/CEO-SHOWCASE.md` | CEO/comms brief, BASIC-first, talking points |
 | `docs/DESIGN-ITERATION-CHECKLIST.md` | Design pass each release |
 | `docs/340b-js-map.md` | Full-dashboard `340b.js` function map (advanced) |

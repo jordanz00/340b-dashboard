@@ -1,6 +1,13 @@
 /**
- * 340b-BASIC — map only. Local assets only. No print, PDF, share, localStorage, or external fetch.
- * Uses textContent for all dynamic labels.
+ * Basic dashboard — US map only (IT-safe page).
+ *
+ * Loads with: state-data.js (laws), D3, TopoJSON, US map shapes. No 340b.js, no print/PDF,
+ * no share drawer, no localStorage, no CDN scripts.
+ *
+ * drawBasicMap(): builds the SVG, colors states from STATES_WITH_PROTECTION, shows a short
+ * state summary with textContent only (safe for untrusted data patterns).
+ *
+ * Full dashboard behavior lives in 340b.js. Novice overview: NOVICE-CODE-TOUR.md
  */
 (function () {
   "use strict";

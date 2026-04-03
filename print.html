@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- Print-only layout: 340b.js writes a JSON snapshot to localStorage; this page reads it and fills placeholders. See NOVICE-CODE-TOUR.md (Print / PDF flow). -->
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -7,7 +8,7 @@
   <title>340B Dashboard Print View | HAP Advocacy Dashboard</title>
   <link rel="stylesheet" href="hap-design-tokens.css">
   <link rel="stylesheet" href="340b.css">
-  <link rel="stylesheet" href="print-view.css?v=full-dashboard-print-1">
+  <link rel="stylesheet" href="print-view.css?v=hap-print-canonical-1">
 </head>
 <body class="print-view">
   <div id="print-view-mobile-actions" class="print-view-mobile-actions" hidden>
@@ -18,12 +19,12 @@
 
   <main id="print-view-root">
     <header class="print-view-header">
-      <img src="haplogo_box_blue.jpeg" alt="" class="print-view-logo" width="40" height="40">
+      <img src="haplogo_box_blue.jpeg" alt="" class="print-view-logo" width="36" height="36">
       <div class="print-view-header-copy">
         <p class="print-view-org">The Hospital and Healthsystem Association of Pennsylvania</p>
         <h1>340B protects access to care in Pennsylvania</h1>
-        <p class="print-view-badge">Printable dashboard snapshot</p>
       </div>
+      <span class="print-view-header-badge">Advocacy snapshot</span>
     </header>
 
     <section class="print-view-section">
@@ -35,10 +36,26 @@
     </section>
 
     <section class="print-view-kpi-strip">
-      <article class="print-view-kpi-card"><p class="print-view-kpi-label">U.S. Drug Market</p><p class="print-view-kpi-value" id="pv-kpi-drug">7%</p></article>
-      <article class="print-view-kpi-card"><p class="print-view-kpi-label">Community Benefit</p><p class="print-view-kpi-value" id="pv-kpi-benefit">$7.95B</p></article>
-      <article class="print-view-kpi-card"><p class="print-view-kpi-label">Oversight</p><p class="print-view-kpi-value" id="pv-kpi-oversight">179</p></article>
-      <article class="print-view-kpi-card"><p class="print-view-kpi-label">Pennsylvania Hospitals</p><p class="print-view-kpi-value" id="pv-kpi-pa">72</p></article>
+      <article class="print-view-kpi-card print-view-kpi-card--gold">
+        <p class="print-view-kpi-label">U.S. Drug Market</p>
+        <p class="print-view-kpi-value" id="pv-kpi-drug">7%</p>
+        <p class="print-view-kpi-impact">Share of U.S. outpatient drug purchases flowing through 340B</p>
+      </article>
+      <article class="print-view-kpi-card">
+        <p class="print-view-kpi-label">Community Benefit</p>
+        <p class="print-view-kpi-value" id="pv-kpi-benefit">$7.95B</p>
+        <p class="print-view-kpi-impact">Reported reinvestment in patient care and community services (2024)</p>
+      </article>
+      <article class="print-view-kpi-card print-view-kpi-card--green">
+        <p class="print-view-kpi-label">Oversight</p>
+        <p class="print-view-kpi-value" id="pv-kpi-oversight">179</p>
+        <p class="print-view-kpi-impact">Covered entities audited (FY 2024)</p>
+      </article>
+      <article class="print-view-kpi-card print-view-kpi-card--mid">
+        <p class="print-view-kpi-label">Pennsylvania Hospitals</p>
+        <p class="print-view-kpi-value" id="pv-kpi-pa">72</p>
+        <p class="print-view-kpi-impact">Hospitals participating in 340B in Pennsylvania</p>
+      </article>
     </section>
 
     <section class="print-view-section print-view-map-section">
@@ -97,7 +114,8 @@
       var params = new URLSearchParams(window.location.search);
       var PAYLOAD_ID = params.get("pid");
       var MODE = params.get("mode") === "download" ? "download" : "print";
-      var MAX_MAP_SVG_LENGTH = 700000;
+      /* PA + US path-heavy SVGs can exceed 700k; truncating drops maps from print view */
+      var MAX_MAP_SVG_LENGTH = 3200000;
       var MAX_TEXT_FIELD_LEN = 8000;
 
       var root = document.getElementById("print-view-root");

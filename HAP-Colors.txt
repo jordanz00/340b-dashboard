@@ -1,0 +1,16 @@
+Primary
+
+Orange - 251.176.64 #fbb040
+
+Dk Blue - 0.114.188 #0072bc
+
+Lt Blue - 142.216.248 #8ed8f8
+
+
+Complimentary
+
+Green 0.169.164 #00a9a4
+
+Blue 0.174.239 #00aeef
+
+Pink 238.43.123 #ee2b7b

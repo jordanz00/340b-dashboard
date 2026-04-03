@@ -1,0 +1,27 @@
+{
+  "name": "HAP 340B Advocacy",
+  "description": "Derived from hap-design-tokens.css brand and topic colors for Power BI report theming. Cosmetic only—KPIs must bind to the semantic model.",
+  "dataColors": [
+    "#0072BC",
+    "#00A9A4",
+    "#00AEEF",
+    "#FBB040",
+    "#003087",
+    "#8ED8F8",
+    "#EE2B7B",
+    "#64748B"
+  ],
+  "foreground": "#1A1A1A",
+  "foregroundNeutralSecondary": "#64748B",
+  "foregroundNeutralTertiary": "#94A3B8",
+  "background": "#FFFFFF",
+  "backgroundLight": "#FAFAFA",
+  "backgroundNeutral": "#F5F5F7",
+  "tableAccent": "#0072BC",
+  "good": "#00A9A4",
+  "neutral": "#64748B",
+  "bad": "#FBB040",
+  "maximum": "#0072BC",
+  "minimum": "#FBB040",
+  "center": "#64748B"
+}

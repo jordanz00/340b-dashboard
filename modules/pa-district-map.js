@@ -24,7 +24,14 @@
   var PA_ZIP_CENTROIDS_URL = "data/pa-districts/pa-zip-centroids.json";
 
   var MAP_ID = "pa-district-map";
+  var TOOLTIP_ID = "pa-district-map-tooltip";
   var TOGGLE_SELECTOR = ".pa-district-toggle[data-pa-district-chamber]";
+
+  var interactiveState = {
+    legendFilter: "all",
+  };
+
+  var tooltipHideTimer = null;
 
   var DETAIL_EMPTY_ID = "pa-district-detail-empty";
   var DETAIL_PANEL_ID = "pa-district-detail-panel";
@@ -114,6 +121,90 @@
     if (count >= 3) return "hi";
     if (count >= 1) return "mid";
     return "zero";
+  }
+
+  function tooltipLine(chamber, feature, computed) {
+    var snap = computeDistrictSnapshot(chamber, feature, computed);
+    var countStr;
+    if (snap.count == null) {
+      countStr = "data pending";
+    } else if (snap.count === 1) {
+      countStr = "1 hospital";
+    } else {
+      countStr = String(snap.count) + " hospitals";
+    }
+    return snap.districtLabel + " · " + countStr;
+  }
+
+  function cancelHideTooltip() {
+    if (tooltipHideTimer != null) {
+      window.clearTimeout(tooltipHideTimer);
+      tooltipHideTimer = null;
+    }
+  }
+
+  function scheduleHideTooltip() {
+    cancelHideTooltip();
+    tooltipHideTimer = window.setTimeout(function () {
+      var el = selectEl(TOOLTIP_ID);
+      if (el) el.hidden = true;
+      tooltipHideTimer = null;
+    }, 120);
+  }
+
+  function moveTooltip(event) {
+    var el = selectEl(TOOLTIP_ID);
+    if (!el || el.hidden) return;
+    var padX = 14;
+    var padY = 14;
+    var x = event.clientX + padX;
+    var y = event.clientY + padY;
+    var maxX = window.innerWidth - el.offsetWidth - 8;
+    var maxY = window.innerHeight - el.offsetHeight - 8;
+    if (x > maxX) x = Math.max(8, maxX);
+    if (y > maxY) y = Math.max(8, maxY);
+    el.style.left = x + "px";
+    el.style.top = y + "px";
+  }
+
+  function showTooltip(event, chamber, feature, computed) {
+    var el = selectEl(TOOLTIP_ID);
+    if (!el) return;
+    cancelHideTooltip();
+    el.textContent = tooltipLine(chamber, feature, computed);
+    el.hidden = false;
+    moveTooltip(event);
+  }
+
+  function applyLegendFilter() {
+    var wrap = selectEl(MAP_ID);
+    if (!wrap) return;
+    var f = interactiveState.legendFilter;
+    wrap.querySelectorAll(".pa-district-shape").forEach(function (el) {
+      var b = el.getAttribute("data-bucket") || "unknown";
+      var dim = f !== "all" && b !== f;
+      el.classList.toggle("pa-district-shape--dimmed", dim);
+    });
+    document.querySelectorAll(".pa-district-legend__chip").forEach(function (btn) {
+      var id = btn.getAttribute("data-pa-bucket") || "all";
+      var on = id === f;
+      btn.classList.toggle("is-active", on);
+      btn.setAttribute("aria-pressed", on ? "true" : "false");
+    });
+  }
+
+  function bindLegendChips() {
+    document.querySelectorAll(".pa-district-legend__chip").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var b = btn.getAttribute("data-pa-bucket") || "all";
+        if (interactiveState.legendFilter === b && b !== "all") {
+          interactiveState.legendFilter = "all";
+        } else {
+          interactiveState.legendFilter = b;
+        }
+        applyLegendFilter();
+      });
+    });
   }
 
   function tryLoadJson(url) {
@@ -374,8 +465,10 @@
     var wrap = selectEl(MAP_ID);
     if (!wrap) return;
 
-    var width = Math.max(320, wrap.clientWidth || 800);
-    var height = Math.max(360, Math.round(width * 0.72));
+    var col = wrap.closest(".pa-district-map-col");
+    var cw = col ? col.getBoundingClientRect().width : wrap.clientWidth;
+    var width = Math.max(280, Math.floor(cw) || wrap.clientWidth || 800);
+    var height = Math.max(300, Math.min(640, Math.round(width * 0.76)));
 
     wrap.replaceChildren();
 
@@ -394,8 +487,9 @@
     var computed = computeCounts(features, hospitalPoints);
 
     // Note: if hospital dataset is absent, counts are null and districts render as "unknown" class.
-    var shapes = svg.append("g")
-      .attr("class", "pa-district-layer")
+    var layer = svg.append("g").attr("class", "pa-district-layer");
+
+    var shapes = layer
       .selectAll("path")
       .data(features)
       .enter()
@@ -405,14 +499,37 @@
         var c = (computed.hasData && n != null) ? (computed.counts.get(n) || 0) : null;
         return "pa-district-shape pa-district-shape--" + districtFillClass(c);
       })
+      .attr("data-bucket", function (d) {
+        var n = getDistrictNumber(d);
+        var c = (computed.hasData && n != null) ? (computed.counts.get(n) || 0) : null;
+        return districtFillClass(c);
+      })
       .attr("d", path)
       .attr("data-district", function (d) {
         var n = getDistrictNumber(d);
         return n == null ? "" : String(n);
       })
+      .on("mouseenter", function (event, d) {
+        cancelHideTooltip();
+        d3.selectAll(".pa-district-shape--hover").classed("pa-district-shape--hover", false);
+        d3.select(this).classed("pa-district-shape--hover", true);
+        showTooltip(event, chamber, d, computed);
+      })
+      .on("mousemove", function (event) {
+        moveTooltip(event);
+      })
+      .on("mouseleave", function () {
+        d3.select(this).classed("pa-district-shape--hover", false);
+        scheduleHideTooltip();
+      })
       .on("click", function (event, d) {
+        var node = this;
         d3.selectAll(".pa-district-shape--selected").classed("pa-district-shape--selected", false);
-        d3.select(this).classed("pa-district-shape--selected", true);
+        d3.select(node).classed("pa-district-shape--selected", true);
+        d3.select(node).classed("pa-district-shape--pulse", true);
+        window.setTimeout(function () {
+          d3.select(node).classed("pa-district-shape--pulse", false);
+        }, 700);
         var snapshot = computeDistrictSnapshot(chamber, d, computed);
 
         setDetail({
@@ -429,6 +546,7 @@
       });
 
     renderHospitalDots(svg, projection, hospitalPoints, chamber, features, computed);
+    applyLegendFilter();
     return { shapes: shapes };
   }
 
@@ -458,6 +576,7 @@
     var wrap = selectEl(MAP_ID);
     if (!wrap || typeof d3 === "undefined") return;
 
+    bindLegendChips();
     resetDetail();
 
     // Visible loading state (avoids a blank panel if data load fails).
@@ -499,6 +618,20 @@
 
       setActiveToggle(state.chamber);
       render(state.chamber, state.house, state.hospitals);
+
+      var stage = document.querySelector(".pa-district-map-stage");
+      if (stage && !stage._hapPaMapStageBound) {
+        stage._hapPaMapStageBound = true;
+        stage.addEventListener("mouseleave", function () {
+          scheduleHideTooltip();
+          var w = selectEl(MAP_ID);
+          if (w) {
+            w.querySelectorAll(".pa-district-shape--hover").forEach(function (el) {
+              el.classList.remove("pa-district-shape--hover");
+            });
+          }
+        });
+      }
 
       // Resize: redraw with current chamber.
       var onResize = function () {
@@ -571,6 +704,9 @@
           var activeSnap = state.chamber === "senate" ? senateSnap : houseSnap;
           if (!activeSnap) activeSnap = houseSnap || senateSnap;
           if (!activeSnap) return;
+          interactiveState.legendFilter = "all";
+          applyLegendFilter();
+
           if (activeSnap.districtNumber != null) {
             selectDistrictShapeByNumber(activeSnap.districtNumber);
           }

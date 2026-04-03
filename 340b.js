@@ -1,44 +1,23 @@
 /**
- * HAP 340B Advocacy Dashboard — Main Script
+ * HAP 340B Advocacy Dashboard — main behavior (map, selection, print, share, advocacy widgets).
  *
- * WHAT THIS FILE DOES
- * - Renders the interactive US map and state lists from state-data.js
- * - Handles filters (All / Protection / No protection), state selection, share, print, PDF image
- * - Keeps the live dashboard and print/PDF output in sync
+ * Edit elsewhere on purpose:
+ * - Facts, dates, state laws → state-data.js
+ * - Visible structure → 340b.html
+ * - Look + print layout → 340b.css
+ * - PA Impact / Policy Simulator content → modules/pa-impact-*.js, modules/impact-*.js
  *
- * WHERE TO EDIT
- * - Data (dates, states, copy): state-data.js
- * - Structure and labels: 340b.html
- * - Layout and print styles: 340b.css
- * - Map logic, buttons, print/PDF/share: this file (340b.js)
+ * Security: use textContent for dynamic text; see docs/SECURITY.md. Do not trust URL hash without validating state codes.
  *
- * SECURITY (Wave 4): Use textContent for all dynamic content—avoid raw HTML insertion with user/external data.
- * If you add user input or external data, sanitize before display (see docs/SECURITY.md).
+ * Novice-readable map of the whole repo: NOVICE-CODE-TOUR.md
+ * Maintainer checklist + “what do I edit?”: NOVICE-MAINTAINER.md
+ * Function-level map (if maintained): docs/340b-js-map.md
  *
- * CODE MAP (top to bottom)
- * - Config & app state
- * - DOM cache & small helpers
- * - Print prep (snapshot, count-up, reveal, openPrintView)
- * - Map (draw, resize, click, tooltips, state lists) — modular: drawMap() and map lifecycle
- * - Chart: fillAdoptionsChart() uses analytics/policy-insights.js; modular reuse in analytics/
- * - Hash sync & filters
- * - Utility buttons (print, download PDF image, share, export SVG)
- * - Init (DOMContentLoaded)
+ * Startup: DOMContentLoaded → init() at bottom of file (each feature wrapped in runTaskSafely).
+ * Print tab: if CONFIG.printCanonicalPdf is set, opens that PDF; else openPrintView → print.html (or leave-behind → 340b-print.html).
+ * Map click: bindMapEvents → selectState → URL hash, detail panel, highlights
  *
- * LEARNING: Count-up = numbers that animate from 0 to their final value when they scroll into view; see finalizeCountUpValues() and elements with [data-count-up]. preparePrintSnapshot = runs before the print dialog; it finalizes numbers, reveals sections, sets PA default, builds intro snapshot, and draws the map so the PDF is complete; see openPrintView() which calls it.
- *
- * INIT FLOW (what runs on load — find these functions in this file):
- *   DOMContentLoaded → cacheDom, applyConfigCopy, validateStateData, drawMap,
- *   renderStateChips, bindMapEvents, setupMapVisibilityObserver, initFilters,
- *   initUtilityButtons, updateMetadata, applyAboutDataPanel, applyPolicyInsights
- * PRINT / PDF TAB: openPrintView → preparePrintSnapshot → getPrintViewPayload → localStorage (hap340b:printSnapshot)
- * MAP CLICK: bindMapEvents → selectState → updateMapContext, updateUrlHash, renderStateDetail
- *
- * WAVE 1 (Data Credibility): Metadata, versioning, timestamps in data/dataset-metadata.js and applyAboutDataPanel(); dataset download CSV/JSON in buildDatasetCsv(), buildDatasetJson(), initDatasetDownload().
- * WAVE 2 (Policy Analytics): POLICY_INSIGHTS in analytics/policy-insights.js; applyPolicyInsights(); fillAdoptionsChart(); data/historical-trends.js for YoY trends.
- * WAVE 3 (Interactivity): State filters, map hover/click, tooltips, ranked table with initRankedTableSort(), chart bar tooltips.
- * WAVE 4 (Engineering): config.json and config/settings.js; safeText() and textContent-only rendering; runTaskSafely() for isolated task execution; print/print.html compatible.
- * WAVE 5 (Scroll perf — iterative passes): passive scroll + rAF nav; cached section tops; lastNavActiveId skips redundant nav DOM; batched rAF for scroll-reveal + policy timeline IO; debounced window resize for header offset; ResizeObserver coalesced to rAF.
+ * Count-up: elements with [data-count-up] animate on scroll; finalizeCountUpValues() freezes them for print.
  */
 
 (function () {
@@ -156,6 +135,7 @@
     lastUpdated: "March 2026",
     printDefaultState: "PA",
     printDefaultStateReason: "HAP focal state for print.",
+    printCanonicalPdf: "",
     copy: {
       executiveStrip: {}
     },
@@ -169,7 +149,7 @@
 
   function validateRequiredConfigFields() {
     var requiredTopLevel = ["dashboardTitle", "dashboardSubtitle", "pageDescription", "shareTitle", "shareDescription", "dataFreshness", "lastUpdated", "copy"];
-    var requiredCopy = ["overviewLead", "hapPositionWhy", "hapPositionLead", "hapPositionLawmakerLabel", "mapHeroSub", "mapHowToUse", "sourceSummary", "methodologyStateLaw", "printSourceSummary", "verificationOrder", "executiveStrip"];
+    var requiredCopy = ["overviewLead", "hapPositionWhy", "hapPositionLead", "hapPositionLawmakerLabel", "mapHeroSub", "mapHowToUse", "sourceSummary", "sourcesLimitations", "verificationOrder", "executiveStrip"];
     var missing = [];
     var missingCopy = [];
     var i;
@@ -209,6 +189,10 @@
     printAppliedDefaultSelection: false,
     /** Last section id passed to updateNavCurrent — skips redundant class/aria churn while scrolling */
     lastNavActiveId: null,
+    initRan: false,
+    globalGuardsRegistered: false,
+    mapHealthCheckTimer: null,
+    runtimeUserErrorShown: false,
     dom: {}
   };
 
@@ -261,9 +245,8 @@
       mapHeroSub: document.getElementById("map-hero-sub"),
       mapHowToUse: document.getElementById("map-how-to-use"),
       sourcesSummary: document.getElementById("sources-summary"),
-      methodologyStateLawCopy: document.getElementById("methodology-state-law-copy"),
+      sourcesLimitations: document.getElementById("sources-limitations"),
       verificationOrderCopy: document.getElementById("verification-order-copy"),
-      printSourceSummary: document.getElementById("print-source-summary"),
       printVerificationOrderCopy: document.getElementById("print-verification-order-copy"),
       executivePriorityLabel: document.getElementById("executive-priority-label"),
       executivePriorityValue: document.getElementById("executive-priority-value"),
@@ -382,6 +365,12 @@
     if (appState.dom.selectionStatus) appState.dom.selectionStatus.textContent = message || "";
   }
 
+  /* ==================================================
+     COUNT-UP & PRINT VISIBILITY
+     Big numbers animate on scroll; before print/PDF we set final values and reveal
+     hidden sections so exports match what readers expect. See NOVICE-CODE-TOUR.md.
+     ================================================== */
+
   function setCountUpValue(element) {
     var target = parseFloat(element.getAttribute("data-count-up"));
     var decimals = parseInt(element.getAttribute("data-decimals"), 10) || 0;
@@ -414,23 +403,21 @@
   }
 
   function buildPrintIntroSnapshot() {
-    // Clones the intro cards into the print-only snapshot block so the first print page shows the same content as the live dashboard.
+    // Clones opening bands into the print-only snapshot so page 1 matches on-screen order: PA stakes → HAP position → overview.
     var snapshotRoot = appState.dom.printIntroSnapshot;
     var introSection = appState.dom.introSection;
     var introClone;
+    var paHero = document.querySelector(".dashboard-grid > .pa-operating-stakes-hero");
 
     if (!snapshotRoot) return;
 
     clearElement(snapshotRoot);
 
-    if (!introSection) return;
-
-    // Clone the real intro cards right before print so the PDF starts with the same
-    // content the user sees on screen, but in a simpler block layout that print engines
-    // handle more reliably than the live grid.
-    introClone = introSection.cloneNode(true);
-    removeIdsFromClone(introClone);
-    snapshotRoot.appendChild(introClone);
+    if (paHero) {
+      var paClone = paHero.cloneNode(true);
+      removeIdsFromClone(paClone);
+      snapshotRoot.appendChild(paClone);
+    }
 
     var hapFlagship = document.querySelector(".dashboard-grid > .hap-position-flagship");
     if (hapFlagship) {
@@ -438,6 +425,12 @@
       removeIdsFromClone(hapClone);
       snapshotRoot.appendChild(hapClone);
     }
+
+    if (!introSection) return;
+
+    introClone = introSection.cloneNode(true);
+    removeIdsFromClone(introClone);
+    snapshotRoot.appendChild(introClone);
   }
 
   function buildPrintStateSummary(withProtection, withoutProtection) {
@@ -467,6 +460,77 @@
         console.warn("Dashboard task failed:", taskName, error);
       }
     }
+  }
+
+  /** Safe list for map coloring when state-data.js omits STATES_WITH_PROTECTION (prevents throw during draw). */
+  function getProtectedStatesList() {
+    return typeof STATES_WITH_PROTECTION !== "undefined" && Array.isArray(STATES_WITH_PROTECTION) ? STATES_WITH_PROTECTION : [];
+  }
+
+  function isLikelyOurScriptUrl(filename) {
+    if (!filename) return false;
+    var f = String(filename);
+    if (/^(chrome|moz|safari|ms-browser)-extension:/i.test(f)) return false;
+    return /340b\.js|state-data\.js|340b\.html|modules\/|assets\/vendor\/(d3|topojson)|pa-district-map\.js|policy-insights\.js|dataset-metadata\.js/i.test(f);
+  }
+
+  /**
+   * One-time global handlers for exec demos: avoid silent failures from our bundle.
+   * Ignores browser-extension noise; shows a single calm status line per session.
+   */
+  function registerExecutiveReliabilityGuards() {
+    if (appState.globalGuardsRegistered) return;
+    appState.globalGuardsRegistered = true;
+
+    function notifyOnce(friendly) {
+      if (appState.runtimeUserErrorShown) return;
+      appState.runtimeUserErrorShown = true;
+      showTemporaryUtilityStatus(friendly, 10000);
+    }
+
+    window.addEventListener(
+      "error",
+      function (ev) {
+        try {
+          if (!ev || !isLikelyOurScriptUrl(ev.filename)) return;
+          if (typeof console !== "undefined" && console.warn) console.warn("Dashboard error:", ev.message, ev.filename);
+          notifyOnce("Something interrupted the page. If anything looks wrong, refresh once. State lists and print still work.");
+        } catch (ignore) { /* ignore */ }
+      },
+      true
+    );
+
+    window.addEventListener("unhandledrejection", function (ev) {
+      try {
+        var r = ev.reason;
+        var stack = r && r.stack ? String(r.stack) : "";
+        var msg = r && r.message ? String(r.message) : String(r);
+        if (/chrome-extension|moz-extension/i.test(stack + msg)) return;
+        if (typeof console !== "undefined" && console.warn) console.warn("Dashboard unhandled rejection:", msg);
+        notifyOnce("A background step failed. Try again, or refresh if the map does not respond.");
+      } catch (ignore) { /* ignore */ }
+    });
+  }
+
+  /** If the interactive map never materialized, force the static grid so the briefing never shows a blank. */
+  function schedulePostInitMapHealthCheck() {
+    window.clearTimeout(appState.mapHealthCheckTimer);
+    appState.mapHealthCheckTimer = window.setTimeout(function () {
+      try {
+        var paths = document.querySelector("#us-map path[data-state]");
+        var staticVisible =
+          appState.dom.mapStaticFallback &&
+          appState.dom.mapStaticFallback.style &&
+          appState.dom.mapStaticFallback.style.display === "block";
+        if (!paths && !staticVisible) {
+          showMapStaticFallbackUI();
+          showTemporaryUtilityStatus(
+            "Showing the state summary grid so the page stays usable. Interactive map did not finish loading.",
+            9000
+          );
+        }
+      } catch (e) { /* ignore */ }
+    }, 4200);
   }
 
   function getDefaultPrintStateAbbr() {
@@ -512,9 +576,8 @@
     setElementText(appState.dom.mapHeroSub, copy.mapHeroSub);
     setElementText(appState.dom.mapHowToUse, copy.mapHowToUse);
     setElementText(appState.dom.sourcesSummary, copy.sourceSummary);
-    setElementText(appState.dom.methodologyStateLawCopy, copy.methodologyStateLaw);
+    setElementText(appState.dom.sourcesLimitations, copy.sourcesLimitations);
     setElementText(appState.dom.verificationOrderCopy, copy.verificationOrder);
-    setElementText(appState.dom.printSourceSummary, copy.printSourceSummary);
     setElementText(appState.dom.printVerificationOrderCopy, copy.verificationOrder);
     setElementText(appState.dom.executivePriorityLabel, executiveStrip.priorityLabel);
     setElementText(appState.dom.executivePriorityValue, executiveStrip.priorityValue);
@@ -1004,6 +1067,8 @@
   var RESIZE_WIDTH_THRESHOLD_PX = 40;
   /** Debounce delay (ms) for resize handler. */
   var RESIZE_DEBOUNCE_MS = 300;
+  /** Longer debounce on touch (iOS Safari fires resize when the URL bar shows/hides). */
+  var RESIZE_DEBOUNCE_TOUCH_MS = 480;
   /** Minimum inset (px) from viewport edges when positioning tooltips. */
   var TOOLTIP_VIEWPORT_INSET_PX = 12;
   /** How long (ms) to show utility status messages (e.g. "PDF saved", "Link copied") before clearing. */
@@ -1047,12 +1112,15 @@
     /* Gather protection counts and comma-separated state lists from global state data for the print payload. */
     if (typeof STATES_WITH_PROTECTION !== "undefined" && Array.isArray(STATES_WITH_PROTECTION)) {
       protectionCount = STATES_WITH_PROTECTION.length;
-      statesWithList = STATES_WITH_PROTECTION.join(", ");
+      statesWithList = STATES_WITH_PROTECTION.slice().sort().join(", ");
     }
     if (typeof STATE_340B === "object" && STATE_340B !== null) {
-      var without = Object.keys(STATE_340B).filter(function (abbr) {
-        return STATE_340B[abbr] && !STATE_340B[abbr].cp;
-      });
+      /* Match renderStateChips / getSortedStates: D.C. is in STATE_340B but excluded from headline 50-state counts. */
+      var without = Object.keys(STATE_340B)
+        .filter(function (abbr) {
+          return abbr !== "DC" && STATE_340B[abbr] && !STATE_340B[abbr].cp;
+        })
+        .sort();
       noProtectionCount = without.length;
       statesWithoutList = without.join(", ");
     }
@@ -1144,8 +1212,36 @@
     return resolveAppUrl("print.html?" + printQs);
   }
 
+  /**
+   * CONFIG.printCanonicalPdf: open official PDF (e.g. 340B_032726.pdf) for print preview instead of HTML layouts.
+   * Same-origin path only; deploy the file next to 340b.html unless you use a relative subpath.
+   */
+  function tryOpenCanonicalPrintPdf() {
+    var raw = config && config.printCanonicalPdf;
+    if (raw == null) return false;
+    var path = String(raw).trim();
+    if (!path) return false;
+    var url = resolveAppUrl(path);
+    setUtilityStatus("Opening print-ready PDF…");
+    if (isMobileOrTabletBrowser()) {
+      window.location.assign(url);
+    } else {
+      var w = window.open(url, "_blank", "noopener,noreferrer");
+      if (!w) {
+        window.location.assign(url);
+      }
+    }
+    window.setTimeout(function () {
+      setUtilityStatus("");
+    }, 4500);
+    return true;
+  }
+
   function openPrintView(options) {
     options = options || {};
+    if (tryOpenCanonicalPrintPdf()) {
+      return;
+    }
     var fromPdfImage = !!options.fromPdfImage;
     var outputMode = options.mode === "download" ? "download" : "print";
     setUtilityStatus(outputMode === "download" ? "Preparing downloadable PDF..." : (fromPdfImage ? "Preparing your PDF page…" : "Preparing print view..."));
@@ -1244,6 +1340,8 @@
 
     document.body.classList.add("print-ready");
     if (methodologyWrap) methodologyWrap.setAttribute("open", "");
+    var dataSourcesDetails = document.querySelector("#data-sources details");
+    if (dataSourcesDetails) dataSourcesDetails.open = true;
     // Order: open methodology first so it is visible when print runs.
     // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
     finalizeCountUpValues();
@@ -1599,7 +1697,12 @@
     if (appState.dom.mapContainer) {
       clearElement(appState.dom.mapContainer);
     }
+    appState.mapPaths = null;
+    appState.mapLabels = null;
     showMapStaticFallbackUI();
+    if (message) {
+      showTemporaryUtilityStatus(message, 9000);
+    }
   }
 
   function bindMapEvents() {
@@ -1701,98 +1804,109 @@
     width = Math.min(container.offsetWidth || DEFAULT_MAP_WIDTH_PX, config.mapMaxWidth);
     height = Math.round(width * config.mapAspectRatio);
     appState.lastMapWidth = width;
+    var protectedStates = getProtectedStatesList();
 
     // Rebuild the SVG from scratch on each draw so resize behavior stays predictable.
     clearElement(container);
     showMapSkeleton();
 
     if (typeof d3 === "undefined" || typeof topojson === "undefined" || !atlas || !atlas.objects || !atlas.objects.states) {
-      showMapError("The interactive map could not load. You can still use the state summary below.");
+      showMapError("Interactive map libraries did not load. The state grid below has the same protection data.");
       return;
     }
 
-    svg = d3.select(container)
-      .append("svg")
-      .attr("viewBox", [0, 0, width, height])
-      .attr("width", "100%")
-      .attr("height", "auto");
+    try {
+      svg = d3.select(container)
+        .append("svg")
+        .attr("viewBox", [0, 0, width, height])
+        .attr("width", width)
+        .attr("height", height)
+        .attr("preserveAspectRatio", "xMidYMid meet")
+        .style("max-width", "100%")
+        .style("height", "auto");
 
-    states = topojson.feature(atlas, atlas.objects.states);
-    projection = d3.geoAlbersUsa().fitSize([width, height], states);
-    pathGenerator = d3.geoPath(projection);
-    group = svg.append("g");
-    /* Sort states left-to-right by centroid X so the domino animation flows west-to-east. */
-    orderedStates = states.features.map(function (feature, index) {
-      return { feature: feature, index: index };
-    });
-
-    orderedStates.sort(function (a, b) {
-      var centerA = pathGenerator.centroid(a.feature);
-      var centerB = pathGenerator.centroid(b.feature);
-      return centerA[0] - centerB[0];
-    });
-
-    orderedStates.forEach(function (item, order) {
-      animationOrder[item.index] = order;
-    });
-
-    appState.mapPaths = group.selectAll("path")
-      .data(states.features)
-      .join("path")
-      .attr("class", function (feature) {
-        var abbr = getStateAbbr(feature);
-        var baseClass = STATES_WITH_PROTECTION.indexOf(abbr) >= 0 ? "state protection" : "state no-protection";
-        return prefersReducedMotion() ? baseClass : baseClass + " state-domino";
-      })
-      .attr("d", pathGenerator)
-      .attr("data-state", function (feature) {
-        return getStateAbbr(feature) || "";
-      })
-      .attr("fill", function (feature) {
-        return STATES_WITH_PROTECTION.indexOf(getStateAbbr(feature)) >= 0 ? mapProtectionColor : mapNoProtectionColor;
-      })
-      .attr("stroke", "rgba(255,255,255,0.9)")
-      .attr("stroke-width", 1)
-      .each(function (_, index) {
-        this.style.animationDelay = (animationOrder[index] || 0) * config.dominoDelayPerState + "ms";
+      states = topojson.feature(atlas, atlas.objects.states);
+      projection = d3.geoAlbersUsa().fitSize([width, height], states);
+      pathGenerator = d3.geoPath(projection);
+      group = svg.append("g");
+      /* Sort states left-to-right by centroid X so the domino animation flows west-to-east. */
+      orderedStates = states.features.map(function (feature, index) {
+        return { feature: feature, index: index };
       });
 
-    var labelFontSize = Math.max(7, Math.min(11, Math.round(width / 95)));
-    appState.mapLabels = group.selectAll("text.state-abbr-label")
-      .data(states.features)
-      .join("text")
-      .attr("class", "state-abbr-label")
-      .attr("data-state", function (feature) {
-        return getStateAbbr(feature) || "";
-      })
-      .attr("x", function (feature) {
-        var center = pathGenerator.centroid(feature);
-        return Number.isFinite(center[0]) ? center[0] : -9999;
-      })
-      .attr("y", function (feature) {
-        var center = pathGenerator.centroid(feature);
-        return Number.isFinite(center[1]) ? center[1] : -9999;
-      })
-      .attr("font-size", labelFontSize)
-      .attr("text-anchor", "middle")
-      .attr("dominant-baseline", "central")
-      .attr("aria-hidden", "true")
-      .text(function (feature) {
-        return getStateAbbr(feature) || "";
+      orderedStates.sort(function (a, b) {
+        var centerA = pathGenerator.centroid(a.feature);
+        var centerB = pathGenerator.centroid(b.feature);
+        return centerA[0] - centerB[0];
       });
 
-    hideMapSkeleton();
-    if (appState.mapFallbackTimer) {
-      window.clearTimeout(appState.mapFallbackTimer);
-      appState.mapFallbackTimer = null;
-    }
-    showMapInteractiveUI();
-    setupMapVisibilityObserver();
-    bindMapEvents();
-    setupMapKeyboardNav();
+      orderedStates.forEach(function (item, order) {
+        animationOrder[item.index] = order;
+      });
 
-    if (appState.selectedStateAbbr) {
-      highlightMapState(appState.selectedStateAbbr);
+      appState.mapPaths = group.selectAll("path")
+        .data(states.features)
+        .join("path")
+        .attr("class", function (feature) {
+          var abbr = getStateAbbr(feature);
+          var baseClass = protectedStates.indexOf(abbr) >= 0 ? "state protection" : "state no-protection";
+          return prefersReducedMotion() ? baseClass : baseClass + " state-domino";
+        })
+        .attr("d", pathGenerator)
+        .attr("data-state", function (feature) {
+          return getStateAbbr(feature) || "";
+        })
+        .attr("fill", function (feature) {
+          return protectedStates.indexOf(getStateAbbr(feature)) >= 0 ? mapProtectionColor : mapNoProtectionColor;
+        })
+        .attr("stroke", "rgba(255,255,255,0.9)")
+        .attr("stroke-width", 1)
+        .each(function (_, index) {
+          this.style.animationDelay = (animationOrder[index] || 0) * config.dominoDelayPerState + "ms";
+        });
+
+      var labelFontSize = Math.max(7, Math.min(11, Math.round(width / 95)));
+      appState.mapLabels = group.selectAll("text.state-abbr-label")
+        .data(states.features)
+        .join("text")
+        .attr("class", "state-abbr-label")
+        .attr("data-state", function (feature) {
+          return getStateAbbr(feature) || "";
+        })
+        .attr("x", function (feature) {
+          var center = pathGenerator.centroid(feature);
+          return Number.isFinite(center[0]) ? center[0] : -9999;
+        })
+        .attr("y", function (feature) {
+          var center = pathGenerator.centroid(feature);
+          return Number.isFinite(center[1]) ? center[1] : -9999;
+        })
+        .attr("font-size", labelFontSize)
+        .attr("text-anchor", "middle")
+        .attr("dominant-baseline", "central")
+        .attr("aria-hidden", "true")
+        .text(function (feature) {
+          return getStateAbbr(feature) || "";
+        });
+
+      hideMapSkeleton();
+      if (appState.mapFallbackTimer) {
+        window.clearTimeout(appState.mapFallbackTimer);
+        appState.mapFallbackTimer = null;
+      }
+      showMapInteractiveUI();
+      setupMapVisibilityObserver();
+      bindMapEvents();
+      setupMapKeyboardNav();
+
+      if (appState.selectedStateAbbr) {
+        highlightMapState(appState.selectedStateAbbr);
+      }
+    } catch (drawErr) {
+      if (typeof console !== "undefined" && console.warn) {
+        console.warn("drawMap failed:", drawErr);
+      }
+      showMapError("The interactive map hit an error. The state grid below shows the same protection picture.");
     }
   }
 
@@ -2084,7 +2198,10 @@
     });
   }
 
-  /* ---------- Utility actions ---------- */
+  /* ==================================================
+     UTILITY ACTIONS (print button, map SVG export, dataset download)
+     Print opens the separate print layout; export uses the live map SVG.
+     ================================================== */
 
   function initPrint() {
     if (!appState.dom.printButton) return;
@@ -2257,12 +2374,12 @@
         "body.pdf-capture .hap-body > .hap-page-content { margin-left: 0 !important; width: 100% !important; } " +
         "body.pdf-capture .hap-body { display: block !important; } " +
         "body.pdf-capture #leave-behind-sheet { display: none !important; } " +
-        "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap, body.pdf-capture .methodology-content, body.pdf-capture .methodology-sources-header, body.pdf-capture .source-links, body.pdf-capture .methodology-toggle { display: none !important; } " +
-        "body.pdf-capture .print-sources, body.pdf-capture .sources, body.pdf-capture #sources-summary { display: none !important; } " +
+        "body.pdf-capture .methodology-wrap, body.pdf-capture details#methodology-wrap, body.pdf-capture .methodology-content, body.pdf-capture .source-links, body.pdf-capture .methodology-toggle { display: none !important; } " +
+        "body.pdf-capture #data-sources { display: none !important; } " +
+        "body.pdf-capture .print-sources, body.pdf-capture .sources-cluster, body.pdf-capture .sources, body.pdf-capture #sources-summary, body.pdf-capture #sources-limitations { display: none !important; } " +
         "body.pdf-capture .stat-verified { display: none !important; } " +
         "body.pdf-capture #executive-summary { margin-top: 0 !important; } " +
         "body.pdf-capture .hero-kpi-banner { padding: 0.65rem 0.85rem !important; } " +
-        "body.pdf-capture .hero-kpi-banner__kicker { font-size: 0.78rem !important; line-height: 1.25 !important; margin-bottom: 0.45rem !important; } " +
         "body.pdf-capture .exec-summary-mega-strip { gap: 0.45rem !important; } " +
         "body.pdf-capture .exec-summary-mega { padding: 0.6rem 0.7rem !important; min-height: 0 !important; min-width: 0 !important; overflow: visible !important; } " +
         "body.pdf-capture .exec-summary-mega__eyebrow { font-size: 0.62rem !important; margin-bottom: 0.25rem !important; } " +
@@ -2333,7 +2450,7 @@
         "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.15rem 0 0 !important; font-size: 0.81rem !important; } " +
         "body.pdf-capture #community-benefit { content-visibility: visible !important; contain: none !important; } " +
         "body.pdf-capture #pa-safeguards { display: none !important; } " +
-        "body.pdf-capture .pa-impact-mode-section, body.pdf-capture .impact-simulator-section { display: none !important; } ";
+        "body.pdf-capture .pa-impact-mode-section, body.pdf-capture .impact-simulator-section { break-inside: avoid; page-break-inside: avoid; } ";
       document.head.appendChild(pdfStyleEl);
     }
     function removePdfStyle() {
@@ -2629,6 +2746,11 @@
     });
   }
 
+  /* ==================================================
+     SHARE DRAWER & CLIPBOARD
+     buildShareUrl / hash #state-XX; social links refreshed when drawer opens.
+     ================================================== */
+
   function copyTextToClipboard(text, successMessage, dismissMs) {
     var fallbackField;
     var msg = successMessage != null ? successMessage : "Copied!";
@@ -2889,6 +3011,9 @@
 
   function openStaticPrintLeaveBehind(mode) {
     var outputMode = mode === "download" ? "download" : "print";
+    if (tryOpenCanonicalPrintPdf()) {
+      return;
+    }
     finalizeCountUpValues();
     preparePrintSelectionState();
     runTaskSafely("show map for static print", showMapWrapImmediately);
@@ -2914,35 +3039,11 @@
 
     function captureDashboardMapsAsImages() {
       return new Promise(function (resolve) {
-        var html2canvasLib = resolveHtml2canvas();
-        if (typeof html2canvasLib !== "function") {
-          resolve({ usMapPng: "", paMapPng: "" });
-          return;
-        }
         prepareMapContainersForCapture();
-        var usTarget = document.querySelector("#state-laws .map-main") || document.getElementById("us-map-wrap");
-        var paTarget = document.querySelector("#pa-map-points .pa-map-points-grid") || document.getElementById("pa-district-map");
-        function captureNode(node) {
-          if (!node) return Promise.resolve("");
-          return html2canvasLib(node, {
-            scale: 2,
-            useCORS: true,
-            backgroundColor: "#ffffff",
-            scrollX: 0,
-            scrollY: -window.scrollY,
-            windowWidth: document.documentElement.scrollWidth,
-            windowHeight: document.documentElement.scrollHeight
-          }).then(function (canvas) {
-            return canvas.toDataURL("image/png");
-          }).catch(function () {
-            return "";
-          });
-        }
-        Promise.all([captureNode(usTarget), captureNode(paTarget)]).then(function (images) {
-          resolve({ usMapPng: images[0] || "", paMapPng: images[1] || "" });
-        }).catch(function () {
-          resolve({ usMapPng: "", paMapPng: "" });
-        });
+        /* Do not use html2canvas for leave-behind maps: it frequently returns blank PNGs for
+           D3/SVG while still reporting success, which caused 340b-print.html to skip SVG fallback.
+           Payload always includes mapSvg / paDistrictMapSvg from getPrintViewPayload(). */
+        resolve({ usMapPng: "", paMapPng: "" });
       });
     }
 
@@ -3002,8 +3103,8 @@
     window.requestAnimationFrame(function () {
       window.requestAnimationFrame(function () {
         window.setTimeout(function () {
-          waitThenOpen(220);
-        }, 500);
+          waitThenOpen(WAIT_FOR_MAP_MAX_ATTEMPTS);
+        }, WAIT_FOR_MAP_INITIAL_MS);
       });
     });
   }
@@ -3315,6 +3416,11 @@
       obs.observe(el);
     });
   }
+
+  /* ==================================================
+     PA BILL CARD, FEDERAL BILL BANNER, CONGRESSIONAL TABLE, PA DISTRICT MAP
+     Config objects at top of file (PA_BILL_CONFIG, FEDERAL_BILL_CONFIG, PA_DELEGATION_MEMBERS).
+     ================================================== */
 
   function getPaBillSessionDaysLeft(deadlineStr) {
     var end = new Date(deadlineStr);
@@ -3731,6 +3837,62 @@
     mapWrap._paDistrictSelect = function (payload) { showSelection(payload || {}); };
   }
 
+  /** Tab UI for Legal landscape (#legal-landscape-tabs): keyboard arrows + click. */
+  function initLegalLandscapeTabs() {
+    var root = document.getElementById("legal-landscape-tabs");
+    if (!root) return;
+
+    var tabs = root.querySelectorAll('[role="tab"]');
+    var panels = root.querySelectorAll('[role="tabpanel"]');
+    if (!tabs.length || !panels.length) return;
+
+    function activateTab(index) {
+      var i;
+      var t;
+      var p;
+      for (i = 0; i < tabs.length; i += 1) {
+        t = tabs[i];
+        p = document.getElementById(t.getAttribute("aria-controls") || "");
+        if (i === index) {
+          t.setAttribute("aria-selected", "true");
+          t.removeAttribute("tabindex");
+          if (p) p.removeAttribute("hidden");
+        } else {
+          t.setAttribute("aria-selected", "false");
+          t.setAttribute("tabindex", "-1");
+          if (p) p.setAttribute("hidden", "");
+        }
+      }
+    }
+
+    tabs.forEach(function (tab, index) {
+      tab.addEventListener("click", function () {
+        activateTab(index);
+        tab.focus();
+      });
+      tab.addEventListener("keydown", function (ev) {
+        var next = index;
+        if (ev.key === "ArrowRight" || ev.key === "ArrowDown") {
+          next = (index + 1) % tabs.length;
+          ev.preventDefault();
+        } else if (ev.key === "ArrowLeft" || ev.key === "ArrowUp") {
+          next = (index - 1 + tabs.length) % tabs.length;
+          ev.preventDefault();
+        } else if (ev.key === "Home") {
+          next = 0;
+          ev.preventDefault();
+        } else if (ev.key === "End") {
+          next = tabs.length - 1;
+          ev.preventDefault();
+        } else {
+          return;
+        }
+        tabs[next].focus();
+        activateTab(next);
+      });
+    });
+  }
+
   function initNavHighlight() {
     /* Scroll-active nav: last section (document order) whose top is above the header band wins.
      * Section Y positions are cached; scroll handler only compares scrollY (no getBoundingClientRect per frame). */
@@ -3743,6 +3905,7 @@
       "legal-trends",
       "counterarguments",
       "methodology-section",
+      "data-sources",
       "key-metrics",
       "community-benefit",
       "pa-impact-mode",
@@ -3850,6 +4013,16 @@
     }
   }
 
+  /** Opens the compact Data sources panel when the URL hash is #data-sources (nav link or deep link). */
+  function syncDataSourcesPanelFromHash() {
+    var root = document.getElementById("data-sources");
+    var panel = root && root.querySelector("details");
+    if (!panel) return;
+    if (location.hash === "#data-sources") {
+      panel.open = true;
+    }
+  }
+
   function handleDocumentClick(event) {
     if (!appState.dom.stateDetailPanel) return;
 
@@ -3866,7 +4039,9 @@
       event.target.closest("#dashboard-nav") ||
       event.target.closest(".hap-sidebar") ||
       event.target.closest(".dashboard-header") ||
-      event.target.closest(".kpi-pa-tooltip-host")
+      event.target.closest(".kpi-pa-tooltip-host") ||
+      event.target.closest("#data-sources") ||
+      event.target.closest("#legal-trends")
     ) {
       return;
     }
@@ -3897,16 +4072,36 @@
     }
   }
 
-  function handleResize() {
+  /**
+   * Redraws the US map when the map container width changes (orientation, split view, etc.).
+   * Touch devices previously skipped resize entirely, which broke projection/aspect on rotate.
+   * @param {boolean} [forceRedraw] - If true, redraw even when width delta is below threshold (e.g. orientationchange).
+   */
+  function handleResize(forceRedraw) {
     var width;
 
-    if (appState.touchDevice || !appState.dom.mapContainer) return;
+    if (!appState.dom.mapContainer) return;
 
     width = appState.dom.mapContainer.offsetWidth;
-    if (Math.abs(width - appState.lastMapWidth) < RESIZE_WIDTH_THRESHOLD_PX && appState.lastMapWidth) return;
+    if (
+      !forceRedraw &&
+      appState.lastMapWidth &&
+      Math.abs(width - appState.lastMapWidth) < RESIZE_WIDTH_THRESHOLD_PX
+    ) {
+      return;
+    }
 
     appState.lastMapWidth = width;
     drawMap();
+  }
+
+  function scheduleDebouncedMapResize(forceRedraw) {
+    if (appState.resizeTimer) window.clearTimeout(appState.resizeTimer);
+    var delay = appState.touchDevice ? RESIZE_DEBOUNCE_TOUCH_MS : RESIZE_DEBOUNCE_MS;
+    appState.resizeTimer = window.setTimeout(function () {
+      appState.resizeTimer = null;
+      handleResize(!!forceRedraw);
+    }, delay);
   }
 
   function handleAfterPrint() {
@@ -3951,7 +4146,10 @@
   }
 
   function init() {
+    registerExecutiveReliabilityGuards();
     cacheDom();
+    if (appState.initRan) return;
+    appState.initRan = true;
 
     try {
       var sp = new URLSearchParams(window.location.search);
@@ -3975,7 +4173,7 @@
         appState.dom.mapSkeleton.replaceChildren(p);
         if (appState.dom.mapWrap) appState.dom.mapWrap.setAttribute("aria-busy", "false");
       }
-      if (appState.dom.utilityStatus) appState.dom.utilityStatus.textContent = "Data not loaded.";
+      if (appState.dom.utilityStatus) appState.dom.utilityStatus.textContent = "Data not loaded. Confirm state-data.js is deployed with this page.";
       return;
     }
 
@@ -4034,19 +4232,51 @@
     runTaskSafely("initialize policy timeline intersection", initPolicyTimelineIntersection);
     runTaskSafely("initialize policy timeline interaction", initPolicyTimelineInteraction);
     runTaskSafely("sync sticky header offset", initDashboardHeaderOffset);
+    runTaskSafely("initialize legal landscape tabs", initLegalLandscapeTabs);
     runTaskSafely("initialize nav highlight", initNavHighlight);
     runTaskSafely("sync selection from hash", syncSelectionFromHash);
+    runTaskSafely("sync data sources panel from hash", syncDataSourcesPanelFromHash);
 
     document.addEventListener("click", handleDocumentClick);
     document.addEventListener("keydown", handleKeydown);
     window.addEventListener("afterprint", handleAfterPrint);
     window.addEventListener("hashchange", syncSelectionFromHash);
+    window.addEventListener("hashchange", syncDataSourcesPanelFromHash);
 
-    if (!appState.touchDevice) {
-      window.addEventListener("resize", function () {
-        clearTimeout(appState.resizeTimer);
-        appState.resizeTimer = window.setTimeout(handleResize, RESIZE_DEBOUNCE_MS);
+    window.addEventListener("resize", function () {
+      scheduleDebouncedMapResize(false);
+    });
+    if (window.visualViewport && typeof window.visualViewport.addEventListener === "function") {
+      window.visualViewport.addEventListener("resize", function () {
+        scheduleDebouncedMapResize(false);
       });
+    }
+    window.addEventListener("orientationchange", function () {
+      window.setTimeout(function () {
+        scheduleDebouncedMapResize(true);
+      }, 200);
+    });
+
+    schedulePostInitMapHealthCheck();
+
+    try {
+      window.HAP340B = {
+        version: "2026.04.03",
+        mapIsInteractive: function () {
+          return !!document.querySelector("#us-map path[data-state]");
+        },
+        retryInteractiveMap: function () {
+          runTaskSafely("HAP340B.retryInteractiveMap", function () {
+            drawMap();
+            syncSelectionFromHash();
+          });
+        },
+        useStaticStateGrid: function () {
+          showMapStaticFallbackUI();
+        }
+      };
+    } catch (hapEx) {
+      /* ignore */
     }
   }
 

@@ -1,6 +1,14 @@
 # Novice Maintainer Notes
 
-**Start here:** This file is the single entry point for “what do I edit?” Use **[GLOSSARY.md](GLOSSARY.md)** for term definitions, **[CONFIG-INDEX.md](CONFIG-INDEX.md)** for where each setting lives, and **[docs/INDEX.md](docs/INDEX.md)** for all documentation links.
+**Start here:** This file is the single entry point for “what do I edit?”
+
+| Need | Open |
+|------|------|
+| **Plain-language tour of the whole codebase** (what each file/area *means*) | **[NOVICE-CODE-TOUR.md](NOVICE-CODE-TOUR.md)** |
+| **Term definitions** | **[GLOSSARY.md](GLOSSARY.md)** |
+| **Where each setting lives** | **[CONFIG-INDEX.md](CONFIG-INDEX.md)** |
+| **Headline numbers → sources** | **[340B-DASHBOARD-DATA-AND-SOURCES.md](340B-DASHBOARD-DATA-AND-SOURCES.md)** |
+| **All documentation links** | **[docs/INDEX.md](docs/INDEX.md)** |
 
 | **Primary product (communications, CEO, IT-safe deploy)** | **[340b-BASIC.html](340b-BASIC.html)** — edit copy in the HTML; map data in **state-data.js**. See [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) and [docs/CEO-SHOWCASE.md](docs/CEO-SHOWCASE.md). |
 | **Advanced dashboard** | **[340b.html](340b.html)** + **[340b.js](340b.js)** — Print/PDF, share, filters, simulators. See [docs/340b-js-map.md](340b-js-map.md) if you must touch behavior. |

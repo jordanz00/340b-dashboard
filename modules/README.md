@@ -34,5 +34,6 @@ The Basic page **does not** load these modules. PA Impact and the Policy Simulat
 
 ## See also
 
-- [NOVICE-MAINTAINER.md](../NOVICE-MAINTAINER.md) — full code map
+- [NOVICE-CODE-TOUR.md](../NOVICE-CODE-TOUR.md) — plain-language tour of the whole codebase
+- [NOVICE-MAINTAINER.md](../NOVICE-MAINTAINER.md) — what to edit, release order
 - [GLOSSARY.md](../GLOSSARY.md) — terms (PA Impact, Simulator, CONFIG)
