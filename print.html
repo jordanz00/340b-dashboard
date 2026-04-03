@@ -3,476 +3,335 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
-  <title>340B Drug Pricing Program — Print View | HAP Advocacy Dashboard</title>
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:;">
+  <title>340B Dashboard Print View | HAP Advocacy Dashboard</title>
   <link rel="stylesheet" href="hap-design-tokens.css">
   <link rel="stylesheet" href="340b.css">
-  <link rel="stylesheet" href="print-view.css?v=mobile-pdf-copy-1">
+  <link rel="stylesheet" href="print-view.css?v=full-dashboard-print-1">
 </head>
 <body class="print-view">
-  <!-- Screen-only: iOS/Android block delayed window.print(); user must tap (stays hidden when printing). -->
   <div id="print-view-mobile-actions" class="print-view-mobile-actions" hidden>
-    <div id="print-view-mobile-actions-copy" class="print-view-mobile-actions-copy">
-      <p class="print-view-mobile-actions-text"><strong>Phone or tablet:</strong> Tap the button below. Then use <strong>Print</strong> and choose <strong>Save as PDF</strong> or <strong>Save to Files</strong> (varies by device).</p>
-    </div>
+    <p id="print-view-mobile-actions-text" class="print-view-mobile-actions-text">Tap below, then choose Print and Save as PDF on your device.</p>
     <button type="button" class="print-view-mobile-actions-btn" id="print-view-mobile-print-btn">Print / Save as PDF</button>
-    <a href="340b.html" class="print-view-mobile-actions-back">← Back to dashboard</a>
+    <a href="340b.html" class="print-view-mobile-actions-back">Back to dashboard</a>
   </div>
-  <div id="print-view-root">
+
+  <main id="print-view-root">
     <header class="print-view-header">
       <img src="haplogo_box_blue.jpeg" alt="" class="print-view-logo" width="40" height="40">
-      <div>
+      <div class="print-view-header-copy">
         <p class="print-view-org">The Hospital and Healthsystem Association of Pennsylvania</p>
-        <h1>340B Drug Pricing Program</h1>
-        <p class="print-view-badge">ADVOCACY DASHBOARD</p>
+        <h1>340B protects access to care in Pennsylvania</h1>
+        <p class="print-view-badge">Printable dashboard snapshot</p>
       </div>
     </header>
 
-    <main class="print-view-main">
-      <div class="print-view-intro">
-      <section class="print-view-block">
-        <p class="print-view-card-title">Overview</p>
-        <h2>What is 340B?</h2>
-        <p class="print-view-subtitle">A federal discount drug program that helps hospitals serve more patients.</p>
-        <p>340B empowers Pennsylvania hospitals to provide care and affordable medicines to all communities—at no extra cost to taxpayers.</p>
-        <p class="print-view-stat"><span class="print-view-stat-label">Market share</span> <strong id="pv-kpi-market">7%</strong> 340B purchases</p>
-      </section>
+    <section class="print-view-section">
+      <p class="print-view-card-title">Overview</p>
+      <h2>What is 340B?</h2>
+      <p>340B allows eligible hospitals and clinics to buy certain outpatient drugs at discounted prices and reinvest savings into patient care and community services.</p>
+      <p><strong>HAP position:</strong> Protect 340B and contract pharmacy partnerships to preserve access in rural and underserved communities.</p>
+      <p id="pv-landscape-value">21 states have enacted contract pharmacy protection; 29 remain without enacted protection.</p>
+    </section>
 
-      <section class="print-view-block print-view-block--hap-position">
-        <p class="print-view-card-title">HAP Position</p>
-        <h2>Protect the 340B discount and hospital–pharmacy partnerships.</h2>
-        <p class="print-view-hap-kicker">States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.</p>
-        <p>HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.</p>
-        <p class="print-view-hap-asks-title">What lawmakers can do</p>
-        <ul class="print-view-hap-ask-list">
-          <li><strong>Protect the 340B discount.</strong> Impact: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</li>
-          <li><strong>Defend contract pharmacy partnerships.</strong> Impact: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</li>
-          <li><strong>Oppose rules that shrink access for safety-net patients.</strong> Impact: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</li>
-        </ul>
-      </section>
+    <section class="print-view-kpi-strip">
+      <article class="print-view-kpi-card"><p class="print-view-kpi-label">U.S. Drug Market</p><p class="print-view-kpi-value" id="pv-kpi-drug">7%</p></article>
+      <article class="print-view-kpi-card"><p class="print-view-kpi-label">Community Benefit</p><p class="print-view-kpi-value" id="pv-kpi-benefit">$7.95B</p></article>
+      <article class="print-view-kpi-card"><p class="print-view-kpi-label">Oversight</p><p class="print-view-kpi-value" id="pv-kpi-oversight">179</p></article>
+      <article class="print-view-kpi-card"><p class="print-view-kpi-label">Pennsylvania Hospitals</p><p class="print-view-kpi-value" id="pv-kpi-pa">72</p></article>
+    </section>
 
-      <section class="print-view-block print-view-executive">
-        <div class="print-view-executive-card">
-          <p class="print-view-card-title">What we're fighting for</p>
-          <h3>Protect the 340B discount and hospital–pharmacy partnerships</h3>
-          <p>One clear story: access, fairness, and continuity for patients.</p>
-        </div>
-        <div class="print-view-executive-card">
-          <p class="print-view-card-title">Where things stand</p>
-          <h3 id="pv-landscape-value">21 states have enacted contract pharmacy protection; 29 remain without enacted protection</h3>
-          <p>Map and state panel show who's protected and who's not.</p>
-        </div>
-        <div class="print-view-executive-card">
-          <p class="print-view-card-title">Why trust this</p>
-          <h3>Sources and dates are right here</h3>
-          <p>MultiState, ASHP, America's Essential Hospitals.</p>
-        </div>
-      </section>
-      </div>
+    <section class="print-view-section print-view-map-section">
+      <p class="print-view-card-title">State map</p>
+      <h2>Contract pharmacy protection by state</h2>
+      <p id="pv-map-hero-sub">State laws directly affect patient access and hospital sustainability.</p>
+      <p class="print-view-selection-title" id="pv-selection-title">No state selected yet</p>
+      <p class="print-view-selection-text" id="pv-selection-text">Select a state in the dashboard to update this summary.</p>
+      <div id="pv-map-container" class="print-view-map-wrap"></div>
+      <p class="print-view-legend"><span class="print-view-swatch protection"></span>Protection enacted <span class="print-view-swatch no-protection"></span>No enacted protection</p>
+      <h3>States with protection (<span id="pv-protection-count">0</span>)</h3>
+      <p id="pv-states-with-list" class="print-view-state-list"></p>
+      <h3>No protection law (<span id="pv-no-protection-count">0</span>)</h3>
+      <p id="pv-states-without-list" class="print-view-state-list"></p>
+    </section>
 
-      <section class="print-view-block print-view-takeaway">
-        <p><strong>Bottom line:</strong> What happens to 340B in the states directly affects whether hospitals can keep getting discount meds to patients—including 72 hospitals in Pennsylvania.</p>
-      </section>
+    <section class="print-view-section print-view-map-section">
+      <p class="print-view-card-title">Pennsylvania district map</p>
+      <p>340B hospitals by PA legislative district (points and district boundaries).</p>
+      <div id="pv-pa-district-map-container" class="print-view-map-wrap"></div>
+    </section>
 
-      <section class="print-view-block print-view-key-findings">
-        <p class="print-view-card-title">The numbers that matter</p>
-        <p class="print-view-key-findings-list"><span id="pv-key-finding-count">21</span> states protect the discount; <strong id="pv-key-no-count">29</strong> have not yet enacted protection · <strong id="pv-key-benefit">$7.95B</strong> community benefits (2024) · <strong id="pv-key-pa">72</strong> PA hospitals use 340B · <strong id="pv-key-drug">7%</strong> U.S. drug market</p>
-      </section>
-
-      <section class="print-view-block print-view-map-hero">
-        <p class="print-view-card-title">State-by-state</p>
-        <h2>Who protects contract pharmacy—and who doesn’t</h2>
-        <p id="pv-map-hero-sub">Click a state to see whether state law protects contract pharmacy partnerships—and what that means for hospitals and patients.</p>
-        <div class="print-view-selection">
-          <p class="print-view-card-title">State</p>
-          <p class="print-view-selection-title" id="pv-selection-title">No state selected yet</p>
-          <p class="print-view-selection-text" id="pv-selection-text">Click a state on the map or in the list below to see the details.</p>
-        </div>
-        <div class="print-view-map-and-legend">
-        <div id="pv-map-container" class="print-view-map-wrap"></div>
-        <div class="print-view-legend">
-          <span><span class="print-view-swatch protection"></span> Blue = state law protects contract pharmacy</span>
-          <span><span class="print-view-swatch no-protection"></span> Gray = no state law yet</span>
-        </div>
-        </div>
-        <h3 class="print-view-subhead">States with protection (<span id="pv-protection-count">0</span>)</h3>
-        <p id="pv-states-with-list" class="print-view-state-list"></p>
-        <h3 class="print-view-subhead">No protection law (<span id="pv-no-protection-count">0</span>)</h3>
-        <p id="pv-states-without-list" class="print-view-state-list"></p>
-        <h3 class="print-view-subhead">Recent legal signals</h3>
-        <div class="print-view-trends">
-          <p><strong>Courts:</strong> AR, LA, MO, MN, TN, and RI have upheld state contract pharmacy protections against manufacturer challenges.</p>
-          <p><strong>Hybrid model:</strong> CO, ME, OH, RI, and VT paired protection with reporting requirements in 2025.</p>
-          <p><strong>Vetoes:</strong> Some governors vetoed proposed 340B protections, including Virginia.</p>
-        </div>
-        <p class="print-view-sources">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
-      </section>
-      <section class="print-view-block print-view-pa-district-map">
-        <p class="print-view-card-title">Pennsylvania district map</p>
-        <p>340B hospitals by PA legislative district (hospital points + district boundaries).</p>
-        <div id="pv-pa-district-map-container" class="print-view-map-wrap"></div>
-      </section>
-
-      <section class="print-view-kpi-strip">
-        <div class="print-view-kpi-card">
-          <p class="print-view-kpi-label">U.S. Drug Market</p>
-          <p class="print-view-kpi-value" id="pv-kpi-drug">7%</p>
-          <p class="print-view-kpi-desc">Share of total U.S. outpatient drug market</p>
-        </div>
-        <div class="print-view-kpi-card">
-          <p class="print-view-kpi-label">Community Benefit</p>
-          <p class="print-view-kpi-value" id="pv-kpi-benefit">$7.95B</p>
-          <p class="print-view-kpi-desc">Total community benefits from 340B hospitals (2024)</p>
-        </div>
-        <div class="print-view-kpi-card">
-          <p class="print-view-kpi-label">Oversight</p>
-          <p class="print-view-kpi-value" id="pv-kpi-oversight">179</p>
-          <p class="print-view-kpi-desc">Covered entities audited by HRSA (FY 2024)</p>
-        </div>
-        <div class="print-view-kpi-card">
-          <p class="print-view-kpi-label">Pennsylvania</p>
-          <p class="print-view-kpi-value" id="pv-kpi-pa">72</p>
-          <p class="print-view-kpi-desc">Pennsylvania hospitals participating in 340B</p>
-        </div>
-        <p class="print-view-freshness" id="pv-data-freshness">Data as of March 2026 — Last updated March 2026</p>
-      </section>
-
-      <h3 class="print-view-section-head">Why this matters to health system leaders</h3>
-
-      <section class="print-view-block">
-        <p class="print-view-card-title">Eligible providers</p>
-        <h2>Who depends on 340B</h2>
-        <p>340B supports safety-net providers in both rural and urban markets, including:</p>
+    <section class="print-view-section-grid">
+      <article class="print-view-section">
+        <p class="print-view-card-title">What lawmakers can do</p>
         <ul>
-          <li>Children's and cancer hospitals</li>
-          <li>Rural critical-access hospitals and safety-net hospitals</li>
-          <li>Federally qualified health centers</li>
+          <li>Protect the 340B discount so hospitals can keep reinvesting in care.</li>
+          <li>Defend contract pharmacy partnerships so patients can fill prescriptions locally.</li>
+          <li>Oppose policies that shrink access for safety-net patients.</li>
         </ul>
-      </section>
-
-      <section class="print-view-block">
-        <p class="print-view-card-title">Oversight credibility</p>
-        <h2>Federal oversight remains real</h2>
-        <p>In 2024 federal oversight still included meaningful review activity:</p>
-        <p><strong>Covered entities</strong> 179 audited · <strong>Manufacturers</strong> 5 audited (FY 2024)</p>
-        <p>HAP supports <strong>parity in oversight between hospitals and manufacturers</strong>, not a one-sided accountability standard.</p>
-      </section>
-
-      <section class="print-view-block">
-        <p class="print-view-card-title">Pennsylvania operating stakes</p>
-        <h2>340B remains materially relevant in PA</h2>
-        <p><strong>72 hospitals (30%)</strong> participate. These operating signals show why PA is a high-stakes case study.</p>
-        <p><strong>Rural</strong> 49% · <strong>Operating at a loss</strong> 53% · <strong>Labor &amp; delivery</strong> 49%</p>
-      </section>
-
-      <section class="print-view-block print-view-community-benefit">
+      </article>
+      <article class="print-view-section">
         <p class="print-view-card-title">Community benefit</p>
-        <h2>Reinvesting savings</h2>
-        <p><strong>23%</strong> average savings on pharma purchases · Free or reduced-price prescriptions · Mobile mammography &amp; cancer screening · Dental care &amp; preventive services</p>
-        <p class="print-view-big-stat">Total community benefits (2024) <strong>$7.95B</strong></p>
-        <p>9% increase over 2023 — reinvested in community health</p>
-      </section>
-
-      <section class="print-view-block">
-        <p class="print-view-card-title">Access to care</p>
-        <h2>Contract pharmacy restrictions hit patient access</h2>
-        <p>Federal rules allow hospitals to use in-house or community pharmacies for 340B.</p>
-        <p><strong>Restriction:</strong> limiting hospitals to <strong>one contract pharmacy</strong>.</p>
-        <p><strong>Result:</strong> fewer local pickup options and longer travel—especially in rural areas.</p>
-      </section>
-
-      <section class="print-view-block">
+        <p>340B savings support free or reduced-price prescriptions, preventive care, and access programs.</p>
+        <p><strong>Total community benefits (2024):</strong> <span id="pv-kpi-benefit-inline">$7.95B</span></p>
+      </article>
+      <article class="print-view-section">
+        <p class="print-view-card-title">Oversight</p>
+        <p>Federal audits continue for covered entities and manufacturers.</p>
+        <p><strong>Covered entities audited (FY 2024):</strong> <span id="pv-kpi-oversight-inline">179</span></p>
+      </article>
+      <article class="print-view-section">
         <p class="print-view-card-title">Pennsylvania safeguards</p>
-        <h2>PA already prevents duplicate discounts</h2>
-        <ul>
-          <li>Manufacturers are not required to give both a 340B discount and a Medicaid rebate for the same drug.</li>
-          <li>State DHS (Department of Human Services) runs the <strong>340B Drug Exclusion List</strong> and bills manufacturers for Medicaid rebates, so hospitals may not use 340B-priced drugs on this list.</li>
-          <li>Contract pharmacy claims are structured to avoid duplicate discounts; DHS bills manufacturers for rebates where applicable.</li>
-        </ul>
-        <p class="print-view-sources">Source: 42 U.S.C. § 256b; HRSA-CMS guidance. For questions: HAP Finance &amp; Legal Affairs | (717) 564-9200</p>
-      </section>
-    </main>
-  </div>
+        <p>Pennsylvania has existing mechanisms to prevent duplicate discounts and maintain compliance.</p>
+        <p class="print-view-freshness" id="pv-data-freshness">Data as of March 2026</p>
+      </article>
+    </section>
+  </main>
 
-  <footer class="print-view-footer-dmx" role="contentinfo">
-    <p>Design Mark X — Continuous Optimization System</p>
-  </footer>
-
+  <script src="assets/vendor/html2canvas.min.js"></script>
+  <script src="assets/vendor/jspdf.umd.min.js"></script>
   <script>
     (function () {
       var KEY_PRIMARY = "hap340b:printSnapshot";
       var KEY_LEGACY = "hap340bPrint";
       var params = new URLSearchParams(window.location.search);
       var PAYLOAD_ID = params.get("pid");
+      var MODE = params.get("mode") === "download" ? "download" : "print";
+      var MAX_MAP_SVG_LENGTH = 700000;
+      var MAX_TEXT_FIELD_LEN = 8000;
+
       var root = document.getElementById("print-view-root");
       var mapContainer = document.getElementById("pv-map-container");
-      var paDistrictMapContainer = document.getElementById("pv-pa-district-map-container");
+      var paMapContainer = document.getElementById("pv-pa-district-map-container");
 
-      function getPayload() {
-        try {
-          var raw = localStorage.getItem(KEY_PRIMARY) || localStorage.getItem(KEY_LEGACY);
-          if (raw) return JSON.parse(raw);
-        } catch (e) {}
+      function getPayloadOnce() {
         try {
           if (PAYLOAD_ID) {
             var sRaw = sessionStorage.getItem(KEY_PRIMARY + ":" + PAYLOAD_ID);
             if (sRaw) return JSON.parse(sRaw);
           }
-        } catch (e2) {}
+        } catch (e1) {}
         try {
           if (PAYLOAD_ID && window.opener && window.opener.__hapPrintPayloadCache) {
-            var o = window.opener.__hapPrintPayloadCache[PAYLOAD_ID];
-            if (o && typeof o === "object") return o;
+            var openerPayload = window.opener.__hapPrintPayloadCache[PAYLOAD_ID];
+            if (openerPayload && typeof openerPayload === "object") return openerPayload;
           }
-        } catch (e) {
-          return null;
-        }
+        } catch (e2) {}
+        try {
+          var raw = localStorage.getItem(KEY_PRIMARY) || localStorage.getItem(KEY_LEGACY);
+          if (raw) return JSON.parse(raw);
+        } catch (e3) {}
         return null;
       }
 
-      var MAX_MAP_SVG_LENGTH = 500000;
-      var MAX_TEXT_FIELD_LEN = 4000;
-
-      function isValidPayload(payload) {
-        if (!payload || typeof payload !== "object") return false;
-        if (payload.payloadVersion != null && payload.payloadVersion !== 1) return false;
-        if (payload.mapSvg != null && (typeof payload.mapSvg !== "string" || payload.mapSvg.length > MAX_MAP_SVG_LENGTH)) return false;
-        if (payload.paDistrictMapSvg != null && (typeof payload.paDistrictMapSvg !== "string" || payload.paDistrictMapSvg.length > MAX_MAP_SVG_LENGTH)) return false;
-        var textFields = [
-          "selectionTitle", "selectionText", "mapHeroSub", "landscapeValue",
-          "statesWithList", "statesWithoutList", "kpiDrug", "kpiBenefit", "kpiOversight",
-          "kpiPA", "dataFreshness", "methodologyDate"
-        ];
-        for (var i = 0; i < textFields.length; i++) {
-          var k = textFields[i];
-          if (payload[k] != null && typeof payload[k] === "string" && payload[k].length > MAX_TEXT_FIELD_LEN) return false;
+      function normalizePayload(payload) {
+        if (!payload || typeof payload !== "object") return null;
+        if (payload.payloadVersion != null && payload.payloadVersion !== 1 && payload.payloadVersion !== 2) return null;
+        var out = {};
+        var fields = ["selectionTitle", "selectionText", "mapHeroSub", "landscapeValue", "statesWithList", "statesWithoutList", "kpiDrug", "kpiBenefit", "kpiOversight", "kpiPA", "dataFreshness", "outputMode", "exportFileName"];
+        for (var i = 0; i < fields.length; i += 1) {
+          var key = fields[i];
+          if (typeof payload[key] === "string") out[key] = payload[key].slice(0, MAX_TEXT_FIELD_LEN);
         }
+        out.protectionCount = payload.protectionCount;
+        out.noProtectionCount = payload.noProtectionCount;
+        out.mapSvg = (typeof payload.mapSvg === "string" && payload.mapSvg.length <= MAX_MAP_SVG_LENGTH) ? payload.mapSvg : "";
+        out.paDistrictMapSvg = (typeof payload.paDistrictMapSvg === "string" && payload.paDistrictMapSvg.length <= MAX_MAP_SVG_LENGTH) ? payload.paDistrictMapSvg : "";
+        return out;
+      }
+
+      function setText(id, value) {
+        var el = document.getElementById(id);
+        if (el && value != null) el.textContent = String(value);
+      }
+
+      function setSvgMap(container, svgText, fallback, alt) {
+        if (!container) return false;
+        container.replaceChildren();
+        if (!svgText || typeof svgText !== "string" || svgText.trim().length < 40) {
+          var p = document.createElement("p");
+          p.className = "print-view-map-fallback";
+          p.textContent = fallback;
+          container.appendChild(p);
+          return false;
+        }
+        var svg = svgText.trim();
+        if (!/<svg[\s>]/i.test(svg)) {
+          var p2 = document.createElement("p");
+          p2.className = "print-view-map-fallback";
+          p2.textContent = fallback;
+          container.appendChild(p2);
+          return false;
+        }
+        if (!svg.match(/xmlns\s*=/i)) {
+          svg = svg.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
+        }
+        var img = document.createElement("img");
+        img.setAttribute("alt", alt);
+        img.style.width = "100%";
+        img.style.height = "auto";
+        img.style.minHeight = "220px";
+        img.style.display = "block";
+        img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svg);
+        container.appendChild(img);
         return true;
       }
 
       function applyPayload(payload) {
-        if (!payload) return;
-        if (!isValidPayload(payload)) return;
-
-        if (payload.selectionTitle) {
-          var el = document.getElementById("pv-selection-title");
-          if (el) el.textContent = payload.selectionTitle;
-        }
-        if (payload.selectionText) {
-          var el = document.getElementById("pv-selection-text");
-          if (el) el.textContent = payload.selectionText;
-        }
-        if (payload.mapHeroSub) {
-          var el = document.getElementById("pv-map-hero-sub");
-          if (el) el.textContent = payload.mapHeroSub;
-        }
-        if (payload.landscapeValue) {
-          var el = document.getElementById("pv-landscape-value");
-          if (el) el.textContent = payload.landscapeValue;
-        }
-        if (payload.mapSvg && mapContainer && typeof payload.mapSvg === "string" && payload.mapSvg.trim().length > 50) {
-          try {
-            var svgString = payload.mapSvg.trim();
-            if (/<svg[\s>]/i.test(svgString)) {
-              if (!svgString.match(/xmlns\s*=/i)) {
-                svgString = svgString.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
-              }
-              var img = document.createElement("img");
-              img.setAttribute("alt", "US map of 340B contract pharmacy protection by state");
-              img.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; width: 100% !important; height: auto !important; max-height: 4.5cm !important;";
-              img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(svgString);
-              mapContainer.replaceChildren();
-              mapContainer.appendChild(img);
-              mapContainer.style.cssText = "display: block !important; visibility: visible !important; opacity: 1 !important; overflow: visible !important; min-height: 200px !important;";
-            }
-          } catch (e) {
-            mapContainer.replaceChildren();
-            var fallback = document.createElement("p");
-            fallback.className = "print-view-map-fallback";
-            fallback.textContent = "Map not available. Load the dashboard and use Print / PDF to include the map.";
-            mapContainer.appendChild(fallback);
-          }
-        }
-        if (payload.paDistrictMapSvg && paDistrictMapContainer && typeof payload.paDistrictMapSvg === "string" && payload.paDistrictMapSvg.trim().length > 50) {
-          try {
-            var paSvg = payload.paDistrictMapSvg.trim();
-            if (/<svg[\s>]/i.test(paSvg)) {
-              if (!paSvg.match(/xmlns\s*=/i)) {
-                paSvg = paSvg.replace(/<svg/i, '<svg xmlns="http://www.w3.org/2000/svg"');
-              }
-              var paImg = document.createElement("img");
-              paImg.setAttribute("alt", "Pennsylvania legislative district map with 340B hospital points");
-              paImg.style.cssText = "display:block!important;visibility:visible!important;opacity:1!important;width:100%!important;height:auto!important;max-height:4.8cm!important;";
-              paImg.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(paSvg);
-              paDistrictMapContainer.replaceChildren();
-              paDistrictMapContainer.appendChild(paImg);
-            }
-          } catch (e3) {
-            paDistrictMapContainer.replaceChildren();
-            var paFallback = document.createElement("p");
-            paFallback.className = "print-view-map-fallback";
-            paFallback.textContent = "PA district map not available in this print snapshot.";
-            paDistrictMapContainer.appendChild(paFallback);
-          }
-        }
-        if (paDistrictMapContainer && !paDistrictMapContainer.querySelector("img") && !paDistrictMapContainer.querySelector("svg")) {
-          var paFallback2 = document.createElement("p");
-          paFallback2.className = "print-view-map-fallback";
-          paFallback2.textContent = "PA district map not available. Open the district map on dashboard and retry Export leave-behind.";
-          paDistrictMapContainer.appendChild(paFallback2);
-        }
-        if (mapContainer && !mapContainer.querySelector("img") && !mapContainer.querySelector("svg")) {
-          var fallback = document.createElement("p");
-          fallback.className = "print-view-map-fallback";
-          fallback.textContent = "Map not available. Load the dashboard and use Print / PDF to include the map.";
-          mapContainer.appendChild(fallback);
-        }
-        if (payload.protectionCount != null) {
-          var el = document.getElementById("pv-protection-count");
-          if (el) el.textContent = String(payload.protectionCount);
-          el = document.getElementById("pv-key-finding-count");
-          if (el) el.textContent = String(payload.protectionCount);
-        }
-        if (payload.noProtectionCount != null) {
-          var el = document.getElementById("pv-no-protection-count");
-          if (el) el.textContent = String(payload.noProtectionCount);
-          el = document.getElementById("pv-key-no-count");
-          if (el) el.textContent = String(payload.noProtectionCount);
-        }
-        if (payload.statesWithList) {
-          var el = document.getElementById("pv-states-with-list");
-          if (el) el.textContent = payload.statesWithList;
-        }
-        if (payload.statesWithoutList) {
-          var el = document.getElementById("pv-states-without-list");
-          if (el) el.textContent = payload.statesWithoutList;
-        }
-        if (payload.kpiDrug != null) {
-          var el = document.getElementById("pv-kpi-drug");
-          if (el) el.textContent = payload.kpiDrug;
-          el = document.getElementById("pv-key-drug");
-          if (el) el.textContent = payload.kpiDrug;
-        }
-        if (payload.kpiBenefit != null) {
-          var el = document.getElementById("pv-kpi-benefit");
-          if (el) el.textContent = payload.kpiBenefit;
-          el = document.getElementById("pv-key-benefit");
-          if (el) el.textContent = payload.kpiBenefit;
-        }
-        if (payload.kpiOversight != null) {
-          var el = document.getElementById("pv-kpi-oversight");
-          if (el) el.textContent = payload.kpiOversight;
-        }
-        if (payload.kpiPA != null) {
-          var el = document.getElementById("pv-kpi-pa");
-          if (el) el.textContent = payload.kpiPA;
-          el = document.getElementById("pv-key-pa");
-          if (el) el.textContent = payload.kpiPA;
-        }
-        if (payload.dataFreshness) {
-          var el = document.getElementById("pv-data-freshness");
-          if (el) el.textContent = payload.dataFreshness;
-        }
-        if (payload.methodologyDate) {
-          var el = document.getElementById("pv-methodology-date");
-          if (el) el.textContent = payload.methodologyDate;
-        }
+        var safe = normalizePayload(payload);
+        if (!safe) return false;
+        setText("pv-selection-title", safe.selectionTitle);
+        setText("pv-selection-text", safe.selectionText);
+        setText("pv-map-hero-sub", safe.mapHeroSub);
+        setText("pv-landscape-value", safe.landscapeValue);
+        setText("pv-protection-count", safe.protectionCount);
+        setText("pv-no-protection-count", safe.noProtectionCount);
+        setText("pv-states-with-list", safe.statesWithList);
+        setText("pv-states-without-list", safe.statesWithoutList);
+        setText("pv-kpi-drug", safe.kpiDrug);
+        setText("pv-kpi-benefit", safe.kpiBenefit);
+        setText("pv-kpi-benefit-inline", safe.kpiBenefit);
+        setText("pv-kpi-oversight", safe.kpiOversight);
+        setText("pv-kpi-oversight-inline", safe.kpiOversight);
+        setText("pv-kpi-pa", safe.kpiPA);
+        setText("pv-data-freshness", safe.dataFreshness);
+        setSvgMap(mapContainer, safe.mapSvg, "Map unavailable in this snapshot. Re-open print from the dashboard to refresh map content.", "US map of 340B protection status by state");
+        setSvgMap(paMapContainer, safe.paDistrictMapSvg, "Map unavailable in this snapshot. Re-open print from the dashboard to refresh map content.", "Pennsylvania legislative district map with 340B hospital points");
+        return true;
       }
 
-      function runPrint() {
-        window.print();
-      }
-
-      function waitForMapsThenPrint(timeoutMs) {
-        var start = Date.now();
-        function ready(container) {
-          if (!container) return true;
-          var img = container.querySelector("img");
-          if (!img) return true;
-          return !!img.complete;
-        }
-        function tick() {
-          var ok = ready(mapContainer) && ready(paDistrictMapContainer);
-          if (ok || (Date.now() - start) > timeoutMs) {
-            runPrint();
-            return;
-          }
-          setTimeout(tick, 120);
-        }
-        tick();
-      }
-
-      /** Mobile browsers often ignore window.print() when it is not tied directly to a user tap. */
-      function isMobileScreenForPrint() {
-        try {
-          if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return true;
-        } catch (e1) { /* ignore */ }
+      function isMobile() {
+        try { if (window.matchMedia && window.matchMedia("(pointer: coarse)").matches) return true; } catch (e) {}
         return /iPhone|iPad|iPod|Android/i.test(navigator.userAgent || "");
       }
 
-      function init() {
-        try {
-          var payload = getPayload();
-          applyPayload(payload);
-        } catch (e) {
-          var msg = document.createElement("p");
-          msg.className = "print-view-map-fallback";
-          msg.textContent = "Unable to load print data. Use Print / PDF from the dashboard again.";
-          if (mapContainer) mapContainer.appendChild(msg);
+      function waitForImages(ms, cb) {
+        var started = Date.now();
+        function ready() {
+          var imgs = root.querySelectorAll("img");
+          for (var i = 0; i < imgs.length; i += 1) {
+            if (!imgs[i].complete) return false;
+          }
+          return true;
         }
-        var mobileUi = isMobileScreenForPrint();
-        // Clear payload after a delay so the map has time to render; phones may need longer before user taps Print.
+        (function tick() {
+          if (ready() || (Date.now() - started) > ms) { cb(); return; }
+          setTimeout(tick, 120);
+        })();
+      }
+
+      function resolveJsPdfCtor() {
+        if (window.jsPDF && typeof window.jsPDF === "function") return window.jsPDF;
+        if (window.jspdf && typeof window.jspdf.jsPDF === "function") return window.jspdf.jsPDF;
+        return null;
+      }
+
+      function downloadPdf(fileName) {
+        var html2canvasFn = window.html2canvas;
+        var JsPdfCtor = resolveJsPdfCtor();
+        if (typeof html2canvasFn !== "function" || typeof JsPdfCtor !== "function") {
+          window.print();
+          return;
+        }
+        html2canvasFn(root, { scale: 2, useCORS: true, backgroundColor: "#ffffff", scrollY: -window.scrollY }).then(function (canvas) {
+          var pdf = new JsPdfCtor({ orientation: "portrait", unit: "pt", format: "letter", compress: true });
+          var pageW = pdf.internal.pageSize.getWidth();
+          var pageH = pdf.internal.pageSize.getHeight();
+          var margin = 20;
+          var drawW = pageW - margin * 2;
+          var drawH = pageH - margin * 2;
+          var pageCanvas = document.createElement("canvas");
+          var pageCtx = pageCanvas.getContext("2d");
+          var sliceHeight = Math.floor((canvas.width * drawH) / drawW);
+          var y = 0;
+          var pageIndex = 0;
+
+          pageCanvas.width = canvas.width;
+          pageCanvas.height = sliceHeight;
+          while (y < canvas.height) {
+            var remaining = canvas.height - y;
+            var h = remaining < sliceHeight ? remaining : sliceHeight;
+            pageCanvas.height = h;
+            pageCtx.clearRect(0, 0, pageCanvas.width, h);
+            pageCtx.drawImage(canvas, 0, y, canvas.width, h, 0, 0, canvas.width, h);
+            if (pageIndex > 0) pdf.addPage("letter", "portrait");
+            var img = pageCanvas.toDataURL("image/jpeg", 0.95);
+            var renderH = (drawW * h) / canvas.width;
+            pdf.addImage(img, "JPEG", margin, margin, drawW, renderH);
+            y += h;
+            pageIndex += 1;
+          }
+          pdf.save(fileName || "hap-340b-dashboard-print.pdf");
+        }).catch(function () {
+          window.print();
+        });
+      }
+
+      function showMobileBar(mode) {
+        var bar = document.getElementById("print-view-mobile-actions");
+        var txt = document.getElementById("print-view-mobile-actions-text");
+        var btn = document.getElementById("print-view-mobile-print-btn");
+        if (!bar || !btn) return;
+        if (txt && mode === "download") {
+          txt.textContent = "Tap below, then choose Print and Save as PDF to export your dashboard snapshot.";
+        }
+        bar.hidden = false;
+        document.body.classList.add("print-view-has-mobile-bar");
+        btn.addEventListener("click", function () { window.print(); });
+      }
+
+      function getPayloadWithRetry(done) {
+        var tries = 0;
+        (function next() {
+          var payload = getPayloadOnce();
+          if (payload || tries >= 16) {
+            done(payload);
+            return;
+          }
+          tries += 1;
+          setTimeout(next, 120);
+        })();
+      }
+
+      function cleanupPayload(delayMs) {
         setTimeout(function () {
           try {
-            localStorage.removeItem(KEY_PRIMARY);
-            localStorage.removeItem(KEY_LEGACY);
-            if (PAYLOAD_ID) sessionStorage.removeItem(KEY_PRIMARY + ":" + PAYLOAD_ID);
-            if (PAYLOAD_ID && window.opener && window.opener.__hapPrintPayloadCache) {
-              delete window.opener.__hapPrintPayloadCache[PAYLOAD_ID];
+            if (PAYLOAD_ID) {
+              sessionStorage.removeItem(KEY_PRIMARY + ":" + PAYLOAD_ID);
+              if (window.opener && window.opener.__hapPrintPayloadCache) delete window.opener.__hapPrintPayloadCache[PAYLOAD_ID];
             }
           } catch (e) {}
-        }, mobileUi ? 20000 : 5000);
+        }, delayMs);
+      }
 
-        var fromPdfImage = params.get("from") === "pdfimage";
-        if (params.get("auto") === "1") {
-          if (mobileUi) {
-            if (fromPdfImage) {
-              var copyRoot = document.getElementById("print-view-mobile-actions-copy");
-              if (copyRoot) {
-                while (copyRoot.firstChild) {
-                  copyRoot.removeChild(copyRoot.firstChild);
-                }
-                var lead = document.createElement("p");
-                lead.className = "print-view-mobile-actions-text";
-                var strongEl = document.createElement("strong");
-                strongEl.textContent = "Your PDF is ready";
-                lead.appendChild(strongEl);
-                lead.appendChild(document.createTextNode(" — Same live numbers and map as the dashboard, in a clean layout for sharing."));
-                var sub = document.createElement("p");
-                sub.className = "print-view-mobile-actions-subline";
-                sub.textContent = "Tap the button below. Then choose Print → Save as PDF, or Save to Files (same flow as Print / PDF on the dashboard).";
-                copyRoot.appendChild(lead);
-                copyRoot.appendChild(sub);
-              }
-            }
-            var bar = document.getElementById("print-view-mobile-actions");
-            var btn = document.getElementById("print-view-mobile-print-btn");
-            if (bar) {
-              bar.hidden = false;
-              document.body.classList.add("print-view-has-mobile-bar");
-            }
-            if (btn) {
-              btn.addEventListener("click", function () {
-                runPrint();
-              });
-            }
-          } else {
-            setTimeout(function () {
-              if (mapContainer) mapContainer.offsetHeight;
-              waitForMapsThenPrint(5000);
-            }, 700);
+      function init() {
+        getPayloadWithRetry(function (payload) {
+          var applied = applyPayload(payload);
+          if (!applied && mapContainer) {
+            var msg = document.createElement("p");
+            msg.className = "print-view-map-fallback";
+            msg.textContent = "Snapshot data loaded partially. You can still print this page, then retry from dashboard for updated maps.";
+            mapContainer.replaceChildren(msg);
           }
-        }
+
+          var effectiveMode = (payload && payload.outputMode === "download") ? "download" : MODE;
+          var filename = (payload && payload.exportFileName) ? payload.exportFileName : "hap-340b-dashboard-print.pdf";
+          var auto = params.get("auto") === "1";
+          cleanupPayload(isMobile() ? 20000 : 6000);
+          if (!auto) return;
+
+          if (isMobile()) {
+            showMobileBar(effectiveMode);
+            return;
+          }
+          waitForImages(7000, function () {
+            if (effectiveMode === "download") {
+              downloadPdf(filename);
+            } else {
+              window.print();
+            }
+          });
+        });
       }
 
       if (document.readyState === "loading") {

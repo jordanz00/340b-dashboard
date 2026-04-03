@@ -58,12 +58,12 @@
     hapPosition: "SUPPORT",
     billUrl: "https://www.palegis.us/legislation",
     hapContact: "HAP State Advocacy",
-    hapContactTitle: "Advocacy contact",
+    hapContactTitle: "Contact",
     hapContactEmail: "",
     hapContactPhone: "(717) 564-9200"
   };
 
-  /** Federal 340B bill banner — edit values here (sync with Federal Advocacy before publishing). */
+  /** Federal 340B bill banner — edit values here before publishing. */
   const FEDERAL_BILL_CONFIG = {
     hasBill: true,
     billNumber: "S. 2372 / H.R. 4581",
@@ -71,11 +71,7 @@
     senateStatus: "Referred to HELP Committee",
     houseStatus: "Referred to Energy & Commerce Committee",
     lastUpdated: "March 2026",
-    billUrl: "https://www.congress.gov/bill/119th-congress/senate-bill/2372",
-    hapContact: "HAP Federal Advocacy",
-    hapContactTitle: "Advocacy contact",
-    hapContactEmail: "",
-    hapContactPhone: "(717) 564-9200"
+    billUrl: "https://www.congress.gov/bill/119th-congress/senate-bill/2372"
   };
 
   /** Data verified timestamps for stat card provenance. */
@@ -145,9 +141,9 @@
   ];
 
   /* ==================================================
-     CONFIGURATION & CONSTANTS
+    CONFIGURATION & CONSTANTS
      ==================================================
-     CONFIG comes from state-data.js (inlined in 340b.html).
+    CONFIG comes from state-data.js (single source of truth).
      Fallback below is used only when CONFIG is undefined (e.g. local file open).
      */
   var config = typeof CONFIG !== "undefined" ? CONFIG : {
@@ -171,12 +167,38 @@
     shareUrlBase: ""
   };
 
+  function validateRequiredConfigFields() {
+    var requiredTopLevel = ["dashboardTitle", "dashboardSubtitle", "pageDescription", "shareTitle", "shareDescription", "dataFreshness", "lastUpdated", "copy"];
+    var requiredCopy = ["overviewLead", "hapPositionWhy", "hapPositionLead", "hapPositionLawmakerLabel", "mapHeroSub", "mapHowToUse", "sourceSummary", "methodologyStateLaw", "printSourceSummary", "verificationOrder", "executiveStrip"];
+    var missing = [];
+    var missingCopy = [];
+    var i;
+
+    for (i = 0; i < requiredTopLevel.length; i += 1) {
+      if (!config || !Object.prototype.hasOwnProperty.call(config, requiredTopLevel[i])) {
+        missing.push(requiredTopLevel[i]);
+      }
+    }
+    for (i = 0; i < requiredCopy.length; i += 1) {
+      if (!config.copy || !Object.prototype.hasOwnProperty.call(config.copy, requiredCopy[i])) {
+        missingCopy.push(requiredCopy[i]);
+      }
+    }
+    if (missing.length && typeof console !== "undefined" && console.warn) {
+      console.warn("CONFIG is missing required fields:", missing.join(", "));
+    }
+    if (missingCopy.length && typeof console !== "undefined" && console.warn) {
+      console.warn("CONFIG.copy is missing required fields:", missingCopy.join(", "));
+    }
+  }
+
   var paBillCountdownTimer = null;
 
   var appState = {
     selectedStateAbbr: null,
     currentFilter: "all",
     mapPaths: null,
+    mapLabels: null,
     lastMapWidth: 0,
     resizeTimer: null,
     mapVisibilityObserver: null,
@@ -317,6 +339,13 @@
     }
   }
 
+  // Allow only absolute http(s) URLs for outbound links from config/data.
+  function safeExternalUrl(value) {
+    var candidate = value == null ? "" : String(value).trim();
+    if (!candidate) return "#";
+    return /^https?:\/\//i.test(candidate) ? candidate : "#";
+  }
+
   function appendBadge(parent, tone, text) {
     var badge = createElement("span", "badge " + tone, text);
     parent.appendChild(badge);
@@ -376,6 +405,7 @@
     // Makes all scroll-reveal sections visible immediately so print and PDF capture see the full page, not hidden blocks.
     document.querySelectorAll(".scroll-reveal").forEach(function (element) {
       element.classList.add("revealed");
+      element.classList.add("is-visible");
     });
 
     showMapWrapImmediately();
@@ -457,8 +487,12 @@
     (function applyHapAskItems() {
       var asks = copy.hapAskItems;
       if (!Array.isArray(asks)) return;
-      document.querySelectorAll(".hap-ask-list .hap-ask-item").forEach(function (li, i) {
-        var item = asks[i];
+      /* Only rows with data-hap-ask-index (federal “What lawmakers can do”). PA and leave-behind lists stay static HTML. */
+      document.querySelectorAll(".hap-ask-list .hap-ask-item[data-hap-ask-index]").forEach(function (li) {
+        var raw = li.getAttribute("data-hap-ask-index");
+        var idx = raw == null ? NaN : parseInt(raw, 10);
+        if (isNaN(idx) || idx < 0) return;
+        var item = asks[idx];
         var labelEl = li.querySelector(".hap-ask-item-label");
         var impactEl = li.querySelector(".hap-ask-item-impact");
         if (labelEl) {
@@ -804,7 +838,7 @@
     if (!abbr) {
       appState.dom.selectionSummaryTitle.textContent = "No state selected yet";
       appState.dom.selectionSummaryText.textContent =
-        "Pick a state on the map or from the lists to see protection status and notes.";
+        "Pick a state on the map to see protection status and notes.";
       updateMapContext(null);
       if (appState.dom.selectionClear) appState.dom.selectionClear.hidden = true;
       return;
@@ -871,8 +905,7 @@
   function buildEmailMailtoHref() {
     var url = buildShareUrl();
     var subject = "340B advocacy dashboard — PA hospital impact";
-    var body = "I wanted to share HAP's 340B advocacy dashboard with you. It shows the impact on Pennsylvania's 72 participating hospitals and where state law stands on contract pharmacy protection: " + url +
-      "\n\nQuestions: contact HAP Advocacy at (717) 564-9200 or visit haponline.org/340b";
+    var body = "I wanted to share HAP's 340B advocacy dashboard with you. It shows the impact on Pennsylvania's 72 participating hospitals and where state law stands on contract pharmacy protection: " + url;
     return "mailto:?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
   }
 
@@ -911,7 +944,7 @@
   /** Wait-for-map: used by openPrintView and downloadPdfAsImage so payload/capture includes the SVG. */
   var WAIT_FOR_MAP_INITIAL_MS = 1200;
   var WAIT_FOR_MAP_INTERVAL_MS = 250;
-  var WAIT_FOR_MAP_MAX_ATTEMPTS = 30;
+  var WAIT_FOR_MAP_MAX_ATTEMPTS = 45;
   var PDF_CAPTURE_TIMEOUT_MS = 18000;
   /** Fallback Y ratios (canvas height) when DOM landmarks are missing — ordered: after intro ~HAP, ~map, ~KPI. */
   var PDF_SLICE_FALLBACK_Y1 = 0.32;
@@ -1068,13 +1101,17 @@
      Changes here can break the print pipeline and PDF output.
      Key: hap340b:printSnapshot in localStorage; print.html reads it (and legacy hap340bPrint).
      */
-  // Assembles the full print view payload (summary, KPIs, map SVG) for print.html to read from localStorage (new tab cannot read sessionStorage).
-  function getPrintViewPayload() {
+  // Assembles the canonical 2-page payload consumed by print.html for both
+  // Print/PDF dialog and downloadable leave-behind export.
+  function getPrintViewPayload(outputMode) {
     var summary = gatherPrintPayloadSummaryAndKpis();
     var mapSvg = getMapSvgString();
     var paDistrictMapSvg = getPaDistrictMapSvgString();
+    var mode = outputMode === "download" ? "download" : "print";
     return {
-      payloadVersion: 1,
+      payloadVersion: 2,
+      outputMode: mode,
+      exportFileName: "hap-340b-leave-behind.pdf",
       mapSvg: mapSvg,
       paDistrictMapSvg: paDistrictMapSvg,
       mapSvgFallback: !mapSvg || mapSvg.length < 100,
@@ -1098,10 +1135,20 @@
   // Opens the print view and injects the map and snapshot data from localStorage so the user can save as PDF from the browser.
   // Mobile/tablet: same-tab navigation (reliable localStorage + no popup). Desktop: new tab when allowed.
   // options.fromPdfImage: opened from "Download PDF (image)" on mobile — print.html shows tailored steps (canvas PDF stalls on iOS).
+  function buildPrintViewUrl(payloadId, options) {
+    var mode = options && options.mode === "download" ? "download" : "print";
+    var fromPdfImage = !!(options && options.fromPdfImage);
+    var printQs = "auto=1&mode=" + encodeURIComponent(mode);
+    if (fromPdfImage) printQs += "&from=pdfimage";
+    printQs += "&pid=" + encodeURIComponent(payloadId);
+    return resolveAppUrl("print.html?" + printQs);
+  }
+
   function openPrintView(options) {
     options = options || {};
     var fromPdfImage = !!options.fromPdfImage;
-    setUtilityStatus(fromPdfImage ? "Preparing your PDF page…" : "Preparing print view...");
+    var outputMode = options.mode === "download" ? "download" : "print";
+    setUtilityStatus(outputMode === "download" ? "Preparing downloadable PDF..." : (fromPdfImage ? "Preparing your PDF page…" : "Preparing print view..."));
     // Finalize so the captured page shows 7%, 72, etc., not 0 or half-animated values.
     finalizeCountUpValues();
     preparePrintSelectionState();
@@ -1109,9 +1156,10 @@
     revealAllAnimatedSections();
 
     runTaskSafely("draw map for print view", drawMap);
+    runTaskSafely("draw PA district map for print view", initPaDistrictMap);
 
     function doOpen() {
-      var payload = getPrintViewPayload();
+      var payload = getPrintViewPayload(outputMode);
       var payloadId = String(Date.now()) + "-" + Math.random().toString(36).slice(2, 8);
       var canUseLocal = true;
       try {
@@ -1128,9 +1176,7 @@
       try {
         sessionStorage.setItem(PRINT_VIEW_STORAGE_KEY + ":" + payloadId, JSON.stringify(payload));
       } catch (e3) { /* ignore */ }
-      var printQs = "auto=1" + (fromPdfImage ? "&from=pdfimage" : "");
-      printQs += "&pid=" + encodeURIComponent(payloadId);
-      var printUrl = resolveAppUrl("print.html?" + printQs);
+      var printUrl = buildPrintViewUrl(payloadId, options);
       if (!canUseLocal) {
         setUtilityStatus("Opening print view with fallback transport…");
       }
@@ -1140,7 +1186,11 @@
       }
       var printWin = window.open(printUrl, "_blank");
       if (printWin) {
-        setUtilityStatus("Print view opened. Use the browser print dialog to save as PDF.");
+        if (outputMode === "download") {
+          setUtilityStatus("Export view opened. Your PDF download will start automatically.");
+        } else {
+          setUtilityStatus("Print view opened. Use the browser print dialog to save as PDF.");
+        }
       } else {
         window.location.assign(printUrl);
         return;
@@ -1153,14 +1203,25 @@
     function waitForMapThenOpen(attemptsLeft) {
       // We poll because the map is drawn asynchronously; capture must wait until the SVG exists so the PDF includes it.
       var svg = document.querySelector("#us-map svg") || document.querySelector(".us-map-wrap svg");
-      if (svg && svg.querySelector("path[data-state]")) {
+      var paSvg = document.querySelector("#pa-district-map svg");
+      var usReady = !!(svg && svg.querySelector("path[data-state]"));
+      var paReady = !!(paSvg && (paSvg.querySelector(".pa-district-shape") || paSvg.querySelector("path")));
+
+      if (usReady && paReady) {
         doOpen();
         return;
       }
       if (attemptsLeft <= 0) {
+        setUtilityStatus("Maps are still loading. Opening print anyway with current snapshot.");
         doOpen();
+        window.setTimeout(function () {
+          setUtilityStatus("");
+        }, 4500);
         return;
       }
+      // Re-request map renders while waiting so both US and PA maps are present in the payload.
+      runTaskSafely("redraw map for print view retry", drawMap);
+      runTaskSafely("init pa district map for print retry", initPaDistrictMap);
       window.setTimeout(function () {
         waitForMapThenOpen(attemptsLeft - 1);
       }, WAIT_FOR_MAP_INTERVAL_MS);
@@ -1239,7 +1300,7 @@
       createElement(
         "p",
         "",
-        "No state selected yet. Pick a state on the map or from the lists to see protection status and notes."
+        "No state selected yet. Pick a state on the map to see protection status and notes."
       )
     );
   }
@@ -1313,6 +1374,15 @@
         return getStateAbbr(feature) === abbr;
       })
       .classed("selected", true);
+
+    if (appState.mapLabels) {
+      appState.mapLabels
+        .classed("state-abbr-label--selected", false)
+        .filter(function (feature) {
+          return getStateAbbr(feature) === abbr;
+        })
+        .classed("state-abbr-label--selected", true);
+    }
   }
 
   function highlightStateChip(abbr) {
@@ -1338,6 +1408,9 @@
 
     if (appState.mapPaths) {
       appState.mapPaths.classed("selected", false);
+    }
+    if (appState.mapLabels) {
+      appState.mapLabels.classed("state-abbr-label--selected", false);
     }
 
     highlightStateChip(null);
@@ -1684,6 +1757,30 @@
         this.style.animationDelay = (animationOrder[index] || 0) * config.dominoDelayPerState + "ms";
       });
 
+    var labelFontSize = Math.max(7, Math.min(11, Math.round(width / 95)));
+    appState.mapLabels = group.selectAll("text.state-abbr-label")
+      .data(states.features)
+      .join("text")
+      .attr("class", "state-abbr-label")
+      .attr("data-state", function (feature) {
+        return getStateAbbr(feature) || "";
+      })
+      .attr("x", function (feature) {
+        var center = pathGenerator.centroid(feature);
+        return Number.isFinite(center[0]) ? center[0] : -9999;
+      })
+      .attr("y", function (feature) {
+        var center = pathGenerator.centroid(feature);
+        return Number.isFinite(center[1]) ? center[1] : -9999;
+      })
+      .attr("font-size", labelFontSize)
+      .attr("text-anchor", "middle")
+      .attr("dominant-baseline", "central")
+      .attr("aria-hidden", "true")
+      .text(function (feature) {
+        return getStateAbbr(feature) || "";
+      });
+
     hideMapSkeleton();
     if (appState.mapFallbackTimer) {
       window.clearTimeout(appState.mapFallbackTimer);
@@ -1721,10 +1818,8 @@
     var withProtection = [];
     var withoutProtection = [];
 
-    if (!appState.dom.stateListWith || !appState.dom.stateListWithout) return;
-
-    clearElement(appState.dom.stateListWith);
-    clearElement(appState.dom.stateListWithout);
+    if (appState.dom.stateListWith) clearElement(appState.dom.stateListWith);
+    if (appState.dom.stateListWithout) clearElement(appState.dom.stateListWithout);
 
     getSortedStates().forEach(function (abbr) {
       if (getStateData(abbr) && getStateData(abbr).cp) {
@@ -1734,13 +1829,17 @@
       }
     });
 
-    withProtection.forEach(function (abbr) {
-      appState.dom.stateListWith.appendChild(createStateChip(abbr));
-    });
+    if (appState.dom.stateListWith) {
+      withProtection.forEach(function (abbr) {
+        appState.dom.stateListWith.appendChild(createStateChip(abbr));
+      });
+    }
 
-    withoutProtection.forEach(function (abbr) {
-      appState.dom.stateListWithout.appendChild(createStateChip(abbr));
-    });
+    if (appState.dom.stateListWithout) {
+      withoutProtection.forEach(function (abbr) {
+        appState.dom.stateListWithout.appendChild(createStateChip(abbr));
+      });
+    }
 
     if (appState.dom.protectionCount) appState.dom.protectionCount.textContent = String(withProtection.length);
     if (appState.dom.keyFindingProtectionCount) appState.dom.keyFindingProtectionCount.textContent = String(withProtection.length);
@@ -1991,7 +2090,7 @@
     if (!appState.dom.printButton) return;
 
     appState.dom.printButton.addEventListener("click", function () {
-      openPrintView();
+      openStaticPrintLeaveBehind("print");
     });
   }
 
@@ -2233,7 +2332,6 @@
         "body.pdf-capture .community-benefit-hero .big-stat-value { margin: 0 !important; font-size: 1.35rem !important; font-weight: 700; } " +
         "body.pdf-capture .community-benefit-hero .big-stat-desc { margin: 0.15rem 0 0 !important; font-size: 0.81rem !important; } " +
         "body.pdf-capture #community-benefit { content-visibility: visible !important; contain: none !important; } " +
-        "body.pdf-capture #access { display: none !important; } " +
         "body.pdf-capture #pa-safeguards { display: none !important; } " +
         "body.pdf-capture .pa-impact-mode-section, body.pdf-capture .impact-simulator-section { display: none !important; } ";
       document.head.appendChild(pdfStyleEl);
@@ -2781,42 +2879,133 @@
 
   function initLeaveBehindExport() {
     var btn = document.getElementById("btn-leave-behind-export");
-    var preview = document.getElementById("leave-behind-preview");
-    var printBtn = document.getElementById("leave-behind-preview-print");
-    var cancelBtn = document.getElementById("leave-behind-preview-cancel");
 
     if (!btn) return;
 
-    function startLeaveBehindPrint() {
-      // Ensure preview is closed if present.
-      if (preview) preview.hidden = true;
-
-      document.body.classList.add("leave-behind-mode");
-      function cleanupLeaveBehindPrint() {
-        document.body.classList.remove("leave-behind-mode");
-        window.removeEventListener("afterprint", cleanupLeaveBehindPrint);
-      }
-      window.addEventListener("afterprint", cleanupLeaveBehindPrint);
-      window.print();
-    }
-
     btn.addEventListener("click", function () {
-      // Default behavior: print immediately (most reliable across browsers).
-      // If the preview dialog exists, you can still use it via its buttons.
-      startLeaveBehindPrint();
+      openStaticPrintLeaveBehind("download");
     });
+  }
 
-    if (preview && printBtn && cancelBtn) {
-      // Keep the explicit preview controls working if the UI is used elsewhere.
-      printBtn.addEventListener("click", function () {
-        startLeaveBehindPrint();
-      });
+  function openStaticPrintLeaveBehind(mode) {
+    var outputMode = mode === "download" ? "download" : "print";
+    finalizeCountUpValues();
+    preparePrintSelectionState();
+    runTaskSafely("show map for static print", showMapWrapImmediately);
+    runTaskSafely("draw map for static print", drawMap);
+    runTaskSafely("draw pa map for static print", initPaDistrictMap);
 
-      cancelBtn.addEventListener("click", function () {
-        preview.hidden = true;
-        try { btn.focus(); } catch (e2) { /* ignore */ }
+    function prepareMapContainersForCapture() {
+      var usSection = document.getElementById("state-laws");
+      var paSection = document.getElementById("pa-map-points");
+      var usWrap = document.getElementById("us-map-wrap");
+      var paWrap = document.getElementById("pa-district-map");
+      if (usSection) {
+        usSection.style.contentVisibility = "visible";
+        usSection.style.containIntrinsicSize = "auto";
+      }
+      if (paSection) {
+        paSection.style.contentVisibility = "visible";
+        paSection.style.containIntrinsicSize = "auto";
+      }
+      if (usWrap) usWrap.style.contentVisibility = "visible";
+      if (paWrap) paWrap.style.contentVisibility = "visible";
+    }
+
+    function captureDashboardMapsAsImages() {
+      return new Promise(function (resolve) {
+        var html2canvasLib = resolveHtml2canvas();
+        if (typeof html2canvasLib !== "function") {
+          resolve({ usMapPng: "", paMapPng: "" });
+          return;
+        }
+        prepareMapContainersForCapture();
+        var usTarget = document.querySelector("#state-laws .map-main") || document.getElementById("us-map-wrap");
+        var paTarget = document.querySelector("#pa-map-points .pa-map-points-grid") || document.getElementById("pa-district-map");
+        function captureNode(node) {
+          if (!node) return Promise.resolve("");
+          return html2canvasLib(node, {
+            scale: 2,
+            useCORS: true,
+            backgroundColor: "#ffffff",
+            scrollX: 0,
+            scrollY: -window.scrollY,
+            windowWidth: document.documentElement.scrollWidth,
+            windowHeight: document.documentElement.scrollHeight
+          }).then(function (canvas) {
+            return canvas.toDataURL("image/png");
+          }).catch(function () {
+            return "";
+          });
+        }
+        Promise.all([captureNode(usTarget), captureNode(paTarget)]).then(function (images) {
+          resolve({ usMapPng: images[0] || "", paMapPng: images[1] || "" });
+        }).catch(function () {
+          resolve({ usMapPng: "", paMapPng: "" });
+        });
       });
     }
+
+    function doOpenStatic(mapImages) {
+      var payload = getPrintViewPayload(outputMode);
+      payload.mapPng = mapImages && mapImages.usMapPng ? mapImages.usMapPng : "";
+      payload.paDistrictMapPng = mapImages && mapImages.paMapPng ? mapImages.paMapPng : "";
+      var payloadId = String(Date.now()) + "-" + Math.random().toString(36).slice(2, 8);
+      try {
+        localStorage.setItem(PRINT_VIEW_STORAGE_KEY, JSON.stringify(payload));
+      } catch (e1) { /* ignore */ }
+      try {
+        sessionStorage.setItem(PRINT_VIEW_STORAGE_KEY + ":" + payloadId, JSON.stringify(payload));
+      } catch (e2) { /* ignore */ }
+      try {
+        window.__hapPrintPayloadCache = window.__hapPrintPayloadCache || {};
+        window.__hapPrintPayloadCache[payloadId] = payload;
+      } catch (e3) { /* ignore */ }
+
+      var printUrl = resolveAppUrl("340b-print.html?print=1&mode=" + encodeURIComponent(outputMode) + "&pid=" + encodeURIComponent(payloadId));
+      var win = window.open(printUrl, "_blank");
+      if (!win) window.location.assign(printUrl);
+    }
+
+    function mapReadyNow() {
+      var usSvg = document.querySelector("#us-map svg") || document.querySelector(".us-map-wrap svg");
+      var paSvg = document.querySelector("#pa-district-map svg");
+      var usReady = !!(usSvg && usSvg.querySelector("path[data-state]"));
+      var paReady = !!(paSvg && (paSvg.querySelector(".pa-district-shape") || paSvg.querySelector("path")));
+      return usReady && paReady;
+    }
+
+    function waitThenOpen(attemptsLeft) {
+      if (mapReadyNow()) {
+        setUtilityStatus("Capturing maps for print...");
+        captureDashboardMapsAsImages().then(function (mapImages) {
+          doOpenStatic(mapImages);
+          window.setTimeout(function () { setUtilityStatus(""); }, 3000);
+        });
+        return;
+      }
+      if (attemptsLeft <= 0) {
+        setUtilityStatus("Capturing maps for print...");
+        captureDashboardMapsAsImages().then(function (mapImages) {
+          doOpenStatic(mapImages);
+          window.setTimeout(function () { setUtilityStatus(""); }, 3000);
+        });
+        return;
+      }
+      runTaskSafely("retry draw map for static print", drawMap);
+      runTaskSafely("retry draw pa map for static print", initPaDistrictMap);
+      window.setTimeout(function () {
+        waitThenOpen(attemptsLeft - 1);
+      }, WAIT_FOR_MAP_INTERVAL_MS);
+    }
+
+    window.requestAnimationFrame(function () {
+      window.requestAnimationFrame(function () {
+        window.setTimeout(function () {
+          waitThenOpen(220);
+        }, 500);
+      });
+    });
   }
 
   /* ---------- Progressive enhancement helpers ---------- */
@@ -2846,6 +3035,7 @@
         if (!entry.isIntersecting || element.dataset.done === "1") return;
 
         element.dataset.done = "1";
+        element.classList.add("is-counting");
         target = parseFloat(element.getAttribute("data-count-up"));
         decimals = parseInt(element.getAttribute("data-decimals"), 10) || 0;
         suffix = element.getAttribute("data-suffix") || "";
@@ -2856,7 +3046,11 @@
           var eased = 1 - Math.pow(1 - progress, 2.5);
           var value = target * eased;
           element.textContent = (decimals ? value.toFixed(decimals) : Math.round(value)) + suffix;
-          if (progress < 1) requestAnimationFrame(animate);
+          if (progress < 1) {
+            requestAnimationFrame(animate);
+          } else {
+            element.classList.remove("is-counting");
+          }
         });
       });
     }, { threshold: config.scrollRevealThreshold || 0.1 });
@@ -2911,6 +3105,7 @@
     if (prefersReducedMotion() || typeof IntersectionObserver === "undefined") {
       items.forEach(function (item) {
         item.classList.add("revealed");
+        item.classList.add("is-visible");
       });
       return;
     }
@@ -2926,6 +3121,7 @@
       requestAnimationFrame(function () {
         toReveal.forEach(function (el) {
           el.classList.add("revealed");
+          el.classList.add("is-visible");
         });
       });
     }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
@@ -3261,10 +3457,10 @@
     linkP.className = "pa-bill-card-actions";
     var a = document.createElement("a");
     a.className = "pa-bill-card-bill-link";
-    var rawUrl = (cfg.billUrl && String(cfg.billUrl).trim() !== "") ? String(cfg.billUrl).trim() : "#";
+    var rawUrl = safeExternalUrl(cfg.billUrl);
     a.href = rawUrl;
     a.textContent = "View bill text";
-    if (/^https?:\/\//i.test(rawUrl)) {
+    if (rawUrl !== "#") {
       a.rel = "noopener noreferrer";
       a.target = "_blank";
     }
@@ -3300,7 +3496,7 @@
       var empty = document.createElement("p");
       empty.className = "federal-bill-banner federal-bill-banner--empty";
       empty.textContent =
-        "No federal bill is linked in this dashboard view. Contact HAP Federal Advocacy to connect bill text and committee status.";
+        "No federal bill is linked in this dashboard view. Use the methodology section or haponline.org/340b for current bill links when available.";
       root.appendChild(empty);
       return;
     }
@@ -3344,36 +3540,18 @@
     actions.className = "federal-bill-banner__actions";
     var a = document.createElement("a");
     a.className = "federal-bill-banner__link";
-    var rawUrl = cfg.billUrl && String(cfg.billUrl).trim() !== "" ? String(cfg.billUrl).trim() : "#";
+    var rawUrl = safeExternalUrl(cfg.billUrl);
     a.href = rawUrl;
     a.textContent = "View bill text";
-    if (/^https?:\/\//i.test(rawUrl)) {
+    if (rawUrl !== "#") {
       a.rel = "noopener noreferrer";
       a.target = "_blank";
     }
     actions.appendChild(a);
 
-    function deriveVpShortTitle(titleStr) {
-      var s = titleStr ? titleStr.toString() : "";
-      var commaIdx = s.indexOf(",");
-      if (commaIdx >= 0) {
-        var rest = s.substring(commaIdx + 1).trim();
-        if (rest) return "VP " + rest;
-      }
-      return s || "VP";
-    }
-
-    var contact = document.createElement("p");
-    contact.className = "federal-bill-banner__contact";
-
-    var vpShort = deriveVpShortTitle(cfg.hapContactTitle);
-    contact.textContent =
-      "Federal 340B questions: " + (cfg.hapContact || "") + ", " + vpShort + " | (717) 564-9200";
-
     ban.appendChild(top);
     ban.appendChild(grid);
     ban.appendChild(actions);
-    ban.appendChild(contact);
     root.appendChild(ban);
   }
 
@@ -3757,6 +3935,21 @@
 
   /* ---------- Init ---------- */
 
+  function initPrintFallbackActions() {
+    var printBtn = document.getElementById("btn-print");
+    var exportBtn = document.getElementById("btn-leave-behind-export");
+    if (printBtn) {
+      printBtn.addEventListener("click", function () {
+        setUtilityStatus("Print is unavailable until dashboard data finishes loading.");
+      });
+    }
+    if (exportBtn) {
+      exportBtn.addEventListener("click", function () {
+        setUtilityStatus("Export is unavailable until dashboard data finishes loading.");
+      });
+    }
+  }
+
   function init() {
     cacheDom();
 
@@ -3773,6 +3966,7 @@
     /* If core data did not load (e.g. script order or missing inline data), show message and stop. */
     if (typeof STATE_340B === "undefined" || typeof STATE_NAMES === "undefined" || typeof FIPS_TO_ABBR === "undefined") {
       var msg = "Dashboard data didn't load.";
+      initPrintFallbackActions();
       if (appState.dom.mapSkeleton) {
         appState.dom.mapSkeleton.classList.remove("map-loading-skeleton");
         var p = document.createElement("p");
@@ -3789,6 +3983,7 @@
     // Example: if the map fails, share/print/filter logic should still initialize.
     runTaskSafely("apply config copy", applyConfigCopy);
     runTaskSafely("update metadata", updateMetadata);
+    runTaskSafely("validate config contract", validateRequiredConfigFields);
     runTaskSafely("validate state data", validateStateData);
     runTaskSafely("initialize verified data stamps", initVerifiedDataStamps);
     (function runSecondaryPanels() {

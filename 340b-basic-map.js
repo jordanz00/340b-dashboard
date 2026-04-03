@@ -38,8 +38,9 @@
     var states = topojson.feature(atlas, atlas.objects.states);
     var projection = d3.geoAlbersUsa().fitSize([width, height], states);
     var pathGen = d3.geoPath(projection);
-    var protectionColor = "#0b67c2";
-    var noProtectionColor = "#d7e0ea";
+    var rootStyles = window.getComputedStyle(document.documentElement);
+    var protectionColor = (rootStyles.getPropertyValue("--hap-topic-access") || "").trim() || "#0b67c2";
+    var noProtectionColor = (rootStyles.getPropertyValue("--hap-topic-neutral-soft") || "").trim() || "#d7e0ea";
 
     container.textContent = "";
     var svg = d3.select(container)

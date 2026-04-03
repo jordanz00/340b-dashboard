@@ -12,23 +12,23 @@
   --hap-brand-primary-hover: #005a94;
   --hap-brand-primary-muted: rgba(0, 114, 188, 0.08);
   --hap-brand-deep: #003087;
-  --hap-accent-warm: #f59e0b;
-  --hap-accent-warm-alt: #ff8a3d;
-  --hap-accent-soft: rgba(245, 158, 11, 0.12);
+  --hap-accent-warm: #fbb040;
+  --hap-accent-warm-alt: #fbb040;
+  --hap-accent-soft: rgba(251, 176, 64, 0.14);
 
   /* —— Semantic topics (Oliver Wyman–style system — use these, avoid one-off hex) —— */
   /* Green = financial / savings / funding */
-  --hap-topic-finance: #0f766e;
-  --hap-topic-finance-soft: rgba(15, 118, 110, 0.1);
-  --hap-topic-finance-border: rgba(15, 118, 110, 0.28);
+  --hap-topic-finance: #00a9a4;
+  --hap-topic-finance-soft: rgba(0, 169, 164, 0.1);
+  --hap-topic-finance-border: rgba(0, 169, 164, 0.28);
   /* Blue = coverage / insurance / access (aligns with HAP brand) */
   --hap-topic-access: var(--hap-brand-primary);
   --hap-topic-access-soft: var(--hap-brand-primary-muted);
   --hap-topic-access-border: var(--hap-border-strong);
   /* Purple = policy / regulation / legal context */
-  --hap-topic-policy: #5b4d9c;
-  --hap-topic-policy-soft: rgba(91, 77, 156, 0.1);
-  --hap-topic-policy-border: rgba(91, 77, 156, 0.28);
+  --hap-topic-policy: #00aeef;
+  --hap-topic-policy-soft: rgba(0, 174, 239, 0.1);
+  --hap-topic-policy-border: rgba(0, 174, 239, 0.28);
   /* Orange = risk / pressure / constraints */
   --hap-topic-risk: var(--hap-accent-warm);
   --hap-topic-risk-soft: var(--hap-accent-soft);
@@ -38,10 +38,10 @@
   --hap-topic-neutral-soft: var(--hap-bg-subtle);
 
   /* Performance / direction (cool = positive; warm = negative — use with care for color-only a11y) */
-  --hap-sentiment-positive: #0d9488;
-  --hap-sentiment-positive-soft: rgba(13, 148, 136, 0.12);
-  --hap-sentiment-negative: #ea580c;
-  --hap-sentiment-negative-soft: rgba(234, 88, 12, 0.12);
+  --hap-sentiment-positive: #00a9a4;
+  --hap-sentiment-positive-soft: rgba(0, 169, 164, 0.12);
+  --hap-sentiment-negative: #fbb040;
+  --hap-sentiment-negative-soft: rgba(251, 176, 64, 0.12);
 
   /* Executive KPI row: dominant number + short label + one-line meaning (see .hap-kpi-executive) */
   --hap-kpi-value-size: clamp(1.85rem, 1.2rem + 2.2vw, 2.85rem);
@@ -68,7 +68,7 @@
   --hap-border-strong: rgba(0, 114, 188, 0.14);
 
   /* —— Typography: Inter-first stack (system fallbacks; no external font file required) —— */
-  --hap-font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Roboto, sans-serif;
+  --hap-font-sans: Tahoma, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   --hap-font-display: "Montserrat", var(--hap-font-sans);
   --hap-font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
 

@@ -33,7 +33,7 @@
   }
 
   function initNavHighlight() {
-    var sectionIds = [
+    var fallbackSectionIds = [
       "executive-summary",
       "section-overview",
       "overview",
@@ -51,6 +51,18 @@
       "access",
       "pa-safeguards"
     ];
+    var navLinks = document.querySelectorAll(".dashboard-nav a[href^='#'], .hap-sidebar-nav a[href^='#']");
+    var sectionIdsFromNav = [];
+    navLinks.forEach(function (link) {
+      var href = link.getAttribute("href") || "";
+      if (href.indexOf("#") !== 0) return;
+      var id = href.slice(1);
+      if (!id) return;
+      if (sectionIdsFromNav.indexOf(id) >= 0) return;
+      sectionIdsFromNav.push(id);
+    });
+
+    var sectionIds = sectionIdsFromNav.length ? sectionIdsFromNav : fallbackSectionIds;
     var sections = sectionIds.map(function (id) {
       return document.getElementById(id);
     }).filter(Boolean);

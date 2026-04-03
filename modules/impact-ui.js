@@ -26,6 +26,26 @@
   var CONTAINER_ID = "policy-impact-simulator-root";
   var SCENARIO_BTN_PREFIX = "impact-scenario-btn-";
   var ROOT_SCENARIO_ATTR = "data-impact-scenario";
+  var SCENARIO_META = {
+    protect: {
+      icon: "✓",
+      buttonIcon: "★",
+      status: "Healthy protections in place",
+      detail: "Hospitals and patients operate with steadier access, cleaner planning, and stronger outcomes."
+    },
+    mix: {
+      icon: "◐",
+      buttonIcon: "◐",
+      status: "Status quo: uneven mix",
+      detail: "Some states protect access while others remain exposed to disruption and uncertainty."
+    },
+    remove: {
+      icon: "!",
+      buttonIcon: "⚠",
+      status: "Emergency mode: protections removed",
+      detail: "Programs face acute pressure and patient access can shrink quickly without legal safeguards."
+    }
+  };
 
   function scenarioToken(id) {
     if (id === IMPACT.SCENARIO_EXPAND) return "protect";
@@ -99,7 +119,7 @@
       btn.setAttribute("data-impact-scenario-btn", slug);
       btn.setAttribute("aria-pressed", index === 1 ? "true" : "false");
       btn.setAttribute("aria-label", "Show " + safeText(data.label) + " scenario");
-      btn.textContent = data.label;
+      btn.textContent = SCENARIO_META[slug].buttonIcon + " " + data.label;
       buttonGroup.appendChild(btn);
     });
 
@@ -128,6 +148,22 @@
     var scenarioSlug = scenarioToken(scenarioId);
     container.setAttribute("data-scenario", scenarioSlug);
     container.className = "impact-simulator-results impact-simulator-results--" + scenarioSlug;
+
+    var scenarioSignal = document.createElement("div");
+    scenarioSignal.className = "impact-scenario-signal";
+
+    var signalIcon = document.createElement("span");
+    signalIcon.className = "impact-scenario-signal-icon";
+    signalIcon.textContent = SCENARIO_META[scenarioSlug].icon;
+    signalIcon.setAttribute("aria-hidden", "true");
+    scenarioSignal.appendChild(signalIcon);
+
+    var signalBody = document.createElement("div");
+    signalBody.className = "impact-scenario-signal-body";
+    signalBody.appendChild(makeEl("p", "impact-scenario-signal-title", SCENARIO_META[scenarioSlug].status));
+    signalBody.appendChild(makeEl("p", "impact-scenario-signal-detail", SCENARIO_META[scenarioSlug].detail));
+    scenarioSignal.appendChild(signalBody);
+    container.appendChild(scenarioSignal);
 
     if (data.takeaway) {
       var takeawayEl = document.createElement("p");

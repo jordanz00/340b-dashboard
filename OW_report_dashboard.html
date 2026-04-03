@@ -10,7 +10,7 @@
   <meta name="description" content="Oliver Wyman report for HAP on Pennsylvania hospital sustainability. Static HTML version.">
   <link rel="stylesheet" href="hap-design-tokens.css">
   <style>
-    :root { --primary: var(--hap-brand-primary, #0072bc); --primary-soft: #8ed8f8; --accent: #fbb040; --danger: #b91c1c; --muted: #64748b; --text: #0f172a; --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --radius: 12px; }
+    :root { --primary: var(--hap-brand-primary, #0072bc); --primary-soft: var(--hap-topic-access-soft, rgba(0, 114, 188, 0.08)); --accent: var(--hap-topic-risk, #fbb040); --danger: var(--hap-topic-risk, #fbb040); --muted: var(--hap-text-muted, #64748b); --text: var(--hap-text-primary, #0f172a); --topic-finance: var(--hap-topic-finance, #00a9a4); --topic-insurance: var(--hap-topic-access, #0072bc); --topic-policy: var(--hap-topic-policy, #00aeef); --perf-positive: var(--hap-sentiment-positive, #00a9a4); --perf-negative: var(--hap-sentiment-negative, #fbb040); --space-xs: 0.25rem; --space-sm: 0.5rem; --space-md: 1rem; --space-lg: 1.5rem; --space-xl: 2rem; --radius: 12px; }
     html { scrollbar-gutter: stable; }
     body:has(> .pa-dashboard) { margin: 0; }
     .pa-dashboard * { box-sizing: border-box; }
@@ -36,6 +36,8 @@
     .pa-dashboard section:hover { box-shadow: 0 12px 40px rgba(0,114,188,0.1); }
     .pa-dashboard section.alt { background: #f8fbfd; }
     @supports (backdrop-filter: blur(1px)) { .pa-dashboard section.alt { background: rgba(248,251,253,0.78); backdrop-filter: blur(28px); -webkit-backdrop-filter: blur(28px); } }
+    .pa-dashboard-page-head { margin-bottom: 1rem; }
+    .pa-dashboard-page-head h1 { margin: 0 0 0.5rem; font-family: "Montserrat", sans-serif; font-size: clamp(1.35rem, 1.05rem + 1vw, 2rem); font-weight: 800; color: var(--primary); letter-spacing: -0.02em; }
     .pa-dashboard h2 { margin: 0 0 0.6rem; font-family: "Montserrat", sans-serif; font-size: 1.6rem; font-weight: 700; color: #0072bc; letter-spacing: -0.02em; }
     .pa-dashboard h3 { margin: 0 0 0.5rem; font-family: "Montserrat", sans-serif; font-size: 1.12rem; font-weight: 600; color: #0f172a; }
     .section-intro { margin: 0 0 1.25rem; color: var(--muted); font-size: 0.96rem; line-height: 1.6; max-width: 65ch; }
@@ -89,9 +91,9 @@
     @supports (backdrop-filter: blur(1px)) { .pa-map-wrap { background: linear-gradient(165deg, rgba(255,255,255,0.6) 0%, rgba(142,216,248,0.12) 50%, rgba(0,114,188,0.06) 100%); backdrop-filter: blur(16px); box-shadow: inset 0 1px 0 rgba(255,255,255,0.7), 0 4px 16px rgba(0,114,188,0.08); } }
     .pa-map-wrap svg { width: 100%; height: auto; display: block; border-radius: 8px; }
     .big-number { font-size: 2.6rem; font-weight: 800; margin: 0.3rem 0; color: #0072bc; font-family: "Montserrat", sans-serif; letter-spacing: -0.02em; }
-    .impact-card { position: relative; border: 2px solid rgba(0,82,155,0.5); box-shadow: 0 0 24px rgba(0,114,188,0.2), inset 0 0 0 1px rgba(255,255,255,0.5); animation: glowBlue 2.5s ease-in-out infinite; }
+    .impact-card { position: relative; border: 2px solid rgba(0,82,155,0.35); box-shadow: 0 8px 22px rgba(0,114,188,0.14), inset 0 0 0 1px rgba(255,255,255,0.5); animation: glowBlue 3s ease-in-out infinite; }
     .impact-card .impact-card-heading { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--primary); font-weight: 700; margin: 0 0 0.5rem; display: block; }
-    @keyframes glowBlue { 0%, 100% { box-shadow: 0 0 24px rgba(0,114,188,0.2), 0 0 0 1px rgba(0,114,188,0.3), inset 0 0 0 1px rgba(255,255,255,0.5); } 50% { box-shadow: 0 0 36px rgba(0,114,188,0.45), 0 0 0 2px rgba(0,114,188,0.5), inset 0 0 0 1px rgba(255,255,255,0.5); } }
+    @keyframes glowBlue { 0%, 100% { box-shadow: 0 8px 22px rgba(0,114,188,0.14), 0 0 0 1px rgba(0,114,188,0.22), inset 0 0 0 1px rgba(255,255,255,0.5); } 50% { box-shadow: 0 12px 30px rgba(0,114,188,0.24), 0 0 0 2px rgba(0,114,188,0.28), inset 0 0 0 1px rgba(255,255,255,0.5); } }
     .impact-stat { display: flex; align-items: flex-start; gap: 0.75rem; padding: 0.8rem 1rem; background: #fff; border-radius: var(--radius); border: 1px solid rgba(0,114,188,0.08); border-left: 4px solid var(--accent); margin-bottom: 0.6rem; box-shadow: 0 2px 12px rgba(0,114,188,0.04); transition: box-shadow 0.2s, transform 0.2s; }
     @supports (backdrop-filter: blur(1px)) { .impact-stat { background: rgba(255,255,255,0.6); backdrop-filter: blur(16px); box-shadow: 0 2px 12px rgba(0,114,188,0.05), inset 0 1px 0 rgba(255,255,255,0.7); } }
     .impact-stat:hover { background: rgba(255,255,255,0.85); box-shadow: 0 6px 20px rgba(0,114,188,0.1), inset 0 1px 0 rgba(255,255,255,0.9); transform: translateX(4px); }
@@ -190,7 +192,7 @@
     .policy-bar-label { font-weight: 600; font-size: 0.95rem; }
     .policy-bar-pct { font-family: "Montserrat", sans-serif; font-weight: 700; font-size: 1.1rem; font-variant-numeric: tabular-nums; }
     .policy-bar-row.bad .policy-bar-pct { color: var(--danger); }
-    .policy-bar-row.good .policy-bar-pct { color: #0d9488; }
+    .policy-bar-row.good .policy-bar-pct { color: var(--perf-positive); }
     .lever-list { display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.9rem; color: var(--muted); }
     .lever-item { padding: 0.5rem 0.75rem; background: rgba(0,114,188,0.03); border-radius: 8px; }
 
@@ -331,6 +333,8 @@
     .hap-header-org { margin: 0; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: #5a7a99; font-family: "Montserrat", system-ui, sans-serif; }
     .hap-header-title { margin: 0; font-size: 1.05rem; font-weight: 800; color: #003087; letter-spacing: -0.02em; line-height: 1.15; font-family: "Montserrat", system-ui, sans-serif; }
     .hap-header-badge { display: inline-flex; align-items: center; margin-top: 0.2rem; padding: 0.15rem 0.5rem; background: rgba(0,48,135,0.1); border: 1px solid rgba(0,48,135,0.2); color: #003087; font-size: 0.55rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border-radius: 4px; }
+    .hap-header-back { display: inline-flex; align-items: center; padding: 0.45rem 0.9rem; border-radius: 999px; background: rgba(255,255,255,0.75); border: 1px solid rgba(0,114,188,0.18); color: #003087; font-family: "Montserrat", system-ui, sans-serif; font-weight: 700; font-size: 0.78rem; text-decoration: none; box-shadow: 0 2px 10px rgba(0,114,188,0.06); transition: transform 0.2s var(--ease-out), box-shadow 0.2s var(--ease-out), background 0.2s var(--ease-out); }
+    .hap-header-back:hover { transform: translateY(-2px); background: rgba(255,255,255,0.95); box-shadow: 0 10px 26px rgba(0,114,188,0.14); text-decoration: none; }
     :root { --hap-sidebar-w: 210px; --hap-header-h: 57px; }
     /* Body row: sidebar (fixed on desktop) + content offset */
     .hap-body { display: flex; flex: 1; align-items: flex-start; }
@@ -465,6 +469,7 @@
     <p class="hap-header-title">Time to Act: PA Hospitals, Patients &amp; Communities</p>
     <span class="hap-header-badge">Jan 2026</span>
   </div>
+  <a href="340b.html" class="hap-header-back" title="Back to the full 340B advocacy dashboard">Back to 340B</a>
 </header>
 
 <!-- Body row: sidebar + content are siblings, no overflow ancestor -->
@@ -505,6 +510,10 @@
 <div class="hap-page-content">
 <div class="pa-dashboard">
 <main id="main-content">
+  <header class="pa-dashboard-page-head">
+    <h1>Pennsylvania hospitals policy and sustainability dashboard</h1>
+    <p class="section-intro">Executive brief for advocacy and policy decisions: current pressure, 2030 scenarios, and practical levers that affect access, workforce, and hospital stability.</p>
+  </header>
 
   <section id="overview" class="overview-section">
     <h2>Hospitals as Economic Engines</h2>
@@ -533,22 +542,27 @@
         <div class="focus-content focus-gdp">
           <h3>Hospitals' share of the economy</h3>
           <p>Hospitals' direct and indirect activity represents about 19% of Pennsylvania's GDP.</p>
+          <p class="chart-caption">Impact: Policy choices that weaken hospital stability ripple into statewide GDP and local business activity.</p>
         </div>
         <div class="focus-content focus-output">
           <h3>Total statewide economic output</h3>
           <p>Hospitals generate roughly $195 billion in total economic activity across the Commonwealth.</p>
+          <p class="chart-caption">Impact: Hospitals are anchor institutions, so reimbursement and regulatory policy have economy-wide effects.</p>
         </div>
         <div class="focus-content focus-community">
           <h3>Community benefit and safety-net role</h3>
           <p>Hospitals provide about $10.8 billion in community benefit, covering public program shortfalls, charity care, and bad debt.</p>
+          <p class="chart-caption">Impact: Margin compression can force tradeoffs that reduce mission-driven community services.</p>
         </div>
         <div class="focus-content focus-jobs">
           <h3>Hospitals as major employers</h3>
           <p>Hospitals directly employ more than 300,000 Pennsylvanians, in addition to supporting many more jobs through supply chains.</p>
+          <p class="chart-caption">Impact: Financial instability threatens both access to care and regional employment resilience.</p>
         </div>
         <div class="focus-content focus-wages">
           <h3>Wages and benefits</h3>
           <p>Hospitals pay over $33 billion in wages and benefits, sustaining families and local economies statewide.</p>
+          <p class="chart-caption">Impact: Sustainable hospital finances are essential to maintain competitive health care workforce compensation.</p>
         </div>
         <div class="gauge-wrap" role="img" aria-label="Gauge showing selected metric">
           <svg class="gauge-svg gauge-gdp" viewBox="0 0 120 85" aria-hidden="true">
@@ -620,11 +634,11 @@
         <p class="chart-blurb">How many hospitals are financially healthy vs. struggling? Bars show the share of PA hospitals in each category.</p>
         <div class="bar-chart">
           <div class="bar-row">
-            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:51%;background:#0072bc"></div></div><span class="bar-value">51%</span></div>
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:51%;background:var(--topic-insurance)"></div></div><span class="bar-value">51%</span></div>
             <span class="bar-row-label">Struggling (below 4% profit)</span>
           </div>
           <div class="bar-row">
-            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:37%;background:#b91c1c"></div></div><span class="bar-value">37%</span></div>
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:37%;background:var(--perf-negative)"></div></div><span class="bar-value">37%</span></div>
             <span class="bar-row-label">Losing money</span>
           </div>
         </div>
@@ -635,15 +649,15 @@
         <p class="chart-blurb">100% = hospitals are fully paid for care. Bars below 100% mean hospitals absorb the shortfall.</p>
         <div class="bar-chart">
           <div class="bar-row">
-            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:71%;background:#0072bc"></div></div><span class="bar-value">71%</span></div>
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:71%;background:var(--topic-insurance)"></div></div><span class="bar-value">71%</span></div>
             <span class="bar-row-label">Private insurance (PA)</span>
           </div>
           <div class="bar-row">
-            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:87%;background:#0072bc"></div></div><span class="bar-value">87%</span></div>
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:87%;background:var(--topic-insurance)"></div></div><span class="bar-value">87%</span></div>
             <span class="bar-row-label">Medicaid (PA)</span>
           </div>
           <div class="bar-row">
-            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:82%;background:#0072bc"></div></div><span class="bar-value">82%</span></div>
+            <div class="bar-row-viz"><div class="bar-track"><div class="bar-fill" style="width:82%;background:var(--topic-insurance)"></div></div><span class="bar-value">82%</span></div>
             <span class="bar-row-label">Medicare (PA)</span>
           </div>
         </div>
@@ -668,6 +682,7 @@
           </svg>
         </div>
         <p class="chart-caption">25 facilities closed (2016–present)</p>
+        <p class="chart-caption">Impact: Every closure increases travel burden and can weaken emergency and obstetric access in nearby communities.</p>
       </div>
       <div class="card">
         <h3>Bond ratings</h3>
@@ -677,13 +692,14 @@
           <tr style="border-bottom:1px solid rgba(0,114,188,0.08)"><td>Hospital systems</td><td>A</td><td>A+</td></tr>
           <tr><td>Stand-alone hospitals</td><td>BBB+</td><td>A-</td></tr>
         </table>
+        <p class="chart-caption">Impact: Higher borrowing costs can delay infrastructure, technology, and workforce investments patients depend on.</p>
       </div>
     </div>
   </section>
 
   <section id="scenarios">
     <h2>2030 Financial Scenarios</h2>
-    <p class="section-intro">By 2030, Pennsylvania hospitals could end up in very different financial positions depending on policy and the economy. <strong>Positive</strong> (orange) = hospitals earn more than they spend. <strong>Negative</strong> (red) = hospitals spend more than they take in.</p>
+    <p class="section-intro">By 2030, Pennsylvania hospitals could end up in very different financial positions depending on policy and the economy. <strong>Positive</strong> (cool) = hospitals earn more than they spend. <strong>Negative</strong> (warm) = hospitals spend more than they take in.</p>
 
     <div class="card scenarios-chart-wrap">
       <h3>Possible 2030 outcomes: hospital profit or loss</h3>
@@ -695,18 +711,18 @@
           <span class="scenario-hbar-label">Rainy Day (Downward Cycle)</span>
         </div>
         <div class="scenario-hbar">
-          <div class="scenario-hbar-track"><div class="scenario-hbar-fill" style="width:12.5%;margin-left:45.8%;background:#0072bc"></div></div>
-          <span class="scenario-hbar-pct" style="color:var(--primary)">-3%</span>
+          <div class="scenario-hbar-track"><div class="scenario-hbar-fill" style="width:12.5%;margin-left:45.8%;background:var(--perf-negative)"></div></div>
+          <span class="scenario-hbar-pct" style="color:var(--perf-negative)">-3%</span>
           <span class="scenario-hbar-label">Baseline with H.R. 1</span>
         </div>
         <div class="scenario-hbar">
-          <div class="scenario-hbar-track"><div class="scenario-hbar-fill" style="width:4.2%;margin-left:54.1%;background:#0072bc"></div></div>
-          <span class="scenario-hbar-pct" style="color:var(--primary)">-1%</span>
+          <div class="scenario-hbar-track"><div class="scenario-hbar-fill" style="width:4.2%;margin-left:54.1%;background:var(--perf-negative)"></div></div>
+          <span class="scenario-hbar-pct" style="color:var(--perf-negative)">-1%</span>
           <span class="scenario-hbar-label">Baseline (No H.R. 1)</span>
         </div>
         <div class="scenario-hbar">
-          <div class="scenario-hbar-track"><div class="scenario-hbar-fill scenario-fill-pos" style="width:20.8%;background:var(--accent)"></div></div>
-          <span class="scenario-hbar-pct" style="color:var(--accent)">+5%</span>
+          <div class="scenario-hbar-track"><div class="scenario-hbar-fill scenario-fill-pos" style="width:20.8%;background:var(--perf-positive)"></div></div>
+          <span class="scenario-hbar-pct" style="color:var(--perf-positive)">+5%</span>
           <span class="scenario-hbar-label">Sustainability Prevails (Upward Cycle)</span>
         </div>
       </div>
@@ -790,6 +806,7 @@
           </div>
         </div>
         <p class="chart-blurb" style="margin-top:1rem">Hospitals lose money. Higher risk of closures. Communities lose access.</p>
+        <p class="chart-caption">Impact: The no-action path compounds closure risk and local economic disruption by 2030.</p>
       </div>
 
       <div class="policy-outcome policy-outcome-action">
@@ -801,6 +818,7 @@
           </div>
         </div>
         <p class="chart-blurb" style="margin-top:1rem">Hospitals are financially healthy. Services preserved. Communities stay connected.</p>
+        <p class="chart-caption">Impact: Policy action improves odds of service continuity, access preservation, and long-term reinvestment.</p>
       </div>
 
       <h4 style="margin:1.5rem 0 0.5rem;font-size:1rem">Levers the state can adjust</h4>
@@ -821,6 +839,7 @@
       <li>Scenarios based on Baseline, Baseline with H.R. 1, Rainy Day, and Sustainability Prevails paths.</li>
     </ul>
     <p class="pa-dashboard-data-freshness" style="margin:1rem 0 0;font-size:0.88rem;color:var(--muted);line-height:1.5;max-width:52ch;">Data as of January 2026 (report date). Update this line when the underlying report or HAP synthesis is revised.</p>
+    <p class="chart-caption">Impact: A clear date stamp helps executives and policy teams avoid using stale assumptions in testimony, negotiation, or board decisions.</p>
   </section>
 
 </main>
@@ -836,68 +855,6 @@
 </div><!-- /.hap-body -->
 </div><!-- /.hap-shell -->
 
-<script>
-(function(){
-  var links = document.querySelectorAll('.hap-sidebar-nav a[href^="#"]');
-  var sections = Array.from(links).map(function(l){
-    return document.getElementById(l.getAttribute('href').slice(1));
-  }).filter(Boolean);
-  if (!sections.length) return;
-
-  var sectionDocumentTops = [];
-  var band = 80;
-  var lastActiveId = null;
-
-  function refreshAnchors() {
-    var sy = window.pageYOffset || document.documentElement.scrollTop || 0;
-    sectionDocumentTops = sections.map(function(s) {
-      return s.getBoundingClientRect().top + sy;
-    });
-  }
-
-  function tick() {
-    if (!sectionDocumentTops.length) refreshAnchors();
-    var y = window.pageYOffset || document.documentElement.scrollTop || 0;
-    var cutoff = y + band;
-    var cur = sections[0];
-    for (var i = 0; i < sections.length; i++) {
-      if (sectionDocumentTops[i] <= cutoff) cur = sections[i];
-    }
-    if (!cur || cur.id === lastActiveId) return;
-    lastActiveId = cur.id;
-    links.forEach(function(l){
-      l.classList.toggle('active', cur && l.getAttribute('href') === '#' + cur.id);
-    });
-  }
-
-  var scrollTicking = false;
-  function onScroll() {
-    if (!scrollTicking) {
-      scrollTicking = true;
-      requestAnimationFrame(function(){
-        tick();
-        scrollTicking = false;
-      });
-    }
-  }
-
-  function afterLayout() {
-    refreshAnchors();
-    tick();
-  }
-
-  var resizeTimer = null;
-  refreshAnchors();
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', function(){
-    if (resizeTimer) clearTimeout(resizeTimer);
-    resizeTimer = setTimeout(afterLayout, 100);
-  });
-  window.addEventListener('load', afterLayout);
-  window.addEventListener('hashchange', function(){ requestAnimationFrame(afterLayout); });
-  tick();
-  requestAnimationFrame(function(){ requestAnimationFrame(afterLayout); });
-})();
-</script>
+<script src="hap-nav-shared.js"></script>
 </body>
 </html>

@@ -3,28 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#ffffff">
+  <meta name="theme-color" content="#0072bc">
   <meta name="color-scheme" content="light">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google-analytics.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self'; connect-src 'self' https://www.google-analytics.com;">
-  <title id="page-title">340B Drug Pricing Program | HAP Advocacy Dashboard</title>
-  <meta name="description" id="meta-description" content="72 PA hospitals depend on 340B. $7.95B reinvested in community care nationally. 21 states protect contract pharmacy — PA is not one of them.">
+  <title id="page-title">340B protects access to care in Pennsylvania | HAP Advocacy Dashboard</title>
+  <meta name="description" id="meta-description" content="Protect 340B, protect patients. 72 Pennsylvania hospitals rely on the program; savings fund community care. See HAP's policy case and state-by-state contract pharmacy protections.">
   <meta name="robots" content="index, follow">
   <meta name="author" content="Hospital and Healthsystem Association of Pennsylvania">
-  <link rel="canonical" href="https://jordanz00.github.io/340b-dashboard/340b.html">
+  <link rel="canonical" href="https://www.haponline.org/340b">
   <!-- Open Graph / Social sharing -->
   <meta property="og:type" content="website">
-  <meta property="og:title" id="meta-og-title" content="340B: How Pennsylvania hospitals turn drug savings into community care — HAP Advocacy Dashboard">
-  <meta property="og:description" id="meta-og-description" content="72 PA hospitals depend on 340B. $7.95B reinvested in community care nationally. 21 states protect contract pharmacy — Pennsylvania is not one of them yet. See the data.">
+  <meta property="og:title" id="meta-og-title" content="340B protects access to care in Pennsylvania — HAP Advocacy Dashboard">
+  <meta property="og:description" id="meta-og-description" content="Protect 340B, protect patients. 72 Pennsylvania hospitals rely on the program; savings support vulnerable patients and community services. See the data and HAP's asks.">
   <!-- For custom share image: create 1200×630 graphic with key stats, host it, and set og:image to that URL -->
   <meta property="og:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
   <meta property="og:image:width" content="400">
   <meta property="og:image:height" content="400">
-  <meta property="og:url" content="https://jordanz00.github.io/340b-dashboard/340b.html">
+  <meta property="og:url" content="https://www.haponline.org/340b">
   <meta property="og:site_name" content="HAP — Hospital and Healthsystem Association of Pennsylvania">
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" id="meta-twitter-title" content="340B: PA hospitals and community care — HAP Dashboard">
+  <meta name="twitter:title" id="meta-twitter-title" content="340B protects access to care in Pennsylvania — HAP Dashboard">
   <meta name="twitter:description" id="meta-twitter-description" content="72 PA hospitals use 340B to fund free prescriptions, cancer screening, and rural care. See where state law stands.">
   <meta name="twitter:image" content="https://jordanz00.github.io/340b-dashboard/haplogo_box_blue.jpeg">
 
@@ -68,7 +68,7 @@
     });
   </script>
   <link rel="stylesheet" href="hap-design-tokens.css">
-  <link rel="stylesheet" href="340b.css?v=dmx-12">
+  <link rel="stylesheet" href="340b.css?v=dmx-13">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -81,157 +81,15 @@
     },
     {
       "@type": "WebPage",
-      "name": "340B: How Pennsylvania hospitals turn drug savings into community care — HAP Advocacy Dashboard",
-      "description": "72 PA hospitals depend on 340B. $7.95B reinvested in community care nationally. 21 states protect contract pharmacy — PA is not one of them.",
-      "url": "https://jordanz00.github.io/340b-dashboard/340b.html",
+      "name": "340B protects access to care in Pennsylvania — HAP Advocacy Dashboard",
+      "description": "Protect 340B, protect patients. 72 Pennsylvania hospitals rely on the program; savings fund community care. HAP advocacy dashboard for contract pharmacy law and policy.",
+      "url": "https://www.haponline.org/340b",
       "publisher": { "@id": "https://www.haponline.org/#organization" }
     }
   ]
 }
   </script>
-  <script>
-// Inlined from state-data.js so the dashboard works when opened locally (file://).
-var CONFIG = {
-  dashboardTitle: "340B Drug Pricing Program",
-  dashboardSubtitle: "HAP Advocacy Dashboard",
-  pageDescription: "HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection, Pennsylvania hospital impact, and the HAP policy case for protecting 340B integrity and contract pharmacy access.",
-  shareTitle: "340B Drug Pricing Program | HAP Advocacy Dashboard",
-  shareDescription: "Protect 340B integrity and contract pharmacy access | 72 PA hospitals | $7.95B community benefits | State-by-state 340B policy dashboard.",
-  ogTitle: "340B: How Pennsylvania hospitals turn drug savings into community care — HAP Advocacy Dashboard",
-  ogDescription: "72 PA hospitals depend on 340B. $7.95B reinvested in community care nationally. 21 states protect contract pharmacy — Pennsylvania is not one of them yet. See the data.",
-  twitterTitle: "340B: PA hospitals and community care — HAP Dashboard",
-  twitterDescription: "72 PA hospitals use 340B to fund free prescriptions, cancer screening, and rural care. See where state law stands.",
-  shareUrlBase: "https://jordanz00.github.io/340b-dashboard/340b.html",
-  dataFreshness: "March 2026",
-  lastUpdated: "March 2026",
-  printDefaultState: "PA",
-  printDefaultStateReason: "HAP focal state for print.",
-    copy: {
-    overviewLead:
-      "340B is a federal discount that helps eligible hospitals (covered entities) stretch dollars further so more patients get care and affordable medicines—without new taxpayer cost.",
-    hapPositionWhy:
-      "States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.",
-    hapPositionLead:
-      "HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.",
-    hapPositionLawmakerLabel: "Lawmaker actions",
-    hapAskItems: [
-      {
-        label: "Protect the 340B discount",
-        impactLine: "Impact: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.",
-      },
-      {
-        label: "Defend contract pharmacy partnerships",
-        impactLine: "Impact: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.",
-      },
-      {
-        label: "Oppose rules that shrink access for safety-net patients",
-        impactLine: "Impact: Rural and underserved communities keep an affordable path to medications hospitals are required to support.",
-      },
-    ],
-    mapHeroSub: "Start with the map: see which states have enacted contract pharmacy protection and open any state for details.",
-    mapHowToUse:
-      "Click a state on the map or a state name in the lists. Use All / Protection / No protection to filter. Choose Clear to reset your selection.",
-    sourceSummary: "State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.",
-    methodologyStateLaw: "State law: MultiState, ASHP, America's Essential Hospitals. Protection status as of March 2026.",
-    printSourceSummary: "State law status is compiled from MultiState, ASHP, America's Essential Hospitals. Community benefit from 340B Health and AHA (HAP/PA figures). HRSA Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.",
-    verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
-    executiveStrip: {
-      priorityLabel: "What we're fighting for",
-      priorityValue: "Protect the 340B discount and hospital–pharmacy partnerships",
-      priorityNote: "One clear story: access, fairness, and continuity for patients.",
-      landscapeLabel: "Where things stand",
-      landscapeNote: "Map and state panel show who's protected and who's not.",
-      trustLabel: "Why trust this",
-      trustValue: "Sources and dates are right here",
-      trustNote: "MultiState, ASHP, America's Essential Hospitals."
-    }
-  },
-  mapAspectRatio: 0.55,
-  mapMaxWidth: 960,
-  countUpDuration: 1200,
-  dominoDelayPerState: 55,
-  scrollRevealThreshold: 0.1,
-};
-var FIPS_TO_ABBR = {
-  1: "AL", 2: "AK", 4: "AZ", 5: "AR", 6: "CA", 8: "CO", 9: "CT", 10: "DE",
-  11: "DC", 12: "FL", 13: "GA", 15: "HI", 16: "ID", 17: "IL", 18: "IN", 19: "IA",
-  20: "KS", 21: "KY", 22: "LA", 23: "ME", 24: "MD", 25: "MA", 26: "MI", 27: "MN",
-  28: "MS", 29: "MO", 30: "MT", 31: "NE", 32: "NV", 33: "NH", 34: "NJ", 35: "NM",
-  36: "NY", 37: "NC", 38: "ND", 39: "OH", 40: "OK", 41: "OR", 42: "PA", 44: "RI",
-  45: "SC", 46: "SD", 47: "TN", 48: "TX", 49: "UT", 50: "VT", 51: "VA", 53: "WA",
-  54: "WV", 55: "WI", 56: "WY",
-};
-var STATE_NAMES = {
-  AL: "Alabama", AK: "Alaska", AZ: "Arizona", AR: "Arkansas", CA: "California",
-  CO: "Colorado", CT: "Connecticut", DE: "Delaware", DC: "D.C.", FL: "Florida",
-  GA: "Georgia", HI: "Hawaii", ID: "Idaho", IL: "Illinois", IN: "Indiana",
-  IA: "Iowa", KS: "Kansas", KY: "Kentucky", LA: "Louisiana", ME: "Maine",
-  MD: "Maryland", MA: "Massachusetts", MI: "Michigan", MN: "Minnesota",
-  MS: "Mississippi", MO: "Missouri", MT: "Montana", NE: "Nebraska",
-  NV: "Nevada", NH: "New Hampshire", NJ: "New Jersey", NM: "New Mexico",
-  NY: "New York", NC: "North Carolina", ND: "North Dakota", OH: "Ohio",
-  OK: "Oklahoma", OR: "Oregon", PA: "Pennsylvania", RI: "Rhode Island",
-  SC: "South Carolina", SD: "South Dakota", TN: "Tennessee", TX: "Texas",
-  UT: "Utah", VT: "Vermont", VA: "Virginia", WA: "Washington",
-  WV: "West Virginia", WI: "Wisconsin", WY: "Wyoming",
-};
-var STATE_340B = {
-  AL: { y: 2021, pbm: true, cp: false, notes: "" },
-  AZ: { y: 2022, pbm: true, cp: false, notes: "" },
-  AR: { y: 2021, pbm: true, cp: true, notes: "First to enact; upheld in court." },
-  CA: { y: 2023, pbm: true, cp: false, notes: "" },
-  CO: { y: 2022, pbm: true, cp: true, notes: "Contract pharmacy 2025." },
-  CT: { y: 2023, pbm: true, cp: false, notes: "" },
-  DE: { y: null, pbm: false, cp: false, notes: "" },
-  DC: { y: null, pbm: false, cp: false, notes: "" },
-  FL: { y: null, pbm: false, cp: false, notes: "" },
-  GA: { y: 2020, pbm: true, cp: false, notes: "" },
-  HI: { y: 2025, pbm: false, cp: true, notes: "Reporting required." },
-  ID: { y: null, pbm: false, cp: false, notes: "" },
-  IL: { y: 2022, pbm: true, cp: false, notes: "" },
-  IN: { y: 2021, pbm: true, cp: false, notes: "" },
-  IA: { y: 2023, pbm: true, cp: false, notes: "" },
-  KS: { y: 2024, pbm: false, cp: true, notes: "" },
-  KY: { y: 2020, pbm: true, cp: false, notes: "" },
-  LA: { y: 2023, pbm: true, cp: true, notes: "Upheld in court." },
-  ME: { y: 2025, pbm: false, cp: true, notes: "Hybrid 2025." },
-  MD: { y: 2024, pbm: false, cp: true, notes: "" },
-  MA: { y: null, pbm: false, cp: false, notes: "" },
-  MI: { y: 2022, pbm: true, cp: false, notes: "" },
-  MN: { y: 2019, pbm: true, cp: true, notes: "Upheld in court." },
-  MS: { y: 2024, pbm: true, cp: true, notes: "" },
-  MO: { y: 2024, pbm: false, cp: true, notes: "Upheld in court." },
-  MT: { y: 2021, pbm: true, cp: false, notes: "" },
-  NE: { y: 2022, pbm: true, cp: true, notes: "" },
-  NV: { y: 2023, pbm: true, cp: false, notes: "" },
-  NH: { y: 2024, pbm: true, cp: false, notes: "" },
-  NJ: { y: null, pbm: false, cp: false, notes: "" },
-  NM: { y: 2023, pbm: true, cp: true, notes: "" },
-  NY: { y: null, pbm: false, cp: false, notes: "" },
-  NC: { y: 2021, pbm: true, cp: false, notes: "" },
-  ND: { y: 2021, pbm: true, cp: true, notes: "" },
-  OH: { y: 2021, pbm: true, cp: false, notes: "Hybrid 2025." },
-  OK: { y: 2025, pbm: false, cp: true, notes: "" },
-  OR: { y: 2025, pbm: true, cp: true, notes: "" },
-  PA: { y: null, pbm: false, cp: false, notes: "In progress." },
-  RI: { y: 2025, pbm: true, cp: true, notes: "Upheld in court." },
-  SC: { y: null, pbm: false, cp: false, notes: "" },
-  SD: { y: 2024, pbm: true, cp: true, notes: "" },
-  TN: { y: 2021, pbm: true, cp: true, notes: "Upheld in court." },
-  TX: { y: null, pbm: false, cp: false, notes: "" },
-  UT: { y: 2020, pbm: true, cp: true, notes: "" },
-  VT: { y: 2021, pbm: true, cp: true, notes: "Hybrid 2025." },
-  VA: { y: 2021, pbm: true, cp: false, notes: "Governor vetoed protection." },
-  WA: { y: null, pbm: false, cp: false, notes: "" },
-  WV: { y: 2024, pbm: true, cp: true, notes: "" },
-  WI: { y: null, pbm: false, cp: false, notes: "" },
-  WY: { y: null, pbm: false, cp: false, notes: "" },
-  AK: { y: null, pbm: false, cp: false, notes: "" },
-};
-var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
-  return STATE_340B[abbr] && STATE_340B[abbr].cp === true;
-});
-  </script>
+  <script src="state-data.js"></script>
   <script src="assets/vendor/d3.min.js"></script>
   <script src="assets/vendor/topojson-client.min.js"></script>
   <script src="assets/vendor/states-10m.js"></script>
@@ -269,17 +127,20 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </picture>
     <div class="hap-header-text">
       <p class="hap-header-org">The Hospital and Healthsystem Association of Pennsylvania</p>
-      <h1 class="hap-header-title">340B: How Pennsylvania hospitals turn drug savings <br>into community care &mdash; and why it's under threat</h1>
+      <h1 class="hap-header-title">340B protects access to care in Pennsylvania&mdash;and that access is under pressure.</h1>
       <span class="hap-header-badge">ADVOCACY DASHBOARD</span>
     </div>
+    <nav class="hap-header-utility" aria-label="HAP utility links">
+      <a href="https://www.haponline.org/" target="_blank" rel="noopener noreferrer">HAP home</a>
+      <a href="https://www.haponline.org/advocacy" target="_blank" rel="noopener noreferrer">Advocacy</a>
+      <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">Contact</a>
+    </nav>
   </div>
   <nav class="dashboard-nav dashboard-nav--suite" id="dashboard-nav" aria-label="Dashboard sections">
     <a href="#section-overview" class="active" aria-current="page">Overview</a>
-    <a href="#executive-summary">At a glance</a>
-    <a href="#key-metrics">Key metrics</a>
     <a href="#state-laws">Map &amp; states</a>
     <a href="#legal-trends">Legal trends</a>
-    <a href="#methodology-section">Sources</a>
+    <a href="#methodology-section">Methodology</a>
     <a href="#pa-impact-mode">PA impact</a>
     <a href="#policy-impact-simulator">Policy simulator</a>
     <a href="340b-BASIC.html" title="Core 340B map and story; local scripts only (IT-safe)">BASIC (IT-safe)</a>
@@ -291,19 +152,15 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <aside class="hap-sidebar hap-sidebar--340b" aria-label="Section navigation">
   <nav class="hap-sidebar-nav" id="hap-sidebar-nav">
     <a href="#section-overview">Overview</a>
-    <a href="#executive-summary">At a glance</a>
-    <a href="#key-metrics">Key metrics</a>
     <a href="#community-benefit">Community benefit</a>
     <a href="#state-laws">Map &amp; states</a>
     <a href="#legal-trends">Legal trends</a>
     <a href="#methodology-section">Methodology</a>
     <div class="hap-sidebar-divider" role="presentation"></div>
-    <a href="#overview">HAP position</a>
     <a href="#pa-bill-tracker">PA legislature</a>
     <a href="#federal-delegation">PA Congress</a>
     <a href="#pa-impact-mode">PA impact</a>
     <a href="#policy-impact-simulator">Policy simulator</a>
-    <a href="#policy">Policy &amp; access</a>
     <div class="hap-sidebar-divider" role="presentation"></div>
     <span class="hap-sidebar-label" id="hap-nav-suite-label">Related reports &amp; tools</span>
     <a href="340b.html" class="hap-cross-link hap-cross-link--stack hap-cross-link--current" aria-current="page" title="Full 340B dashboard: print, PDF, share, state lists, map filters, and simulators">
@@ -313,6 +170,10 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <a href="340b-BASIC.html" class="hap-cross-link hap-cross-link--stack" title="Communications edition: core 340B map and narrative; local scripts only">
       <span class="hap-cross-link-title">340B — BASIC</span>
       <span class="hap-cross-link-desc">Core map &amp; story; local scripts (IT-safe)</span>
+    </a>
+    <a href="340b-print.html" target="_blank" rel="noopener noreferrer" class="hap-cross-link hap-cross-link--stack" title="Printable 2-page 340B leave-behind">
+      <span class="hap-cross-link-title">2-page leave-behind</span>
+      <span class="hap-cross-link-desc">Print-ready PDF · open in new tab</span>
     </a>
     <a href="OW_report_dashboard.html" class="hap-cross-link hap-cross-link--stack" title="Pennsylvania hospitals — Oliver Wyman sustainability report with sticky sidebar navigation">
       <span class="hap-cross-link-title">PA hospitals report</span>
@@ -331,12 +192,12 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 <section class="utility-toolbar scroll-reveal" aria-label="Page tools">
   <div class="utility-toolbar-actions">
     <button type="button" id="btn-print" class="utility-btn utility-btn--primary" aria-label="Print or save as PDF">Print / PDF</button>
-    <button type="button" id="btn-leave-behind-export" class="utility-btn" aria-label="Export leave-behind (2-page)" data-track="leave_behind_export">📄 Export leave-behind (2-page)</button>
+    <button type="button" id="btn-leave-behind-export" class="utility-btn" aria-label="Download 2-page briefing PDF" data-track="leave_behind_export">2-page briefing PDF</button>
     <div class="utility-share-wrap">
       <button type="button" id="btn-share" class="utility-btn" aria-expanded="false" aria-controls="share-drawer" aria-haspopup="true" aria-label="Share — open sharing options">Share</button>
       <div id="share-drawer" class="share-drawer" hidden role="region" aria-label="Share this dashboard">
         <ul class="share-drawer__list">
-          <li><a id="share-link-x" class="share-drawer__action" href="#" target="_blank" rel="noopener noreferrer">Post on X / Twitter</a></li>
+          <li><a id="share-link-x" class="share-drawer__action" href="#" target="_blank" rel="noopener noreferrer">Share on X</a></li>
           <li><a id="share-link-linkedin" class="share-drawer__action" href="#" target="_blank" rel="noopener noreferrer">Share on LinkedIn</a></li>
           <li><button type="button" id="btn-share-copy-link" class="share-drawer__action share-drawer__action--btn">Copy link</button></li>
           <li><a id="share-link-email" class="share-drawer__action" href="#">Email this page</a></li>
@@ -352,8 +213,8 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <p id="leave-behind-preview-title" class="leave-behind-preview__title">Print 2-page meeting leave-behind</p>
     <p class="leave-behind-preview__body">
       This will print a clean 2-page summary optimized for lawmaker meetings and briefings.
-      <br>Set your printer to 'fit to page' for best results.
-      <br>Dashboard developed by Jordan Zabady, Producer, Digital Communications.
+      <br>Set your printer to "fit to page" for best results.
+      <br>Prepared by The Hospital and Healthsystem Association of Pennsylvania.
     </p>
     <div class="leave-behind-preview__actions">
       <button type="button" id="leave-behind-preview-print" class="leave-behind-preview__ok">Print now</button>
@@ -390,159 +251,70 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
   <section id="print-intro-snapshot" class="print-intro-snapshot print-only" aria-hidden="true"></section>
   <div class="dashboard-grid">
 
-    <!-- ========== SECTION: Executive summary (Mark XI flagship — mega numbers + clear hierarchy) ========== -->
-    <section id="executive-summary" class="executive-summary-layer executive-summary--flagship executive-summary--mark11 span-12 scroll-reveal ow-section ow-section--band-b" aria-labelledby="exec-summary-heading">
-      <header class="exec-summary-head">
-        <h2 id="exec-summary-heading" class="executive-summary-heading executive-summary-heading--display">Executive summary</h2>
-        <p class="executive-summary-dek">What is happening on 340B: big-picture numbers, HAP’s ask, and how state law fits—then the map and sources below.</p>
-      </header>
-
-      <div class="hero-kpi-banner" role="region" aria-label="Executive KPI scan">
-        <p class="hero-kpi-banner__kicker">Cited program-scale figures at a glance—use the map for each state’s contract pharmacy law status.</p>
-        <div class="exec-summary-mega-strip" aria-label="Key figures at a glance">
-        <article class="exec-summary-mega exec-summary-mega--finance">
-          <p class="exec-summary-mega__eyebrow">Community benefit (2024)</p>
-          <p class="exec-summary-mega__value" aria-label="7.95 billion dollars">$7.95B</p>
-          <p class="exec-summary-mega__unit">reported reinvestment</p>
-          <p class="exec-summary-mega__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> Hospitals retain billions in reported savings to fund patient care and community programs.</p>
-          <p class="stat-verified" data-verified-key="communityBenefit"></p>
-        </article>
-        <article class="exec-summary-mega exec-summary-mega--pa">
-          <p class="exec-summary-mega__eyebrow">Pennsylvania footprint</p>
-          <p class="exec-summary-mega__value" aria-label="72 hospitals">72</p>
-          <p class="exec-summary-mega__unit">hospitals in 340B</p>
-          <p class="exec-summary-mega__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> Concentrated operating and policy stakes for HAP members.</p>
-          <p class="stat-verified" data-verified-key="paHospitals"></p>
-        </article>
-        <article class="exec-summary-mega exec-summary-mega--policy">
-          <p class="exec-summary-mega__eyebrow">State contract pharmacy law</p>
-          <div class="exec-summary-mega__split" role="group" aria-label="States with and without protection">
-            <div class="exec-summary-mega__split-cell">
-              <span class="exec-summary-mega__value exec-summary-mega__value--accent" id="exec-summary-protection-count">21</span>
-              <span class="exec-summary-mega__split-label">with law</span>
-            </div>
-            <div class="exec-summary-mega__split-cell">
-              <span class="exec-summary-mega__value exec-summary-mega__value--muted" id="exec-summary-no-count">29</span>
-              <span class="exec-summary-mega__split-label">without yet</span>
-            </div>
-          </div>
-          <p class="exec-summary-mega__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> Same counts as the map—see where law protects hospital–pharmacy networks.</p>
-          <p class="stat-verified" data-verified-key="stateLaws"></p>
-        </article>
-        <article class="exec-summary-mega exec-summary-mega--market">
-          <p class="exec-summary-mega__eyebrow">Outpatient drug market</p>
-          <p class="exec-summary-mega__value">7%</p>
-          <p class="exec-summary-mega__unit">national share (340B)</p>
-          <p class="exec-summary-mega__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> One benchmark for how large 340B is in U.S. outpatient drug spend.</p>
-          <p class="stat-verified" data-verified-key="outpatientShare"></p>
-        </article>
-        </div>
-      </div>
-
-      <div class="exec-summary-subgrid">
-        <h3 class="exec-summary-section-title" id="exec-sec-hap">HAP position</h3>
-        <article class="exec-summary-card exec-summary-card--priority">
-          <h4 class="exec-summary-card__title">What we are asking lawmakers to protect</h4>
-          <p class="exec-summary-card__lead">Keep the federal discount and the partnerships hospitals use to deliver discounted medicines—including contract pharmacies.</p>
-          <p class="exec-summary-card__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> Frames every chart on this page: access, fairness, and continuity for patients.</p>
-        </article>
-
-        <h3 class="exec-summary-section-title" id="exec-sec-law">State law &amp; map overview</h3>
-        <article class="exec-summary-card exec-summary-card--landscape">
-          <h4 class="exec-summary-card__title">Where protection exists today</h4>
-          <p class="exec-summary-card__lead">Some states passed laws that protect hospitals’ use of contract pharmacies; others have not. The interactive map below shows current status for every state.</p>
-          <p class="exec-summary-card__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> Spot risk and opportunity in one glance—then open any state for notes.</p>
-        </article>
-
-        <h3 class="exec-summary-section-title" id="exec-sec-scale">National scale &amp; Pennsylvania</h3>
-        <div class="exec-summary-pair">
-          <article class="exec-summary-card exec-summary-card--scale">
-            <h4 class="exec-summary-card__title">Program size</h4>
-            <p class="exec-summary-card__lead"><strong>7%</strong> of U.S. outpatient drug spend flows through 340B; <strong>$7.95B</strong> in reported community benefits (2024).</p>
-            <p class="exec-summary-card__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> Ties national footprint to dollars reinvested in communities.</p>
-          </article>
-          <article class="exec-summary-card exec-summary-card--pa">
-            <h4 class="exec-summary-card__title">Pennsylvania</h4>
-            <p class="exec-summary-card__lead"><strong>72</strong> hospitals participate in 340B. Use the map to see whether PA has enacted contract pharmacy protection.</p>
-            <p class="exec-summary-card__impact"><span class="exec-summary-card__impact-kicker">Impact:</span> PA scale for statewide hospital advocacy.</p>
-          </article>
-        </div>
-      </div>
-
-      <div class="hap-cta-strip" aria-label="Next steps on this page">
-        <a href="#overview" class="hap-cta-btn hap-cta-btn--secondary">HAP position</a>
-        <a href="#key-metrics" class="hap-cta-btn hap-cta-btn--secondary">Key metrics</a>
-        <a href="#state-laws" class="hap-cta-btn hap-cta-btn--primary">Open the state map</a>
-        <a href="#policy-milestones" class="hap-cta-btn hap-cta-btn--secondary">Policy timeline</a>
-        <a href="#methodology-section" class="hap-cta-btn hap-cta-btn--secondary">Sources &amp; methodology</a>
-      </div>
-    </section>
-
     <!-- ========== SECTION: HAP Position — flagship (separate from Overview) ========== -->
-    <section id="overview" class="hap-position-flagship span-12 scroll-reveal ow-section ow-section--band-hap" aria-labelledby="hap-position-heading" title="Learn how this protects patient access and hospital partnerships.">
+    <section id="overview" class="hap-position-flagship span-12 scroll-reveal ow-section ow-section--band-hap nav-section-block" data-nav-label="HAP position" aria-labelledby="hap-position-heading" title="Learn how this protects patient access and hospital partnerships.">
       <article class="card card-hap card-hap--featured hap-position-flagship-card">
         <div class="hap-position-featured-inner">
           <div class="card-heading card-heading--hap-featured">
             <div class="card-heading-text">
               <p class="card-title">HAP position</p>
               <p class="hap-position-lawmaker-label" id="hap-lawmaker-label">Lawmaker actions</p>
-              <h2 id="hap-position-heading">Protect the 340B discount and hospital–pharmacy partnerships.</h2>
+              <h2 id="hap-position-heading">Protect 340B, protect patients.</h2>
               <blockquote class="hap-ceo-quote">
                 <p>"Pennsylvania hospitals reinvest every dollar of 340B savings into the communities that need it most. Restricting this program doesn't save money — it closes doors for patients who have nowhere else to go."</p>
                 <cite>— Nicole Stallings, President and CEO, Hospital and Healthsystem Association of Pennsylvania</cite>
               </blockquote>
-              <p class="hap-position-kicker" id="hap-position-why">States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.</p>
+              <p class="hap-position-kicker" id="hap-position-why">Contract pharmacy access is under pressure from manufacturers and Congress. HAP is asking Pennsylvania's lawmakers to act before the window closes.</p>
             </div>
             <div class="card-icon card-icon--shield" aria-hidden="true" title="HAP advocacy position: protect the discount and partnerships."><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
           </div>
-          <p class="hap-position-lead" id="hap-position-lead">HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.</p>
           <h3 class="hap-asks-heading">What lawmakers can do</h3>
-          <p class="hap-asks-subline" id="hap-asks-subline">Three concrete actions—each tied to patient and hospital impact.</p>
+          <p class="hap-asks-subline" id="hap-asks-subline">Three actions tied to patient and hospital impact.</p>
           <ul class="hap-ask-list" role="list">
             <li class="hap-ask-item hap-ask-item--policy" data-hap-ask-index="0" title="Keeps hospitals at the discount prices Congress intended for covered care.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
               <div class="hap-ask-item-body">
                 <h4 class="hap-ask-item-label">Protect the 340B discount</h4>
-                <p class="hap-ask-item-impact">Impact: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</p>
+                <p class="hap-ask-item-impact">Impact: Keeps hospital access to prices Congress set for charity care and community benefit.</p>
               </div>
             </li>
             <li class="hap-ask-item hap-ask-item--partnership" data-hap-ask-index="1" title="Supports filling prescriptions through hospitals’ contract pharmacy networks.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
               <div class="hap-ask-item-body">
                 <h4 class="hap-ask-item-label">Defend contract pharmacy partnerships</h4>
-                <p class="hap-ask-item-impact">Impact: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</p>
+                <p class="hap-ask-item-impact">Impact: Lets patients fill prescriptions through local and network pharmacies, not one distant site.</p>
               </div>
             </li>
             <li class="hap-ask-item hap-ask-item--access" data-hap-ask-index="2" title="Avoids policies that make it harder for underserved patients to get 340B-priced drugs.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
               <div class="hap-ask-item-body">
                 <h4 class="hap-ask-item-label">Oppose rules that shrink access for safety-net patients</h4>
-                <p class="hap-ask-item-impact">Impact: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</p>
+                <p class="hap-ask-item-impact">Impact: Preserves affordable medication access in rural and underserved communities.</p>
               </div>
             </li>
           </ul>
           <h3 class="hap-asks-heading">HAP's ask of Pennsylvania government</h3>
-          <p class="hap-asks-subline">State-level asks (Harrisburg)</p>
+          <p class="hap-asks-subline">State-level asks in Harrisburg, aligned with HAP March 2026 materials.</p>
           <ul class="hap-ask-list" role="list" aria-label="HAP asks of Pennsylvania government">
-            <li class="hap-ask-item hap-ask-item--policy" title="Directs Pennsylvania DHS to maintain and strengthen the exclusion list.">
+            <li class="hap-ask-item hap-ask-item--policy" title="Keep Pennsylvania’s duplicate-discount protections strong under Medicaid.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-8h6v8"/></svg></span>
               <div class="hap-ask-item-body">
-                <h4 class="hap-ask-item-label">Governor Shapiro's Office</h4>
-                <p class="hap-ask-item-impact">Impact: Direct PA DHS to maintain and strengthen the 340B Drug Exclusion List and oppose any federal waiver or demonstration that would reduce 340B participation for PA Medicaid patients.</p>
+                <h4 class="hap-ask-item-label">Sustain DHS duplicate-discount safeguards</h4>
+                <p class="hap-ask-item-impact">Impact: DHS should maintain the Medicaid Exclusion File and Drug Exclusion List so covered entities can be tracked and duplicate discounts are prevented.</p>
               </div>
             </li>
-            <li class="hap-ask-item hap-ask-item--partnership" title="Seeks contract pharmacy protection legislation.">
+            <li class="hap-ask-item hap-ask-item--partnership" title="State action to prevent manufacturer limits on contract pharmacies.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M6 20l2-10 8 0 2 10"/><path d="M10 10V6a2 2 0 0 1 4 0v4"/></svg></span>
               <div class="hap-ask-item-body">
-                <h4 class="hap-ask-item-label">PA Senate — Health &amp; Human Services Committee</h4>
-                <p class="hap-ask-item-impact">Impact: Advance contract pharmacy protection legislation this session. Twenty-one states have already acted. Pennsylvania's 72 participating hospitals need the same protection.</p>
+                <h4 class="hap-ask-item-label">Protect 340B integrity—contract pharmacies</h4>
+                <p class="hap-ask-item-impact">Impact: Preventing manufacturer limits keeps hospitals and clinics connected to the pricing Congress intended.</p>
               </div>
             </li>
-            <li class="hap-ask-item hap-ask-item--access" title="Calls for hearings and a companion bill.">
+            <li class="hap-ask-item hap-ask-item--access" title="Rural and underserved patients rely on multiple contract and specialty pharmacies.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v11h14V10"/><path d="M10 21v-6h4v6"/></svg></span>
               <div class="hap-ask-item-body">
-                <h4 class="hap-ask-item-label">PA House — Health Committee</h4>
-                <p class="hap-ask-item-impact">Impact: Schedule hearings on contract pharmacy restriction impacts and move a companion bill before session ends.</p>
+                <h4 class="hap-ask-item-label">Preserve access in rural and underserved communities</h4>
+                <p class="hap-ask-item-impact">Impact: Many providers rely on contract and specialty pharmacies; one-pharmacy limits constrain access for Pennsylvania's most vulnerable patients.</p>
               </div>
             </li>
           </ul>
@@ -552,7 +324,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </section>
 
     <!-- ========== SECTION: Pennsylvania legislative status ========== -->
-    <section id="pa-bill-tracker" class="pa-bill-tracker-section span-12 scroll-reveal ow-section ow-section--band-b" aria-labelledby="pa-bill-tracker-heading">
+    <section id="pa-bill-tracker" class="pa-bill-tracker-section span-12 scroll-reveal ow-section ow-section--band-b nav-section-block" data-nav-label="PA legislature" aria-labelledby="pa-bill-tracker-heading">
       <header class="pa-bill-tracker-head">
         <h2 id="pa-bill-tracker-heading" class="pa-bill-tracker-title">Pennsylvania legislative status — 340B</h2>
       </header>
@@ -667,7 +439,6 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
             </div>
           </div>
         </div>
-        <p class="pa-bill-committee-note">Current legislator data maintained by HAP State Advocacy. Contact HAP State Advocacy to update member positions or request a district briefing: (717) 564-9200.</p>
       </details>
     </section>
 
@@ -678,8 +449,9 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
       <header class="key-findings-heading">
         <span class="key-findings-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4"/><path d="M12 16h.01"/></svg></span>
         <div class="key-findings-heading-text">
+          <p class="key-findings-eyebrow">Key findings</p>
           <h2 class="key-findings-title">The numbers that matter</h2>
-          <p class="key-findings-subline">Four headline numbers for a fast executive readout.</p>
+          <p class="key-findings-subline">Fast readout for executives and lawmakers. Data as of March 2026.</p>
         </div>
       </header>
       <div class="key-findings-grid">
@@ -693,10 +465,10 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
             <div class="key-finding-split-divider" aria-hidden="true"></div>
             <div class="key-finding-split-cell">
               <p class="key-finding-value ban-stat ban-stat--policy-muted count-up" id="key-finding-no-count" data-count-up="29">29</p>
-              <p class="key-finding-caption">without yet</p>
+              <p class="key-finding-caption">without protection</p>
             </div>
           </div>
-          <p class="key-finding-impact">Impact: Shows where protections are already law and where risk remains.</p>
+          <p class="key-finding-impact">Impact: Shows where protections are law and where risk remains.</p>
         </article>
         <article class="key-finding-card key-finding-card--finance hap-card-interactive">
           <p class="key-finding-label">Reported community benefit (2024)</p>
@@ -706,125 +478,47 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <article class="key-finding-card key-finding-card--pa hap-card-interactive">
           <p class="key-finding-label">Pennsylvania hospitals in 340B</p>
           <p class="key-finding-value ban-stat ban-stat--pa count-up" data-count-up="72">72</p>
-          <p class="key-finding-impact">Impact: Quantifies Pennsylvania exposure in this policy fight.</p>
+          <p class="key-finding-impact">Impact: Quantifies Pennsylvania's exposure in this policy fight.</p>
         </article>
         <article class="key-finding-card key-finding-card--market hap-card-interactive">
           <p class="key-finding-label">National outpatient drug share (340B)</p>
           <p class="key-finding-value ban-stat ban-stat--market count-up" data-count-up="7" data-suffix="%">7%</p>
-          <p class="key-finding-impact">Impact: Benchmarks 340B footprint in the national outpatient market.</p>
+          <p class="key-finding-impact">Impact: Benchmarks 340B's footprint in the national outpatient market.</p>
         </article>
       </div>
     </section>
 
-    <!-- ========== SECTION: Executive scan strip ========== -->
-    <section class="executive-proof-strip span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Executive scan">
-      <article class="executive-proof-card" title="HAP's core advocacy focus for 340B">
-        <p class="executive-proof-label" id="executive-priority-label">What we're fighting for</p>
-        <h3 class="executive-proof-value" id="executive-priority-value">Protect the 340B discount and hospital–pharmacy partnerships</h3>
-        <p class="executive-proof-note" id="executive-priority-note">One clear story: access, fairness, and continuity for patients.</p>
-      </article>
-      <article class="executive-proof-card executive-proof-card--accent" title="State-by-state protection status across the U.S.">
-        <p class="executive-proof-label" id="executive-landscape-label">Where things stand</p>
-        <h3 class="executive-proof-value" id="executive-landscape-value">21 states have enacted contract pharmacy protection; 29 remain without enacted protection</h3>
-        <p class="executive-proof-note" id="executive-landscape-note">Map and state panel show who’s protected and who’s not.</p>
-      </article>
-      <article class="executive-proof-card" title="Data sources and verification order">
-        <p class="executive-proof-label" id="executive-trust-label">Why trust this</p>
-        <h3 class="executive-proof-value" id="executive-trust-value">Sources and dates are right here</h3>
-        <p class="executive-proof-note" id="executive-trust-note">MultiState, ASHP, America's Essential Hospitals.</p>
-      </article>
-    </section>
-
-    <!-- ========== SECTION: Key metrics (KPI strip) — before map: Exec → HAP → Key findings → Key metrics → Map ========== -->
-    <section id="key-metrics" class="kpi-strip kpi-strip--mark11 span-12 scroll-reveal ow-section ow-section--band-b" aria-labelledby="key-metrics-heading">
-      <div id="kpi-briefing-banner" class="kpi-briefing-banner" role="region" aria-label="Briefing context for key metrics">
-        <button type="button" id="kpi-briefing-banner-dismiss" class="kpi-briefing-banner__dismiss">Dismiss</button>
-        <div class="kpi-briefing-banner__inner">
-          <p class="kpi-briefing-banner__title"><span class="kpi-briefing-banner__icon" aria-hidden="true">📋</span> For board and legislative briefings</p>
-          <p class="kpi-briefing-banner__text">These are program-scale public figures, not facility-level financials. Actual 340B impact varies by hospital size, DSH status, payer mix, and contract pharmacy network.</p>
-        </div>
-      </div>
-      <aside class="kpi-briefing-banner-print" aria-hidden="true">
-        <p class="kpi-briefing-banner-print__title"><span aria-hidden="true">📋</span> For board and legislative briefings</p>
-        <p class="kpi-briefing-banner-print__text">These are program-scale public figures, not facility-level financials. Actual 340B impact varies by hospital size, DSH status, payer mix, and contract pharmacy network.</p>
-      </aside>
-      <header class="kpi-strip-head">
-        <h2 id="key-metrics-heading" class="kpi-strip-heading">Key metrics</h2>
-        <p class="kpi-strip-subline">Program-scale numbers for fast executive briefing.</p>
+    <section id="oversight-gap" class="executive-proof-strip span-12 scroll-reveal ow-section ow-section--band-b nav-section-block" data-nav-label="Oversight gap" aria-label="Executive landscape proof points">
+      <header class="executive-proof-head">
+        <p class="executive-proof-eyebrow">Oversight gap</p>
+        <h2 class="executive-proof-heading">Issue, impact, action</h2>
+        <p class="executive-proof-dek">Issue: uneven protection and constrained access. Impact: patient and hospital risk. Action: reinforce policy safeguards and oversight.</p>
       </header>
-      <div class="section-insight kpi-strip-intro">
-        <p class="section-insight-label">What this shows</p>
-        <p class="section-insight-text">340B market scale, reinvestment, oversight, and Pennsylvania footprint.</p>
-        <p class="section-insight-label">Why it matters</p>
-        <p class="section-insight-text">Use these cited figures to anchor briefings before policy detail.</p>
-        <p class="kpi-trend-note"><span class="trend-indicator" aria-hidden="true">→</span> Snapshot metrics from cited sources—not a time series.</p>
-      </div>
-      <div class="kpi-strip-grid">
-      <div class="kpi-card kpi-card--market kpi-card--primary">
-        <p class="kpi-label">National outpatient share (340B)</p>
-        <p class="kpi-value ban-stat kpi-value--mega count-up" data-count-up="7" data-suffix="%">7%</p>
-        <p class="kpi-desc">Share of U.S. outpatient drug purchases</p>
-        <p class="kpi-impact">Impact: Scale of 340B in outpatient drug spend—use cited sources for hospital-level financials.</p>
-      </div>
-      <div class="kpi-card kpi-card--benefit kpi-card--support">
-        <p class="kpi-label">Reported community benefit</p>
-        <p class="kpi-value ban-stat kpi-value--mega">$<span class="count-up" data-count-up="7.95" data-decimals="2" data-suffix="B">7.95B</span></p>
-        <p class="kpi-desc">340B community benefits (2024)</p>
-        <p class="kpi-impact">Impact: Aggregate dollars hospitals report reinvesting—not one hospital’s margin.</p>
-      </div>
-      <div class="kpi-card kpi-card--oversight kpi-card--support">
-        <p class="kpi-label">Federal oversight (covered entities)</p>
-        <p class="kpi-value ban-stat primary kpi-value--mega count-up" data-count-up="179" data-suffix="">179</p>
-        <p class="kpi-desc">Covered entity audits (HRSA FY 2024)</p>
-        <p class="kpi-impact">Impact: Federal compliance review load for covered entities. See methodology for manufacturer audits.</p>
-        <p class="stat-verified" data-verified-key="hrsaAudits"></p>
-      </div>
-      <div class="kpi-card kpi-card--oversight kpi-card--oversight-gap kpi-card--support">
-        <p class="kpi-label">Oversight gap <span class="decision-badge decision-badge--risk">Risk</span></p>
-        <p class="kpi-value ban-stat primary kpi-value--mega">36×</p>
-        <p class="kpi-desc">More hospital audits than manufacturer audits (179 vs. 5, HRSA FY 2024)</p>
-        <p class="kpi-impact">Impact: HAP supports parity—hospitals and manufacturers should face equal scrutiny.</p>
-      </div>
-      <div class="kpi-card kpi-card--pa kpi-card--support">
-        <p class="kpi-label">Pennsylvania <span class="decision-badge decision-badge--watch" title="Pennsylvania contract pharmacy protection: in progress per state notes">Watch</span></p>
-        <div class="kpi-value-with-info">
-          <p class="kpi-value ban-stat primary kpi-value--mega">72</p>
-          <div class="kpi-pa-tooltip-host">
-            <button type="button" class="kpi-pa-info-btn" id="kpi-pa-illustrative-info" aria-expanded="false" aria-controls="kpi-pa-illustrative-popover" aria-label="Illustrative per-hospital context (national scale math)">ⓘ</button>
-            <div id="kpi-pa-illustrative-popover" class="kpi-pa-tooltip-panel" role="tooltip">
-              <div class="kpi-pa-tooltip-panel__inner">
-                <p class="kpi-pa-tooltip-panel__lead">Illustrative context only</p>
-                <p>$7.95B national community benefit ÷ 72 PA hospitals = ~$110M per hospital. This is a mathematical illustration of national program scale applied to Pennsylvania's footprint — not HAP's estimate of any specific hospital's 340B savings, margin, or community benefit.</p>
-                <p>Actual amounts vary widely by hospital size, DSH percentage, payer mix, drug category mix, and contract pharmacy network configuration.</p>
-                <p>Do not use this figure in testimony, press statements, or regulatory filings without facility-specific data.</p>
-                <p class="kpi-pa-tooltip-panel__contacts">For hospital-specific 340B impact analysis:<br>
-                  HAP Strategic Analytics | (717) 564-9200</p>
-              </div>
-            </div>
-          </div>
-        </div>
-        <p class="kpi-desc">PA hospitals in 340B</p>
-        <p class="kpi-impact">Impact: Pennsylvania’s program footprint—pair with the map for contract pharmacy law status.</p>
-      </div>
-      </div>
-      <p class="kpi-scope-footnote"><strong>Scope:</strong> Figures are program- and market-scale indicators from cited sources—not hospital-specific P&amp;L.</p>
-      <p class="data-freshness" id="data-freshness-text">Data as of March 2026 - Last updated March 2026</p>
+      <article class="executive-proof-card">
+        <p class="executive-proof-label">Policy landscape</p>
+        <p class="executive-proof-value" id="executive-landscape-value">21 states have contract pharmacy protections in law</p>
+        <p class="executive-proof-note">Bottom line: Most states still have no statutory protection, keeping policy risk elevated for hospitals and patients.</p>
+      </article>
+      <article class="executive-proof-card">
+        <p class="executive-proof-label">Program integrity oversight</p>
+        <p class="executive-proof-value">HRSA reports 179 covered-entity audits and five manufacturer audits in FY 2024</p>
+        <p class="executive-proof-note">Bottom line: Federal oversight is active and documented, supporting accountability in program operations.</p>
+      </article>
+      <article class="executive-proof-card executive-proof-card--accent">
+        <p class="executive-proof-label">Pennsylvania exposure</p>
+        <p class="executive-proof-value">72 Pennsylvania hospitals participate in 340B</p>
+        <p class="executive-proof-note">Bottom line: Contract pharmacy restrictions directly affect statewide patient access and safety-net capacity.</p>
+      </article>
     </section>
 
     <!-- ========== SECTION: Map hero — state map, lists, legal signals, methodology ========== -->
-    <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a">
+    <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="Map &amp; states">
       <div class="map-hero-inner">
         <article class="map-hero-card">
           <p class="map-hero-title">State-by-state</p>
           <h2 class="map-hero-headline">Who protects contract pharmacy—and who doesn’t</h2>
-          <p class="map-hero-sub" id="map-hero-sub">Blue states have a state law on contract pharmacy protection; gray states do not yet. Pick any state for notes.</p>
-          <p class="map-how-to-use" id="map-how-to-use">Click the map or a state name in the lists. Use All, Protection, or No protection to filter; Clear resets your pick.</p>
-          <div class="section-insight" aria-label="How to read this map">
-            <p class="section-insight-label">What this shows</p>
-            <p class="section-insight-text">Contract pharmacy protection by state—where state law backs hospitals’ ability to use community pharmacies under 340B.</p>
-            <p class="section-insight-label">Why it matters</p>
-            <p class="section-insight-text">Manufacturers sometimes restrict contract pharmacy arrangements; state protections reduce that friction for patients and hospitals.</p>
-          </div>
+          <p class="map-hero-sub" id="map-hero-sub">Blue states have contract pharmacy protection laws and gray states do not; select any state for briefing notes.</p>
+          <p class="map-how-to-use" id="map-how-to-use">Click a state or list item, then use All, Protection, and No protection filters to narrow the view.</p>
       <div class="selection-summary" id="selection-summary">
         <div class="selection-summary-copy">
           <p class="selection-summary-label">State</p>
@@ -911,26 +605,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 
         <!-- Cloned map for print/PDF so the map reliably appears when printing -->
         <div id="print-map-fallback" class="print-map-fallback" aria-hidden="true" style="display: none;"></div>
-        <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite" tabindex="-1" role="region" aria-label="Selected state details"><p>No state selected yet. Pick a state on the map or from the lists to see protection status and notes.</p></div>
-      </div>
-      <div class="state-lists-wrap" id="state-lists-wrap">
-        <div class="state-filter-bar">
-          <div class="state-filter-toggles" role="group" aria-label="Filter by protection status">
-            <button type="button" class="state-filter-btn active" data-filter="all" aria-pressed="true" aria-label="Show all states">All</button>
-            <button type="button" class="state-filter-btn" data-filter="protection" aria-pressed="false" aria-label="Show only states with 340B contract pharmacy protection">Protection</button>
-            <button type="button" class="state-filter-btn" data-filter="no-protection" aria-pressed="false" aria-label="Show only states with no protection law">No protection</button>
-          </div>
-        </div>
-        <p id="state-filter-status" class="state-filter-status" aria-live="polite"></p>
-        <div class="state-list-block protection" id="state-list-block-protection" role="region" aria-label="States with 340B contract pharmacy protection. Click a state chip to view details.">
-          <h3>States with protection (<span id="protection-count">21</span>)</h3>
-          <div class="state-list-grid" id="states-with-list" role="list"></div>
-        </div>
-        <div class="state-list-block no-protection" id="state-list-block-no-protection" role="region" aria-label="States with no 340B protection law. Click a state chip to view details.">
-          <h3>No protection law (<span id="no-protection-count">29</span>)</h3>
-          <div class="state-list-grid" id="states-without-list" role="list"></div>
-        </div>
-        <p id="state-no-results" class="state-no-results" aria-live="polite" hidden>No states match the current filter.</p>
+        <div id="state-detail-panel" class="state-detail-panel empty" aria-live="polite" tabindex="-1" role="region" aria-label="Selected state details"><p>No state selected yet. Pick a state on the map to see protection status and notes.</p></div>
       </div>
       <section class="print-state-summary print-only" id="print-state-summary" aria-hidden="true">
         <div class="print-state-summary-header">
@@ -951,7 +626,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
       </section>
       <!-- ========== SECTION: Congressional tracker — PA federal delegation ========== -->
-      <section id="federal-delegation" class="federal-delegation-section span-12 scroll-reveal ow-section ow-section--band-a" aria-labelledby="federal-delegation-heading">
+      <section id="federal-delegation" class="federal-delegation-section span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="PA Congress" aria-labelledby="federal-delegation-heading">
         <header class="federal-delegation-head" id="congressional-tracker">
           <p class="federal-delegation-eyebrow">Congressional tracker</p>
           <h2 id="federal-delegation-heading" class="federal-delegation-title">Pennsylvania Congressional Delegation — 340B status</h2>
@@ -986,23 +661,16 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
               <tbody id="federal-delegation-tbody"></tbody>
             </table>
           </div>
-          <p class="federal-delegation-maintainer-note">Delegation data maintained by HAP Federal Advocacy. Federal policy analysis supported by HAP policy staff.</p>
         </div>
 
         <aside class="federal-statute-callout" aria-label="Federal statutory basis">
           <p class="federal-statute-callout__title">Federal statutory basis</p>
-          <p class="federal-statute-callout__body">The 340B program is established under 42 U.S.C. § 256b (Veterans Health Care Act of 1992). The duplicate discount prohibition is codified in the same statute and enforced through HRSA-CMS Medicaid exclusion file coordination. Manufacturer restrictions on contract pharmacies have no explicit statutory authorization under § 256b.</p>
+          <p class="federal-statute-callout__body">340B is established in 42 U.S.C. § 256b, which also bars duplicate discounts, while manufacturer limits on contract pharmacies are not explicitly authorized in that statute.</p>
           <p class="federal-statute-callout__cite">Source: 42 U.S.C. § 256b; HRSA Office of Pharmacy Affairs guidance.</p>
         </aside>
       </section>
-      <div id="legal-trends" class="legal-trends-anchor" aria-labelledby="legal-trends-heading">
+      <div id="legal-trends" class="legal-trends-anchor nav-section-block" data-nav-label="Legal trends" aria-labelledby="legal-trends-heading">
       <h3 id="legal-trends-heading" class="section-subhead">Recent legal signals</h3>
-      <div class="section-insight" aria-label="How to read trends">
-        <p class="section-insight-label">What this shows</p>
-        <p class="section-insight-text">A snapshot of how courts, legislatures, and governors are shaping 340B contract pharmacy rules—not a complete case list.</p>
-        <p class="section-insight-label">Why it matters</p>
-        <p class="section-insight-text">These signals preview where manufacturer challenges succeed or fail, and where states pair protections with new reporting rules.</p>
-      </div>
       <div class="trends-grid">
         <div class="trends-card trends-card--policy">
           <span class="trends-icon"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M12 3v18"/><path d="M8 13l4-8 4 8"/></svg></span>
@@ -1079,39 +747,13 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </details>
       </section>
       <p class="sources" id="sources-summary">State law status is cross-checked through MultiState, ASHP, and America's Essential Hospitals.</p>
-      <section id="methodology-section" class="methodology-section-wrap" aria-labelledby="methodology-heading">
+      <section id="methodology-section" class="methodology-section-wrap nav-section-block" data-nav-label="Methodology" aria-labelledby="methodology-heading">
       <h3 id="methodology-heading" class="section-subhead">Data transparency &amp; methodology</h3>
-      <p class="methodology-lede">Metrics here support HAP's advocacy communication on the 340B program and are drawn from cited public sources. All figures are labeled with their source and should be independently verified before use in formal testimony, regulatory filings, or press statements.</p>
-      <details class="methodology-wrap" id="methodology-wrap" aria-label="Data sources and methodology">
-        <summary class="methodology-toggle" id="methodology-toggle" aria-label="Expand about this data section">About this data</summary>
-        <div class="methodology-content" id="methodology-content">
-          <div class="methodology-at-a-glance">
-            <p class="methodology-at-a-glance-title">At a glance</p>
-            <ul class="methodology-at-a-glance-list">
-              <li><strong>State law:</strong> Protection flags compiled from MultiState, ASHP, and America’s Essential Hospitals; status as of the last update on this page.</li>
-              <li><strong>Community benefit &amp; PA hospitals:</strong> Figures from 340B Health and AHA (HAP/PA where noted).</li>
-              <li><strong>Oversight:</strong> HRSA Program Integrity FY 2024 audit counts.</li>
-            </ul>
-          </div>
-          <p class="methodology-sources-header"><strong>Data sources:</strong> MultiState, ASHP, America's Essential Hospitals (state law); 340B Health, AHA (community benefit); HRSA (oversight).</p>
-          <p id="methodology-state-law-copy">State law: MultiState, ASHP, America's Essential Hospitals. Contract pharmacy protection reflects enacted laws as of March 2026.</p>
-          <p><strong>Community benefit</strong> figures are from 340B Health and AHA (HAP/PA figures).</p>
-          <p><strong>HRSA oversight</strong> — Program Integrity FY 2024: 179 covered entity audits, 5 manufacturer audits.</p>
-          <p><strong>Limitations:</strong> State lists and counts can change as legislatures meet; community-benefit totals are reported aggregates, not patient-level claims; simulator and PA Impact panels use illustrative scenarios.</p>
-          <p><strong>Recommended verification order:</strong> <span id="verification-order-copy">MultiState, then ASHP, then America's Essential Hospitals.</span></p>
-          <p><strong>Last updated:</strong> <span id="methodology-last-updated">March 2026</span></p>
-          <ul class="source-links">
-            <li><a href="https://www.multistate.us/" target="_blank" rel="noopener noreferrer">MultiState</a> - current legislative status</li>
-            <li><a href="https://www.ashp.org/" target="_blank" rel="noopener noreferrer">ASHP</a> - pharmacy-policy cross-check</li>
-            <li><a href="https://essentialhospitals.org/" target="_blank" rel="noopener noreferrer">America's Essential Hospitals</a> - advocacy-reference confirmation</li>
-            <li><a href="https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" target="_blank" rel="noopener noreferrer">HRSA Program Integrity FY 2024</a> - audit results</li>
-          </ul>
-          <div class="methodology-footnotes" role="note" aria-label="Methodology footnotes">
-            <p id="methodology-footnote-7-95b">[*] $7.95B is an aggregate figure from 340B Health's 2024 annual community benefit survey, representing hospitals' self-reported accounting of savings reinvested in community programs. This figure has not been independently audited. Source: 340B Health, 2024 Community Benefit Report.</p>
-            <p id="methodology-footnote-23-savings">23% represents a reported average savings rate on pharmaceutical purchases among 340B participating hospitals, calculated as the difference between wholesale acquisition cost (WAC) and the 340B ceiling price as a percentage of WAC, averaged across reported drug categories. Actual savings vary by drug mix, hospital size, contract pharmacy arrangements, and payer. Not independently audited. Source: 340B Health / AHA survey data.</p>
-          </div>
-        </div>
-      </details>
+      <aside class="methodology-stewardship-callout">
+        <p><strong>Data stewardship:</strong> Questions about source interpretation, update cadence, or citation language can be directed to HAP policy and communications teams through <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">haponline.org/contact</a>.</p>
+      </aside>
+      <p class="methodology-sources-header"><strong>Sources:</strong> MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · HRSA Program Integrity FY 2024 (audit counts)</p>
+      <p><strong>Limitations:</strong> State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.</p>
       </section>
       <!-- Keep one short print-only source note here so PDF readers still see data provenance
            after the interactive disclosure is hidden in print. -->
@@ -1126,117 +768,73 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </section>
 
     <!-- ========== SECTION: Intro — Program basics & glossary (follows map in page flow) ========== -->
-    <div id="section-overview" class="intro-section ow-section ow-section--band-a">
+    <div id="section-overview" class="intro-section ow-section ow-section--band-a nav-section-block" data-nav-label="Overview">
       <div class="intro-section-stack">
         <article id="what-is-340b" class="card intro-overview-card">
           <div class="card-heading">
             <div class="card-heading-text">
               <p class="card-title">Overview</p>
               <h2>What is 340B?</h2>
-              <p class="card-subtitle">A federal discount drug program that helps hospitals serve more patients.</p>
+              <p class="card-subtitle">340B protects access to care in Pennsylvania: a federal discount, at no cost to taxpayers, reinvested in patients and communities.</p>
             </div>
             <div class="card-icon card-icon--pill" aria-hidden="true"><svg viewBox="0 0 48 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="8"/><rect x="26" y="4" width="20" height="16" rx="8"/></svg></div>
           </div>
-          <p id="overview-lead">340B is a federal discount that helps eligible hospitals (covered entities) stretch dollars further so more patients get care and affordable medicines—without new taxpayer cost.</p>
-          <div class="stat-block">
-            <div class="stat">
-              <p class="stat-label">Market share</p>
-              <p class="stat-value ban-stat count-up" data-count-up="7" data-suffix="%">7%</p>
-              <p class="stat-desc">340B share of U.S. outpatient drug purchases</p>
-              <p class="stat-impact">Impact: It shows the share of national outpatient drug spend that flows through 340B—useful scale for the program’s national footprint.</p>
-            </div>
-          </div>
-          <div class="glossary-strip" aria-label="Key terms on this page">
-            <p class="glossary-strip-title">Terms used here</p>
-            <dl class="glossary-dl">
-              <dt title="Federal outpatient drug discount program for eligible hospitals and clinics (short definition below).">340B</dt>
-              <dd>Federal program that requires manufacturers to charge certain eligible hospitals and clinics lower prices on outpatient drugs.</dd>
-              <dt title="A hospital or clinic that meets federal rules and can buy outpatient drugs at 340B prices.">Covered entity</dt>
-              <dd>A hospital or clinic that qualifies for 340B pricing.</dd>
-              <dt title="Pharmacy that fills 340B prescriptions under agreement with a covered entity hospital.">Contract pharmacy</dt>
-              <dd>A community pharmacy that dispenses 340B-discounted drugs on a hospital’s behalf.</dd>
-              <dt title="Pharmacy benefit manager: third party that manages drug benefits for insurers and employers.">PBM</dt>
-              <dd>Pharmacy benefit manager—coordinates drug benefits for health plans.</dd>
-            </dl>
-          </div>
+          <p id="overview-lead">340B allows eligible hospitals and clinics to buy outpatient drugs at a federal discount and reinvest those savings in patient care and community services, at no cost to taxpayers.</p>
         </article>
       </div>
     </div>
 
     <!-- ========== SECTION: Supporting context — Why this matters ========== -->
-    <div class="supporting-section span-12 scroll-reveal ow-section ow-section--band-a">
-      <h3 class="section-subhead section-subhead--supporting">Why this matters to health system leaders</h3>
-      <div class="supporting-cards-row">
-      <article id="eligibility" class="card card--compact card--identity-policy">
-        <div class="card-heading">
-          <div class="card-heading-text">
-            <p class="card-title">Eligible providers</p>
+    <section class="supporting-section supporting-section--executive span-12 scroll-reveal ow-section ow-section--band-a" aria-labelledby="leaders-impact-title">
+      <div class="supporting-shell">
+        <h3 id="leaders-impact-title" class="section-subhead section-subhead--supporting">Why this matters to health system leaders</h3>
+        <div class="supporting-executive-grid">
+          <article id="eligibility" class="supporting-panel supporting-panel--providers">
+            <p class="supporting-kicker">Eligible providers</p>
             <h2>Who depends on 340B</h2>
-          </div>
-          <div class="card-icon card-icon--people" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+            <p class="supporting-lead">340B supports safety-net providers in both rural and urban markets.</p>
+            <ul class="supporting-list">
+              <li>Children's and cancer hospitals</li>
+              <li>Rural critical-access hospitals and safety-net hospitals</li>
+              <li>Federally qualified health centers</li>
+            </ul>
+          </article>
+
+          <article id="pa-impact" class="supporting-panel supporting-panel--pa">
+            <div class="supporting-panel-top">
+              <div>
+                <p class="supporting-kicker">Pennsylvania operating stakes</p>
+                <h2>340B remains materially relevant in PA</h2>
+              </div>
+            </div>
+            <div class="pa-primary">
+              <p class="pa-primary-value">
+                <span class="ban-stat count-up" data-count-up="72" data-suffix="">72</span>
+                <span class="pa-primary-unit">hospitals</span>
+              </p>
+              <p class="pa-primary-sub"><span class="ban-stat count-up" data-count-up="30" data-suffix=" percent">30 percent</span> of PA hospitals participate.</p>
+            </div>
+            <div class="pa-metrics">
+              <div class="pa-metric" data-tooltip="49 percent of PA 340B hospitals are in rural communities - contract pharmacies are their only access point.">
+                <p class="pa-metric-value ban-stat count-up" data-count-up="49" data-suffix=" percent">49 percent</p>
+                <p class="pa-metric-label">Rural</p>
+              </div>
+              <div class="pa-metric" data-tooltip="53 percent of PA hospitals are operating at a financial loss - 340B savings are not optional.">
+                <p class="pa-metric-value ban-stat count-up stat--perf-negative" data-count-up="53" data-suffix=" percent">53 percent</p>
+                <p class="pa-metric-label">Operating at a loss</p>
+              </div>
+              <div class="pa-metric" data-tooltip="49 percent of PA hospitals are losing money on labor and delivery - program cuts directly threaten maternity care.">
+                <p class="pa-metric-value ban-stat count-up" data-count-up="49" data-suffix=" percent">49 percent</p>
+                <p class="pa-metric-label">Labor and delivery</p>
+              </div>
+            </div>
+          </article>
         </div>
-        <p>340B supports safety-net providers in both rural and urban markets, including:</p>
-        <ul>
-          <li>Children's and cancer hospitals</li>
-          <li>Rural critical-access hospitals and safety-net hospitals</li>
-          <li>Federally qualified health centers</li>
-        </ul>
-      </article>
-      <article id="oversight" class="card card--compact card--identity-policy">
-        <div class="card-heading">
-          <div class="card-heading-text">
-            <p class="card-title">Oversight credibility</p>
-            <h2>Federal oversight remains real</h2>
-          </div>
-          <div class="card-icon card-icon--scale" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></div>
-        </div>
-        <p>In 2024 federal oversight still included meaningful review activity:</p>
-        <div class="stat-block stat-split">
-          <p class="stat-split-top-label">Federal oversight (FY 2024)</p>
-          <div class="stat">
-            <p class="stat-label">Covered entity audits</p>
-            <p class="stat-value ban-stat count-up" data-count-up="179" data-suffix="">179</p>
-          </div>
-          <div class="stat">
-            <p class="stat-label">Manufacturer audits</p>
-            <p class="stat-value ban-stat count-up" data-count-up="5" data-suffix="">5</p>
-          </div>
-        </div>
-        <p class="stat-desc stat-split-footnote">36× more hospital audits than manufacturer audits</p>
-        <p class="supporting-parity-note">HAP supports <strong>parity in oversight between hospitals and manufacturers</strong>, not a one-sided accountability standard.</p>
-      </article>
-      <article id="pa-impact" class="card card--compact card--identity-impact">
-        <div class="card-heading">
-          <div class="card-heading-text">
-            <p class="card-title">Pennsylvania operating stakes</p>
-            <h2>340B remains materially relevant in PA</h2>
-          </div>
-          <div class="card-icon card-icon--map" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
-        </div>
-        <p class="pa-impact-lede">
-          <strong><span class="ban-inline ban-inline--insurance">72</span> hospitals (30%)</strong> participate.
-          <span class="pa-impact-lede__sub">These signals show why PA is a high-stakes case study.</span>
-        </p>
-        <div class="stat-block stat-block--rows">
-          <div class="stat stat--row">
-            <p class="stat-label">Rural</p>
-            <p class="stat-value ban-stat count-up" data-count-up="49" data-suffix="%">49%</p>
-          </div>
-          <div class="stat stat--row">
-            <p class="stat-label">Operating at a loss</p>
-            <p class="stat-value ban-stat count-up stat--perf-negative" data-count-up="53" data-suffix="%">53%</p>
-          </div>
-          <div class="stat stat--row">
-            <p class="stat-label">Labor &amp; delivery</p>
-            <p class="stat-value ban-stat count-up" data-count-up="49" data-suffix="%">49%</p>
-          </div>
-        </div>
-      </article>
       </div>
-    </div>
+    </section>
 
     <!-- ========== SECTION: Community benefit ========== -->
-    <article id="community-benefit" class="card span-12 scroll-reveal ow-section ow-section--band-b">
+    <article id="community-benefit" class="card span-12 scroll-reveal ow-section ow-section--band-b nav-section-block" data-nav-label="Community benefit">
       <div class="card-heading">
         <div class="card-heading-text">
           <p class="card-title">Community benefit</p>
@@ -1244,7 +842,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
         <div class="card-icon card-icon--heart" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg></div>
       </div>
-      <p class="community-impact-lead">Hospitals reinvest 340B savings into lower-cost drugs, screening, and community services. The total below is aggregate reported community benefit.</p>
+      <p class="community-impact-lead">Hospitals reinvest 340B savings into charity care and core community services. Data as of March 2026.</p>
       <div class="benefit-grid benefit-grid--community">
         <div class="benefit-item">
           <div class="benefit-item-icon benefit-item-icon--dollar" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><circle cx="16" cy="16" r="12" stroke="currentColor" stroke-width="2"/><text x="16" y="21" text-anchor="middle" font-size="14" font-weight="700" fill="currentColor" font-family="system-ui,-apple-system,BlinkMacSystemFont,sans-serif">$</text></svg></div>
@@ -1256,11 +854,11 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </div>
         <div class="benefit-item">
           <div class="benefit-item-icon benefit-item-icon--bus" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M5 14h22a2 2 0 0 1 2 2v8H5v-10z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M5 14 7 9h18l2 5" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><rect x="8" y="11" width="5" height="4" rx="0.5" stroke="currentColor" stroke-width="1.5"/><rect x="19" y="11" width="5" height="4" rx="0.5" stroke="currentColor" stroke-width="1.5"/><circle cx="11" cy="25" r="2.75" fill="currentColor"/><circle cx="21" cy="25" r="2.75" fill="currentColor"/><path d="M9 18h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-          <p class="benefit-item-text">Mobile mammography &amp; cancer screening</p>
+          <p class="benefit-item-text">Mobile mammography and cancer screening</p>
         </div>
         <div class="benefit-item">
           <div class="benefit-item-icon benefit-item-icon--photo benefit-item-icon--dental" aria-hidden="true"><img src="assets/icons/tooth.png" alt="" width="96" height="96" loading="lazy" decoding="async"></div>
-          <p class="benefit-item-text">Dental care &amp; preventive services</p>
+          <p class="benefit-item-text">Dental care and preventive services</p>
         </div>
       </div>
       <div class="community-benefit-hero">
@@ -1281,7 +879,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </article>
 
     <!-- ========== SECTION: Pennsylvania Impact Mode (JS modules) ========== -->
-    <section id="pa-impact-mode" class="pa-impact-mode-section span-12 scroll-reveal ow-section ow-section--band-a" aria-label="Pennsylvania Impact Mode">
+    <section id="pa-impact-mode" class="pa-impact-mode-section span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="PA impact" aria-label="Pennsylvania Impact Mode">
       <article class="card pa-impact-mode-card">
         <div id="pa-impact-mode-root"></div>
 
@@ -1422,7 +1020,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     </section>
 
     <!-- ========== SECTION: Policy Impact Simulator (JS modules) ========== -->
-    <section id="policy-impact-simulator" class="impact-simulator-section span-12 scroll-reveal ow-section ow-section--band-b" aria-label="Policy Impact Simulator">
+    <section id="policy-impact-simulator" class="impact-simulator-section span-12 scroll-reveal ow-section ow-section--band-b nav-section-block" data-nav-label="Policy simulator" aria-label="Policy Impact Simulator">
       <article class="card impact-simulator-card">
         <details class="impact-simulator-methodology">
           <summary>⚠️ Simulator methodology — read before presenting outputs</summary>
@@ -1437,113 +1035,20 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
               <li>Does not account for individual hospital variation in drug mix, payer mix, or contract pharmacy reliance</li>
               <li>Does not model behavioral responses (e.g., hospitals dropping contract pharmacies vs. absorbing cost reductions)</li>
               <li>Not a CBO score, CMS estimate, or actuarial projection</li>
-              <li>Should not be cited as an official HAP estimate without review by Strategic Analytics</li>
+              <li>Should not be cited as an official HAP estimate without HAP review</li>
             </ul>
-            <p>To request a facility-specific or scenario-specific model for testimony or member briefings:<br>
-              HAP Strategic Analytics | (717) 564-9200</p>
+            <p>To request a facility-specific or scenario-specific model for testimony or member briefings, contact HAP through <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">haponline.org</a>.</p>
           </div>
         </details>
         <div id="policy-impact-simulator-root"></div>
       </article>
     </section>
 
-    <!-- Policy milestones: static context only (advanced dashboard); not shown on BASIC -->
-    <section id="policy-milestones" class="dashboard-advanced-only span-12 scroll-reveal ow-section ow-section--band-a" aria-label="340B policy timeline" aria-describedby="policy-timeline-kicker">
-      <article class="card policy-timeline-card">
-        <p class="card-title">Policy context</p>
-        <h2 class="policy-timeline-heading">Federal program to state protections</h2>
-        <p id="policy-timeline-kicker" class="policy-timeline-kicker">Briefing anchors only—not legal advice or a full regulatory history.</p>
-        <p class="policy-timeline-why-now"><strong>Why it matters now:</strong> Federal contract pharmacy disputes keep pushing states to clarify protections—this arc is the backdrop for the map above.</p>
-        <div class="policy-timeline policy-timeline--v2" data-ptl-interactive="true">
-          <div class="policy-timeline-progress-bar" aria-hidden="true">
-            <div class="policy-timeline-progress-fill"></div>
-          </div>
-          <div class="policy-timeline-svg-wrap">
-            <svg class="policy-timeline-svg" viewBox="0 0 1000 88" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">
-              <defs>
-                <linearGradient id="ptl-line-gradient-340b" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stop-color="#0b67c2"/>
-                  <stop offset="35%" stop-color="#455a64"/>
-                  <stop offset="70%" stop-color="#6a1b9a"/>
-                  <stop offset="100%" stop-color="#1565c0"/>
-                </linearGradient>
-              </defs>
-              <path class="policy-timeline-line-base" d="M 90 44 L 330 44 L 570 44 L 810 44" />
-              <path class="policy-timeline-line-anim" d="M 90 44 L 330 44 L 570 44 L 810 44" />
-              <g class="policy-timeline-node-g policy-timeline-node-g--1">
-                <circle class="policy-timeline-node-outer" cx="90" cy="44" r="14" fill="#fff" stroke="#0b67c2" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="90" cy="44" r="6" fill="#0b67c2" />
-              </g>
-              <g class="policy-timeline-node-g policy-timeline-node-g--2">
-                <circle class="policy-timeline-node-outer" cx="330" cy="44" r="14" fill="#fff" stroke="#455a64" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="330" cy="44" r="6" fill="#455a64" />
-              </g>
-              <g class="policy-timeline-node-g policy-timeline-node-g--3">
-                <circle class="policy-timeline-node-outer" cx="570" cy="44" r="14" fill="#fff" stroke="#6a1b9a" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="570" cy="44" r="6" fill="#6a1b9a" />
-              </g>
-              <g class="policy-timeline-node-g policy-timeline-node-g--4">
-                <circle class="policy-timeline-node-outer" cx="810" cy="44" r="14" fill="#fff" stroke="#1565c0" stroke-width="3" />
-                <circle class="policy-timeline-node-inner" cx="810" cy="44" r="6" fill="#1565c0" />
-              </g>
-            </svg>
-          </div>
-          <div class="policy-timeline-track" role="list">
-            <article class="timeline-item" id="timeline-item-1" role="listitem" data-timeline-index="1">
-              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-1" id="timeline-btn-1">
-                <span class="timeline-item__date">1992</span>
-                <span class="timeline-item__title">340B established</span>
-                <span class="timeline-item__chev" aria-hidden="true"></span>
-              </button>
-              <p class="timeline-item__lede">Congress creates the discount ceiling for safety-net hospitals.</p>
-              <p class="timeline-item__impact"><span class="timeline-item__impact-kicker">Impact:</span> Sets the legal foundation for today’s access fights.</p>
-              <div class="timeline-item__panel" id="timeline-panel-1" hidden>
-                <p class="timeline-item__detail">Statute defines covered entities and the ceiling price manufacturers must honor.</p>
-              </div>
-            </article>
-            <article class="timeline-item" id="timeline-item-2" role="listitem" data-timeline-index="2">
-              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-2" id="timeline-btn-2">
-                <span class="timeline-item__date">2010s–20s</span>
-                <span class="timeline-item__title">Contract pharmacy grows</span>
-                <span class="timeline-item__chev" aria-hidden="true"></span>
-              </button>
-              <p class="timeline-item__lede">Hospitals add contract pharmacies; volume and scrutiny both grow.</p>
-              <p class="timeline-item__impact"><span class="timeline-item__impact-kicker">Impact:</span> Expands access and raises oversight pressure.</p>
-              <div class="timeline-item__panel" id="timeline-panel-2" hidden>
-                <p class="timeline-item__detail">Agency guidance and litigation evolve on how contract pharmacy networks operate.</p>
-              </div>
-            </article>
-            <article class="timeline-item" id="timeline-item-3" role="listitem" data-timeline-index="3">
-              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-3" id="timeline-btn-3">
-                <span class="timeline-item__date">2018–20s</span>
-                <span class="timeline-item__title">Access flashpoint</span>
-                <span class="timeline-item__chev" aria-hidden="true"></span>
-              </button>
-              <p class="timeline-item__lede">Drugmakers tighten shipping and pharmacy rules; patients feel it.</p>
-              <p class="timeline-item__impact"><span class="timeline-item__impact-kicker">Impact:</span> Drives states to pass protections you see on the map.</p>
-              <div class="timeline-item__panel" id="timeline-panel-3" hidden>
-                <p class="timeline-item__detail">Restrictions push policymakers to clarify patient access through contract pharmacies.</p>
-              </div>
-            </article>
-            <article class="timeline-item" id="timeline-item-4" role="listitem" data-timeline-index="4">
-              <button type="button" class="timeline-item__header" aria-expanded="false" aria-controls="timeline-panel-4" id="timeline-btn-4">
-                <span class="timeline-item__date">2021+</span>
-                <span class="timeline-item__title">State protections</span>
-                <span class="timeline-item__chev" aria-hidden="true"></span>
-              </button>
-              <p class="timeline-item__lede">States write contract pharmacy protections into law—often with reporting.</p>
-              <p class="timeline-item__impact"><span class="timeline-item__impact-kicker">Impact:</span> Reduces friction where enacted; patchwork where not.</p>
-              <div class="timeline-item__panel" id="timeline-panel-4" hidden>
-                <p class="timeline-item__detail">Hybrid models add reporting while protecting access.</p>
-              </div>
-            </article>
-          </div>
-        </div>
-      </article>
-    </section>
-
     <!-- ========== SECTION: Policy nav anchor ========== -->
-    <div id="policy" class="span-12" style="height:0;margin:0;padding:0;" aria-hidden="true"></div>
+    <section id="policy" class="span-12 policy-anchor-banner nav-section-block" data-nav-label="Policy &amp; access" aria-label="Policy and access section">
+      <h2 class="policy-anchor-title">Policy &amp; access</h2>
+      <p class="policy-anchor-subtitle">Duplicate discount safeguards, patient-access impacts, and Pennsylvania protections in one section.</p>
+    </section>
 
     <!-- ========== SECTION: Duplicate discounts + access (redesigned, less cramped) ========== -->
     <section class="policy-triad span-12 scroll-reveal ow-section ow-section--band-a" aria-label="Duplicate discount and access context">
@@ -1569,25 +1074,95 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           <ul class="policy-triad-bullets" role="list">
             <li><strong>Policy question:</strong> whether manufacturers can restrict contract pharmacy access as an enforcement tool (beyond what the statute requires).</li>
           </ul>
-          <p class="policy-triad-why">Why it matters: restrictions hit patients first, especially rural and underserved communities.</p>
         </div>
       </article>
 
-      <article id="access" class="card policy-triad-card" aria-label="Access to care">
-        <header class="policy-triad-card__head">
+      <article id="access" class="card policy-triad-card policy-triad-card--access-feature" aria-label="Access to care">
+        <header class="policy-triad-card__head policy-triad-card__head--access-feature">
           <div class="policy-triad-headline">
             <p class="policy-triad-kicker">Access to care</p>
-            <h2 class="policy-triad-title">Contract pharmacy limits shrink access</h2>
+            <h2 class="policy-triad-title">340B protects access to care in Pennsylvania</h2>
           </div>
           <div class="card-icon card-icon--rx" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3v18"/><path d="M5 12h14"/><path d="m3 8 3-3 3 3"/><path d="m21 8-3-3-3 3"/><path d="m3 16 3 3 3-3"/><path d="m21 16-3 3-3-3"/></svg></div>
         </header>
-        <div class="policy-triad-body">
-          <p class="policy-triad-lede">Federal rules allow hospitals to use in-house or community pharmacies for 340B.</p>
-          <ul class="policy-triad-bullets" role="list">
-            <li><strong>Restriction:</strong> limiting hospitals to <strong>one contract pharmacy</strong></li>
-            <li><strong>Result:</strong> fewer local pickup options and longer travel—especially in rural areas</li>
-          </ul>
-          <p class="policy-triad-why policy-triad-why--access">Why it matters: barriers mean missed refills, delayed starts, and higher out-of-pocket costs.</p>
+        <div class="policy-triad-body policy-access-feature-body">
+          <section class="policy-access-decision-strip policy-access-module" aria-label="Executive decision frame">
+            <article class="policy-access-decision-item" aria-label="Decision needed">
+              <p class="policy-access-decision-label">Decision needed</p>
+              <p class="policy-access-decision-text">Adopt state and federal guardrails that prevent manufacturer restrictions on contract pharmacy access.</p>
+            </article>
+            <article class="policy-access-decision-item" aria-label="Why now">
+              <p class="policy-access-decision-label">Why now</p>
+              <p class="policy-access-decision-text">Pennsylvania has 72 participating hospitals and peer states have already enacted protections.</p>
+            </article>
+            <article class="policy-access-decision-item" aria-label="Consequence without action">
+              <p class="policy-access-decision-label">Consequence without action</p>
+              <p class="policy-access-decision-text">Without policy clarity, medication access and community services are at higher risk in rural and underserved areas.</p>
+            </article>
+          </section>
+          <div class="policy-access-feature-visual" aria-label="National context and Pennsylvania scale">
+            <div class="policy-access-stat-callout policy-access-module" role="group" aria-label="Pennsylvania hospitals in 340B">
+              <p class="policy-access-stat-kicker">Pennsylvania impact</p>
+              <p class="policy-access-stat-value ban-stat count-up" data-count-up="72">72</p>
+              <p class="policy-access-stat-label">PA hospitals rely on 340B</p>
+              <p class="policy-access-stat-context">States are stepping up to protect contract pharmacy access. Pennsylvania should not fall behind.</p>
+              <p class="policy-access-source">Data as of March 2025. Sources: HRSA OPAIS participation file; National Academy for State Health Policy contract pharmacy legislation tracker.</p>
+            </div>
+            <div class="policy-access-signal-panel policy-access-module" aria-label="Access trend signal">
+              <p class="policy-access-signal-head">Defined trend metric</p>
+              <div class="policy-access-signal-track" aria-hidden="true">
+                <span class="policy-access-signal-fill"></span>
+              </div>
+              <p class="policy-access-signal-caption">21 states have enacted protections, while 29 states have not enacted protections yet.</p>
+              <p class="policy-access-source">Metric definition: enacted state protections / total states. Data as of March 2025.</p>
+            </div>
+            <div class="policy-access-pill-row policy-access-module" aria-label="Care areas impacted">
+              <span class="policy-access-pill">Rural hospitals</span>
+              <span class="policy-access-pill">Underserved patients</span>
+              <span class="policy-access-pill">Behavioral health access</span>
+            </div>
+            <details class="policy-triad-services-panel policy-access-module" aria-labelledby="policy-access-services-heading">
+              <summary class="policy-triad-services-toggle">View programs and services supported</summary>
+              <p id="policy-access-services-heading" class="policy-triad-services-head">Programs and services supported with 340B savings</p>
+              <p class="policy-triad-services-subhead">These services are often the first at risk when 340B support is reduced.</p>
+              <ul class="policy-triad-services-grid" role="list" aria-label="Programs and services supported">
+                <li>Housing stability</li>
+                <li>Behavioral health</li>
+                <li>Maternal health</li>
+                <li>Chronic disease management</li>
+                <li>Preventative care</li>
+                <li>Transportation services</li>
+                <li>Early childhood development</li>
+                <li>Public health education</li>
+              </ul>
+            </details>
+          </div>
+          <div class="policy-access-feature-main">
+            <p class="policy-triad-lede policy-triad-lede--access-feature policy-access-module"><strong>In Pennsylvania, 72 hospitals rely on 340B to keep care within reach.</strong></p>
+            <div class="policy-access-messaging-head policy-access-module" aria-label="HAP messaging">
+              <p class="policy-access-messaging-kicker">HAP position</p>
+              <h3 class="policy-access-messaging-title">Protect access, stop manufacturer restrictions, and keep care local.</h3>
+            </div>
+            <div class="policy-access-accordion" role="list" aria-label="Key HAP messages about 340B access">
+              <article class="policy-access-row policy-access-row--lifeline" role="listitem">
+                <p class="policy-access-row__label">Critical lifeline</p>
+                <p class="policy-access-row__headline">340B supports care access in rural and underserved communities.</p>
+                <p class="policy-access-row__text">Hospitals and clinics serving Pennsylvania's most vulnerable patients rely on 340B to sustain patient-facing services.</p>
+              </article>
+              <article class="policy-access-row policy-access-row--risk" role="listitem">
+                <p class="policy-access-row__label">Manufacturers limiting access</p>
+                <p class="policy-access-row__headline">Restrictions on contract pharmacy use can reduce medication access.</p>
+                <p class="policy-access-row__text">Restrictions can narrow where patients fill prescriptions and increase medication delays for high-need communities.</p>
+              </article>
+              <article class="policy-access-row policy-access-row--action" role="listitem">
+                <p class="policy-access-row__label">HAP's ask: state and federal action</p>
+                <p class="policy-access-row__headline">Protect program integrity by preventing manufacturer restrictions.</p>
+                <p class="policy-access-row__text"><strong>State ask:</strong> Enact Pennsylvania protections for contract pharmacy access and preserve DHS duplicate-discount safeguards.</p>
+                <p class="policy-access-row__text"><strong>Federal ask:</strong> Reinforce HRSA oversight and maintain statutory protections for covered entities serving safety-net populations.</p>
+              </article>
+            </div>
+          </div>
+          <p class="policy-triad-why policy-triad-why--access policy-triad-why--access-feature policy-access-module"><span class="policy-triad-why__badge">Protect 340B, Protect Patients</span> Without 340B savings, Pennsylvania hospitals may limit patient services and already at-risk communities could lose access to care. Pennsylvania needs policies that protect 340B integrity and preserve access to medications.</p>
         </div>
       </article>
 
@@ -1607,7 +1182,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
           </ul>
           <details class="policy-triad-footnote">
             <summary>Sources &amp; statute</summary>
-            <p id="duplicate-discount-footnote-2" class="pa-safeguards-footnote">[2] Statutory basis: Veterans Health Care Act of 1992, codified at 42 U.S.C. § 256b. HRSA and CMS coordinate Medicaid exclusion files at the federal level to prevent duplicate discounts. PA DHS operates the state-level 340B Drug Exclusion List in parallel with the federal mechanism. Source: 42 U.S.C. § 256b; HRSA-CMS guidance. For questions: HAP Finance &amp; Legal Affairs | (717) 564-9200</p>
+            <p id="duplicate-discount-footnote-2" class="pa-safeguards-footnote">[2] Statutory basis: Veterans Health Care Act of 1992, codified at 42 U.S.C. § 256b. HRSA and CMS coordinate Medicaid exclusion files at the federal level to prevent duplicate discounts. PA DHS operates the state-level 340B Drug Exclusion List in parallel with the federal mechanism. Source: 42 U.S.C. § 256b; HRSA-CMS guidance.</p>
           </details>
         </div>
       </article>
@@ -1670,7 +1245,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         <div class="leave-behind-page__header">
           <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="leave-behind-logo" width="40" height="40" loading="lazy">
           <div class="leave-behind-title">
-            340B Advocacy Dashboard
+            Protect 340B, protect patients · 340B Advocacy Dashboard
           </div>
         </div>
 
@@ -1708,21 +1283,21 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
               <div class="hap-ask-item-body">
                 <h4 class="hap-ask-item-label">Protect the 340B discount</h4>
-                <p class="hap-ask-item-impact">Impact: Hospitals keep access to the outpatient drug prices Congress set for charity care and community benefit.</p>
+                <p class="hap-ask-item-impact">Impact: Keeps hospital access to prices Congress set for charity care and community benefit.</p>
               </div>
             </li>
             <li class="hap-ask-item hap-ask-item--partnership" title="Supports filling prescriptions through hospitals’ contract pharmacy networks.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg></span>
               <div class="hap-ask-item-body">
                 <h4 class="hap-ask-item-label">Defend contract pharmacy partnerships</h4>
-                <p class="hap-ask-item-impact">Impact: Patients can fill prescriptions through local and network pharmacies hospitals contract with—not only one distant site.</p>
+                <p class="hap-ask-item-impact">Impact: Lets patients fill prescriptions through local and network pharmacies, not one distant site.</p>
               </div>
             </li>
             <li class="hap-ask-item hap-ask-item--access" title="Avoids policies that make it harder for underserved patients to get 340B-priced drugs.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
               <div class="hap-ask-item-body">
                 <h4 class="hap-ask-item-label">Oppose rules that shrink access for safety-net patients</h4>
-                <p class="hap-ask-item-impact">Impact: Rural and underserved communities keep an affordable path to medications hospitals are required to support.</p>
+                <p class="hap-ask-item-impact">Impact: Preserves affordable medication access in rural and underserved communities.</p>
               </div>
             </li>
           </ul>
@@ -1730,32 +1305,32 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
 
         <div class="leave-behind-ask-group" aria-label="Pennsylvania government asks">
           <ul class="hap-ask-list leave-behind-ask-grid" role="list">
-            <li class="hap-ask-item hap-ask-item--policy" title="Direct PA DHS to maintain and strengthen the 340B Drug Exclusion List.">
+            <li class="hap-ask-item hap-ask-item--policy" title="Keep Pennsylvania’s duplicate-discount protections strong under Medicaid.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V8l7-5 7 5v13"/><path d="M9 21v-8h6v8"/></svg></span>
               <div class="hap-ask-item-body">
-                <h4 class="hap-ask-item-label">Governor Shapiro's Office</h4>
-                <p class="hap-ask-item-impact">Impact: Direct PA DHS to maintain and strengthen the 340B Drug Exclusion List and oppose any federal waiver or demonstration that would reduce 340B participation for PA Medicaid patients.</p>
+                <h4 class="hap-ask-item-label">Sustain DHS duplicate-discount safeguards</h4>
+                <p class="hap-ask-item-impact">Impact: DHS should maintain the Medicaid Exclusion File and Drug Exclusion List so covered entities can be tracked and duplicate discounts are prevented.</p>
               </div>
             </li>
-            <li class="hap-ask-item hap-ask-item--partnership" title="Advance contract pharmacy protection legislation this session.">
+            <li class="hap-ask-item hap-ask-item--partnership" title="State action to prevent manufacturer limits on contract pharmacies.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h16"/><path d="M6 20l2-10 8 0 2 10"/><path d="M10 10V6a2 2 0 0 1 4 0v4"/></svg></span>
               <div class="hap-ask-item-body">
-                <h4 class="hap-ask-item-label">PA Senate — Health &amp; Human Services Committee</h4>
-                <p class="hap-ask-item-impact">Impact: Advance contract pharmacy protection legislation this session. Twenty-one states have already acted. Pennsylvania's 72 participating hospitals need the same protection.</p>
+                <h4 class="hap-ask-item-label">Protect 340B integrity—contract pharmacies</h4>
+                <p class="hap-ask-item-impact">Impact: Preventing manufacturer limits keeps hospitals and clinics connected to the pricing Congress intended.</p>
               </div>
             </li>
-            <li class="hap-ask-item hap-ask-item--access" title="Calls for hearings and a companion bill.">
+            <li class="hap-ask-item hap-ask-item--access" title="Rural and underserved patients rely on multiple contract and specialty pharmacies.">
               <span class="hap-ask-item-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8"/><path d="M5 10v11h14V10"/><path d="M10 21v-6h4v6"/></svg></span>
               <div class="hap-ask-item-body">
-                <h4 class="hap-ask-item-label">PA House — Health Committee</h4>
-                <p class="hap-ask-item-impact">Impact: Schedule hearings on contract pharmacy restriction impacts and move a companion bill before session ends.</p>
+                <h4 class="hap-ask-item-label">Preserve access in rural and underserved communities</h4>
+                <p class="hap-ask-item-impact">Impact: Many providers rely on contract and specialty pharmacies; one-pharmacy limits constrain access for Pennsylvania's most vulnerable patients.</p>
               </div>
             </li>
           </ul>
         </div>
 
         <div class="leave-behind-contact-line">
-          haponline.org/340b | (717) 564-9200 | Dashboard developed by Jordan Zabady, Producer, Digital Communications
+          haponline.org/340b | (717) 564-9200 | Prepared by The Hospital and Healthsystem Association of Pennsylvania
         </div>
       </div>
 
@@ -1843,7 +1418,7 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
         </p>
 
         <div class="leave-behind-prepared-by">
-          Dashboard developed by Jordan Zabady, Producer, Digital Communications | (717) 564-9200 | March 2026 | haponline.org/340b
+          Prepared by The Hospital and Healthsystem Association of Pennsylvania | (717) 564-9200 | March 2026 | haponline.org/340b
         </div>
       </div>
     </section>
@@ -1869,7 +1444,26 @@ var STATES_WITH_PROTECTION = Object.keys(STATE_340B).filter(function (abbr) {
     <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="footer-logo" width="64" height="64" loading="lazy">
     <strong>The Hospital and Healthsystem Association of Pennsylvania</strong>
   </p>
-  <p class="footer-design">Design Mark XII — Continuous Optimization System</p>
+  <p class="footer-address">30 North Third Street, Suite 600, Harrisburg, PA 17101-1703 | (717) 564-9200</p>
+  <p class="footer-links">
+    <a href="https://www.haponline.org/" target="_blank" rel="noopener noreferrer">haponline.org</a>
+    <span aria-hidden="true">|</span>
+    <a href="https://www.haponline.org/privacy-statement" target="_blank" rel="noopener noreferrer">Privacy statement</a>
+    <span aria-hidden="true">|</span>
+    <a href="https://www.haponline.org/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms and conditions</a>
+  </p>
+  <details class="go-live-checklist">
+    <summary>Go-live checklist for web publishing</summary>
+    <ul>
+      <li>Replace <code>GA_MEASUREMENT_ID</code> with HAP’s production analytics property.</li>
+      <li>Confirm final URL path remains <code>/340b</code> and canonical metadata matches production domain.</li>
+      <li>Validate all figures and dates against <code>state-data.js</code> and policy source references.</li>
+      <li>Run print output QA for two-page leave-behind and one-page hearing prep handout.</li>
+      <li>Confirm accessibility checks in target CMS template (heading order, focus, keyboard map use).</li>
+      <li>Verify external links and social preview cards after deployment.</li>
+    </ul>
+  </details>
+  <p class="footer-design">Built for HAP advocacy and member communications.</p>
 </footer>
 </div>
 

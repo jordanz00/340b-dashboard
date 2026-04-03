@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'none'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self';">
   <title>340B Drug Pricing Program | HAP Advocacy Dashboard (Basic)</title>
   <meta name="description" content="HAP 340B Advocacy Dashboard — safe for employer hosting. Interactive map, full content, local scripts only.">
   <link rel="stylesheet" href="hap-design-tokens.css">
@@ -283,7 +283,6 @@
                   <p>$7.95B national community benefit ÷ 72 PA hospitals = ~$110M per hospital. This is a mathematical illustration of national program scale applied to Pennsylvania's footprint — not HAP's estimate of any specific hospital's 340B savings, margin, or community benefit.</p>
                   <p>Actual amounts vary widely by hospital size, DSH percentage, payer mix, drug category mix, and contract pharmacy network configuration.</p>
                   <p>Do not use this figure in testimony, press statements, or regulatory filings without facility-specific data.</p>
-                  <p>For hospital-specific 340B impact analysis: HAP Strategic Analytics | (717) 564-9200</p>
                 </div>
               </details>
             </div>
@@ -311,7 +310,7 @@
             <p class="key-finding-impact">Impact: It quantifies how much national outpatient drug spend flows through the program.</p>
           </article>
         </div>
-        <p class="basic-static-note"><em>Trend lines based on published annual figures. Source years and methodologies vary by metric — see methodology section. Data: HAP Strategic Analytics.</em></p>
+        <p class="basic-static-note"><em>Trend lines based on published annual figures. Source years and methodologies vary by metric — see methodology section. Data: cited public sources.</em></p>
       </section>
 
       <!-- ========== BOTTOM LINE TAKEAWAY ========== -->
@@ -338,14 +337,14 @@
         </article>
       </section>
 
-      <!-- ========== STATE MAP: BASIC is static (no scripts) ========== -->
+      <!-- ========== STATE MAP: BASIC local interactive map (IT-safe local scripts) ========== -->
       <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a">
         <div class="map-hero-inner">
           <article class="map-hero-card">
             <p class="map-hero-title">State-by-state</p>
             <h2 class="map-hero-headline">Who protects contract pharmacy—and who doesn’t</h2>
             <p class="map-hero-sub">Start with the map: see which states have enacted contract pharmacy protection and open any state for details.</p>
-            <p class="map-how-to-use" id="map-how-to-use">Click a state on the map for details. This BASIC view shows the map only—use the full dashboard for filters and lists.</p>
+            <p class="map-how-to-use" id="map-how-to-use">Click a state on the map for a brief status note. BASIC includes local map interaction only; use the full dashboard for filters and expanded analysis.</p>
             <div class="section-insight" aria-label="How to read this map">
               <p class="section-insight-label">What this shows</p>
               <p class="section-insight-text">Contract pharmacy protection by state—where state law backs hospitals’ use of community pharmacies under 340B.</p>
@@ -355,8 +354,8 @@
           </article>
           <div class="basic-map-shell">
             <div class="us-map-wrap visible map-visible basic-map-wrap">
-              <div class="basic-map-canvas" role="img" aria-label="Map placeholder (static BASIC)">
-                <p class="basic-static-note" style="margin:0;">Interactive map is available in the full dashboard. Use “Full dashboard” in the header or footer.</p>
+              <div id="basic-us-map" class="basic-map-canvas" role="img" aria-label="340B contract pharmacy map (BASIC)">
+                <p class="basic-static-note" style="margin:0;">Loading map...</p>
               </div>
             </div>
             <div class="map-legend-compact" aria-label="Map colors">
@@ -364,7 +363,8 @@
               <span class="map-legend-compact-sep" aria-hidden="true">·</span>
               <span class="map-legend-compact-item"><span class="map-legend-swatch no-protection" aria-hidden="true"></span> Gray = no state law yet</span>
             </div>
-            <div class="basic-state-detail" role="note">This BASIC view is static for employer/IT-safe hosting. For state-level notes and interactive detail, open the full dashboard.</div>
+            <div id="basic-state-detail" class="basic-state-detail" role="note">Select a state to view a quick protection-status note. For richer state detail and filters, open the full dashboard.</div>
+            <p id="basic-state-selection-status" class="sr-only" aria-live="polite" aria-atomic="true"></p>
           </div>
 
           <!-- ========== RECENT LEGAL SIGNALS ========== -->
@@ -676,5 +676,12 @@
     <p class="footer-design">Design Mark XII — Continuous Optimization System · BASIC (local scripts only)</p>
   </footer>
 </div>
+<div id="basic-map-tooltip" class="basic-map-tooltip" aria-hidden="true"></div>
+<script src="state-data.js"></script>
+<script src="assets/vendor/d3.min.js"></script>
+<script src="assets/vendor/topojson-client.min.js"></script>
+<script src="assets/vendor/states-10m.js"></script>
+<script src="hap-nav-shared.js"></script>
+<script src="340b-basic-map.js"></script>
 </body>
 </html>

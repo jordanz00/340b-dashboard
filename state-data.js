@@ -13,8 +13,7 @@
  *
  * See DATA-UPDATE.md for instructions.
  *
- * CONFIG.copy overlaps the inline CONFIG in 340b.html — update both when changing shared
- * strings, or drift will confuse users (see NOVICE-MAINTAINER.md).
+ * CONFIG is the single source of truth for runtime copy/date metadata on 340B surfaces.
  */
 
 /* ========== CONFIGURATION ========== */
@@ -22,23 +21,28 @@
 var CONFIG = {
   dashboardTitle: "340B Drug Pricing Program",
   dashboardSubtitle: "HAP Advocacy Dashboard",
-  pageDescription: "HAP 340B Advocacy Dashboard: State-by-state contract pharmacy protection, Pennsylvania hospital impact, and the HAP policy case for protecting 340B integrity and contract pharmacy access.",
-  shareTitle: "340B Drug Pricing Program | HAP Advocacy Dashboard",
-  shareDescription: "Protect 340B integrity and contract pharmacy access | 72 PA hospitals | $7.95B community benefits | State-by-state 340B policy dashboard.",
+  pageDescription: "HAP 340B Advocacy Dashboard: Protect 340B, protect patients—state-by-state contract pharmacy law, Pennsylvania hospital footprint, and policies that preserve access to medications.",
+  shareTitle: "340B protects access to care in Pennsylvania | HAP Advocacy Dashboard",
+  shareDescription: "Protect 340B, protect patients | 72 PA hospitals | $7.95B reported community benefit (2024) | State-by-state contract pharmacy dashboard.",
+  ogTitle: "340B protects access to care in Pennsylvania — HAP Advocacy Dashboard",
+  ogDescription: "Protect 340B, protect patients. 72 Pennsylvania hospitals rely on the program; savings support vulnerable patients and community services. See the data and HAP's asks.",
+  twitterTitle: "340B protects access to care in Pennsylvania — HAP Dashboard",
+  twitterDescription: "72 PA hospitals use 340B to fund free prescriptions, cancer screening, and rural care. See where state law stands.",
   shareUrlBase: "https://jordanz00.github.io/340b-dashboard/340b.html",
   dataFreshness: "March 2026",
   lastUpdated: "March 2026",
+  configVersion: 1,
   printDefaultState: "PA",
   printDefaultStateReason: "HAP focal state for print.",
 
   /* Plain-language copy for advocates and lay audiences */
   copy: {
     overviewLead:
-      "340B is a federal discount that helps eligible hospitals (covered entities) stretch dollars further so more patients get care and affordable medicines—without new taxpayer cost.",
+      "340B lets eligible hospitals and clinics buy certain outpatient drugs from manufacturers at a discounted rate—at no cost to taxpayers—and partner with contract pharmacies so patients get the right drugs at the right time and in the right place. Hospitals reinvest those savings to strengthen care for vulnerable patients and community services.",
     hapPositionWhy:
-      "States and Congress keep debating how 340B works with contract pharmacies—choices that affect whether patients can get discounted meds where they actually get care.",
+      "Manufacturer restrictions on contract pharmacies and unresolved policy debates put that access at risk. Without 340B savings, Pennsylvania hospitals may limit certain patient services—and already at-risk communities can lose access to care.",
     hapPositionLead:
-      "HAP asks lawmakers to protect the program and partnerships hospitals rely on—not add barriers for safety-net patients.",
+      "Pennsylvania needs policies that protect the integrity of the 340B program and preserve hospitals' ability to ensure patient access to medications.",
     hapPositionLawmakerLabel: "Lawmaker actions",
     hapAskItems: [
       {
@@ -63,8 +67,8 @@ var CONFIG = {
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
       priorityLabel: "What we're fighting for",
-      priorityValue: "Protect the 340B discount and hospital–pharmacy partnerships",
-      priorityNote: "One clear story: access, fairness, and continuity for patients.",
+      priorityValue: "Protect 340B, protect patients",
+      priorityNote: "Keep the discount and contract pharmacy partnerships—so hospitals can keep serving vulnerable communities.",
       landscapeLabel: "Where things stand",
       landscapeNote: "Map and state panel show who’s protected and who’s not.",
       trustLabel: "Why trust this",
