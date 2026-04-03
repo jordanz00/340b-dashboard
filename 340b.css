@@ -312,7 +312,7 @@ body:has(> .dashboard) {
   overflow-x: clip;
 }
 /* Desktop: fixed left rail so nav stays visible for the entire page scroll (sticky scrolls away at the
-   bottom when the flex row ends). Mobile: horizontal sticky strip — rules in max-width block below. */
+   bottom when the flex row ends). Mobile (≤900px): sidebar hidden — use suite header nav only. */
 @media (min-width: 901px) {
   .hap-body > .hap-page-content {
     margin-left: var(--hap-sidebar-w);
@@ -473,43 +473,10 @@ body:has(> .dashboard) {
     margin-left: 0;
     width: 100%;
   }
+  /* No left rail on small screens — avoids cramped duplicate nav; .dashboard-nav--suite remains in header */
   .hap-sidebar--340b {
-    position: -webkit-sticky;
-    position: sticky;
-    left: auto;
-    top: var(--dashboard-header-offset, 6.25rem);
-    align-self: stretch;
-    width: 100%;
-    height: auto;
-    max-height: none;
-    padding: 0.35rem 0.65rem;
-    border-right: none;
-    border-bottom: 1px solid #c8d8e8;
-    box-shadow: 0 2px 6px rgba(0, 114, 188, 0.08);
+    display: none !important;
   }
-  .hap-sidebar-nav {
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.2rem;
-    padding: 0;
-  }
-  .hap-sidebar-nav a {
-    padding: 0.42rem 0.65rem;
-    font-size: 0.72rem;
-    border-radius: 999px;
-    min-height: 44px;
-    display: inline-flex;
-    align-items: center;
-    box-sizing: border-box;
-  }
-  .hap-sidebar-divider { display: none; }
-  .hap-sidebar-nav a.hap-cross-link {
-    font-size: 0.65rem;
-    min-height: 44px;
-    justify-content: center;
-  }
-  .hap-cross-link-title { font-size: 0.62rem; }
-  .hap-cross-link-desc { font-size: 0.52rem; }
 }
 /* Header — suite-aligned with OW_report_dashboard.html (.hap-header + second-row nav) */
 .dashboard-header--suite {
@@ -10499,11 +10466,6 @@ body:not(:has(> .dashboard)) {
 
   .site-footer {
     padding-bottom: max(var(--space-6), env(safe-area-inset-bottom, 0px));
-  }
-
-  .hap-sidebar--340b {
-    padding-left: max(0.35rem, env(safe-area-inset-left, 0px));
-    padding-right: max(0.35rem, env(safe-area-inset-right, 0px));
   }
 
   .us-map-wrap {
