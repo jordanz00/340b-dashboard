@@ -58,7 +58,7 @@
     communityBenefit: "October 2025",
     paHospitals: "January 2026",
     stateLaws: "March 2026",
-    outpatientShare: "2023 (IQVIA)",
+    outpatientShare: "March 2026 (HAP · Commonwealth Fund)",
     hrsaAudits: "September 2025"
   };
 
@@ -575,7 +575,13 @@
     })();
     setElementText(appState.dom.mapHeroSub, copy.mapHeroSub);
     setElementText(appState.dom.mapHowToUse, copy.mapHowToUse);
-    setElementText(appState.dom.sourcesSummary, copy.sourceSummary);
+    /* Rich PDF + https links: keep static HTML in 340b.html (#sources-summary data-rich-sources). CONFIG.copy.sourceSummary stays a plain-text mirror for docs. */
+    if (
+      appState.dom.sourcesSummary &&
+      appState.dom.sourcesSummary.getAttribute("data-rich-sources") !== "true"
+    ) {
+      setElementText(appState.dom.sourcesSummary, copy.sourceSummary);
+    }
     setElementText(appState.dom.sourcesLimitations, copy.sourcesLimitations);
     setElementText(appState.dom.verificationOrderCopy, copy.verificationOrder);
     setElementText(appState.dom.printVerificationOrderCopy, copy.verificationOrder);

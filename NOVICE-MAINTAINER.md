@@ -80,7 +80,7 @@ These flows are finalized and fragile:
 
 See [CHATGPT-PROJECT-HANDOFF.md](CHATGPT-PROJECT-HANDOFF.md) and [AGENT-RULES-SYSTEM.md](AGENT-RULES-SYSTEM.md) for stability rules.
 
-**Other rules:** Do not edit `assets/vendor/` except intentional vendor updates. Test print after any date/state/data change. Run **`python3 dashboard-audit.py`** after meaningful edits. **Print preview is a mandatory release gate.** Read [THREAT-MODEL.md](THREAT-MODEL.md) before adding remote services or auth.
+**Other rules:** Do not edit `assets/vendor/` except intentional vendor updates. Test print after any date/state/data change. Run **`python3 dashboard-audit.py`** after meaningful edits. When you change KPI dates, `DATA_DATES`, or source links, run **`python3 data-verification.py`** (add **`--check-urls`** if you need live link checks). **Print preview is a mandatory release gate.** Read [THREAT-MODEL.md](THREAT-MODEL.md) before adding remote services or auth.
 
 ---
 

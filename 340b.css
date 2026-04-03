@@ -10185,7 +10185,6 @@ body:not(:has(> .dashboard)) {
 .dashboard .key-finding-card,
 .dashboard .exec-summary-card,
 .dashboard .policy-triad-card,
-.dashboard .utility-toolbar,
 .dashboard .map-hero-card,
 .dashboard .state-laws-list-card,
 .dashboard .methodology-section-wrap,
@@ -10195,6 +10194,33 @@ body:not(:has(> .dashboard)) {
   background: var(--hap-surface-raised, #fff);
   border: 1px solid var(--hap-separator);
   box-shadow: var(--hap-ui-card-shadow, var(--hap-shadow-sm));
+}
+
+/* Page tools: sit on the same visual plane as the page wash — not a floating white card */
+.dashboard .utility-toolbar {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding-top: var(--space-4);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-2);
+  border-bottom: 1px solid rgba(60, 60, 67, 0.08);
+}
+
+.dashboard .utility-toolbar-text {
+  color: var(--hap-label-tertiary, var(--text-muted));
+  letter-spacing: 0.06em;
+}
+
+.dashboard .utility-toolbar .utility-btn:not(.utility-btn--primary) {
+  background: rgba(255, 255, 255, 0.45);
+  border-color: rgba(60, 60, 67, 0.1);
+}
+
+.dashboard .utility-toolbar .utility-btn:not(.utility-btn--primary):hover {
+  background: rgba(255, 255, 255, 0.78);
+  border-color: rgba(0, 114, 188, 0.2);
 }
 
 .dashboard .card:hover,

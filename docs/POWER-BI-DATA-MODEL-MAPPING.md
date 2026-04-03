@@ -49,7 +49,7 @@ These appear as **numbers in** [340b.html](../340b.html) (`data-count-up`) and *
 | States with contract pharmacy protection | `US_STATES_CP_PROTECTION_COUNT` | `stateLaws` | Often derived from `dim_state_law`; may still be stored as KPI for audit |
 | States without (50-state framing) | `US_STATES_NO_CP_PROTECTION_COUNT` | `stateLaws` | Same; confirm DC exclusion rules |
 | Community benefit ($B) | `COMMUNITY_BENEFIT_TOTAL_BILLIONS` | `communityBenefit` | Numeric + unit |
-| Outpatient share % | `OUTPATIENT_SHARE_PCT` | `outpatientShare` | Must match cited source (e.g. IQVIA year) |
+| Drug market share % (340B) | `OUTPATIENT_SHARE_PCT` | `outpatientShare` | HAP Mar 2026 talking points cite Commonwealth Fund for 7% of total U.S. drug market (`metric-registry.json`) |
 | HRSA audits (illustrative count) | `HRSA_AUDIT_COUNT` | `hrsaAudits` | Must match HRSA reporting extract |
 | Other banner metrics (30%, 49%, 53%, etc.) | Define per SME | (varies) | Each gets its own key and citation |
 

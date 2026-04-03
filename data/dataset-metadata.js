@@ -24,12 +24,22 @@
     ],
     /** Community benefit and KPI sources */
     kpiSources: [
-      { name: "340B Health and AHA survey", role: "Community benefit figures", period: "2024" },
-      { name: "HRSA", role: "FY 2024: 179 covered entity audits, 5 manufacturer audits", period: "2024" }
+      { name: "340B Health", role: "Community benefit figures (with AHA survey context)", period: "2024", url: "https://www.340bhealth.org/", rel: "noopener noreferrer" },
+      { name: "American Hospital Association", role: "Hospital community benefit reporting", period: "2024", url: "https://www.aha.org/", rel: "noopener noreferrer" },
+      { name: "HRSA Program Integrity", role: "FY 2024 audit counts (179 covered entity, 5 manufacturer)", period: "2024", url: "https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results", rel: "noopener noreferrer" },
+      { name: "Commonwealth Fund", role: "7% of total U.S. drug market (340B) — cited in HAP Mar 2026 talking points", period: "2025 explainer", url: "https://www.commonwealthfund.org/publications/explainer/2025/aug/340b-drug-pricing-program-how-it-works-and-why-its-controversial", rel: "noopener noreferrer" }
+    ],
+    /**
+     * HAP-approved March 2026 PDFs (same directory as 340b.html on deploy). Not https — listed for provenance;
+     * linked from the dashboard methodology block with relative hrefs.
+     */
+    hapPriorityPdfFiles: [
+      { name: "340B protects access to care in Pennsylvania (HAP fact sheet, March 2026)", file: "fact-sheet-hap-2026-protects-access-to-care-pennsylvania-march2026.pdf" },
+      { name: "340B Drug Pricing Program — Talking Points (HAP, March 2026)", file: "340b-talking-points-march2026.pdf" }
     ],
     /** Short methodology note for the About Data panel */
     methodology:
-      "Sources: MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · HRSA Program Integrity FY 2024 (audit counts). Verification order (state law): MultiState, then ASHP, then America's Essential Hospitals. Limitations: state law counts change as legislatures meet; community benefit totals are self-reported aggregates, not independently audited. Additional metrics (PA hospital counts, IQVIA share, Oliver Wyman PA statistics) are mapped in the dashboard Data sources table. Data stewardship: HAP policy and communications via haponline.org/contact.",
+      "Priority HAP materials (March 2026): fact-sheet-hap-2026-protects-access-to-care-pennsylvania-march2026.pdf and 340b-talking-points-march2026.pdf (same folder as the dashboard). Sources: MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · Commonwealth Fund (7% total U.S. drug market, per HAP talking points) · HRSA Program Integrity FY 2024 (audit counts). Verification order (state law): MultiState, then ASHP, then America's Essential Hospitals. Limitations: state law counts change as legislatures meet; community benefit totals are self-reported aggregates, not independently audited. PA operating statistics (49% / 53% / 49%): Oliver Wyman for HAP. Data stewardship: haponline.org/contact.",
     /** Optional: link to download raw or processed data (CSV/JSON). Leave empty if no public download. */
     downloadLink: "",
     /** License or use note */

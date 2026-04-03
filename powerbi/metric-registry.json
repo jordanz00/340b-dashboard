@@ -15,7 +15,10 @@
       "staticProvenanceDisplay": "January 2026",
       "unit": "COUNT",
       "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
-      "notes": "PA hospital participation count; must match org-approved source row in warehouse."
+      "authoritativeSourceUrls": [
+        { "label": "HRSA 340B Program (covered entities / program authority)", "url": "https://www.hrsa.gov/opa" }
+      ],
+      "notes": "PA hospital participation count; must match org-approved HRSA or internal enrollment extract in warehouse."
     },
     {
       "metricKey": "COMMUNITY_BENEFIT_TOTAL_BILLIONS",
@@ -23,15 +26,22 @@
       "staticProvenanceDisplay": "October 2025",
       "unit": "USD_BILLIONS",
       "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
-      "notes": "Community benefit total; align with cited survey/source in Gold."
+      "authoritativeSourceUrls": [
+        { "label": "340B Health (coalition publications / survey context)", "url": "https://www.340bhealth.org/" },
+        { "label": "American Hospital Association (hospital reporting programs)", "url": "https://www.aha.org/" }
+      ],
+      "notes": "Community benefit total; align with cited survey row in Gold — not independently audited."
     },
     {
       "metricKey": "OUTPATIENT_SHARE_PCT",
       "provenanceLabel": "outpatientShare",
-      "staticProvenanceDisplay": "2023 (IQVIA)",
+      "staticProvenanceDisplay": "March 2026 (HAP · Commonwealth Fund)",
       "unit": "PERCENT",
       "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
-      "notes": "IQVIA or org-standard share metric; confirm year in SourceCitation."
+      "authoritativeSourceUrls": [
+        { "label": "Commonwealth Fund — 340B explainer (HAP Mar 2026 talking points cite for 7% of total U.S. drug market)", "url": "https://www.commonwealthfund.org/publications/explainer/2025/aug/340b-drug-pricing-program-how-it-works-and-why-its-controversial" }
+      ],
+      "notes": "Dashboard labels this 7% figure per HAP March 2026 talking points, citing Commonwealth Fund. Warehouse SourceCitation should name the specific Commonwealth Fund publication and retrieval date."
     },
     {
       "metricKey": "HRSA_AUDIT_COUNT",
@@ -39,7 +49,10 @@
       "staticProvenanceDisplay": "September 2025",
       "unit": "COUNT",
       "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
-      "notes": "Must match HRSA Program Integrity reporting extract in warehouse."
+      "authoritativeSourceUrls": [
+        { "label": "HRSA Program Integrity — FY 2024 audit results (public record)", "url": "https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" }
+      ],
+      "notes": "Must match HRSA Program Integrity reporting extract in warehouse; same citation as 340b.html methodology table."
     },
     {
       "metricKey": "US_STATES_CP_PROTECTION_COUNT",
@@ -47,7 +60,12 @@
       "staticProvenanceDisplay": "March 2026",
       "unit": "COUNT",
       "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
-      "notes": "Optional stored KPI for audit; may be derived from dim_state_law instead — agree with Analytics."
+      "authoritativeSourceUrls": [
+        { "label": "MultiState (legislative tracking)", "url": "https://www.multistate.us/" },
+        { "label": "ASHP (pharmacy policy cross-check)", "url": "https://www.ashp.org/" },
+        { "label": "America's Essential Hospitals (advocacy confirmation)", "url": "https://essentialhospitals.org/" }
+      ],
+      "notes": "Derived from STATE_340B / dim_state_law; optional stored KPI — agree counting rules with Analytics."
     },
     {
       "metricKey": "US_STATES_NO_CP_PROTECTION_COUNT",
@@ -55,6 +73,11 @@
       "staticProvenanceDisplay": "March 2026",
       "unit": "COUNT",
       "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "MultiState (legislative tracking)", "url": "https://www.multistate.us/" },
+        { "label": "ASHP (pharmacy policy cross-check)", "url": "https://www.ashp.org/" },
+        { "label": "America's Essential Hospitals (advocacy confirmation)", "url": "https://essentialhospitals.org/" }
+      ],
       "notes": "Confirm DC exclusion vs IncludeInFiftyStateHeadline with Advocacy."
     }
   ],

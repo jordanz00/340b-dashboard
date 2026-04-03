@@ -4,6 +4,8 @@ This document is a **human-readable map** of what the 340B advocacy dashboard sh
 
 **Primary HTML reference on the live page:** section **“Data sources”** (`#data-sources` in `340b.html`) and **“Data transparency & methodology”** (`#methodology-section`).
 
+**Priority HAP briefing PDFs (March 2026), same folder as `340b.html` on deploy:** `fact-sheet-hap-2026-protects-access-to-care-pennsylvania-march2026.pdf` · `340b-talking-points-march2026.pdf`. The dashboard links these directly; if HAP publishes the same files on [haponline.org](https://www.haponline.org/), prefer that URL for external decks.
+
 ---
 
 ## 1. When the dashboard was last framed for audiences
@@ -21,12 +23,12 @@ Each row is a **verified or report-backed** line item as described on the dashbo
 | What you see (plain English) | Typical value on the page | Where it lives in the project | Where the number or claim comes from | Time period / “as of” |
 |------------------------------|---------------------------|--------------------------------|----------------------------------------|-------------------------|
 | How many states have a **state law** protecting **hospital use of contract pharmacies** | **21** states with protection; **29** of **50** states without (headline counts) | `state-data.js` → `STATE_340B` (per state: protection flags). Counts on screen use **50 states**; **Washington, D.C.** is stored in the same file but **not** counted in those headline totals (so the map chip lists match the big numbers). | MultiState, then ASHP, then America’s Essential Hospitals — cross-checked in that order; HAP policy verification | March 2026 (per Data sources table) |
-| **National** dollars hospitals report reinvesting in communities through the program | **$7.95 billion** for **2024**, with narrative that support grew about **9%** vs. prior year | `340b.html` KPIs and narrative; trend label in `340b.js` → `TREND_DATA.communityBenefit` is **only for the small sparkline shape** (see section 4) | 340B Health and American Hospital Association **reported program totals** (national narrative) | 2024 data, cited March 2026 |
+| **National** dollars hospitals report reinvesting in communities through the program | **$7.95 billion** for **2024**, with narrative that support grew about **9%** vs. prior year | `340b.html` KPIs and narrative; trend label in `340b.js` → `TREND_DATA.communityBenefit` is **only for the small sparkline shape** (see section 4) | **HAP 340B Talking Points (March 2026)** summarize the same figures; underlying totals: 340B Health and AHA **reported program totals** | 2024 data, cited March 2026 |
 | **Federal audits**: hospitals and similar entities vs. drug manufacturers | **179** covered-entity audits vs. **5** manufacturer audits | `340b.html` KPI and related copy | HRSA Program Integrity — FY 2024 audit results: https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results | FY 2024 |
-| **Pennsylvania hospitals** that participate in 340B | **72** | `340b.html` / KPIs; aligned with `modules/pa-impact-data.js` → `PA_ANCHORS.hospitalsParticipating` | HRSA **OPAIS** 340B participation file, **reconciled by HAP** | January 2026 (per Data sources table) |
-| **Share of all Pennsylvania hospitals** that participate | **30%** | `340b.html` (Pennsylvania stakes area) | Dashboard ties the **72** count to HRSA/HAP reconciliation; the **percentage** is the share of Pennsylvania hospitals — **confirm the denominator** with HAP before citing outside the dashboard | Same vintage as PA hospital count |
-| **Share of national outpatient medicine use** attributed to 340B | **7%** | `340b.html` key findings / KPIs | IQVIA market analysis (market context on the page) | 2023 |
-| **Rural share** of Pennsylvania 340B hospitals; hospitals **losing money overall**; **labor and delivery** losses | **49%**, **53%**, **49%** (three separate stats) | `340b.html` Pennsylvania metrics | Oliver Wyman **hospital sustainability analysis commissioned by HAP** — full definitions in `OW_report_dashboard.html` | Same vintage as that report |
+| **Pennsylvania hospitals** that participate in 340B | **72** | `340b.html` / KPIs; aligned with `modules/pa-impact-data.js` → `PA_ANCHORS.hospitalsParticipating` | HRSA **OPAIS** 340B participation file, **reconciled by HAP**; **HAP PA fact sheet (March 2026)** | January 2026 (per Data sources table) |
+| **Share of all Pennsylvania hospitals** that participate | **30%** of **235** hospitals | `340b.html` (Pennsylvania stakes area) | **HAP 340B Talking Points (March 2026)** (“30 percent of the 235 hospitals (72) qualify…”); **72** from HRSA OPAIS + HAP reconciliation | March 2026 |
+| **Share of the U.S. drug market** attributed to 340B (program scale) | **7%** | `340b.html` key findings / KPIs | **HAP March 2026 talking points**, citing **Commonwealth Fund** explainer (Aug 2025 publication on commonwealthfund.org) | March 2026 / 2025 explainer |
+| **Rural share** of Pennsylvania 340B hospitals; hospitals **losing money overall**; **labor and delivery** losses | **49%**, **53%**, **49%** (three separate stats) | `340b.html` Pennsylvania metrics | **HAP March 2026 talking points**; detailed definitions: Oliver Wyman **hospital sustainability analysis for HAP** — `OW_report_dashboard.html` | March 2026 / OW report vintage |
 | **Typical discount** on drug purchases under the program (survey-based, not an audit) | **23%** average (wording: illustrative / survey-based) | Community benefit and methodology copy in `340b.html` | 340B Health and AHA **survey methodology** (comparison of list price vs. statutory ceiling price); **not independently audited** | Per survey cycle described in methodology |
 | **Pennsylvania legislative district map** (hospitals by district) | Map and counts from local files | `data/pa-districts/` (hospital points, district boundaries, zip centroids where used) | HAP-maintained hospital points + **Pennsylvania Legislative Redistricting Commission** district boundaries; zip file notes cite upstream JSON for centroids where applicable | Per file metadata inside each data file |
 | **Legal landscape** text (courts, vetoes, state actions) | Narrative band on the page | `340b.html` legal trends content | HAP Finance and Legal Affairs verification; **not a substitute for legal advice or docket research** | March 2026 |
@@ -49,7 +51,7 @@ These blocks help advocacy teams **track bills and talking points**. They are **
 
 ## 4. **Illustrative** content — good for storyboarding, **not** primary evidence
 
-These items are **labeled** on the page or in code as illustrative, scenario-based, or decorative. **Do not cite them as if they came from HRSA, IQVIA, or audited filings** without HAP review.
+These items are **labeled** on the page or in code as illustrative, scenario-based, or decorative. **Do not cite them as if they came from HRSA, Commonwealth Fund, or audited filings** without HAP review.
 
 | What it is | Plain English | Where it lives | Why it is separate |
 |------------|---------------|----------------|-------------------|
@@ -108,7 +110,7 @@ Stated in: `state-data.js` → `CONFIG.copy.verificationOrder` and on-page metho
 
 ## 9. Suggested citation line for external decks
 
-> Figures follow HAP’s 340B advocacy dashboard unless noted. State law: MultiState, ASHP, America’s Essential Hospitals (HAP verification, March 2026). Community benefit: 340B Health / AHA reported totals (2024). Audits: HRSA Program Integrity FY 2024. Pennsylvania hospital count: HRSA OPAIS, HAP-reconciled (January 2026). Market share: IQVIA (2023). Pennsylvania operating statistics: Oliver Wyman analysis for HAP (see PA hospitals report). Illustrative simulator and scenario numbers are not government statistics.
+> Figures follow HAP’s 340B advocacy dashboard unless noted. Priority briefings: HAP March 2026 PA fact sheet and 340B talking points (PDFs). State law: MultiState, ASHP, America’s Essential Hospitals (HAP verification, March 2026). Community benefit: 340B Health / AHA reported totals (2024), summarized in HAP talking points. Audits: HRSA Program Integrity FY 2024. Pennsylvania: 72 hospitals (HRSA OPAIS + HAP); 30% of 235 hospitals (HAP talking points). U.S. drug market share (7%): Commonwealth Fund, cited in HAP talking points. Pennsylvania operating statistics (49% / 53% / 49%): Oliver Wyman for HAP (see PA hospitals report). Illustrative simulator and scenario numbers are not government statistics.
 
 ---
 

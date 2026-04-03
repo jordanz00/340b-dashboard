@@ -70,9 +70,9 @@ var CONFIG = {
     mapHowToUse:
       "Click a state on the map or a state name in the lists. Use All / Protection / No protection to filter. Choose Clear to reset your selection.",
     sourceSummary:
-      "Sources: MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · HRSA Program Integrity FY 2024 (audit counts)",
+      "Sources: HAP March 2026 PA fact sheet & 340B talking points (priority PA/program framing) · MultiState · ASHP · America's Essential Hospitals (state law) · 340B Health · AHA (community benefit) · Commonwealth Fund (7% U.S. drug market context, per HAP talking points) · HRSA Program Integrity FY 2024 (audit counts)",
     sourcesLimitations:
-      "Limitations: State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.",
+      "Limitations: State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited. PDF briefings in the repo root match HAP March 2026 advocacy materials; confirm against haponline.org if republished there.",
     verificationOrder: "MultiState, then ASHP, then America's Essential Hospitals.",
     executiveStrip: {
       priorityLabel: "What we're fighting for",
