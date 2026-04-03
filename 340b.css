@@ -216,6 +216,11 @@ body:has(> .dashboard) {
   font-family: var(--hap-ui-font-sans, var(--hap-font-sans));
   color: var(--text, var(--hap-text-primary));
 }
+/* iOS Safari: contain horizontal bleed at the document root when body alone still shows clipped layout */
+html:has(.dashboard) {
+  overflow-x: hidden;
+  max-width: 100%;
+}
 /* Mobile-first: reduce double-tap delay on primary interactive surfaces */
 .dashboard .utility-btn,
 .dashboard .dashboard-nav--suite a,
@@ -242,6 +247,7 @@ body:has(> .dashboard) {
   font-family: var(--hap-ui-font-sans, var(--font-sans));
   min-height: 100vh;
   min-height: 100dvh;
+  max-width: 100%;
   position: relative;
   isolation: isolate;
   /* visible: overflow-x clip breaks position:sticky for the left nav in some browsers */
@@ -286,9 +292,11 @@ body:has(> .dashboard) {
 .dashboard-inner {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 0 max(var(--space-6), env(safe-area-inset-left, 0px)) 0 max(var(--space-6), env(safe-area-inset-right, 0px));
+  /* padding: top right bottom left — match physical safe-area sides (was swapped; caused right-edge clipping on notched iPhones) */
+  padding: 0 max(var(--space-6), env(safe-area-inset-right, 0px)) 0 max(var(--space-6), env(safe-area-inset-left, 0px));
   position: relative;
   z-index: 1;
+  box-sizing: border-box;
 }
 
 /* ========== HAP shell: left sticky nav (matches OW_report_dashboard.html pattern) ========== */
@@ -308,8 +316,9 @@ body:has(> .dashboard) {
 .hap-page-content {
   flex: 1;
   min-width: 0;
-  /* Prevent rare grid/flex children from forcing horizontal scroll on narrow viewports */
-  overflow-x: clip;
+  /* visible: overflow-x clip hid legit content on iPhone when any child measured wider than the flex column */
+  overflow-x: visible;
+  max-width: 100%;
 }
 /* Desktop: fixed left rail so nav stays visible for the entire page scroll (sticky scrolls away at the
    bottom when the flex row ends). Mobile (≤900px): sidebar hidden — use suite header nav only. */
@@ -476,6 +485,28 @@ body:has(> .dashboard) {
   /* No left rail on small screens — avoids cramped duplicate nav; .dashboard-nav--suite remains in header */
   .hap-sidebar--340b {
     display: none !important;
+  }
+
+  /* iPhone / narrow: keep content inside the layout box (100vw + clip was cutting off the right edge) */
+  .dashboard-inner {
+    max-width: 100%;
+    width: 100%;
+    padding-left: max(var(--space-4), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--space-4), env(safe-area-inset-right, 0px));
+  }
+  .dashboard-header--suite .hap-header,
+  .dashboard-header--suite .dashboard-nav--suite {
+    padding-left: max(0.8rem, env(safe-area-inset-left, 0px));
+    padding-right: max(0.8rem, env(safe-area-inset-right, 0px));
+  }
+  .dashboard main {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  .dashboard .dashboard-grid {
+    min-width: 0;
+    width: 100%;
+    max-width: 100%;
   }
 }
 /* Header — suite-aligned with OW_report_dashboard.html (.hap-header + second-row nav) */
