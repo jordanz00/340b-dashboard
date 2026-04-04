@@ -216,9 +216,8 @@ body:has(> .dashboard) {
   font-family: var(--hap-ui-font-sans, var(--hap-font-sans));
   color: var(--text, var(--hap-text-primary));
 }
-/* iOS Safari: contain horizontal bleed at the document root when body alone still shows clipped layout */
+/* Document width cap only — avoid overflow-x on html + body together (double-clips nested vw-sized shells). */
 html:has(.dashboard) {
-  overflow-x: hidden;
   max-width: 100%;
 }
 /* Mobile-first: reduce double-tap delay on primary interactive surfaces */
@@ -292,6 +291,7 @@ html:has(.dashboard) {
 .dashboard-inner {
   max-width: 1200px;
   margin: 0 auto;
+  min-width: 0;
   /* padding: top right bottom left — match physical safe-area sides (was swapped; caused right-edge clipping on notched iPhones) */
   padding: 0 max(var(--space-6), env(safe-area-inset-right, 0px)) 0 max(var(--space-6), env(safe-area-inset-left, 0px));
   position: relative;
@@ -308,6 +308,7 @@ html:has(.dashboard) {
   position: relative;
   z-index: 1;
   min-height: 0;
+  min-width: 0;
 }
 /* Footer is a .dashboard sibling after .hap-body; same z-index as .hap-body made it paint over the fixed left rail. */
 .dashboard > .site-footer {
@@ -501,12 +502,19 @@ html:has(.dashboard) {
   }
   .dashboard main {
     max-width: 100%;
+    min-width: 0;
     box-sizing: border-box;
   }
   .dashboard .dashboard-grid {
     min-width: 0;
     width: 100%;
     max-width: 100%;
+  }
+  /* Nested shells: 100vw is viewport-wide; inside padded columns it overflows and clips on the right */
+  .supporting-shell {
+    max-width: 100%;
+    width: 100%;
+    box-sizing: border-box;
   }
 }
 /* Header — suite-aligned with OW_report_dashboard.html (.hap-header + second-row nav) */
@@ -1104,7 +1112,6 @@ html:has(.dashboard) {
   z-index: 50;
   left: 0;
   top: calc(100% + 6px);
-  width: min(320px, calc(100vw - 2rem));
   width: min(320px, calc(100dvw - 2rem));
   max-height: 70vh;
   overflow-y: auto;
@@ -1349,8 +1356,10 @@ html:has(.dashboard) {
   left: 0;
   top: calc(100% + 4px);
   z-index: 60;
-  min-width: min(100vw - 2rem, 280px);
-  min-width: min(100dvw - 2rem, 280px);
+  min-width: 0;
+  max-width: min(280px, calc(100dvw - 2rem));
+  width: min(280px, calc(100dvw - 2rem));
+  box-sizing: border-box;
   padding: var(--space-3);
   border-radius: var(--radius);
   border: 1px solid var(--border);
@@ -3505,8 +3514,7 @@ html:has(.dashboard) {
 }
 .supporting-shell {
   width: 100%;
-  max-width: min(1360px, calc(100vw - 4rem));
-  max-width: min(1360px, calc(100dvw - 4rem));
+  max-width: min(1360px, 100%);
   margin: 0 auto;
   padding: clamp(1.25rem, 2vw, 2rem);
   border-radius: calc(var(--radius) + 6px);
@@ -3722,8 +3730,7 @@ html:has(.dashboard) {
 
 @media (max-width: 1150px) {
   .supporting-shell {
-    max-width: min(1220px, calc(100vw - 2.5rem));
-    max-width: min(1220px, calc(100dvw - 2.5rem));
+    max-width: min(1220px, 100%);
     padding: 1rem;
   }
   .supporting-executive-grid {
@@ -3736,8 +3743,7 @@ html:has(.dashboard) {
 }
 @media (max-width: 680px) {
   .supporting-shell {
-    max-width: calc(100vw - 1.2rem);
-    max-width: calc(100dvw - 1.2rem);
+    max-width: 100%;
     padding: 0.8rem;
   }
   .supporting-panel {
@@ -5198,7 +5204,7 @@ body.scroll-reveal-js #community-benefit { opacity: 1 !important; transform: non
   pointer-events: none;
   opacity: 0;
   white-space: normal;
-  max-width: min(22rem, calc(100vw - 1.5rem));
+  max-width: min(22rem, calc(100dvw - 1.5rem));
   line-height: var(--leading-snug);
   box-shadow: var(--shadow-lg);
   transition: opacity 0.15s var(--ease);
@@ -10523,11 +10529,11 @@ body:not(:has(> .dashboard)) {
   .kpi-pa-tooltip-panel {
     left: auto;
     right: 0;
-    width: min(100vw - 1.5rem, 320px);
+    width: min(320px, calc(100dvw - 2rem));
   }
 
   .supporting-shell {
-    max-width: calc(100vw - 1rem);
+    max-width: 100%;
     padding: 0.75rem;
   }
 }
