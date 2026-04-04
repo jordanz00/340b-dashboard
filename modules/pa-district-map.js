@@ -642,10 +642,14 @@
         }
       };
 
-      window.addEventListener("resize", function () {
+      function debounceResize() {
         window.clearTimeout(onResize._t);
         onResize._t = window.setTimeout(onResize, 120);
-      });
+      }
+      window.addEventListener("resize", debounceResize);
+      if (window.visualViewport && typeof window.visualViewport.addEventListener === "function") {
+        window.visualViewport.addEventListener("resize", debounceResize);
+      }
 
       var toggles = document.querySelectorAll(TOGGLE_SELECTOR);
       toggles.forEach(function (btn) {

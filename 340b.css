@@ -129,8 +129,9 @@ html.dmx-perf .timeline-item {
  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
 
- /* Content alignment */
+ /* Content alignment — single source of truth (avoid duplicate max-width rules later in file) */
  --content-max: 980px;
+ --dashboard-inner-max: 1200px;
  --map-protection: #0956a8;
  --map-protection-hover: #084888;
  --map-no-protection: #e8e8ed;
@@ -171,7 +172,7 @@ html.dmx-perf .timeline-item {
 
  /* Sticky chrome: set by 340b.js from .dashboard-header offsetHeight (fallback for first paint; suite header + nav row) */
  --dashboard-header-offset: 6.25rem;
- /* Responsive tiers (screen): ≤430px phones, 431–900px tablet/small laptop, 901px+ desktop. Prefer 100dvw after 100vw for iOS safe width. */
+ /* Responsive tiers (screen): ≤430px phones, 431–768px large phone/small tablet, 769–900px tablet, 901px+ desktop. Prefer 100dvw after 100vw for iOS safe width. */
 }
 
 /*
@@ -293,7 +294,7 @@ html:has(.dashboard) {
 .print-map-fallback { display: none; }
 
 .dashboard-inner {
-  max-width: 1200px;
+  max-width: var(--dashboard-inner-max, 1200px);
   margin: 0 auto;
   min-width: 0;
   /* padding: top right bottom left — match physical safe-area sides (was swapped; caused right-edge clipping on notched iPhones) */
@@ -4262,8 +4263,30 @@ html:has(.dashboard) {
 
 @media (max-width: 600px) {
   .pa-district-map-wrap--interactive {
-    min-height: 58vw;
+    /* Taller than 58vw alone — short maps felt broken on common phone widths */
+    min-height: max(240px, min(72vw, 440px));
     padding: var(--space-3) var(--space-2);
+  }
+  .pa-district-legend--interactive {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem;
+    align-items: stretch;
+    width: 100%;
+  }
+  .pa-district-legend__chip {
+    min-height: 40px;
+    font-size: 0.68rem;
+    padding: 0.28rem 0.55rem 0.28rem 0.45rem;
+    justify-content: flex-start;
+  }
+  .pa-district-swatch {
+    width: 12px;
+    height: 12px;
+  }
+  .pa-district-legend__chip .pa-district-swatch {
+    width: 12px;
+    height: 12px;
   }
 }
 
@@ -5057,6 +5080,42 @@ html:has(.dashboard) {
 .map-legend-compact-sep { color: var(--border); padding: 0 0.1rem; user-select: none; }
 .map-legend-compact .map-legend-swatch { width: 10px; height: 10px; border-radius: 3px; }
 .map-legend-swatch { width: 12px; height: 12px; border-radius: 6px; flex-shrink: 0; border: 1px solid var(--border); }
+
+/* US map hero — legend: on phones the pill reads as a huge “key”; tier down size and let text wrap without full-width bar feel */
+@media (max-width: 700px) {
+  .map-legend-compact {
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-top: var(--space-2);
+    padding: 0.45rem 0.6rem;
+    font-size: 0.65rem;
+    font-weight: 600;
+    line-height: 1.3;
+    border-radius: var(--radius-sm);
+    max-width: 100%;
+  }
+  .map-legend-compact-sep { display: none; }
+  .map-legend-compact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    text-align: left;
+  }
+  .map-legend-compact .map-legend-swatch {
+    width: 9px;
+    height: 9px;
+    margin-top: 0.12rem;
+    flex-shrink: 0;
+  }
+}
+@media (max-width: 430px) {
+  .map-legend-compact {
+    padding: 0.38rem 0.5rem;
+    font-size: 0.62rem;
+  }
+}
 .map-legend-swatch.protection { background: var(--map-protection); border-color: var(--map-protection-hover); }
 .map-legend-swatch.no-protection { background: var(--map-no-protection); border-color: var(--neutral-300); }
 .state-detail-panel { padding: var(--space-5); border-radius: var(--radius); background: var(--bg-card); border: 1px solid var(--border); min-height: 5rem; font-size: var(--text-sm); transition: border-color 0.2s var(--ease); box-shadow: var(--shadow-xs); }
@@ -5136,6 +5195,22 @@ html:has(.dashboard) {
   grid-template-columns: repeat(5, minmax(0, 1fr));
   gap: 0.35rem 0.35rem;
   align-items: center;
+}
+@media (max-width: 520px) {
+  .map-static-fallback__grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.3rem;
+  }
+}
+@media (max-width: 400px) {
+  .map-static-fallback__grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0.28rem;
+  }
+  .map-static-fallback__state {
+    font-size: 0.65rem;
+    padding: 0.32rem 0.15rem;
+  }
 }
 .map-static-fallback__state {
   font-family: var(--font-mono);
@@ -5485,10 +5560,10 @@ footer a:hover { color: var(--primary); }
  .community-benefit-hero .big-stat-value { font-size: var(--text-4xl); }
  .card { padding: var(--space-5); }
  .card h2 { font-size: var(--text-lg); }
- .card p, .card li { font-size: var(--text-sm); }
+ .card p, .card li { font-size: var(--text-sm); line-height: 1.55; }
  .stat-value { font-size: var(--text-2xl); }
- .map-container { grid-template-columns: 1fr; }
- .state-detail-panel { order: -1; }
+ .map-container { grid-template-columns: 1fr; gap: var(--space-3); }
+ .state-detail-panel { order: -1; padding: var(--space-4); }
  .state-list-grid { grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); }
 
   /* Stat card grid — stack to single column on mobile */
@@ -5505,6 +5580,10 @@ footer a:hover { color: var(--primary); }
   #map-static-fallback {
     width: 100% !important;
     min-height: 300px;
+  }
+
+  .executive-summary-layer {
+    padding: var(--space-5) 0 var(--space-3);
   }
 
   /* Accordion/collapsible sections — ensure tap targets are at least 44px tall */
@@ -6893,8 +6972,7 @@ footer a:hover { color: var(--primary); }
 
 /* ========== Mark VI Sprint — Iteration 1 (Section Identity Reset) ========== */
 /* Page wash matches PA OW report (--hap-ow-page-gradient); .dashboard::before adds radial veils. */
-.dashboard-inner { max-width: 1100px; }
-.dashboard main { max-width: 960px; padding-top: var(--space-6); }
+/* Width: .dashboard-inner and .dashboard main use --dashboard-inner-max / --content-max only (see :root). */
 
 /* readable executive micro-labels */
 .card-title,
