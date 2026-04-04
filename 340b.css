@@ -215,6 +215,8 @@ body:has(> .dashboard) {
   background-image: none;
   font-family: var(--hap-ui-font-sans, var(--hap-font-sans));
   color: var(--text, var(--hap-text-primary));
+  width: 100%;
+  max-width: 100%;
 }
 /* Document width cap only — avoid overflow-x on html + body together (double-clips nested vw-sized shells). */
 html:has(.dashboard) {
@@ -229,6 +231,8 @@ html:has(.dashboard) {
   touch-action: manipulation;
 }
 .dashboard {
+  width: 100%;
+  min-width: 0;
   /* Dashboard-only density knobs (see agents/design_system_agent.md) */
   --dash-grid-gap: var(--space-3);
   --dash-section-y: var(--space-5);
@@ -317,9 +321,10 @@ html:has(.dashboard) {
 .hap-page-content {
   flex: 1;
   min-width: 0;
+  width: 100%;
+  max-width: 100%;
   /* visible: overflow-x clip hid legit content on iPhone when any child measured wider than the flex column */
   overflow-x: visible;
-  max-width: 100%;
 }
 /* Desktop: fixed left rail so nav stays visible for the entire page scroll (sticky scrolls away at the
    bottom when the flex row ends). Mobile (≤900px): sidebar hidden — use suite header nav only. */
@@ -514,6 +519,12 @@ html:has(.dashboard) {
   .supporting-shell {
     max-width: 100%;
     width: 100%;
+    box-sizing: border-box;
+  }
+  /* Footer sits outside .dashboard-inner — apply safe-area here so it aligns with the content column */
+  .dashboard > .site-footer {
+    padding-left: max(var(--space-4), env(safe-area-inset-left, 0px));
+    padding-right: max(var(--space-4), env(safe-area-inset-right, 0px));
     box-sizing: border-box;
   }
 }
@@ -1081,9 +1092,13 @@ html:has(.dashboard) {
   align-items: flex-start;
   gap: 0.35rem;
   flex-wrap: nowrap;
+  min-width: 0;
 }
 .kpi-value-with-info .kpi-value {
   margin: 0;
+  min-width: 0;
+  flex: 1 1 auto;
+  overflow-wrap: anywhere;
 }
 .kpi-pa-tooltip-host {
   position: relative;
@@ -2451,6 +2466,12 @@ html:has(.dashboard) {
 }
 .key-finding-label .decision-badge { text-transform: uppercase; letter-spacing: 0.04em; }
 .key-finding-value.ban-stat { font-size: clamp(2.2rem, 4.5vw, 3rem); font-weight: 800; letter-spacing: -0.03em; line-height: 0.95; margin: 0; white-space: nowrap; }
+@media (max-width: 900px) {
+  .key-finding-value.ban-stat {
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+}
 .ban-stat--policy { color: var(--chart-topic-policy); }
 .ban-stat--policy-muted { color: #64748b; }
 .ban-stat--finance { color: var(--chart-topic-finance); }
@@ -5447,12 +5468,17 @@ footer a:hover { color: var(--primary); }
  .kpi-strip { gap: var(--space-3); }
 }
 @media (max-width: 768px) {
- .dashboard-header--suite .hap-header-title { font-size: 0.88rem; }
- .dashboard-header--suite .dashboard-nav--suite a { font-size: 0.7rem; padding: 0.4rem 0.55rem; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
- .dashboard-inner { padding-left: max(var(--space-4), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-4), env(safe-area-inset-right, 0px)); }
- .utility-toolbar { justify-items: stretch; }
- .utility-toolbar-actions { justify-content: flex-start; }
- .dashboard main { padding-left: max(var(--space-3), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-3), env(safe-area-inset-right, 0px)); padding-bottom: max(var(--dash-main-pad-y-end, var(--space-10)), env(safe-area-inset-bottom, 0px)); }
+  .dashboard-header--suite .hap-header-title { font-size: 0.88rem; }
+  .dashboard-header--suite .dashboard-nav--suite a { font-size: 0.7rem; padding: 0.4rem 0.55rem; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
+  .dashboard-inner { padding-left: max(var(--space-4), env(safe-area-inset-left, 0px)); padding-right: max(var(--space-4), env(safe-area-inset-right, 0px)); }
+  .utility-toolbar { justify-items: stretch; }
+  .utility-toolbar-actions { justify-content: flex-start; }
+  /* Horizontal inset only: .dashboard-inner already applies safe-area; avoid doubling insets (was shifting/narrowing unevenly on iPhone). */
+  .dashboard main {
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
+    padding-bottom: max(var(--dash-main-pad-y-end, var(--space-10)), env(safe-area-inset-bottom, 0px));
+  }
  .kpi-value { font-size: var(--text-3xl); }
  .kpi-desc { font-size: var(--text-sm); }
  .big-stat-value { font-size: var(--text-4xl); }
@@ -8557,6 +8583,19 @@ footer {
   line-height: 1.4;
 }
 
+/* Strip grid was 2×2 at all widths — too tight on phones; nowrap BAN stats forced overflow */
+@media (max-width: 900px) {
+  .key-findings-strip .key-findings-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 640px) {
+  .key-findings-strip .key-finding-split {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+}
+
 @keyframes keyFindingCardReveal {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -10336,8 +10375,8 @@ body:not(:has(> .dashboard)) {
   }
 
   .dashboard main {
-    padding-left: max(0.75rem, env(safe-area-inset-left, 0px));
-    padding-right: max(0.75rem, env(safe-area-inset-right, 0px));
+    padding-left: var(--space-3);
+    padding-right: var(--space-3);
     padding-top: var(--space-4);
     padding-bottom: max(var(--dash-main-pad-y-end, var(--space-10)), calc(env(safe-area-inset-bottom, 0px) + 2.5rem));
   }
