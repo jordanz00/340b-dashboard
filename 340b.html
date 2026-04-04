@@ -32,14 +32,23 @@
        Replace GA_MEASUREMENT_ID with the actual
        property ID from HAP's Google Analytics account.
        For analytics questions, contact HAP Digital Communications | (717) 564-9200 -->
-  <script async
-    src="https://www.googletagmanager.com/gtag/js?id=GA_MEASUREMENT_ID">
-  </script>
+  <!-- Analytics: set HAP_GA_MEASUREMENT_ID to your production G- property before go-live. Empty or invalid ID skips loading gtag.js. -->
   <script>
     window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'GA_MEASUREMENT_ID');
+    var HAP_GA_MEASUREMENT_ID = '';
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    if (typeof HAP_GA_MEASUREMENT_ID === 'string' && HAP_GA_MEASUREMENT_ID.length > 6 && HAP_GA_MEASUREMENT_ID.indexOf('G-') === 0) {
+      var gaScript = document.createElement('script');
+      gaScript.async = true;
+      gaScript.src = 'https://www.googletagmanager.com/gtag/js?id=' + encodeURIComponent(HAP_GA_MEASUREMENT_ID);
+      document.head.appendChild(gaScript);
+      gaScript.addEventListener('load', function () {
+        window.gtag('js', new Date());
+        window.gtag('config', HAP_GA_MEASUREMENT_ID);
+      });
+    } else {
+      window.gtag = function () {};
+    }
 
     // Track section engagement for advocacy reporting
     document.addEventListener('DOMContentLoaded', function() {
@@ -47,7 +56,7 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
-            gtag('event', 'section_view', {
+            window.gtag('event', 'section_view', {
               section_id: entry.target.id,
               page_title: document.title
             });
@@ -60,7 +69,7 @@
       document.querySelectorAll('[data-track]').forEach((el) => {
         el.addEventListener('click', function () {
           if (!this || !this.dataset || !this.dataset.track) return;
-          gtag('event', 'advocacy_action', {
+          window.gtag('event', 'advocacy_action', {
             action_type: this.dataset.track
           });
         });
@@ -68,7 +77,7 @@
     });
   </script>
   <link rel="stylesheet" href="hap-design-tokens.css">
-  <link rel="stylesheet" href="340b.css?v=dmx-27">
+  <link rel="stylesheet" href="340b.css?v=dmx-28">
   <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -89,6 +98,54 @@
   ]
 }
   </script>
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Isn't 340B just a hospital slush fund?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. $7.95B in reported community benefit (2024) is documented reinvestment in free prescriptions, cancer screening, dental care, and rural services — up 9% from 2023. HRSA audits 179 covered entities annually to verify compliance."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Why should manufacturers have to give discounts to large health systems?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "340B eligibility is tied to DSH percentage and safety-net status — not system size. Eligible hospitals must serve a disproportionate share of low-income and uninsured patients to qualify. Large systems that qualify do so because of their charity care load."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Doesn't 340B create duplicate discounts?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Federal law already prohibits it. HRSA and CMS coordinate exclusion lists so manufacturers cannot be required to provide both a 340B price and a Medicaid rebate on the same drug. Pennsylvania runs its own exclusion list through DHS as an added safeguard."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Shouldn't manufacturers be able to limit contract pharmacies?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The statute doesn't give manufacturers that authority. Courts in 6 states (AR, LA, MO, MN, TN, RI) have upheld state protections against manufacturer restrictions. Unilateral restrictions by manufacturers go beyond what federal law requires and reduce patient access."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is 340B too big — 7% of the U.S. drug market?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "HAP's March 2026 talking points frame 7% as the share of the total U.S. drug market flowing through 340B, citing the Commonwealth Fund — a bounded scale context, not \"program overreach.\" Federal oversight (179 covered-entity audits in FY 2024) continues to verify that covered entities use the program as intended."
+      }
+    }
+  ]
+}
+  </script>
   <script src="state-data.js"></script>
   <script src="assets/vendor/d3.min.js"></script>
   <script src="assets/vendor/topojson-client.min.js"></script>
@@ -101,6 +158,7 @@
   - Header and navigation
   - Utility toolbar (Print / PDF, leave-behind, download PDF image, Share drawer, Export SVG)
   - Main: print-only snapshot blocks, then dashboard grid
+  - Start here (plain-language 340B + patient voice + jumps)
   - Intro (Overview, HAP Position)
   - Key findings, bottom line takeaway, executive scan strip
   - Map hero (state map, lists, legal landscape, methodology, print state summary)
@@ -176,6 +234,7 @@
     </nav>
   </div>
   <nav class="dashboard-nav dashboard-nav--suite" id="dashboard-nav" aria-label="Dashboard sections">
+    <a href="#welcome">Start here</a>
     <a href="#pa-impact">PA stakes</a>
     <a href="#overview">HAP position</a>
     <a href="#section-overview" class="active" aria-current="page">Overview</a>
@@ -193,6 +252,7 @@
 <div class="hap-body">
 <aside class="hap-sidebar hap-sidebar--340b" aria-label="Section navigation">
   <nav class="hap-sidebar-nav" id="hap-sidebar-nav">
+    <a href="#welcome">Start here</a>
     <a href="#pa-impact">PA stakes</a>
     <a href="#overview">HAP position</a>
     <a href="#section-overview">Overview</a>
@@ -288,13 +348,33 @@
       </div>
     </div>
     <h2>340B Drug Pricing Program</h2>
-    <p class="print-report-meta">Last updated <span id="print-last-updated">March 2025</span></p>
+    <p class="print-report-meta">Last updated <span id="print-last-updated">March 2026</span></p>
   </section>
   <!-- This container is filled from JavaScript right before printing.
        It clones the real intro cards into a print-safe block layout so the first PDF page
        cannot lose or skip the dashboard's opening content. -->
   <section id="print-intro-snapshot" class="print-intro-snapshot print-only" aria-hidden="true"></section>
   <div class="dashboard-grid">
+
+    <!-- ========== SECTION: Start here — plain 340B + patient voice (focus-group: cold visitors, patient-first) ========== -->
+    <section id="welcome" class="dashboard-welcome span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="Start here" aria-labelledby="welcome-heading">
+      <header class="dashboard-welcome__head">
+        <p class="hap-section-eyebrow">Start here</p>
+        <h2 id="welcome-heading" class="dashboard-welcome__title">What is 340B?</h2>
+        <p class="dashboard-welcome__lead"><strong>340B</strong> is a federal drug discount program: eligible hospitals and clinics buy certain outpatient drugs at reduced prices from manufacturers and reinvest savings in care for underserved patients and community services—without using federal appropriations. <strong>PBM</strong> means pharmacy benefit manager (the middlemen who administer many drug plans). A <strong>contract pharmacy</strong> is a retail or specialty pharmacy a covered entity partners with so patients can fill prescriptions in their community.</p>
+      </header>
+      <blockquote class="dashboard-welcome__patient-quote">
+        <p>“The pharmacy at my hospital is the only reason I can afford my insulin. Without 340B, I don’t know what I would do.”</p>
+        <cite>— Pennsylvania patient, safety-net hospital (name withheld)</cite>
+      </blockquote>
+      <p class="dashboard-welcome__why"><strong>Why it matters:</strong> When margins are thin, 340B savings help fund prescriptions, screening, and access in rural and underserved communities.</p>
+      <nav class="dashboard-welcome__next" aria-label="Jump to key sections">
+        <a href="#section-overview" class="footer-pill footer-pill--outline">Full overview &amp; context</a>
+        <a href="#overview" class="footer-pill footer-pill--outline">HAP position</a>
+        <a href="#hearing-prep" class="footer-pill footer-pill--outline">Briefing Q&amp;A</a>
+        <a href="https://www.haponline.org/contact" class="footer-pill footer-pill--primary hap-btn-primary" target="_blank" rel="noopener noreferrer" data-track="grassroots_contact">Contact HAP — reach your legislator</a>
+      </nav>
+    </section>
 
     <!-- ========== SECTION: PA operating stakes — hero (Issue → Impact → Action) ========== -->
     <section class="pa-operating-stakes-hero span-12 scroll-reveal ow-section ow-section--band-pa-hero nav-section-block" data-nav-label="PA operating stakes" aria-labelledby="pa-stakes-heading">
@@ -469,6 +549,7 @@
       <div id="pa-bill-card-root" class="pa-bill-card-root" aria-live="polite"></div>
       <details class="pa-bill-committee-wrap">
         <summary class="pa-bill-committee-summary">Key committee members</summary>
+        <p class="pa-bill-committee-public-note">Illustrative outreach examples for hospital advocates. Labels describe engagement posture—not instructions to legislators.</p>
         <div class="pa-bill-committee-grid">
           <div class="pa-bill-committee-col">
             <h3 class="pa-bill-committee-col-title">House</h3>
@@ -479,8 +560,8 @@
                     <th scope="col">Name</th>
                     <th scope="col">District</th>
                     <th scope="col">Party</th>
-                    <th scope="col">HAP relationship</th>
-                    <th scope="col">Recommended Action</th>
+                    <th scope="col">Hospital engagement</th>
+                    <th scope="col">Outreach ideas</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -488,28 +569,28 @@
                     <td>Rep. Dan Frankel</td>
                     <td>District 23</td>
                     <td>D</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Ally</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Supportive</span></td>
                     <td>Schedule policy meeting</td>
                   </tr>
                   <tr>
                     <td>Rep. Kathy L. Rapp</td>
                     <td>District 65</td>
                     <td>R</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Persuadable</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Engage</span></td>
                     <td>Request district visit</td>
                   </tr>
                   <tr>
                     <td>Rep. Arvind Venkat</td>
                     <td>District 30</td>
                     <td>D</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Ally</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Supportive</span></td>
                     <td>Send thank-you and co-sponsor ask</td>
                   </tr>
                   <tr>
                     <td>Rep. Tim Twardzik</td>
                     <td>District 123</td>
                     <td>R</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Persuadable</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Engage</span></td>
                     <td>Schedule constituent call</td>
                   </tr>
                   <tr>
@@ -532,8 +613,8 @@
                     <th scope="col">Name</th>
                     <th scope="col">District</th>
                     <th scope="col">Party</th>
-                    <th scope="col">HAP relationship</th>
-                    <th scope="col">Recommended Action</th>
+                    <th scope="col">Hospital engagement</th>
+                    <th scope="col">Outreach ideas</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -541,21 +622,21 @@
                     <td>Sen. Michele Brooks</td>
                     <td>District 50</td>
                     <td>R</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Persuadable</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Engage</span></td>
                     <td>Schedule chair briefing</td>
                   </tr>
                   <tr>
                     <td>Sen. Art Haywood</td>
                     <td>District 4</td>
                     <td>D</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Ally</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Supportive</span></td>
                     <td>Coordinate floor support</td>
                   </tr>
                   <tr>
                     <td>Sen. Lynda Schlegel Culver</td>
                     <td>District 27</td>
                     <td>R</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Persuadable</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--persuadable">Engage</span></td>
                     <td>Request district-level impact meeting</td>
                   </tr>
                   <tr>
@@ -569,7 +650,7 @@
                     <td>Sen. Maria Collett</td>
                     <td>District 12</td>
                     <td>D</td>
-                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Ally</span></td>
+                    <td><span class="pa-bill-rel-badge pa-bill-rel-badge--ally">Supportive</span></td>
                     <td>Send thank-you and hearing prep</td>
                   </tr>
                 </tbody>
@@ -811,9 +892,9 @@
                   <th scope="col">Chamber</th>
                   <th scope="col">District</th>
                   <th scope="col">Party</th>
-                  <th scope="col">340B Position</th>
-                  <th scope="col">Last HAP Contact</th>
-                  <th scope="col">Next Action</th>
+                  <th scope="col">340B position</th>
+                  <th scope="col">Last outreach</th>
+                  <th scope="col">Next step</th>
                 </tr>
               </thead>
               <tbody id="federal-delegation-tbody"></tbody>
@@ -990,6 +1071,17 @@
                 </tbody>
               </table>
             </div>
+            <details class="hap-independent-reviews" id="independent-views">
+              <summary class="hap-independent-reviews__summary">Independent government reviews (oversight context)</summary>
+              <div class="hap-independent-reviews__body">
+                <p>HAP’s figures and asks on this page trace to HAP materials and the sources listed above. For readers who want <strong>agency and advisory perspectives</strong> alongside hospital voices, these are common independent entry points (not endorsements):</p>
+                <ul class="hap-independent-reviews__list">
+                  <li><a href="https://www.gao.gov/products/gao-22-104456" target="_blank" rel="noopener noreferrer">U.S. Government Accountability Office</a> — 340B program oversight and integrity (example product).</li>
+                  <li><a href="https://oig.hhs.gov/" target="_blank" rel="noopener noreferrer">HHS Office of Inspector General</a> — OIG reports on 340B-related topics (search the site).</li>
+                  <li><a href="https://www.macpac.gov/" target="_blank" rel="noopener noreferrer">Medicaid and CHIP Payment and Access Commission (MACPAC)</a> — federal advisory context on the drug program landscape.</li>
+                </ul>
+              </div>
+            </details>
           </div>
         </details>
       </section>
@@ -1207,7 +1299,7 @@
               </div>
 
               <p class="pa-district-map-note">
-                Click any district for legislator, 340B hospital count and names, HAP relationship, and recommended action.
+                Click any district for legislator, 340B hospital count and names, hospital engagement, and outreach ideas.
               </p>
 
               <form id="pa-district-lookup-form" class="pa-district-lookup-form">
@@ -1245,8 +1337,8 @@
                   <dt>Party</dt><dd id="pa-district-detail-party">—</dd>
                   <dt># 340B hospitals</dt><dd id="pa-district-detail-count">—</dd>
                   <dt>Hospital names</dt><dd id="pa-district-detail-hospitals">—</dd>
-                  <dt>HAP relationship</dt><dd id="pa-district-detail-relationship">—</dd>
-                  <dt>Recommended action</dt><dd id="pa-district-detail-action">—</dd>
+                  <dt>Hospital engagement</dt><dd id="pa-district-detail-relationship">—</dd>
+                  <dt>Outreach ideas</dt><dd id="pa-district-detail-action">—</dd>
                 </dl>
                 <p class="pa-district-detail__note" id="pa-district-detail-note"></p>
               </div>
@@ -1404,7 +1496,7 @@
               <p class="policy-access-stat-value ban-stat count-up" data-count-up="72">72</p>
               <p class="policy-access-stat-label">PA hospitals rely on 340B</p>
               <p class="policy-access-stat-context">States are stepping up to protect contract pharmacy access. Pennsylvania should not fall behind.</p>
-              <p class="policy-access-source">Data as of March 2025. Sources: HRSA OPAIS participation file; National Academy for State Health Policy contract pharmacy legislation tracker.</p>
+              <p class="policy-access-source">Data as of March 2026. Sources: HRSA OPAIS participation file; National Academy for State Health Policy contract pharmacy legislation tracker.</p>
             </div>
             <div class="policy-access-signal-panel policy-access-module" aria-label="Access trend signal">
               <p class="policy-access-signal-head">Defined trend metric</p>
@@ -1412,7 +1504,7 @@
                 <span class="policy-access-signal-fill"></span>
               </div>
               <p class="policy-access-signal-caption">21 states have enacted protections, while 29 states have not enacted protections yet.</p>
-              <p class="policy-access-source">Metric definition: enacted state protections / total states. Data as of March 2025.</p>
+              <p class="policy-access-source">Metric definition: enacted state protections / total states. Data as of March 2026.</p>
             </div>
             <div class="policy-access-pill-row policy-access-module" aria-label="Care areas impacted">
               <span class="policy-access-pill">Rural hospitals</span>
@@ -1750,15 +1842,27 @@
     <span aria-hidden="true">|</span>
     <a href="https://www.haponline.org/terms-and-conditions" target="_blank" rel="noopener noreferrer">Terms and conditions</a>
   </p>
+  <details class="dashboard-feedback-log">
+    <summary>How this dashboard reflects advocate &amp; reviewer feedback</summary>
+    <p class="dashboard-feedback-log__lede">Recent updates respond to multi-role review (public readers, lawmakers, hospital leaders, advocates, and technical audits)—not a single focus group, but the same kind of structured input we use to improve the experience.</p>
+    <ul>
+      <li><strong>Start here band:</strong> Plain-language 340B, PBM, and contract pharmacy definitions; patient quote moved up; one-click jumps to overview, HAP position, and briefing Q&amp;A.</li>
+      <li><strong>Trust &amp; balance:</strong> FAQPage structured data for the briefing Q&amp;A; an “Independent government reviews” list (GAO, HHS OIG, MACPAC) under Data sources for readers who want agency context alongside HAP materials.</li>
+      <li><strong>Public-facing labels:</strong> Committee and district tables use “hospital engagement” and “outreach ideas” (not CRM-style column names); analytics loads only when a real <code>G-</code> measurement ID is set in <code>HAP_GA_MEASUREMENT_ID</code>.</li>
+      <li><strong>Date alignment:</strong> Print snapshot and policy-access lines aligned to <code>state-data.js</code> freshness (March 2026).</li>
+      <li><strong>Grassroots path:</strong> Contact HAP in the Start here band and footer for legislator outreach.</li>
+    </ul>
+  </details>
   <details class="go-live-checklist">
     <summary>Go-live checklist for web publishing</summary>
     <ul>
-      <li>Replace <code>GA_MEASUREMENT_ID</code> with HAP’s production analytics property.</li>
+      <li>Set <code>HAP_GA_MEASUREMENT_ID</code> in <code>340b.html</code> to HAP’s production <code>G-</code> analytics property (or leave empty to skip gtag).</li>
       <li>Confirm final URL path remains <code>/340b</code> and canonical metadata matches production domain.</li>
       <li>Validate all figures and dates against <code>state-data.js</code> and policy source references.</li>
       <li>Run print output QA for two-page leave-behind and one-page hearing prep handout.</li>
       <li>Confirm accessibility checks in target CMS template (heading order, focus, keyboard map use).</li>
       <li>Verify external links and social preview cards after deployment.</li>
+      <li>Publish a 1200×630 <code>og:image</code> on the production host and update <code>og:image</code> / dimensions in the page head.</li>
     </ul>
   </details>
   <p class="footer-design">Built for HAP advocacy and member communications.</p>
@@ -1769,7 +1873,7 @@
   <script src="utils/performance-patch.js"></script>
   <script src="assets/vendor/html2canvas.min.js"></script>
   <script src="assets/vendor/jspdf.umd.min.js"></script>
-  <script src="340b.js?v=dmx-15"></script>
+  <script src="340b.js?v=dmx-16"></script>
   <!-- Pennsylvania Impact Mode — loads after main dashboard; fully isolated -->
   <script src="modules/pa-impact-data.js"></script>
   <script src="modules/pa-impact-engine.js"></script>

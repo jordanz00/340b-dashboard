@@ -26,6 +26,7 @@
   var MAP_ID = "pa-district-map";
   var TOOLTIP_ID = "pa-district-map-tooltip";
   var TOGGLE_SELECTOR = ".pa-district-toggle[data-pa-district-chamber]";
+  var hoverCapable = window.matchMedia && window.matchMedia("(hover: hover)").matches;
 
   var interactiveState = {
     legendFilter: "all",
@@ -477,6 +478,7 @@
       .attr("width", width)
       .attr("height", height)
       .attr("viewBox", "0 0 " + width + " " + height)
+      .attr("preserveAspectRatio", "xMidYMid meet")
       .attr("role", "img")
       .attr("aria-label", "PA " + (chamber === "senate" ? "Senate" : "House") + " district map");
 
@@ -510,12 +512,14 @@
         return n == null ? "" : String(n);
       })
       .on("mouseenter", function (event, d) {
+        if (!hoverCapable) return;
         cancelHideTooltip();
         d3.selectAll(".pa-district-shape--hover").classed("pa-district-shape--hover", false);
         d3.select(this).classed("pa-district-shape--hover", true);
         showTooltip(event, chamber, d, computed);
       })
       .on("mousemove", function (event) {
+        if (!hoverCapable) return;
         moveTooltip(event);
       })
       .on("mouseleave", function () {
@@ -613,7 +617,7 @@
 
       var mapNote = document.querySelector(".pa-district-map-note");
       if (mapNote && state.hospitals && state.hospitals.length) {
-        mapNote.textContent = "Click any district to see: district number and current legislator, number of 340B hospitals, hospital names, HAP relationship, and recommended action. Loaded " + state.hospitals.length + " PA 340B hospital points.";
+        mapNote.textContent = "Click any district to see: district number and current legislator, number of 340B hospitals, hospital names, hospital engagement, and outreach ideas. Loaded " + state.hospitals.length + " PA 340B hospital points.";
       }
 
       setActiveToggle(state.chamber);

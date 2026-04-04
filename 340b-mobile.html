@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0072bc">
+  <meta name="color-scheme" content="light">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HAP 340B">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>HAP 340B Dashboard</title>
+  <meta name="description" content="HAP 340B Advocacy Dashboard — Protect 340B, protect patients. Interactive mobile experience.">
+  <link rel="manifest" href="manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="340b-mobile.css">
+  <script src="state-data.js"></script>
+  <script src="assets/vendor/d3.min.js"></script>
+  <script src="assets/vendor/topojson-client.min.js"></script>
+  <script src="assets/vendor/states-10m.js"></script>
+</head>
+<body>
+
+<div id="app" class="hap-app">
+
+  <!-- ─── App Header ─── -->
+  <header class="app-header" id="app-header">
+    <div class="app-header-blur"></div>
+    <div class="app-header-inner">
+      <div class="app-brand">
+        <svg class="app-logo" viewBox="0 0 120 48" aria-hidden="true">
+          <path fill="#fff" d="M8 8h6v14h4V8h6v32h-6V26h-4v14H8z"/>
+          <path fill="#8ed8f8" d="M38 36c2-4 4-10 4-16 0-4-.5-8-1.5-11L44 8h8l4 14c1 3 1.5 6 1.5 10 0 6 2 12 4 16l-4 2-2-6h-8l-2 6z" opacity="0.95"/>
+          <path fill="#fbb040" d="M52 20c0-2 .5-4 1-6l-3-6h8l3 6c.5 2 1 4 1 6v16h-4l-1-4h-4zm4 8h4l-2-8-2 8z"/>
+          <path fill="#fff" d="M72 8h10c6 0 10 4 10 10s-3 8-8 9l6 15h-6l-6-14h-4v14h-6zM78 18h4c2 0 4-1.5 4-4s-2-4-4-4h-4z"/>
+        </svg>
+        <div class="app-title-group">
+          <span class="app-title">340B Dashboard</span>
+          <span class="app-subtitle">HAP Advocacy</span>
+        </div>
+      </div>
+      <button class="app-header-btn" id="btn-header-share" aria-label="Share dashboard">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ─── Main Content Area ─── -->
+  <main class="app-content" id="app-content">
+
+    <!-- ═══ TAB: HOME ═══ -->
+    <section class="tab-panel active" id="tab-home" data-tab="home">
+      <div class="tab-scroll">
+
+        <!-- Hero -->
+        <div class="home-hero anim-in">
+          <div class="hero-eyebrow">
+            <span class="eyebrow-dot"></span>
+            HAP Priority
+          </div>
+          <h1 class="hero-title">Protect 340B,<br>Protect Patients</h1>
+          <p class="hero-lead" id="hero-lead"></p>
+        </div>
+
+        <!-- KPI Carousel -->
+        <div class="section-label anim-in">Key Metrics</div>
+        <div class="kpi-carousel" id="kpi-carousel">
+          <div class="kpi-track">
+            <div class="kpi-card anim-in" data-topic="access">
+              <div class="kpi-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+              </div>
+              <div class="kpi-value" data-count="72">0</div>
+              <div class="kpi-label">PA Hospitals</div>
+              <div class="kpi-meaning">Rely on 340B to serve patients</div>
+            </div>
+            <div class="kpi-card anim-in" data-topic="finance">
+              <div class="kpi-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+              </div>
+              <div class="kpi-value" data-prefix="$" data-suffix="B" data-count="7.95" data-decimals="2">0</div>
+              <div class="kpi-label">Community Benefit</div>
+              <div class="kpi-meaning">Reported by 340B hospitals (2024)</div>
+            </div>
+            <div class="kpi-card anim-in" data-topic="policy">
+              <div class="kpi-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <div class="kpi-value" id="kpi-protected" data-count="21">0</div>
+              <div class="kpi-label">States Protected</div>
+              <div class="kpi-meaning">Contract pharmacy laws enacted</div>
+            </div>
+            <div class="kpi-card anim-in" data-topic="risk">
+              <div class="kpi-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+              </div>
+              <div class="kpi-value" id="kpi-unprotected" data-count="29">0</div>
+              <div class="kpi-label">States Without</div>
+              <div class="kpi-meaning">No contract pharmacy protection</div>
+            </div>
+          </div>
+          <div class="carousel-dots" id="kpi-dots"></div>
+        </div>
+
+        <!-- HAP Position -->
+        <div class="section-label anim-in">HAP Position</div>
+        <div class="position-card anim-in">
+          <div class="position-header">
+            <div class="position-badge">Federal &amp; State Asks</div>
+            <p class="position-lead" id="position-lead"></p>
+          </div>
+          <div class="ask-list" id="ask-list"></div>
+        </div>
+
+        <!-- Executive Strip -->
+        <div class="section-label anim-in">Executive Summary</div>
+        <div class="exec-cards anim-in">
+          <div class="exec-card" data-topic="policy">
+            <div class="exec-eyebrow" id="exec-priority-label"></div>
+            <div class="exec-value" id="exec-priority-value"></div>
+            <div class="exec-note" id="exec-priority-note"></div>
+          </div>
+          <div class="exec-card" data-topic="access">
+            <div class="exec-eyebrow" id="exec-landscape-label"></div>
+            <div class="exec-note" id="exec-landscape-note"></div>
+          </div>
+          <div class="exec-card" data-topic="finance">
+            <div class="exec-eyebrow" id="exec-trust-label"></div>
+            <div class="exec-value" id="exec-trust-value"></div>
+            <div class="exec-note" id="exec-trust-note"></div>
+          </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="quick-actions anim-in">
+          <button class="action-btn action-primary" id="btn-explore-map">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+            Explore Map
+          </button>
+          <button class="action-btn" id="btn-share-dash">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+            Share
+          </button>
+          <button class="action-btn" id="btn-pa-focus">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            PA Focus
+          </button>
+        </div>
+
+        <!-- Data Freshness -->
+        <div class="freshness-badge anim-in">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Data as of <span id="data-freshness"></span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ TAB: MAP ═══ -->
+    <section class="tab-panel" id="tab-map" data-tab="map">
+      <div class="tab-scroll">
+
+        <!-- Map Search -->
+        <div class="map-search-bar anim-in">
+          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          <input type="search" class="search-input" id="state-search" placeholder="Search states..." autocomplete="off">
+          <button class="search-clear hidden" id="search-clear" aria-label="Clear search">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+
+        <!-- Filter Chips -->
+        <div class="filter-bar anim-in" id="filter-bar">
+          <button class="filter-chip active" data-filter="all">All States</button>
+          <button class="filter-chip" data-filter="protected">
+            <span class="chip-dot chip-dot--protected"></span>Protected
+          </button>
+          <button class="filter-chip" data-filter="unprotected">
+            <span class="chip-dot chip-dot--none"></span>No Protection
+          </button>
+          <button class="filter-chip" data-filter="pbm">
+            <span class="chip-dot chip-dot--pbm"></span>PBM Only
+          </button>
+        </div>
+
+        <!-- Map Container -->
+        <div class="map-container anim-in" id="map-container">
+          <div class="map-wrap" id="mobile-map"></div>
+          <div class="map-legend">
+            <div class="legend-item"><span class="legend-swatch" style="background:#0072bc"></span>Contract pharmacy</div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#8ed8f8"></span>PBM only</div>
+            <div class="legend-item"><span class="legend-swatch" style="background:#d3d9d4"></span>No protection</div>
+          </div>
+        </div>
+
+        <!-- State Summary -->
+        <div class="map-summary anim-in" id="map-summary">
+          <div class="summary-stat">
+            <span class="summary-value" id="summary-protected">21</span>
+            <span class="summary-label">Protected</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-stat">
+            <span class="summary-value" id="summary-unprotected">29</span>
+            <span class="summary-label">Not Protected</span>
+          </div>
+          <div class="summary-divider"></div>
+          <div class="summary-stat">
+            <span class="summary-value" id="summary-pbm">—</span>
+            <span class="summary-label">PBM Only</span>
+          </div>
+        </div>
+
+        <!-- State Grid -->
+        <div class="section-label anim-in">All States</div>
+        <div class="state-grid" id="state-grid"></div>
+
+      </div>
+
+      <!-- State Detail Bottom Sheet -->
+      <div class="bottom-sheet" id="state-sheet">
+        <div class="sheet-backdrop" id="sheet-backdrop"></div>
+        <div class="sheet-panel" id="sheet-panel">
+          <div class="sheet-handle-bar"><div class="sheet-handle"></div></div>
+          <div class="sheet-header" id="sheet-header">
+            <h2 class="sheet-title" id="sheet-title">Select a State</h2>
+            <button class="sheet-close" id="sheet-close" aria-label="Close">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+          <div class="sheet-body" id="sheet-body"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ TAB: PA FOCUS ═══ -->
+    <section class="tab-panel" id="tab-pa" data-tab="pa">
+      <div class="tab-scroll">
+
+        <!-- PA Hero -->
+        <div class="pa-hero anim-in">
+          <div class="pa-hero-eyebrow">Pennsylvania Focus</div>
+          <h2 class="pa-hero-title">72 Hospitals Depend on 340B</h2>
+          <p class="pa-hero-lead">Pennsylvania hospitals rely on 340B savings to fund patient services in communities across the commonwealth.</p>
+          <div class="pa-status-pill">
+            <span class="status-dot status-dot--progress"></span>
+            PA Protection: In Progress
+          </div>
+        </div>
+
+        <!-- PA Stats -->
+        <div class="pa-stats anim-in">
+          <div class="pa-stat-card">
+            <div class="pa-stat-value" data-count="72">0</div>
+            <div class="pa-stat-label">340B Hospitals</div>
+            <div class="pa-stat-meaning">Across Pennsylvania</div>
+          </div>
+          <div class="pa-stat-card">
+            <div class="pa-stat-value" data-count="38" data-suffix="%">0</div>
+            <div class="pa-stat-label">Rural Hospitals</div>
+            <div class="pa-stat-meaning">Use 340B for care access</div>
+          </div>
+          <div class="pa-stat-card">
+            <div class="pa-stat-value" data-count="63" data-suffix="%">0</div>
+            <div class="pa-stat-label">Operating at a Loss</div>
+            <div class="pa-stat-meaning">Need 340B to stay open</div>
+          </div>
+          <div class="pa-stat-card">
+            <div class="pa-stat-value" data-count="95" data-suffix="%">0</div>
+            <div class="pa-stat-label">L&amp;D Services</div>
+            <div class="pa-stat-meaning">Provided by 340B hospitals</div>
+          </div>
+        </div>
+
+        <!-- What HAP Is Fighting For -->
+        <div class="section-label anim-in">What HAP Is Fighting For</div>
+        <div class="pa-asks anim-in" id="pa-asks"></div>
+
+        <!-- Oversight Gap -->
+        <div class="section-label anim-in">Oversight Gap</div>
+        <div class="oversight-card anim-in">
+          <div class="oversight-grid">
+            <div class="oversight-stat">
+              <div class="oversight-value" data-topic="risk" data-count="179">0</div>
+              <div class="oversight-label">HRSA audits of hospitals</div>
+              <div class="oversight-year">FY 2024</div>
+            </div>
+            <div class="oversight-vs">vs</div>
+            <div class="oversight-stat">
+              <div class="oversight-value" data-topic="finance" data-count="5">0</div>
+              <div class="oversight-label">Manufacturer audits</div>
+              <div class="oversight-year">FY 2024</div>
+            </div>
+          </div>
+          <p class="oversight-meaning">Hospitals face 36x more federal audits than drug manufacturers—despite manufacturers restricting 340B access.</p>
+        </div>
+
+        <!-- Community Benefit -->
+        <div class="section-label anim-in">Community Benefit</div>
+        <div class="benefit-card anim-in">
+          <div class="benefit-hero-value">$7.95<span class="benefit-unit">B</span></div>
+          <div class="benefit-label">Reported community benefit by 340B hospitals</div>
+          <div class="benefit-detail">Free prescriptions, cancer screening, rural clinics, behavioral health, and charity care for the uninsured.</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ TAB: POLICY ═══ -->
+    <section class="tab-panel" id="tab-policy" data-tab="policy">
+      <div class="tab-scroll">
+
+        <!-- Policy Hero -->
+        <div class="policy-hero anim-in">
+          <div class="policy-eyebrow">Legal Landscape</div>
+          <h2 class="policy-title">State-by-State Protection</h2>
+          <p class="policy-lead">States are enacting laws to defend 340B contract pharmacy relationships. Here's where things stand.</p>
+        </div>
+
+        <!-- Landscape Snapshot -->
+        <div class="landscape-snap anim-in">
+          <div class="landscape-stat landscape-stat--yes">
+            <div class="landscape-value" data-count="21">0</div>
+            <div class="landscape-label">States with contract pharmacy protection</div>
+          </div>
+          <div class="landscape-stat landscape-stat--no">
+            <div class="landscape-value" data-count="29">0</div>
+            <div class="landscape-label">States without protection</div>
+          </div>
+        </div>
+
+        <!-- Court Outcomes -->
+        <div class="section-label anim-in">Court &amp; Legislative Outcomes</div>
+        <div class="outcome-cards anim-in" id="outcome-cards">
+          <div class="outcome-card" data-topic="finance">
+            <div class="outcome-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 11-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+            <div class="outcome-title">Upheld in Court</div>
+            <div class="outcome-states" id="outcome-upheld"></div>
+          </div>
+          <div class="outcome-card" data-topic="policy">
+            <div class="outcome-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+            </div>
+            <div class="outcome-title">Hybrid / Reporting</div>
+            <div class="outcome-states" id="outcome-hybrid"></div>
+          </div>
+          <div class="outcome-card" data-topic="risk">
+            <div class="outcome-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+            </div>
+            <div class="outcome-title">Vetoed / Blocked</div>
+            <div class="outcome-states" id="outcome-vetoed"></div>
+          </div>
+        </div>
+
+        <!-- Market Context -->
+        <div class="section-label anim-in">Market Context</div>
+        <div class="context-card anim-in">
+          <div class="context-stat">
+            <span class="context-value">7%</span>
+            <span class="context-label">of U.S. drug market</span>
+          </div>
+          <p class="context-meaning">340B accounts for only 7% of the U.S. drug market, yet manufacturers claim it distorts pricing. The data tells a different story.</p>
+        </div>
+
+        <!-- What Manufacturers Argue -->
+        <div class="section-label anim-in">What Manufacturers Argue</div>
+        <div class="counter-list anim-in" id="counter-list">
+          <details class="counter-item">
+            <summary class="counter-summary">
+              <span>"340B is growing too fast"</span>
+              <svg class="counter-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="counter-response">340B accounts for only 7% of total U.S. drug purchases. Growth reflects more hospitals qualifying for the program because they serve low-income and uninsured patients—not abuse.</div>
+          </details>
+          <details class="counter-item">
+            <summary class="counter-summary">
+              <span>"Hospitals profit from 340B"</span>
+              <svg class="counter-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="counter-response">63% of Pennsylvania 340B hospitals operate at a financial loss. 340B savings help offset the cost of uncompensated care and keep safety-net services running.</div>
+          </details>
+          <details class="counter-item">
+            <summary class="counter-summary">
+              <span>"Contract pharmacies aren't accountable"</span>
+              <svg class="counter-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="counter-response">Hospitals face 179 HRSA audits vs only 5 manufacturer audits (FY 2024). 340B entities are subject to extensive federal oversight, while manufacturers restricting access face virtually none.</div>
+          </details>
+          <details class="counter-item">
+            <summary class="counter-summary">
+              <span>"Savings don't reach patients"</span>
+              <svg class="counter-chevron" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            </summary>
+            <div class="counter-response">340B hospitals reported $7.95 billion in community benefit in 2024, funding free prescriptions, cancer screening, behavioral health, and rural clinic operations.</div>
+          </details>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══ TAB: MORE ═══ -->
+    <section class="tab-panel" id="tab-more" data-tab="more">
+      <div class="tab-scroll">
+
+        <!-- About 340B -->
+        <div class="section-label anim-in">About the 340B Program</div>
+        <div class="about-card anim-in">
+          <h3 class="about-title">What is 340B?</h3>
+          <p class="about-text" id="about-text"></p>
+        </div>
+
+        <!-- Eligible Providers -->
+        <div class="section-label anim-in">Who's Eligible</div>
+        <div class="eligible-grid anim-in">
+          <div class="eligible-card">
+            <div class="eligible-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+            </div>
+            <div class="eligible-label">Safety-Net Hospitals</div>
+          </div>
+          <div class="eligible-card">
+            <div class="eligible-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+            </div>
+            <div class="eligible-label">Rural Hospitals</div>
+          </div>
+          <div class="eligible-card">
+            <div class="eligible-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <div class="eligible-label">FQHCs</div>
+          </div>
+          <div class="eligible-card">
+            <div class="eligible-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4.8 2.3A.3.3 0 105 2H4a2 2 0 00-2 2v5a2 2 0 002 2h1a2 2 0 002-2V4a2 2 0 00-.8-1.6z"/><path d="M8 15v1a6 6 0 006 6 6 6 0 006-6v-4"/><circle cx="20" cy="10" r="2"/></svg>
+            </div>
+            <div class="eligible-label">Children's &amp; Cancer Centers</div>
+          </div>
+        </div>
+
+        <!-- Sources -->
+        <div class="section-label anim-in">Sources &amp; Methodology</div>
+        <div class="sources-card anim-in">
+          <p class="sources-text" id="sources-text"></p>
+        </div>
+        <div class="limitations-card anim-in">
+          <div class="limitations-title">Limitations</div>
+          <p class="limitations-text" id="limitations-text"></p>
+        </div>
+
+        <!-- Actions -->
+        <div class="section-label anim-in">Actions</div>
+        <div class="more-actions anim-in">
+          <a class="more-action-card" href="340b.html" target="_blank" rel="noopener">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            <div class="more-action-text">
+              <div class="more-action-title">Full Desktop Dashboard</div>
+              <div class="more-action-sub">Complete 340B experience</div>
+            </div>
+            <svg class="more-action-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+          <button class="more-action-card" id="btn-copy-link">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+            <div class="more-action-text">
+              <div class="more-action-title">Copy Link</div>
+              <div class="more-action-sub">Share the dashboard URL</div>
+            </div>
+            <svg class="more-action-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <a class="more-action-card" href="https://www.haponline.org" target="_blank" rel="noopener">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z"/></svg>
+            <div class="more-action-text">
+              <div class="more-action-title">HAP Online</div>
+              <div class="more-action-sub">haponline.org</div>
+            </div>
+            <svg class="more-action-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
+          </a>
+        </div>
+
+        <!-- Footer -->
+        <div class="app-footer anim-in">
+          <div class="footer-brand">
+            <svg class="footer-logo" viewBox="0 0 120 48" aria-hidden="true">
+              <path fill="#0072bc" d="M8 8h6v14h4V8h6v32h-6V26h-4v14H8z"/>
+              <path fill="#8ed8f8" d="M38 36c2-4 4-10 4-16 0-4-.5-8-1.5-11L44 8h8l4 14c1 3 1.5 6 1.5 10 0 6 2 12 4 16l-4 2-2-6h-8l-2 6z" opacity="0.95"/>
+              <path fill="#fbb040" d="M52 20c0-2 .5-4 1-6l-3-6h8l3 6c.5 2 1 4 1 6v16h-4l-1-4h-4zm4 8h4l-2-8-2 8z"/>
+              <path fill="#0072bc" d="M72 8h10c6 0 10 4 10 10s-3 8-8 9l6 15h-6l-6-14h-4v14h-6zM78 18h4c2 0 4-1.5 4-4s-2-4-4-4h-4z"/>
+            </svg>
+          </div>
+          <p class="footer-text">The Hospital and Healthsystem Association of Pennsylvania</p>
+          <p class="footer-address">30 North Third Street, Suite 600 &middot; Harrisburg, PA 17101</p>
+          <p class="footer-copy">&copy; <span id="footer-year"></span> HAP. All rights reserved.</p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─── Bottom Tab Bar ─── -->
+  <nav class="app-tab-bar" id="app-tab-bar" aria-label="Main navigation">
+    <button class="tab-btn active" data-tab="home" aria-label="Home">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span class="tab-label">Home</span>
+    </button>
+    <button class="tab-btn" data-tab="map" aria-label="Map">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+      <span class="tab-label">Map</span>
+    </button>
+    <button class="tab-btn" data-tab="pa" aria-label="Pennsylvania Focus">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s-8-4.5-8-11.8A8 8 0 0112 2a8 8 0 018 8.2c0 7.3-8 11.8-8 11.8z"/><circle cx="12" cy="10" r="3"/></svg>
+      <span class="tab-label">PA Focus</span>
+    </button>
+    <button class="tab-btn" data-tab="policy" aria-label="Policy">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      <span class="tab-label">Policy</span>
+    </button>
+    <button class="tab-btn" data-tab="more" aria-label="More">
+      <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      <span class="tab-label">More</span>
+    </button>
+  </nav>
+
+  <!-- Toast Notification -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Share Sheet -->
+  <div class="share-sheet hidden" id="share-sheet">
+    <div class="share-sheet-backdrop" id="share-backdrop"></div>
+    <div class="share-sheet-panel">
+      <div class="sheet-handle-bar"><div class="sheet-handle"></div></div>
+      <h3 class="share-title">Share Dashboard</h3>
+      <div class="share-options">
+        <button class="share-option" data-share="copy">
+          <div class="share-option-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg></div>
+          <span>Copy Link</span>
+        </button>
+        <button class="share-option" data-share="email">
+          <div class="share-option-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22 6 12 13 2 6"/></svg></div>
+          <span>Email</span>
+        </button>
+        <button class="share-option" data-share="x">
+          <div class="share-option-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg></div>
+          <span>X / Twitter</span>
+        </button>
+        <button class="share-option" data-share="linkedin">
+          <div class="share-option-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg></div>
+          <span>LinkedIn</span>
+        </button>
+      </div>
+      <button class="share-cancel" id="share-cancel">Cancel</button>
+    </div>
+  </div>
+
+</div>
+
+<script src="340b-mobile.js"></script>
+</body>
+</html>
