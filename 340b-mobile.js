@@ -23,10 +23,18 @@
   var touchStartX = 0;
   var touchStartY = 0;
   var isSwiping = false;
-  var paDistrictLoaded = false;
-
+  /** @type {Element|null} focus target to restore when state sheet closes */
+  var sheetFocusReturnEl = null;
   /* ── DOM Cache ── */
   var dom = {};
+
+  /** Numeric KPI from state-data.js HAP_STATIC_METRICS (fallback for older pages). */
+  function staticMetric(metricKey, fallback) {
+    if (typeof HAP_STATIC_METRICS !== "undefined" && HAP_STATIC_METRICS[metricKey] != null) {
+      return HAP_STATIC_METRICS[metricKey];
+    }
+    return fallback;
+  }
 
   function cacheDom() {
     dom.app = document.getElementById("app");
@@ -55,30 +63,43 @@
 
   function init() {
     cacheDom();
+    initWarehouseBootstrap();
     populateCopy();
-    initTabs();
-    initSwipeNavigation();
-    initScrollAnimations();
-    initStateGrid();
-    initSearch();
-    initFilters();
-    initShareHandlers();
-    initBottomSheet();
-    initCountUp();
-    initOutcomes();
-    initPaAsks();
-    initFederalDelegation();
-    initZipLookup();
-    initStoryForm();
-    initReportGenerator();
-    initDataConnection();
-    initPolicyAlert();
 
-    document.getElementById("footer-year").textContent = new Date().getFullYear();
+    function continueInit() {
+      initTabs();
+      initSwipeNavigation();
+      initScrollAnimations();
+      initStateGrid();
+      initSearch();
+      initFilters();
+      initShareHandlers();
+      initBottomSheet();
+      initSheetEscape();
+      initLegislatorHeadshotFallback();
+      initCountUp();
+      initOutcomes();
+      initPaAsks();
+      initFederalDelegation();
+      initZipLookup();
+      initStoryForm();
+      initReportGenerator();
+      initDataConnection();
+      initPolicyAlert();
 
-    requestAnimationFrame(function () {
-      triggerAnimations("tab-home");
-    });
+      var fy = document.getElementById("footer-year");
+      if (fy) fy.textContent = new Date().getFullYear();
+
+      requestAnimationFrame(function () {
+        triggerAnimations("tab-home");
+      });
+    }
+
+    if (typeof DataLayer !== "undefined") {
+      applyDataMetricElements().then(continueInit).catch(continueInit);
+    } else {
+      continueInit();
+    }
   }
 
   /* ═══════════════════════════════════════════════════
@@ -217,10 +238,6 @@
       requestAnimationFrame(function () {
         setTimeout(drawMap, 100);
       });
-    }
-
-    if (tab === "pa" && !paDistrictLoaded) {
-      loadPaDistrictMap();
     }
 
     vibrate(10);
@@ -365,6 +382,114 @@
     document.querySelectorAll("[data-count]").forEach(animateCountUp);
   }
 
+  function redrawMobileMap() {
+    if (!dom.mapContainer) return;
+    while (dom.mapContainer.firstChild) {
+      dom.mapContainer.removeChild(dom.mapContainer.firstChild);
+    }
+    mapDrawn = false;
+    if (currentTab === "map") {
+      requestAnimationFrame(function () {
+        setTimeout(drawMap, 50);
+      });
+    }
+  }
+
+  /**
+   * After warehouse JSON loads, sync [data-metric-key] elements from DataLayer.
+   */
+  function applyDataMetricElements() {
+    if (typeof DataLayer === "undefined") return Promise.resolve();
+    return Promise.all([DataLayer.getKPIs(), DataLayer.getPA()]).then(function (results) {
+      var kpis = results[0];
+      var pa = results[1];
+      var kmap = {};
+      var kpiByKey = {};
+      kpis.forEach(function (k) {
+        kmap[k.key] = k.value;
+        kpiByKey[k.key] = k;
+      });
+
+      document.querySelectorAll("[data-metric-key]").forEach(function (el) {
+        var key = el.getAttribute("data-metric-key");
+        var val = kmap[key];
+        if (val == null && pa) {
+          if (key === "PA_RURAL_HOSPITAL_PCT") val = pa.ruralPercent;
+          else if (key === "PA_HOSPITALS_OPERATING_LOSS_PCT") val = pa.operatingAtLossPercent;
+          else if (key === "PA_LD_SERVICES_PCT") val = pa.ldServicesPercent;
+          else if (key === "HRSA_HOSPITAL_AUDIT_COUNT") val = pa.hrsaHospitalAudits;
+          else if (key === "HRSA_MANUFACTURER_AUDIT_COUNT") val = pa.hrsaManufacturerAudits;
+          else if (key === "PA_HOSPITALS_340B_COUNT") val = pa.hospitalCount;
+          else if (key === "COMMUNITY_BENEFIT_TOTAL_BILLIONS") val = pa.communityBenefitBillions;
+        }
+        if (val == null) return;
+        el.setAttribute("data-count", val);
+        var row = kpiByKey[key];
+        if (row && row.prefix != null) el.setAttribute("data-prefix", row.prefix);
+        if (row && row.suffix != null) el.setAttribute("data-suffix", row.suffix);
+        if (row && row.decimals != null) el.setAttribute("data-decimals", String(row.decimals));
+      });
+
+      var mfg = pa && pa.hrsaManufacturerAudits != null ? pa.hrsaManufacturerAudits : staticMetric("HRSA_MANUFACTURER_AUDIT_COUNT", 5);
+      var hosp = pa && pa.hrsaHospitalAudits != null ? pa.hrsaHospitalAudits : staticMetric("HRSA_HOSPITAL_AUDIT_COUNT", 179);
+      var ratio = mfg > 0 ? Math.round(hosp / mfg) : 0;
+      var om = document.querySelector(".oversight-meaning");
+      if (om && ratio > 0) {
+        om.textContent = "Hospitals face " + ratio + "x more federal audits than drug manufacturers—despite manufacturers restricting 340B access.";
+      }
+
+      var paHosp = pa && pa.hospitalCount != null ? pa.hospitalCount : staticMetric("PA_HOSPITALS_340B_COUNT", 72);
+      var benefit = pa && pa.communityBenefitBillions != null ? pa.communityBenefitBillions : staticMetric("COMMUNITY_BENEFIT_TOTAL_BILLIONS", 7.95);
+      var paTitle = document.getElementById("pa-hero-title");
+      if (paTitle) paTitle.textContent = paHosp + " Hospitals Depend on 340B";
+      var bd = document.getElementById("pa-benefit-dollars");
+      if (bd) bd.textContent = "$" + (typeof benefit === "number" ? benefit.toFixed(2) : benefit);
+    });
+  }
+
+  function rehydrateAfterWarehouse() {
+    if (typeof DataLayer === "undefined" || DataLayer.source !== "warehouse-gold") return;
+    if (!DataLayer.getStatus().cacheLoaded) return;
+
+    populateCopy();
+    updateProtectionCounts();
+    initStateGrid();
+    redrawMobileMap();
+    filterStateCards(dom.searchInput ? dom.searchInput.value.trim().toLowerCase() : "", currentFilter);
+    applyDataMetricElements().then(function () {
+      requestAnimationFrame(function () {
+        runAllCountUps();
+      });
+    });
+  }
+
+  /**
+   * Connect to Gold JSON API when config/settings.js warehouse.enabled is true.
+   */
+  function initWarehouseBootstrap() {
+    if (typeof DataLayer === "undefined") return;
+    var w = typeof DASHBOARD_SETTINGS !== "undefined" ? DASHBOARD_SETTINGS.warehouse : null;
+    if (!w || !w.enabled) return;
+
+    var url = w.useMockEndpoint ? "data/mock-api-response.json" : (w.endpointUrl || "");
+    if (!url) return;
+
+    DataLayer.onRefresh(function () {
+      if (DataLayer.source === "warehouse-gold" && DataLayer.getStatus().cacheLoaded) {
+        rehydrateAfterWarehouse();
+      }
+    });
+
+    var opts = {
+      intervalMs: w.pollIntervalMs || 900000,
+      storyApiUrl: w.storyApiUrl || "",
+      headers: w.headers || {}
+    };
+    DataLayer.connectWarehouse(url, opts);
+    /* Path C (PBI embed): call DataLayer.connectPowerBI() from a separate page or console only —
+       it sets DataLayer.source to powerbi-embed and would override warehouse-gold here. */
+  }
+
   /* ═══════════════════════════════════════════════════
      State Grid
      ═══════════════════════════════════════════════════ */
@@ -373,6 +498,10 @@
     if (typeof STATE_340B === "undefined" || typeof STATE_NAMES === "undefined") return;
     var grid = dom.stateGrid;
     if (!grid) return;
+
+    while (grid.firstChild) {
+      grid.removeChild(grid.firstChild);
+    }
 
     var sortedStates = Object.keys(STATE_NAMES)
       .filter(function (abbr) { return abbr !== "DC"; })
@@ -514,6 +643,15 @@
      D3 Map
      ═══════════════════════════════════════════════════ */
 
+  function statePathAriaLabel(abbr) {
+    if (!abbr) return "State";
+    var name = (typeof STATE_NAMES !== "undefined" && STATE_NAMES[abbr]) || abbr;
+    if (typeof STATE_340B === "undefined") return name;
+    var row = STATE_340B[abbr] || {};
+    var st = row.cp ? "contract pharmacy protection" : row.pbm ? "PBM regulation only" : "no contract pharmacy protection enacted";
+    return name + ", " + st + ". Press Enter or Space for details.";
+  }
+
   function drawMap() {
     if (mapDrawn) return;
     if (typeof d3 === "undefined" || typeof topojson === "undefined") return;
@@ -552,7 +690,22 @@
       .attr("fill", function (d) {
         return getStateColor(fipsToAbbr(d.id));
       })
+      .attr("tabindex", "0")
+      .attr("role", "button")
+      .attr("aria-label", function (d) {
+        return statePathAriaLabel(fipsToAbbr(d.id));
+      })
       .style("opacity", 0)
+      .on("keydown", function (event, d) {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        hideMapTooltip();
+        var abbrK = fipsToAbbr(d.id);
+        if (abbrK) {
+          selectMapState(abbrK);
+          openStateSheet(abbrK);
+        }
+      })
       .on("mouseenter", function (event, d) {
         var abbr = fipsToAbbr(d.id);
         if (abbr) {
@@ -748,6 +901,24 @@
     }, { passive: true });
   }
 
+  function initSheetEscape() {
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape" && isSheetOpen()) {
+        e.preventDefault();
+        closeStateSheet();
+      }
+    });
+  }
+
+  function initLegislatorHeadshotFallback() {
+    document.querySelectorAll("img.leg-card-photo").forEach(function (img) {
+      img.addEventListener("error", function onImgErr() {
+        img.removeEventListener("error", onImgErr);
+        img.style.display = "none";
+      });
+    });
+  }
+
   /**
    * Build one stat cell for the state detail bottom sheet (safe DOM — textContent only).
    * @param {string} value — display value
@@ -828,23 +999,37 @@
       paTitle.textContent = "HAP Focus State";
       var paBody = document.createElement("div");
       paBody.className = "sheet-notes";
-      paBody.textContent = "Pennsylvania is HAP's home state. 72 hospitals rely on 340B to serve patients. Legislation is in progress to enact contract pharmacy protection.";
+      var nH = staticMetric("PA_HOSPITALS_340B_COUNT", 72);
+      paBody.textContent = "Pennsylvania is HAP's home state. " + nH + " hospitals rely on 340B to serve patients. Legislation is in progress to enact contract pharmacy protection.";
       secPA.appendChild(paTitle);
       secPA.appendChild(paBody);
       dom.sheetBody.appendChild(secPA);
     }
 
+    sheetFocusReturnEl = document.activeElement;
+    dom.stateSheet.setAttribute("aria-hidden", "false");
     dom.stateSheet.classList.add("open");
     dom.sheetPanel.style.transform = "";
     dom.sheetPanel.style.transition = "";
     document.body.style.overflow = "hidden";
     vibrate(15);
+    requestAnimationFrame(function () {
+      var c = document.getElementById("sheet-close");
+      if (c) c.focus();
+    });
   }
 
   function closeStateSheet() {
+    dom.stateSheet.setAttribute("aria-hidden", "true");
     dom.stateSheet.classList.remove("open");
     document.body.style.overflow = "";
     selectedState = null;
+    if (sheetFocusReturnEl && typeof sheetFocusReturnEl.focus === "function") {
+      try {
+        sheetFocusReturnEl.focus();
+      } catch (err) { /* noop */ }
+    }
+    sheetFocusReturnEl = null;
 
     if (dom.mapContainer) {
       dom.mapContainer.querySelectorAll("path.state").forEach(function (p) {
@@ -1042,92 +1227,86 @@
   }
 
   /* ═══════════════════════════════════════════════════
-     KPI Carousel Dots
-     ═══════════════════════════════════════════════════ */
-
-  (function initCarouselDots() {
-    document.addEventListener("DOMContentLoaded", function () {
-      var track = document.querySelector(".kpi-track");
-      var dotsContainer = document.getElementById("kpi-dots");
-      if (!track || !dotsContainer) return;
-
-      var cards = track.querySelectorAll(".kpi-card");
-      var numDots = Math.ceil(cards.length / 2);
-      for (var i = 0; i < numDots; i++) {
-        var dot = document.createElement("div");
-        dot.className = "carousel-dot" + (i === 0 ? " active" : "");
-        dotsContainer.appendChild(dot);
-      }
-
-      var dots = dotsContainer.querySelectorAll(".carousel-dot");
-
-      track.addEventListener("scroll", function () {
-        var scrollLeft = track.scrollLeft;
-        var cardWidth = cards[0].offsetWidth + 12;
-        var activeIndex = Math.round(scrollLeft / (cardWidth * 2));
-        activeIndex = Math.max(0, Math.min(activeIndex, dots.length - 1));
-        dots.forEach(function (d, idx) {
-          d.classList.toggle("active", idx === activeIndex);
-        });
-      }, { passive: true });
-    });
-  })();
-
-  /* ═══════════════════════════════════════════════════
      Federal Delegation
      ═══════════════════════════════════════════════════ */
 
-  var CONGRESS_PHOTO_BASE = "https://theunitedstates.io/images/congress/225x275/";
-  var PA_LEG_PHOTO_BASE = "https://www.palegis.us/resources/images/members/200/";
-
   function congressPhotoUrl(bioguideId) {
     if (!bioguideId) return "";
-    return CONGRESS_PHOTO_BASE + bioguideId + ".jpg";
+    return "images/headshots/congress/" + bioguideId + ".jpg";
   }
 
-  function paLegPhotoUrl(gpid) {
-    if (!gpid) return "";
-    return PA_LEG_PHOTO_BASE + gpid + ".jpg";
+  function paLegPhotoUrl(gpid, chamber) {
+    if (typeof DataLayer !== "undefined" && DataLayer.getPaLegislatorPhotoUrl) {
+      return DataLayer.getPaLegislatorPhotoUrl(gpid, chamber);
+    }
+    return typeof window.getPaPhoto === "function" ? window.getPaPhoto(gpid, chamber) : "";
   }
 
+  function initialsFromName(name) {
+    var parts = String(name || "").trim().split(/\s+/).filter(Boolean);
+    if (parts.length >= 2) {
+      return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase();
+    }
+    return (parts[0] || "?").slice(0, 2).toUpperCase();
+  }
+
+  /**
+   * Headshot wrapper: loads portrait when src is set; on error shows initials (never blank space).
+   * Do not set crossOrigin — many official portrait hosts omit CORS; anonymous mode breaks the image.
+   */
   function createHeadshot(src, alt, className) {
+    var wrap = document.createElement("span");
+    wrap.className = "leg-headshot-wrap";
+    var cls = className || "leg-headshot";
+    function appendInitials() {
+      var fb = document.createElement("span");
+      fb.className = "leg-headshot leg-headshot--initials " + cls.replace(/\bleg-headshot\b/g, "").trim();
+      fb.setAttribute("role", "img");
+      fb.setAttribute("aria-label", alt || "Legislator");
+      fb.textContent = initialsFromName(alt);
+      wrap.appendChild(fb);
+    }
+    if (!src) {
+      appendInitials();
+      return wrap;
+    }
     var img = document.createElement("img");
-    img.className = className || "leg-headshot";
+    img.className = cls;
     img.alt = alt || "";
     img.width = 36;
     img.height = 36;
     img.loading = "lazy";
     img.decoding = "async";
-    img.setAttribute("crossorigin", "anonymous");
-    if (src) {
-      img.src = src;
-    }
-    img.onerror = function () {
-      this.style.display = "none";
-    };
-    return img;
+    img.src = src;
+    img.addEventListener("error", function onImgErr() {
+      img.removeEventListener("error", onImgErr);
+      if (img.parentNode) img.parentNode.removeChild(img);
+      appendInitials();
+    });
+    wrap.appendChild(img);
+    return wrap;
   }
 
   window._PA_DELEGATION_DATA = [
-    { member: "John Fetterman", chamber: "Senate", district: "Statewide", party: "D", position: "cosponsor", lastContact: "03/15/2026", action: "Schedule meeting", bioguideId: "F000462" },
-    { member: "Dave McCormick", chamber: "Senate", district: "Statewide", party: "R", position: "supportive", lastContact: "03/10/2026", action: "Schedule meeting", bioguideId: "M001224" },
-    { member: "Brian Fitzpatrick", chamber: "House", district: "District 1", party: "R", position: "unknown", lastContact: "02/28/2026", action: "Schedule meeting", bioguideId: "F000466" },
-    { member: "Brendan Boyle", chamber: "House", district: "District 2", party: "D", position: "opposed", lastContact: "01/20/2026", action: "Schedule meeting", bioguideId: "B001296" },
-    { member: "Dwight Evans", chamber: "House", district: "District 3", party: "D", position: "cosponsor", lastContact: "03/01/2026", action: "Schedule meeting", bioguideId: "E000296" },
-    { member: "Madeleine Dean", chamber: "House", district: "District 4", party: "D", position: "supportive", lastContact: "02/15/2026", action: "Schedule meeting", bioguideId: "D000631" },
-    { member: "Mary Gay Scanlon", chamber: "House", district: "District 5", party: "D", position: "unknown", lastContact: "01/10/2026", action: "Schedule meeting", bioguideId: "S001205" },
-    { member: "Chrissy Houlahan", chamber: "House", district: "District 6", party: "D", position: "supportive", lastContact: "03/05/2026", action: "Schedule meeting", bioguideId: "H001085" },
-    { member: "Ryan Mackenzie", chamber: "House", district: "District 7", party: "R", position: "opposed", lastContact: "12/01/2025", action: "Schedule meeting", bioguideId: "M001226" },
-    { member: "Rob Bresnahan", chamber: "House", district: "District 8", party: "R", position: "unknown", lastContact: "02/20/2026", action: "Schedule meeting", bioguideId: "B001323" },
-    { member: "Dan Meuser", chamber: "House", district: "District 9", party: "R", position: "cosponsor", lastContact: "03/12/2026", action: "Schedule meeting", bioguideId: "M001204" },
-    { member: "Scott Perry", chamber: "House", district: "District 10", party: "R", position: "supportive", lastContact: "01/30/2026", action: "Schedule meeting", bioguideId: "P000605" },
-    { member: "Lloyd Smucker", chamber: "House", district: "District 11", party: "R", position: "unknown", lastContact: "02/05/2026", action: "Schedule meeting", bioguideId: "S001199" },
-    { member: "Summer Lee", chamber: "House", district: "District 12", party: "D", position: "supportive", lastContact: "03/08/2026", action: "Schedule meeting", bioguideId: "L000603" },
-    { member: "John Joyce", chamber: "House", district: "District 13", party: "R", position: "opposed", lastContact: "11/15/2025", action: "Schedule meeting", bioguideId: "J000302" },
-    { member: "Guy Reschenthaler", chamber: "House", district: "District 14", party: "R", position: "unknown", lastContact: "01/25/2026", action: "Schedule meeting", bioguideId: "R000610" },
-    { member: "Glenn Thompson", chamber: "House", district: "District 15", party: "R", position: "supportive", lastContact: "02/22/2026", action: "Schedule meeting", bioguideId: "T000467" },
-    { member: "Mike Kelly", chamber: "House", district: "District 16", party: "R", position: "unknown", lastContact: "03/02/2026", action: "Schedule meeting", bioguideId: "K000376" },
-    { member: "Chris Deluzio", chamber: "House", district: "District 17", party: "D", position: "supportive", lastContact: "03/06/2026", action: "Schedule meeting", bioguideId: "D000632" }
+    { member: "John Fetterman", chamber: "Senate", district: "Statewide", party: "D", position: "cosponsor", lastContact: "03/15/2026", action: "Schedule meeting", bioguideId: "F000479", url: "https://www.fetterman.senate.gov" },
+    { member: "Dave McCormick", chamber: "Senate", district: "Statewide", party: "R", position: "supportive", lastContact: "03/10/2026", action: "Schedule meeting", bioguideId: "M001243", url: "https://www.mccormick.senate.gov" },
+    { member: "Brian Fitzpatrick", chamber: "House", district: "District 1", party: "R", position: "unknown", lastContact: "02/28/2026", action: "Schedule meeting", bioguideId: "F000466", url: "https://fitzpatrick.house.gov" },
+    { member: "Brendan Boyle", chamber: "House", district: "District 2", party: "D", position: "opposed", lastContact: "01/20/2026", action: "Schedule meeting", bioguideId: "B001296", url: "https://boyle.house.gov" },
+    { member: "Dwight Evans", chamber: "House", district: "District 3", party: "D", position: "cosponsor", lastContact: "03/01/2026", action: "Schedule meeting", bioguideId: "E000296", url: "https://evans.house.gov" },
+    { member: "Madeleine Dean", chamber: "House", district: "District 4", party: "D", position: "supportive", lastContact: "02/15/2026", action: "Schedule meeting", bioguideId: "D000631", url: "https://dean.house.gov" },
+    { member: "Mary Gay Scanlon", chamber: "House", district: "District 5", party: "D", position: "unknown", lastContact: "01/10/2026", action: "Schedule meeting", bioguideId: "S001208", url: "https://scanlon.house.gov" },
+    { member: "Chrissy Houlahan", chamber: "House", district: "District 6", party: "D", position: "supportive", lastContact: "03/05/2026", action: "Schedule meeting", bioguideId: "H001085", url: "https://houlahan.house.gov" },
+    { member: "Ryan Mackenzie", chamber: "House", district: "District 7", party: "R", position: "opposed", lastContact: "12/01/2025", action: "Schedule meeting", bioguideId: "M001230", url: "https://mackenzie.house.gov" },
+    { member: "Rob Bresnahan", chamber: "House", district: "District 8", party: "R", position: "unknown", lastContact: "02/20/2026", action: "Schedule meeting", bioguideId: "B001327", url: "https://bresnahan.house.gov" },
+    { member: "Dan Meuser", chamber: "House", district: "District 9", party: "R", position: "cosponsor", lastContact: "03/12/2026", action: "Schedule meeting", bioguideId: "M001205", url: "https://meuser.house.gov" },
+    { member: "Scott Perry", chamber: "House", district: "District 10", party: "R", position: "supportive", lastContact: "01/30/2026", action: "Schedule meeting", bioguideId: "P000605", url: "https://perry.house.gov" },
+    { member: "Lloyd Smucker", chamber: "House", district: "District 11", party: "R", position: "unknown", lastContact: "02/05/2026", action: "Schedule meeting", bioguideId: "S001199", url: "https://smucker.house.gov" },
+    { member: "Summer Lee", chamber: "House", district: "District 12", party: "D", position: "supportive", lastContact: "03/08/2026", action: "Schedule meeting", bioguideId: "L000602", url: "https://summerlee.house.gov" },
+    { member: "John Joyce", chamber: "House", district: "District 13", party: "R", position: "opposed", lastContact: "11/15/2025", action: "Schedule meeting", bioguideId: "J000302", url: "https://joyce.house.gov" },
+    { member: "Guy Reschenthaler", chamber: "House", district: "District 14", party: "R", position: "unknown", lastContact: "01/25/2026", action: "Schedule meeting", bioguideId: "R000610", url: "https://reschenthaler.house.gov" },
+    { member: "Glenn Thompson", chamber: "House", district: "District 15", party: "R", position: "supportive", lastContact: "02/22/2026", action: "Schedule meeting", bioguideId: "T000467", url: "https://thompson.house.gov" },
+    { member: "Mike Kelly", chamber: "House", district: "District 16", party: "R", position: "unknown", lastContact: "03/02/2026", action: "Schedule meeting", bioguideId: "K000376", url: "https://kelly.house.gov" },
+    { member: "Chris Deluzio", chamber: "House", district: "District 17", party: "D", position: "supportive", lastContact: "03/06/2026", action: "Schedule meeting", bioguideId: "D000530", url: "https://deluzio.house.gov" }
   ];
   var PA_DELEGATION = window._PA_DELEGATION_DATA;
 
@@ -1142,8 +1321,11 @@
 
     var frag = document.createDocumentFragment();
     PA_DELEGATION.forEach(function (row) {
-      var card = document.createElement("div");
+      var card = document.createElement("a");
       card.className = "fed-card";
+      card.href = row.url || "#";
+      card.target = "_blank";
+      card.rel = "noopener noreferrer";
       card.setAttribute("data-position", row.position || "unknown");
 
       var top = document.createElement("div");
@@ -1217,12 +1399,95 @@
      ZIP Code Legislator Lookup
      ═══════════════════════════════════════════════════ */
 
+  var _zipLookupResultsListenerBound = false;
+
+  function appendZipLookupDistrictResults(detail) {
+    var resultsContainer = document.getElementById("zip-lookup-results");
+    if (!resultsContainer || !detail) return;
+
+    function addHeading(text) {
+      var h = document.createElement("p");
+      h.className = "zip-result-heading";
+      h.textContent = text;
+      resultsContainer.appendChild(h);
+    }
+
+    function addLegRow(opts) {
+      var row = opts.url ? document.createElement("a") : document.createElement("div");
+      row.className = "zip-result-card";
+      if (opts.url) {
+        row.href = opts.url;
+        row.target = "_blank";
+        row.rel = "noopener noreferrer";
+      }
+      var photoSrc = opts.photoSrc || "";
+      row.appendChild(createHeadshot(photoSrc, opts.name, "leg-headshot zip-result-photo"));
+      var info = document.createElement("div");
+      info.className = "zip-result-info";
+      var nm = document.createElement("div");
+      nm.className = "zip-result-name";
+      nm.textContent = opts.name || "—";
+      var sub = document.createElement("div");
+      sub.className = "zip-result-detail";
+      sub.textContent = opts.sub || "";
+      info.appendChild(nm);
+      info.appendChild(sub);
+      row.appendChild(info);
+      resultsContainer.appendChild(row);
+    }
+
+    var n = detail.usHouseDistrictNumber;
+    if (n != null) {
+      var hr = PA_DELEGATION.filter(function (r) {
+        return r.chamber === "House" && r.district === "District " + n;
+      })[0];
+      if (hr) {
+        addHeading("Your U.S. Representative");
+        addLegRow({
+          url: hr.url,
+          photoSrc: congressPhotoUrl(hr.bioguideId),
+          name: hr.member,
+          sub: "PA-" + n + " · " + hr.party + " · " + (POSITION_LABELS[hr.position] || "Unknown") + " on 340B"
+        });
+      }
+    }
+
+    if (detail.stateSenate && detail.stateSenate.name) {
+      addHeading("PA State Senate");
+      var sPhoto = detail.stateSenate.gpid ? paLegPhotoUrl(detail.stateSenate.gpid, "senate") : "";
+      addLegRow({
+        url: detail.stateSenate.url,
+        photoSrc: sPhoto,
+        name: detail.stateSenate.name,
+        sub: (detail.stateSenate.label || "") + " · " + (detail.stateSenate.party || "")
+      });
+    }
+
+    if (detail.stateHouse && detail.stateHouse.name) {
+      addHeading("PA State House");
+      var hPhoto = detail.stateHouse.gpid ? paLegPhotoUrl(detail.stateHouse.gpid, "house") : "";
+      addLegRow({
+        url: detail.stateHouse.url,
+        photoSrc: hPhoto,
+        name: detail.stateHouse.name,
+        sub: (detail.stateHouse.label || "") + " · " + (detail.stateHouse.party || "")
+      });
+    }
+  }
+
   function initZipLookup() {
     var form = document.getElementById("zip-lookup-form");
     var input = document.getElementById("zip-lookup-input");
     var resultsContainer = document.getElementById("zip-lookup-results");
     var status = document.getElementById("zip-lookup-status");
     if (!form || !input || !status) return;
+
+    if (!_zipLookupResultsListenerBound) {
+      _zipLookupResultsListenerBound = true;
+      window.addEventListener("hap:pa-zip-lookup-results", function (evt) {
+        appendZipLookupDistrictResults(evt && evt.detail ? evt.detail : {});
+      });
+    }
 
     form.addEventListener("submit", function (e) {
       e.preventDefault();
@@ -1246,7 +1511,7 @@
       }));
 
       var senators = PA_DELEGATION.filter(function (row) {
-        return row.chamber === "Senate" || row.district === "Statewide";
+        return row.chamber === "Senate";
       });
 
       if (resultsContainer && senators.length) {
@@ -1256,51 +1521,27 @@
         resultsContainer.appendChild(heading);
 
         senators.forEach(function (row) {
-          var card = document.createElement("div");
+          var card = document.createElement("a");
           card.className = "zip-result-card";
-          var img = createHeadshot(congressPhotoUrl(row.bioguideId), row.member, "leg-headshot zip-result-photo");
-          card.appendChild(img);
+          card.href = row.url || "#";
+          card.target = "_blank";
+          card.rel = "noopener noreferrer";
+          card.appendChild(createHeadshot(congressPhotoUrl(row.bioguideId), row.member, "leg-headshot zip-result-photo"));
           var info = document.createElement("div");
           info.className = "zip-result-info";
           var nm = document.createElement("div");
           nm.className = "zip-result-name";
           nm.textContent = row.member;
-          var detail = document.createElement("div");
-          detail.className = "zip-result-detail";
-          detail.textContent = row.party + " · " + (POSITION_LABELS[row.position] || "Unknown") + " on 340B";
+          var det = document.createElement("div");
+          det.className = "zip-result-detail";
+          det.textContent = row.party + " · " + (POSITION_LABELS[row.position] || "Unknown") + " on 340B";
           info.appendChild(nm);
-          info.appendChild(detail);
+          info.appendChild(det);
           card.appendChild(info);
           resultsContainer.appendChild(card);
         });
-
-        var houseNote = document.createElement("p");
-        houseNote.className = "zip-result-heading zip-result-heading--house";
-        houseNote.textContent = "PA House member: check the district map above for your specific representative.";
-        resultsContainer.appendChild(houseNote);
       }
-
-      status.textContent = "";
-      status.className = "zip-lookup-status";
     });
-  }
-
-  /* ═══════════════════════════════════════════════════
-     PA District Map — Lazy Loader
-     ═══════════════════════════════════════════════════ */
-
-  function loadPaDistrictMap() {
-    if (paDistrictLoaded) return;
-    paDistrictLoaded = true;
-
-    var script = document.createElement("script");
-    script.src = "modules/pa-district-map.js";
-    script.addEventListener("load", function () {
-      setTimeout(function () {
-        window.dispatchEvent(new Event("resize"));
-      }, 300);
-    });
-    document.body.appendChild(script);
   }
 
   /* ═══════════════════════════════════════════════════
@@ -1429,6 +1670,27 @@
     btnCsv.addEventListener("click", function () {
       downloadCsv(typeSelect.value);
     });
+
+    var btnGold = document.getElementById("btn-export-gold-json");
+    if (btnGold && typeof DataLayer !== "undefined" && typeof DataLayer.exportJSON === "function") {
+      btnGold.addEventListener("click", function () {
+        DataLayer.exportJSON().then(function (payload) {
+          var blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json;charset=utf-8" });
+          var a = document.createElement("a");
+          a.href = URL.createObjectURL(blob);
+          a.download = "hap-340b-gold-export.json";
+          document.body.appendChild(a);
+          a.click();
+          setTimeout(function () {
+            document.body.removeChild(a);
+            URL.revokeObjectURL(a.href);
+          }, 200);
+          showToast("Gold JSON downloaded");
+        }).catch(function () {
+          showToast("Export failed");
+        });
+      });
+    }
   }
 
   function generateReport(type) {
@@ -1518,11 +1780,14 @@
     var grid = document.createElement("div");
     grid.className = "pr-stat-grid";
 
+    var cb = staticMetric("COMMUNITY_BENEFIT_TOTAL_BILLIONS", 7.95);
+    var paH = staticMetric("PA_HOSPITALS_340B_COUNT", 72);
+    var share = staticMetric("OUTPATIENT_SHARE_PCT", 7);
     var cards = [
-      { label: "Reported community benefit (2024)", value: "$7.95B", impact: "Reinvested in patient care and community services", cls: "" },
-      { label: "PA hospitals in 340B", value: "72", impact: "30% of Pennsylvania\u2019s 235 hospitals", cls: "pr-stat-card--mid" },
+      { label: "Reported community benefit (2024)", value: "$" + (typeof cb === "number" ? cb.toFixed(2) : cb) + "B", impact: "Reinvested in patient care and community services", cls: "" },
+      { label: "PA hospitals in 340B", value: String(paH), impact: "30% of Pennsylvania\u2019s 235 hospitals", cls: "pr-stat-card--mid" },
       { label: "States with contract pharmacy protection", value: String(protCount), impact: (50 - protCount) + " states still lack protection \u2014 including PA", cls: "pr-stat-card--green" },
-      { label: "Share of U.S. drug market", value: "7%", impact: "Small program, outsized impact for patients", cls: "pr-stat-card--gold" }
+      { label: "Share of U.S. drug market", value: share + "%", impact: "Small program, outsized impact for patients", cls: "pr-stat-card--gold" }
     ];
 
     cards.forEach(function (c) {
@@ -1598,7 +1863,7 @@
     c1l.textContent = "Covered entity audits";
     var c1v = document.createElement("p");
     c1v.className = "pr-audit-cell-value";
-    c1v.textContent = "179";
+    c1v.textContent = String(staticMetric("HRSA_HOSPITAL_AUDIT_COUNT", 179));
     c1.appendChild(c1l);
     c1.appendChild(c1v);
 
@@ -1613,7 +1878,7 @@
     c2l.textContent = "Manufacturer audits";
     var c2v = document.createElement("p");
     c2v.className = "pr-audit-cell-value";
-    c2v.textContent = "5";
+    c2v.textContent = String(staticMetric("HRSA_MANUFACTURER_AUDIT_COUNT", 5));
     c2.appendChild(c2l);
     c2.appendChild(c2v);
 
@@ -1624,8 +1889,11 @@
 
     var conclusion = document.createElement("div");
     conclusion.className = "pr-audit-conclusion";
+    var hospN = staticMetric("HRSA_HOSPITAL_AUDIT_COUNT", 179);
+    var mfgN = staticMetric("HRSA_MANUFACTURER_AUDIT_COUNT", 5);
+    var mult = mfgN > 0 ? Math.round(hospN / mfgN) : 36;
     var strong = document.createElement("strong");
-    strong.textContent = "36\u00D7 more hospital audits than manufacturer audits";
+    strong.textContent = mult + "\u00D7 more hospital audits than manufacturer audits";
     conclusion.appendChild(strong);
     conclusion.appendChild(document.createTextNode(
       "Hospitals and manufacturers should face the same level of federal scrutiny. The current imbalance is an equity argument."
@@ -1645,6 +1913,9 @@
     var table = document.createElement("table");
     table.className = "pr-rebuttal";
 
+    var cbStr = "$" + staticMetric("COMMUNITY_BENEFIT_TOTAL_BILLIONS", 7.95).toFixed(2);
+    var hAud = staticMetric("HRSA_HOSPITAL_AUDIT_COUNT", 179);
+    var mAud = staticMetric("HRSA_MANUFACTURER_AUDIT_COUNT", 5);
     var rebuttals = [
       [
         "340B creates duplicate discounts.",
@@ -1653,12 +1924,12 @@
       ],
       [
         "Hospitals use 340B savings for profit.",
-        "$7.95B in reported community benefit (2024) funds free prescriptions, cancer screening, dental care, and rural services.",
+        cbStr + "B in reported community benefit (2024) funds free prescriptions, cancer screening, dental care, and rural services.",
         "340B Health 2024 community benefit report"
       ],
       [
         "Contract pharmacy networks are unaudited.",
-        "HRSA conducted 179 covered-entity audits vs. only 5 manufacturer audits in FY 2024.",
+        "HRSA conducted " + hAud + " covered-entity audits vs. only " + mAud + " manufacturer audits in FY 2024.",
         "HRSA Program Integrity FY 2024"
       ]
     ];
@@ -1701,12 +1972,15 @@
     block.appendChild(title);
 
     var ul = document.createElement("ul");
+    var hA = staticMetric("HRSA_HOSPITAL_AUDIT_COUNT", 179);
+    var mA = staticMetric("HRSA_MANUFACTURER_AUDIT_COUNT", 5);
+    var xMult = mA > 0 ? Math.round(hA / mA) : 36;
     [
-      "72 PA hospitals (30% of all) depend on 340B to serve patients",
-      "63% of PA 340B hospitals operate at a financial loss",
-      "38% are rural \u2014 contract pharmacies are the only access point for many patients",
-      "95% provide labor & delivery services",
-      "179 HRSA audits vs. 5 manufacturer audits (FY 2024) \u2014 hospitals face 36\u00D7 more scrutiny"
+      staticMetric("PA_HOSPITALS_340B_COUNT", 72) + " PA hospitals (30% of all) depend on 340B to serve patients",
+      staticMetric("PA_HOSPITALS_OPERATING_LOSS_PCT", 63) + "% of PA 340B hospitals operate at a financial loss",
+      staticMetric("PA_RURAL_HOSPITAL_PCT", 38) + "% are rural \u2014 contract pharmacies are the only access point for many patients",
+      staticMetric("PA_LD_SERVICES_PCT", 95) + "% provide labor & delivery services",
+      hA + " HRSA audits vs. " + mA + " manufacturer audits (FY 2024) \u2014 hospitals face " + xMult + "\u00D7 more scrutiny"
     ].forEach(function (text) {
       var li = document.createElement("li");
       li.textContent = text;
@@ -1836,13 +2110,13 @@
       }
     } else if (type === "pa-one-pager") {
       rows.push(["Metric", "Value"]);
-      rows.push(["PA 340B Hospitals", "72"]);
-      rows.push(["Rural Hospitals", "38%"]);
-      rows.push(["Operating at a Loss", "63%"]);
-      rows.push(["L&D Services", "95%"]);
-      rows.push(["HRSA Hospital Audits FY24", "179"]);
-      rows.push(["Manufacturer Audits FY24", "5"]);
-      rows.push(["Community Benefit", "$7.95B"]);
+      rows.push(["PA 340B Hospitals", String(staticMetric("PA_HOSPITALS_340B_COUNT", 72))]);
+      rows.push(["Rural Hospitals", staticMetric("PA_RURAL_HOSPITAL_PCT", 38) + "%"]);
+      rows.push(["Operating at a Loss", staticMetric("PA_HOSPITALS_OPERATING_LOSS_PCT", 63) + "%"]);
+      rows.push(["L&D Services", staticMetric("PA_LD_SERVICES_PCT", 95) + "%"]);
+      rows.push(["HRSA Hospital Audits FY24", String(staticMetric("HRSA_HOSPITAL_AUDIT_COUNT", 179))]);
+      rows.push(["Manufacturer Audits FY24", String(staticMetric("HRSA_MANUFACTURER_AUDIT_COUNT", 5))]);
+      rows.push(["Community Benefit", "$" + staticMetric("COMMUNITY_BENEFIT_TOTAL_BILLIONS", 7.95).toFixed(2) + "B"]);
     }
 
     if (rows.length === 0) return;
@@ -1885,7 +2159,8 @@
       var src = (typeof DataLayer !== "undefined") ? DataLayer.source : "static-file";
       var isLive = src !== "static-file";
       var sourceText = src === "static-file" ? "Static file" :
-                       src === "warehouse-api" ? "Live — Warehouse" :
+                       src === "warehouse-gold" ? "Live — Data warehouse" :
+                       src === "warehouse-api" ? "Live — Warehouse API" :
                        src === "powerbi-embed" ? "Live — Power BI" : src;
 
       if (dot) dot.className = "data-conn-dot" + (isLive ? " is-live" : "");
@@ -1901,8 +2176,8 @@
       }
 
       if (freshness && typeof DataLayer !== "undefined" && DataLayer.lastRefreshed) {
-        freshness.textContent = "Last updated: " +
-          ((typeof CONFIG !== "undefined" && CONFIG.dataFreshness) || DataLayer.lastRefreshed.toLocaleDateString());
+        var asOf = (typeof CONFIG !== "undefined" && CONFIG.dataFreshness) ? CONFIG.dataFreshness : "";
+        freshness.textContent = "Last updated: " + (asOf || DataLayer.lastRefreshed.toLocaleString());
       }
     }
 

@@ -2,28 +2,34 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
-  <meta name="theme-color" content="#0072bc">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f2f2f7">
   <meta name="color-scheme" content="light">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="HAP 340B">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="referrer" content="strict-origin-when-cross-origin">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https:; connect-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';">
   <title>HAP 340B Dashboard</title>
   <meta name="description" content="HAP 340B Advocacy Dashboard — Protect 340B, protect patients. Interactive mobile experience.">
   <link rel="manifest" href="manifest.json">
   <link rel="apple-touch-icon" href="haplogo_box_blue.jpeg">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- System SF Pro stack — no external font needed -->
+  <link rel="stylesheet" href="hap-design-tokens.css">
   <link rel="stylesheet" href="340b-mobile.css">
   <script src="state-data.js"></script>
+  <script src="data/dataset-metadata.js"></script>
+  <script src="config/settings.js"></script>
+  <script src="modules/data-layer.js"></script>
   <script src="assets/vendor/d3.min.js"></script>
   <script src="assets/vendor/topojson-client.min.js"></script>
   <script src="assets/vendor/states-10m.js"></script>
   <script src="data/pa-districts/pa-340b-hospitals.js"></script>
+  <script src="data/hap-340b-data.js"></script>
+  <script src="data/pa-districts/PaHouse2024_03.js"></script>
+  <script src="data/pa-districts/PaSenatorial2024_03.js"></script>
+  <script src="data/pa-districts/pa-zip-centroids.js"></script>
 </head>
 <body>
 
@@ -66,15 +72,15 @@
           <p class="hero-lead" id="hero-lead"></p>
         </div>
 
-        <!-- KPI Carousel -->
+        <!-- KPI grid (2×2); all cards visible — not a horizontal carousel -->
         <div class="section-label anim-in">Key Metrics</div>
-        <div class="kpi-carousel" id="kpi-carousel">
-          <div class="kpi-track">
+        <div class="kpi-home-metrics" id="kpi-home-metrics" role="region" aria-label="Key program metrics">
+          <div class="kpi-track kpi-grid" id="kpi-track">
             <div class="kpi-card anim-in" data-topic="access">
               <div class="kpi-icon">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
               </div>
-              <div class="kpi-value" data-count="72">0</div>
+              <div class="kpi-value" data-metric-key="PA_HOSPITALS_340B_COUNT" data-count="72">0</div>
               <div class="kpi-label">PA Hospitals</div>
               <div class="kpi-meaning">Rely on 340B to serve patients</div>
             </div>
@@ -82,7 +88,7 @@
               <div class="kpi-icon">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
               </div>
-              <div class="kpi-value" data-prefix="$" data-suffix="B" data-count="7.95" data-decimals="2">0</div>
+              <div class="kpi-value" data-metric-key="COMMUNITY_BENEFIT_TOTAL_BILLIONS" data-prefix="$" data-suffix="B" data-count="7.95" data-decimals="2">0</div>
               <div class="kpi-label">Community Benefit</div>
               <div class="kpi-meaning">Reported by 340B hospitals (2024)</div>
             </div>
@@ -90,7 +96,7 @@
               <div class="kpi-icon">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
               </div>
-              <div class="kpi-value" id="kpi-protected" data-count="21">0</div>
+              <div class="kpi-value" id="kpi-protected" data-metric-key="US_STATES_CP_PROTECTION_COUNT" data-count="21">0</div>
               <div class="kpi-label">States Protected</div>
               <div class="kpi-meaning">Contract pharmacy laws enacted</div>
             </div>
@@ -98,12 +104,11 @@
               <div class="kpi-icon">
                 <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
               </div>
-              <div class="kpi-value" id="kpi-unprotected" data-count="29">0</div>
+              <div class="kpi-value" id="kpi-unprotected" data-metric-key="US_STATES_NO_CP_PROTECTION_COUNT" data-count="29">0</div>
               <div class="kpi-label">States Without</div>
               <div class="kpi-meaning">No contract pharmacy protection</div>
             </div>
           </div>
-          <div class="carousel-dots" id="kpi-dots"></div>
         </div>
 
         <!-- HAP Position -->
@@ -224,9 +229,9 @@
       </div>
 
       <!-- State Detail Bottom Sheet -->
-      <div class="bottom-sheet" id="state-sheet">
+      <div class="bottom-sheet" id="state-sheet" aria-hidden="true">
         <div class="sheet-backdrop" id="sheet-backdrop"></div>
-        <div class="sheet-panel" id="sheet-panel">
+        <div class="sheet-panel" id="sheet-panel" role="dialog" aria-modal="true" aria-labelledby="sheet-title" tabindex="-1">
           <div class="sheet-handle-bar"><div class="sheet-handle"></div></div>
           <div class="sheet-header" id="sheet-header">
             <h2 class="sheet-title" id="sheet-title">Select a State</h2>
@@ -246,7 +251,7 @@
         <!-- PA Hero -->
         <div class="pa-hero anim-in">
           <div class="pa-hero-eyebrow">Pennsylvania Focus</div>
-          <h2 class="pa-hero-title">72 Hospitals Depend on 340B</h2>
+          <h2 class="pa-hero-title" id="pa-hero-title">72 Hospitals Depend on 340B</h2>
           <p class="pa-hero-lead">Pennsylvania hospitals rely on 340B savings to fund patient services in communities across the commonwealth.</p>
           <div class="pa-status-pill">
             <span class="status-dot status-dot--progress"></span>
@@ -257,22 +262,22 @@
         <!-- PA Stats -->
         <div class="pa-stats anim-in">
           <div class="pa-stat-card">
-            <div class="pa-stat-value" data-count="72">0</div>
+            <div class="pa-stat-value" data-metric-key="PA_HOSPITALS_340B_COUNT" data-count="72">0</div>
             <div class="pa-stat-label">340B Hospitals</div>
             <div class="pa-stat-meaning">Across Pennsylvania</div>
           </div>
           <div class="pa-stat-card">
-            <div class="pa-stat-value" data-count="38" data-suffix="%">0</div>
+            <div class="pa-stat-value" data-metric-key="PA_RURAL_HOSPITAL_PCT" data-count="38" data-suffix="%">0</div>
             <div class="pa-stat-label">Rural Hospitals</div>
             <div class="pa-stat-meaning">Use 340B for care access</div>
           </div>
           <div class="pa-stat-card">
-            <div class="pa-stat-value" data-count="63" data-suffix="%">0</div>
+            <div class="pa-stat-value" data-metric-key="PA_HOSPITALS_OPERATING_LOSS_PCT" data-count="63" data-suffix="%">0</div>
             <div class="pa-stat-label">Operating at a Loss</div>
             <div class="pa-stat-meaning">Need 340B to stay open</div>
           </div>
           <div class="pa-stat-card">
-            <div class="pa-stat-value" data-count="95" data-suffix="%">0</div>
+            <div class="pa-stat-value" data-metric-key="PA_LD_SERVICES_PCT" data-count="95" data-suffix="%">0</div>
             <div class="pa-stat-label">L&amp;D Services</div>
             <div class="pa-stat-meaning">Provided by 340B hospitals</div>
           </div>
@@ -287,13 +292,13 @@
         <div class="oversight-card anim-in">
           <div class="oversight-grid">
             <div class="oversight-stat">
-              <div class="oversight-value" data-topic="risk" data-count="179">0</div>
+              <div class="oversight-value" data-metric-key="HRSA_HOSPITAL_AUDIT_COUNT" data-topic="risk" data-count="179">0</div>
               <div class="oversight-label">HRSA audits of hospitals</div>
               <div class="oversight-year">FY 2024</div>
             </div>
             <div class="oversight-vs">vs</div>
             <div class="oversight-stat">
-              <div class="oversight-value" data-topic="finance" data-count="5">0</div>
+              <div class="oversight-value" data-metric-key="HRSA_MANUFACTURER_AUDIT_COUNT" data-topic="finance" data-count="5">0</div>
               <div class="oversight-label">Manufacturer audits</div>
               <div class="oversight-year">FY 2024</div>
             </div>
@@ -304,7 +309,7 @@
         <!-- Community Benefit -->
         <div class="section-label anim-in">Community Benefit</div>
         <div class="benefit-card anim-in">
-          <div class="benefit-hero-value">$7.95<span class="benefit-unit">B</span></div>
+          <div class="benefit-hero-value" id="pa-benefit-hero"><span id="pa-benefit-dollars">$7.95</span><span class="benefit-unit">B</span></div>
           <div class="benefit-label">Reported community benefit by 340B hospitals</div>
           <div class="benefit-detail">Free prescriptions, cancer screening, rural clinics, behavioral health, and charity care for the uninsured.</div>
         </div>
@@ -346,7 +351,7 @@
             </div>
             <div id="pa-district-detail-panel" class="pa-district-detail-panel" hidden>
               <div class="pa-district-detail-header">
-                <img class="leg-headshot pa-detail-photo" id="pa-district-detail-photo" alt="" width="40" height="40" loading="lazy" decoding="async" crossorigin="anonymous" style="display:none">
+                <img class="leg-headshot pa-detail-photo" id="pa-district-detail-photo" alt="" width="40" height="40" loading="lazy" decoding="async" style="display:none">
                 <div>
                   <div class="pa-district-detail-kicker" id="pa-district-detail-kicker">District</div>
                   <div class="pa-district-detail-title" id="pa-district-detail-title">—</div>
@@ -441,11 +446,11 @@
         <!-- Landscape Snapshot -->
         <div class="landscape-snap anim-in">
           <div class="landscape-stat landscape-stat--yes">
-            <div class="landscape-value" data-count="21">0</div>
+            <div class="landscape-value" data-metric-key="US_STATES_CP_PROTECTION_COUNT" data-count="21">0</div>
             <div class="landscape-label">States with contract pharmacy protection</div>
           </div>
           <div class="landscape-stat landscape-stat--no">
-            <div class="landscape-value" data-count="29">0</div>
+            <div class="landscape-value" data-metric-key="US_STATES_NO_CP_PROTECTION_COUNT" data-count="29">0</div>
             <div class="landscape-label">States without protection</div>
           </div>
         </div>
@@ -526,9 +531,9 @@
 
           <div class="leg-chamber-label">House</div>
           <div class="leg-card-list">
-            <div class="leg-card">
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/84" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/4620.jpg" alt="Rep. Dan Frankel" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/84.jpg" alt="Rep. Dan Frankel" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Dan Frankel</div>
                   <div class="leg-card-meta">District 23 · D</div>
@@ -536,10 +541,10 @@
                 <span class="leg-badge leg-badge--ally">Supportive</span>
               </div>
               <div class="leg-card-action">Schedule policy meeting</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1028" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/4593.jpg" alt="Rep. Kathy L. Rapp" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1028.jpg" alt="Rep. Kathy L. Rapp" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Kathy L. Rapp</div>
                   <div class="leg-card-meta">District 65 · R</div>
@@ -547,10 +552,10 @@
                 <span class="leg-badge leg-badge--persuadable">Engage</span>
               </div>
               <div class="leg-card-action">Request district visit</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1944" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/4635.jpg" alt="Rep. Arvind Venkat" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1944.jpg" alt="Rep. Arvind Venkat" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Arvind Venkat</div>
                   <div class="leg-card-meta">District 30 · D</div>
@@ -558,10 +563,10 @@
                 <span class="leg-badge leg-badge--ally">Supportive</span>
               </div>
               <div class="leg-card-action">Send thank-you and co-sponsor ask</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1906" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/4607.jpg" alt="Rep. Tim Twardzik" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1906.jpg" alt="Rep. Tim Twardzik" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Tim Twardzik</div>
                   <div class="leg-card-meta">District 123 · R</div>
@@ -569,10 +574,10 @@
                 <span class="leg-badge leg-badge--persuadable">Engage</span>
               </div>
               <div class="leg-card-action">Schedule constituent call</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1877" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/4584.jpg" alt="Rep. Timothy Bonner" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1877.jpg" alt="Rep. Timothy Bonner" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Timothy Bonner</div>
                   <div class="leg-card-meta">District 17 · R</div>
@@ -580,14 +585,14 @@
                 <span class="leg-badge leg-badge--opposed">Opposed</span>
               </div>
               <div class="leg-card-action">Targeted follow-up with member hospitals</div>
-            </div>
+            </a>
           </div>
 
           <div class="leg-chamber-label">Senate</div>
           <div class="leg-card-list">
-            <div class="leg-card">
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1087" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/1015.jpg" alt="Sen. Michele Brooks" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1087.jpg" alt="Sen. Michele Brooks" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Michele Brooks</div>
                   <div class="leg-card-meta">District 50 · R</div>
@@ -595,10 +600,10 @@
                 <span class="leg-badge leg-badge--persuadable">Engage</span>
               </div>
               <div class="leg-card-action">Schedule chair briefing</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1689" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/1025.jpg" alt="Sen. Art Haywood" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1689.jpg" alt="Sen. Art Haywood" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Art Haywood</div>
                   <div class="leg-card-meta">District 4 · D</div>
@@ -606,10 +611,10 @@
                 <span class="leg-badge leg-badge--ally">Supportive</span>
               </div>
               <div class="leg-card-action">Coordinate floor support</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1202" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/1005.jpg" alt="Sen. Lynda Schlegel Culver" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1202.jpg" alt="Sen. Lynda Schlegel Culver" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Lynda Schlegel Culver</div>
                   <div class="leg-card-meta">District 27 · R</div>
@@ -617,10 +622,10 @@
                 <span class="leg-badge leg-badge--persuadable">Engage</span>
               </div>
               <div class="leg-card-action">Request district-level impact meeting</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1683" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/1010.jpg" alt="Sen. Judy Ward" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1683.jpg" alt="Sen. Judy Ward" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Judy Ward</div>
                   <div class="leg-card-meta">District 30 · R</div>
@@ -628,10 +633,10 @@
                 <span class="leg-badge leg-badge--opposed">Opposed</span>
               </div>
               <div class="leg-card-action">Targeted member outreach before vote</div>
-            </div>
-            <div class="leg-card">
+            </a>
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1799" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="https://www.palegis.us/resources/images/members/200/1034.jpg" alt="Sen. Maria Collett" width="36" height="36" loading="lazy" decoding="async" crossorigin="anonymous" onerror="this.style.display='none'">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1799.jpg" alt="Sen. Maria Collett" width="36" height="36" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Maria Collett</div>
                   <div class="leg-card-meta">District 12 · D</div>
@@ -639,7 +644,7 @@
                 <span class="leg-badge leg-badge--ally">Supportive</span>
               </div>
               <div class="leg-card-action">Send thank-you and hearing prep</div>
-            </div>
+            </a>
           </div>
         </div>
 
@@ -794,6 +799,10 @@
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
               Export CSV
             </button>
+            <button type="button" class="report-gen-btn" id="btn-export-gold-json">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+              Export Gold JSON
+            </button>
           </div>
         </div>
 
@@ -915,8 +924,9 @@
 
 </div>
 
-<script src="modules/data-layer.js"></script>
 <script src="modules/ai-helpers.js"></script>
+<script src="data/pa-member-photo-map.js"></script>
+<script src="modules/pa-district-map.js"></script>
 <script src="340b-mobile.js"></script>
 </body>
 </html>

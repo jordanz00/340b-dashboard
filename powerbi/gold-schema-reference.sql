@@ -109,3 +109,62 @@ SELECT
     SourceCitation,
     LoadedAt
 FROM dbo.gold_fact_metric_trend;
+
+/* --- PA 340B hospital bundle (matches window.HAP_340B_DATA JSON contract) --- */
+CREATE TABLE dbo.gold_dim_hospitals_340b_pa (
+    HospitalName      NVARCHAR(300) NOT NULL,
+    Latitude          DECIMAL(10, 7) NOT NULL,
+    Longitude         DECIMAL(10, 7) NOT NULL,
+    GeocodeSource     NVARCHAR(200) NULL,
+    AddressDisplay    NVARCHAR(500) NULL,
+    FacilityId        NVARCHAR(64)  NULL,
+    SourceSystem      NVARCHAR(200) NOT NULL,
+    ExtractedAt       DATETIME2(3)   NOT NULL,
+    CONSTRAINT PK_gold_dim_hospitals_340b_pa PRIMARY KEY (HospitalName, Latitude, Longitude)
+);
+
+CREATE TABLE dbo.gold_fact_hospital_financials_340b (
+    HospitalName      NVARCHAR(300) NULL,
+    MetricKey           NVARCHAR(100) NOT NULL,
+    ValueNumeric        DECIMAL(19, 6) NULL,
+    ValueUnit           NVARCHAR(50)   NOT NULL,
+    AsOfDate            DATE           NULL,
+    SourceCitation      NVARCHAR(500)  NULL,
+    ValidationStatus    NVARCHAR(40)   NOT NULL,
+    LoadedAt            DATETIME2(3)   NOT NULL,
+    CONSTRAINT PK_gold_fact_hospital_financials_340b PRIMARY KEY (MetricKey, HospitalName, AsOfDate)
+);
+
+CREATE TABLE dbo.gold_fact_story_submission (
+    HospitalName   NVARCHAR(200) NOT NULL,
+    County         NVARCHAR(100) NOT NULL,
+    Category       NVARCHAR(80)  NOT NULL,
+    StoryText      NVARCHAR(2000) NOT NULL,
+    ContactEmail   NVARCHAR(200) NULL,
+    SubmittedAt    DATETIME2(3)  NOT NULL,
+    LoadedAt       DATETIME2(3)  NOT NULL
+);
+
+CREATE VIEW dbo.vw_pbi_hospitals_340b_pa AS
+SELECT
+    HospitalName,
+    Latitude,
+    Longitude,
+    GeocodeSource,
+    AddressDisplay,
+    FacilityId,
+    SourceSystem,
+    ExtractedAt
+FROM dbo.gold_dim_hospitals_340b_pa;
+
+CREATE VIEW dbo.vw_pbi_hospital_financials_340b AS
+SELECT
+    HospitalName,
+    MetricKey,
+    ValueNumeric,
+    ValueUnit,
+    AsOfDate,
+    SourceCitation,
+    ValidationStatus,
+    LoadedAt
+FROM dbo.gold_fact_hospital_financials_340b;

@@ -10,11 +10,15 @@ It checks high-value risks in the 340B dashboard files:
 - unsafe DOM patterns (including print.html)
 - hidden zero-width/control characters
 - missing rel="noopener noreferrer" on external links
-- CSP / referrer hardening on app entry pages (340b.html + 340b-BASIC.html)
+- CSP / referrer hardening on app entry pages (340b.html, 340b-BASIC.html, 340b-mobile.html)
 - BASIC: no remote script URLs (CDN-free IT-safe build)
 - print pipeline: namespaced localStorage key + payload version validation
 - security documentation files (SECURITY-FORCE, THREAT-MODEL, SECURE-FORCE)
 - unexpected remote fonts, scripts, or runtime data fetches
+  (EXECUTABLE_FILES: 340b.js / 340b-mobile.js / print.html must not use fetch(),
+  XMLHttpRequest, or d3.json(); same-origin data loads use static <script> — e.g.
+  data/pa-member-photo-map.js sets window.HAP_PA_MEMBER_PHOTO_MAP; regenerate via
+  scripts/regenerate-pa-photo-map-js.py when the JSON changes)
 - stale removed-feature copy; prompt library sections
 
 It does NOT replace manual review. Print preview, source verification, and copy quality
@@ -43,17 +47,22 @@ DASHBOARD_FILES = [
     ROOT / "SECURITY-FORCE.md",
     ROOT / "SECURE-FORCE.md",
     ROOT / "AI-HANDOFF.md",
+    ROOT / "340b-mobile.html",
+    ROOT / "340b-mobile.js",
 ]
 EXECUTABLE_FILES = [
     ROOT / "340b.html",
     ROOT / "340b.js",
     ROOT / "print.html",
+    ROOT / "340b-mobile.js",
 ]
 SOURCE_FILES = list(DASHBOARD_FILES) + [PROMPTS_FILE]
 APP_HTML_FILES = [
     ROOT / "340b.html",
     ROOT / "340b-BASIC.html",
 ]
+MOBILE_HTML = ROOT / "340b-mobile.html"
+APP_HTML_WITH_MOBILE = APP_HTML_FILES + [MOBILE_HTML]
 BASIC_HTML = ROOT / "340b-BASIC.html"
 PRINT_HTML = ROOT / "print.html"
 PRINT_VIEW_CSS = ROOT / "print-view.css"
@@ -132,7 +141,7 @@ def check_hidden_characters(results: list[str]) -> bool:
 def check_external_links(results: list[str]) -> bool:
     okay = True
 
-    for path in APP_HTML_FILES:
+    for path in APP_HTML_WITH_MOBILE:
         html = read_text(path)
         for match in TARGET_BLANK_LINK_PATTERN.finditer(html):
             tag = match.group(0)
@@ -149,7 +158,7 @@ def check_external_links(results: list[str]) -> bool:
 def check_page_hardening(results: list[str]) -> bool:
     okay = True
 
-    for path in APP_HTML_FILES:
+    for path in APP_HTML_WITH_MOBILE:
         html = read_text(path)
         if 'http-equiv="Content-Security-Policy"' not in html:
             record(results, False, f"{path.name} is missing a Content-Security-Policy meta tag")

@@ -35,6 +35,43 @@
     /** Performance: defer below-the-fold panel updates until after first paint */
     performance: {
       deferSecondaryPanels: true
+    },
+
+    /**
+     * Data warehouse connection — configure to switch from static to live data.
+     *
+     * HOW TO USE:
+     * 1. Get the JSON API URL from IT/Strategic Analytics
+     * 2. Set warehouse.enabled = true
+     * 3. Set warehouse.endpointUrl to the URL
+     * 4. The dashboard will auto-connect on load and poll for updates
+     *
+     * The endpoint must return Gold-shaped JSON matching data/mock-api-response.json.
+     * See docs/WAREHOUSE-INTEGRATION-GUIDE.md for details.
+     *
+     * SECURITY: Never put passwords or tokens here. Use IT-managed auth
+     * (Azure AD, service principal, etc.) — the browser handles cookies/headers.
+     */
+    warehouse: {
+      enabled: false,
+      /** When true, loads data/mock-api-response.json (ignores endpointUrl). Use for local testing. */
+      useMockEndpoint: false,
+      endpointUrl: "",
+      pollIntervalMs: 900000,
+      storyApiUrl: "",
+      headers: {}
+    },
+
+    /**
+     * Power BI embed — configure to embed PBI visuals inside the dashboard.
+     * Requires the Power BI JS SDK script to be loaded on the page.
+     * See docs/WAREHOUSE-INTEGRATION-GUIDE.md Path C.
+     */
+    powerbiEmbed: {
+      enabled: false,
+      reportId: "",
+      embedUrl: "",
+      accessToken: ""
     }
   };
 

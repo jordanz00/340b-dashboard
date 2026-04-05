@@ -4,6 +4,7 @@
   "staticReferences": {
     "stateLaw": { "file": "state-data.js", "symbol": "STATE_340B" },
     "stateNames": { "file": "state-data.js", "symbol": "STATE_NAMES" },
+    "staticKpis": { "file": "state-data.js", "symbol": "HAP_STATIC_METRICS" },
     "configDates": { "file": "state-data.js", "path": "CONFIG.dataFreshness, CONFIG.lastUpdated" },
     "provenanceLabels": { "file": "340b.js", "symbol": "DATA_DATES" },
     "datasetMeta": { "file": "data/dataset-metadata.js", "symbol": "DATASET_METADATA" }
@@ -79,6 +80,62 @@
         { "label": "America's Essential Hospitals (advocacy confirmation)", "url": "https://essentialhospitals.org/" }
       ],
       "notes": "Confirm DC exclusion vs IncludeInFiftyStateHeadline with Advocacy."
+    },
+    {
+      "metricKey": "PA_RURAL_HOSPITAL_PCT",
+      "provenanceLabel": "paRural",
+      "staticProvenanceDisplay": "March 2026 (HAP PA fact sheet)",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP March 2026 PA fact sheet", "url": "https://www.haponline.org/" },
+        { "label": "HRSA 340B Program (hospital classification)", "url": "https://www.hrsa.gov/opa" }
+      ],
+      "notes": "Percent of PA 340B hospitals classified as rural. Source: HAP March 2026 PA fact sheet. Warehouse should derive from hospital classification in dim_pa_hospitals or store as KPI."
+    },
+    {
+      "metricKey": "PA_HOSPITALS_OPERATING_LOSS_PCT",
+      "provenanceLabel": "paOperatingLoss",
+      "staticProvenanceDisplay": "March 2026 (HAP PA fact sheet)",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP March 2026 PA fact sheet", "url": "https://www.haponline.org/" }
+      ],
+      "notes": "Percent of PA 340B hospitals operating at a financial loss. Annual from hospital financial reports. Warehouse should source from hospital financials or store as KPI."
+    },
+    {
+      "metricKey": "PA_LD_SERVICES_PCT",
+      "provenanceLabel": "paLDServices",
+      "staticProvenanceDisplay": "March 2026 (HAP PA fact sheet)",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP March 2026 PA fact sheet", "url": "https://www.haponline.org/" }
+      ],
+      "notes": "Percent of PA labor & delivery services provided by 340B hospitals. Warehouse should source from service-line data or store as KPI."
+    },
+    {
+      "metricKey": "HRSA_HOSPITAL_AUDIT_COUNT",
+      "provenanceLabel": "hrsaHospitalAudits",
+      "staticProvenanceDisplay": "September 2025 (HRSA FY 2024)",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HRSA Program Integrity — FY 2024 audit results", "url": "https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" }
+      ],
+      "notes": "Hospital-specific audit count (179 in FY 2024). Split from aggregate HRSA_AUDIT_COUNT for the oversight comparison visual. Must match HRSA reporting extract."
+    },
+    {
+      "metricKey": "HRSA_MANUFACTURER_AUDIT_COUNT",
+      "provenanceLabel": "hrsaManufacturerAudits",
+      "staticProvenanceDisplay": "September 2025 (HRSA FY 2024)",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HRSA Program Integrity — FY 2024 audit results", "url": "https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" }
+      ],
+      "notes": "Manufacturer-specific audit count (5 in FY 2024). Split from aggregate HRSA_AUDIT_COUNT. Paired with HRSA_HOSPITAL_AUDIT_COUNT for the oversight disparity visual."
     }
   ],
   "derivedInModel": [

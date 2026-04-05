@@ -43,7 +43,7 @@ Optional:
 
 Run these checks after meaningful edits:
 
-1. Search for unsafe DOM patterns like `innerHTML`, `outerHTML`, `eval`, `new Function`, and inline event handlers.
+1. Search for unsafe DOM patterns like `innerHTML`, `outerHTML`, `eval`, `new Function`, and inline event handlers (audit script covers `340b.js`, `340b-mobile.js`, and `print.html`).
 2. Check for hidden Unicode or control characters in edited source files.
 3. Verify all outbound links that open a new tab use `rel="noopener noreferrer"`.
 4. Confirm the Share button still copies a canonical URL.

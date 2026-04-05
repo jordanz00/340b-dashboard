@@ -162,4 +162,38 @@ See [DATA-DICTIONARY.md](DATA-DICTIONARY.md) for plain-English descriptions of e
 
 ---
 
-*Last aligned with dashboard `DATA_DATES` and `CONFIG` as documented in `powerbi/metric-registry.json` — update that file when static provenance changes.*
+---
+
+## 11. Three Integration Paths (new — April 2026)
+
+Warehouse access has been granted. The dashboard now supports three parallel integration paths. For full details, see [WAREHOUSE-INTEGRATION-GUIDE.md](WAREHOUSE-INTEGRATION-GUIDE.md).
+
+| Path | Connection method | Who uses the output |
+|------|------------------|---------------------|
+| **A: Warehouse → JSON → HTML Dashboard** | `DataLayer.connectWarehouse(url)` | Legislators, advocates, public |
+| **B: Warehouse → Power BI Report** | Standard PBI Desktop + this playbook | VP Strategic Analytics, internal staff |
+| **C: Power BI Embed in HTML** | `DataLayer.connectPowerBI(config)` | Hybrid audiences |
+
+**Path A** is configured in `config/settings.js` (`warehouse.enabled`, `warehouse.endpointUrl`). Test with `data/mock-api-response.json` before connecting to the live endpoint.
+
+**Path B** uses all the existing artifacts in this playbook (steps 1-10 above).
+
+**Path C** requires the PBI JS SDK and embed tokens from IT.
+
+All three paths read from the **same Gold tables** — same data, same governance, different presentations.
+
+---
+
+## 12. Pitfalls to avoid (semantic layer & UI boundaries)
+
+| Mistake | Why it hurts | What this repo does instead |
+|--------|----------------|-----------------------------|
+| **Mixing UI logic with data structure** | Charts and copy start inventing fields; warehouse and PBI drift from the HTML. | UI reads through **`DataLayer`** only. Shapes match Gold-style objects; D3/formatting stay in the view layer, not in the payload. |
+| **Changing field names later** | Every downstream report, DAX measure, and ingest job breaks silently. | Stable identifiers: **`MetricKey`** in `powerbi/metric-registry.json`, story keys in **`DataLayer.STORY_PAYLOAD_KEYS`**, and `docs/DATA-DICTIONARY.md`. Renames require a coordinated migration. |
+| **Not tracking lastUpdated** | Executives cannot tell if a number is stale; exports disagree with the screen. | **`DataLayer.lastRefreshed`**, **`getFreshness()`**, **`getProvenanceSnapshot()`**, and **`exportJSON()` `_meta`** (`lastUpdated`, `dataLayerLastRefreshed`, `displayAsOf`). Surfaces should show the same freshness source where KPIs appear. |
+| **Breaking semantic consistency** | Same concept gets three JSON keys or mismatched units. | One concept → one key + one dictionary row + registry entry. Story payloads are **normalized in `submitStory()`** so legacy aliases still map to canonical keys. |
+| **Reintroducing `fetch` prematurely** | Static hosting and IT-safe pages break; duplicate caching and race conditions. | Default path is **static globals** (`state-data.js`). **`fetch` is confined to `DataLayer`** (`connectWarehouse`, `connectAPI`, warehouse story POST). Do not scatter ad-hoc `fetch` in feature scripts. |
+
+---
+
+*Last aligned with dashboard `DATA_DATES` and `CONFIG` as documented in `powerbi/metric-registry.json` (11 MetricKeys as of April 2026) — update that file when static provenance changes.*

@@ -103,6 +103,25 @@
         severity: "info",
         date: typeof CONFIG !== "undefined" ? CONFIG.dataFreshness || "2026" : "2026"
       });
+    },
+
+    /**
+     * Short summary of a policy alert (static: first sentences; live: LLM).
+     * POWER BI: optional narrative field on dim_policy_alert or similar.
+     * @param {string} alertText
+     * @returns {Promise<string>}
+     */
+    summarizePolicyAlert: function (alertText) {
+      if (!alertText || alertText.length < 20) {
+        return Promise.resolve(alertText || "");
+      }
+      if (AIHelpers.isLive && AIHelpers.apiEndpoint) {
+        return _callAPI("summarize-policy", { text: alertText });
+      }
+      var sentences = alertText.split(/(?<=[.!?])\s+/);
+      var summary = sentences.slice(0, 2).join(" ");
+      if (sentences.length > 2) summary += "...";
+      return Promise.resolve(summary);
     }
   };
 

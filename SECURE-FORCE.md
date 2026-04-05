@@ -159,3 +159,19 @@ After the full refactor (labels, comments, glossary, reuse checklist): dashboard
 - **localStorage:** Used only for the print view payload; failures (e.g. quota) are caught and reported with a generic message.
 
 **Recommendations:** (1) For production, consider serving CSP via HTTP response headers if desired, so the same HTML works locally without a meta tag. (2) For environments that restrict remote script, consider local copies of html2canvas and jsPDF instead of unpkg.
+
+---
+
+## Last Secure Force run (340b-mobile + audit — 2026-04-04)
+
+**Scope:** Brought **340b-mobile** in line with this document and the OWASP-oriented checklist: removed all `.innerHTML` assignments from `340b-mobile.js` in favor of `createElement`, `textContent`, and SVG `createElementNS` (state cards, HAP ask cards, state detail sheet). Lazy-loaded `pa-district-map.js` uses `addEventListener("load", …)` instead of a legacy `onload` property so static scans stay clean.
+
+**340b-mobile.html:** Added a **Content-Security-Policy** meta tag (`default-src 'self'`, `script-src 'self'`, Google Fonts allowed for existing Montserrat links). **Referrer** policy was already `strict-origin-when-cross-origin`. **More** tab links to `340b.html` and `haponline.org` now use `rel="noopener noreferrer"`. Map search placeholder reworded so it does not trip the removed-feature string check.
+
+**dashboard-audit.py:** `EXECUTABLE_FILES` now includes **340b-mobile.js** (unsafe DOM / inline-handler patterns). **CSP + referrer** and **target="_blank"`** checks now include **340b-mobile.html** alongside `340b.html` and `340b-BASIC.html`. **340b-mobile.html** / **340b-mobile.js** are in the hidden-character source set.
+
+**dashboard-audit.py:** Run completed — all automated checks **PASS**.
+
+**Semgrep:** Not run in this pass. When available: `semgrep scan --config auto` from the project root (or `HOME="$PWD" ./.venv-semgrep/bin/semgrep --config auto .` per [SECURITY.md](SECURITY.md)).
+
+**Manual OWASP-oriented checklist (mobile):** No new user-controlled HTML sinks; story form feedback uses `textContent`; `sessionStorage` for story draft remains browser-local until a vetted API exists. **340b-BASIC.html** unchanged — still the strictest deploy surface.

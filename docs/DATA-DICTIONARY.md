@@ -1,6 +1,6 @@
-# 340B Mobile Dashboard — Data Dictionary
+# 340B Dashboard — Data Dictionary (mobile + shared DataLayer)
 
-**What this file is:** A plain-English guide to every piece of data in the HAP 340B mobile dashboard. If you see a number, chart, or label in the app and wonder "where does that come from?" — this is your answer.
+**What this file is:** A plain-English guide to every piece of data in the HAP 340B mobile dashboard and shared `DataLayer` metrics. If you see a number, chart, or label in the app and wonder "where does that come from?" — this is your answer.
 
 **Who this is for:** Anyone. You do not need a data or coding background. If you can read a table, you can use this file.
 
@@ -301,6 +301,48 @@ When the story form is built, each submission will contain:
 | **Timestamp** | When the story was submitted | `sessionStorage` | `fact_story_submission.SubmittedAt` |
 
 **Update trigger:** Each time a user submits a story through the app.
+
+---
+
+## Advocacy Lab (`340b-advocacy-lab.html`)
+
+**What it is:** A separate, heavily commented page for new developers. It uses **local scripts only** (no Leaflet/Chart.js/jsPDF CDNs) and **verified** data from this repo.
+
+### PA hospital map (dots)
+
+| Question | Answer |
+|----------|--------|
+| **What you see** | Blue circles on a Pennsylvania outline |
+| **What it means** | Approximate locations of participating hospitals from the HAP Resource Center list used in `pa-340b-hospitals.js` |
+| **Where it lives** | `window.HAP_PA_340B_HOSPITALS` → loaded via `DataLayer.getPA340bHospitalPoints()` in `modules/advocacy-lab.js` |
+| **What is not shown** | **Per-hospital 340B dollar savings** — not in the static file; IT must supply a Gold table before any savings map/chart |
+| **Geocode source** | OpenStreetMap Nominatim (see each hospital row `source` / `display_name`) |
+| **Power BI** | Future `dim_pa_340b_hospital` or `fact_facility_location` (lat/lon, name, geocode source) |
+
+### KPI bar chart
+
+| Question | Answer |
+|----------|--------|
+| **What you see** | Horizontal bars for selected `MetricKey` values |
+| **Where it comes from** | `DataLayer.getKPIs()` — same keys as `fact_dashboard_kpi` |
+| **Community benefit** | MetricKey `COMMUNITY_BENEFIT_TOTAL_BILLIONS` is documented separately; it is **not** on the same axis as the lab chart (mixed units) |
+
+### Story form (extended fields)
+
+| Form field | JSON property | Future Gold column (example) |
+|------------|---------------|------------------------------|
+| Hospital name | `hospitalName` | `fact_story_submission.HospitalName` |
+| County | `county` | `fact_story_submission.County` |
+| Category | `category` | `fact_story_submission.Category` |
+| Approx. savings (text) | `savingsApproximate` | Extend Gold / SME — self-reported |
+| Community programs | `communityProgramsFunded` | Extend Gold — narrative |
+| Contract pharmacy | `contractPharmacyUse` | Extend Gold — narrative |
+| Manufacturer comms | `manufacturerCommunications` | Extend Gold — narrative |
+| Composed body (≤500 chars) | `storyText` | `fact_story_submission.StoryText` |
+| Email | `contactEmail` | `fact_story_submission.ContactEmail` |
+| Time | `submittedAt` | `fact_story_submission.SubmittedAt` |
+
+Legacy keys `hospital`, `story`, `email`, `timestamp`, `version` are duplicated for compatibility with the mobile form payload.
 
 ---
 

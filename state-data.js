@@ -7,6 +7,7 @@
  *
  * CODE MAP:
  * - CONFIG: titles, dates, share URL, copy, map/animation settings
+ * - HAP_STATIC_METRICS: numeric KPIs for static mode (single edit point; DataLayer + mobile read from here)
  * - FIPS_TO_ABBR / STATE_NAMES: lookup tables for map and labels
  * - STATE_340B: one object per state (y, pbm, cp, notes)
  * - STATES_WITH_PROTECTION: derived list for filters (states with cp === true; D.C. can appear in STATE_340B but is omitted from 50-state headline counts in 340b.js)
@@ -94,6 +95,23 @@ var CONFIG = {
   countUpDuration: 1200,
   dominoDelayPerState: 55,
   scrollRevealThreshold: 0.1,
+};
+
+/**
+ * HAP_STATIC_METRICS — single edit point for numeric KPIs in static mode.
+ * DataLayer.getKPIs() / getPA() read these values; mobile binds from DataLayer.
+ * Keep aligned with powerbi/metric-registry.json and CONFIG.copy dates.
+ */
+var HAP_STATIC_METRICS = {
+  PA_HOSPITALS_340B_COUNT: 72,
+  COMMUNITY_BENEFIT_TOTAL_BILLIONS: 7.95,
+  OUTPATIENT_SHARE_PCT: 7,
+  HRSA_AUDIT_COUNT: 184,
+  PA_RURAL_HOSPITAL_PCT: 38,
+  PA_HOSPITALS_OPERATING_LOSS_PCT: 63,
+  PA_LD_SERVICES_PCT: 95,
+  HRSA_HOSPITAL_AUDIT_COUNT: 179,
+  HRSA_MANUFACTURER_AUDIT_COUNT: 5,
 };
 
 /* ========== STATE LOOKUP TABLES ========== */

@@ -4151,6 +4151,115 @@
     }
   }
 
+  /**
+   * Update headline KPI DOM from DataLayer after warehouse JSON loads (Path A).
+   */
+  function applyDesktopWarehouseFromDataLayer() {
+    if (typeof DataLayer === "undefined") return;
+    Promise.all([DataLayer.getKPIs(), DataLayer.getPA()]).then(function (results) {
+      var kpis = results[0];
+      var pa = results[1];
+      var m = {};
+      kpis.forEach(function (x) {
+        m[x.key] = x.value;
+      });
+
+      function setCountUpById(id, val, decimals, suffix) {
+        var el = document.getElementById(id);
+        if (!el || val == null) return;
+        el.setAttribute("data-count-up", String(val));
+        el.dataset.done = "1";
+        suffix = suffix || "";
+        el.textContent = (decimals ? Number(val).toFixed(decimals) : Math.round(Number(val))) + suffix;
+      }
+
+      setCountUpById("key-finding-protection-count", m.US_STATES_CP_PROTECTION_COUNT);
+      setCountUpById("key-finding-no-count", m.US_STATES_NO_CP_PROTECTION_COUNT);
+
+      var finSpan = document.querySelector(".key-finding-card--finance .count-up");
+      if (finSpan && m.COMMUNITY_BENEFIT_TOTAL_BILLIONS != null) {
+        finSpan.setAttribute("data-count-up", String(m.COMMUNITY_BENEFIT_TOTAL_BILLIONS));
+        finSpan.dataset.done = "1";
+        finSpan.textContent = Number(m.COMMUNITY_BENEFIT_TOTAL_BILLIONS).toFixed(2) + (finSpan.getAttribute("data-suffix") || "B");
+      }
+
+      var paSpan = document.querySelector(".key-finding-card--pa .count-up");
+      if (paSpan && m.PA_HOSPITALS_340B_COUNT != null) {
+        paSpan.setAttribute("data-count-up", String(m.PA_HOSPITALS_340B_COUNT));
+        paSpan.dataset.done = "1";
+        paSpan.textContent = String(Math.round(m.PA_HOSPITALS_340B_COUNT));
+      }
+
+      var marketSpan = document.querySelector(".key-finding-card--market .count-up");
+      if (marketSpan && typeof DataLayer.getMetricNumeric === "function") {
+        DataLayer.getMetricNumeric("OUTPATIENT_SHARE_PCT").then(function (mv) {
+          if (mv == null) return;
+          marketSpan.setAttribute("data-count-up", String(mv));
+          marketSpan.dataset.done = "1";
+          marketSpan.textContent = Math.round(mv) + (marketSpan.getAttribute("data-suffix") || "%");
+        });
+      }
+
+      var auditEls = document.querySelectorAll("#oversight-gap .oversight-audit-value.count-up");
+      if (auditEls[0] && pa.hrsaHospitalAudits != null) {
+        auditEls[0].setAttribute("data-count-up", String(pa.hrsaHospitalAudits));
+        auditEls[0].dataset.done = "1";
+        auditEls[0].textContent = String(pa.hrsaHospitalAudits);
+      }
+      if (auditEls[1] && pa.hrsaManufacturerAudits != null) {
+        auditEls[1].setAttribute("data-count-up", String(pa.hrsaManufacturerAudits));
+        auditEls[1].dataset.done = "1";
+        auditEls[1].textContent = String(pa.hrsaManufacturerAudits);
+      }
+
+      var ev = document.getElementById("executive-landscape-value");
+      if (ev && m.US_STATES_CP_PROTECTION_COUNT != null) {
+        ev.textContent = m.US_STATES_CP_PROTECTION_COUNT + " states have contract pharmacy protections in law";
+      }
+
+      var paExposure = document.querySelector("#oversight-gap .executive-proof-card--accent .executive-proof-value");
+      if (paExposure && m.PA_HOSPITALS_340B_COUNT != null) {
+        paExposure.textContent = m.PA_HOSPITALS_340B_COUNT + " Pennsylvania hospitals participate in 340B";
+      }
+    });
+  }
+
+  function initWarehouseOptional() {
+    if (typeof DataLayer === "undefined" || typeof DASHBOARD_SETTINGS === "undefined") return;
+    var w = DASHBOARD_SETTINGS.warehouse;
+    if (!w || !w.enabled) return;
+    var url = w.useMockEndpoint ? "data/mock-api-response.json" : (w.endpointUrl || "");
+    if (!url) return;
+
+    function refreshWarehouseUi() {
+      if (DataLayer.source !== "warehouse-gold" || !DataLayer.getStatus().cacheLoaded) return;
+      runTaskSafely("warehouse — about data", applyAboutDataPanel);
+      runTaskSafely("warehouse — config copy", applyConfigCopy);
+      runTaskSafely("warehouse — metadata", updateMetadata);
+      runTaskSafely("warehouse — verified stamps", initVerifiedDataStamps);
+      runTaskSafely("warehouse — state chips", renderStateChips);
+      runTaskSafely("warehouse — selection summary", function () {
+        updateSelectionSummary(appState.selectedState || null);
+      });
+      runTaskSafely("warehouse — ranked table", fillRankedStateTable);
+      runTaskSafely("warehouse — adoptions chart", fillAdoptionsChart);
+      runTaskSafely("warehouse — map", drawMap);
+      runTaskSafely("warehouse — KPI DOM", applyDesktopWarehouseFromDataLayer);
+    }
+
+    DataLayer.onRefresh(function () {
+      if (DataLayer.source === "warehouse-gold" && DataLayer.getStatus().cacheLoaded) {
+        refreshWarehouseUi();
+      }
+    });
+
+    DataLayer.connectWarehouse(url, {
+      intervalMs: w.pollIntervalMs || 900000,
+      storyApiUrl: w.storyApiUrl || "",
+      headers: w.headers || {}
+    });
+  }
+
   function init() {
     registerExecutiveReliabilityGuards();
     cacheDom();
@@ -4265,6 +4374,8 @@
 
     schedulePostInitMapHealthCheck();
 
+    runTaskSafely("warehouse live data optional", initWarehouseOptional);
+
     try {
       window.HAP340B = {
         version: "2026.04.03",
@@ -4279,6 +4390,15 @@
         },
         useStaticStateGrid: function () {
           showMapStaticFallbackUI();
+        },
+        connectWarehouse: function (url, opts) {
+          if (typeof DataLayer !== "undefined" && DataLayer.connectWarehouse) {
+            return DataLayer.connectWarehouse(url, opts || {});
+          }
+          return Promise.resolve({ refreshed: false, reason: "no DataLayer" });
+        },
+        getDataLayerStatus: function () {
+          return typeof DataLayer !== "undefined" && DataLayer.getStatus ? DataLayer.getStatus() : null;
         }
       };
     } catch (hapEx) {

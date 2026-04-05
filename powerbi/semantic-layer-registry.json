@@ -1,0 +1,459 @@
+{
+  "_description": "Semantic Layer Registry — tracks every dynamic placeholder, chart field, table column, and form field in the 340B dashboard, with its current source and future Power BI / warehouse mapping. The Multi-Agent Supervisor (rule: multi-agent-supervisor.mdc) enforces that no data point appears in the UI without an entry here.",
+  "_maintainedBy": "Agent D1 (Data Analyst) + Agent PBI1 (Power BI Readiness)",
+  "_lastReviewed": "2026-04-04",
+  "_relatedDocs": [
+    "docs/DATA-DICTIONARY.md",
+    "docs/POWER-BI-DATA-MODEL-MAPPING.md",
+    "powerbi/metric-registry.json"
+  ],
+
+  "kpiCards": [
+    {
+      "placeholderId": "pa_hospitals_count",
+      "displayContext": "Home tab — KPI card #1 (data-topic='access')",
+      "htmlLocation": "340b-mobile.html: .kpi-value[data-count='72']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 72,
+      "metricKey": "PA_HOSPITALS_340B_COUNT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getKPIs() → item where key === 'PA_HOSPITALS_340B_COUNT'",
+      "updateFrequency": "Quarterly (HRSA covered entity list)",
+      "owner": "HAP Advocacy + HRSA",
+      "pbiReady": true
+    },
+    {
+      "placeholderId": "community_benefit_billions",
+      "displayContext": "Home tab — KPI card #2 (data-topic='finance')",
+      "htmlLocation": "340b-mobile.html: .kpi-value[data-count='7.95'][data-prefix='$'][data-suffix='B']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 7.95,
+      "metricKey": "COMMUNITY_BENEFIT_TOTAL_BILLIONS",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "USD_BILLIONS",
+      "dataLayerMethod": "DataLayer.getKPIs() → item where key === 'COMMUNITY_BENEFIT_TOTAL_BILLIONS'",
+      "updateFrequency": "Annual (hospital community benefit reports)",
+      "owner": "340B Health + AHA",
+      "pbiReady": true
+    },
+    {
+      "placeholderId": "states_protected_count",
+      "displayContext": "Home tab — KPI card #3 (data-topic='policy')",
+      "htmlLocation": "340b-mobile.html: #kpi-protected[data-count='21']",
+      "currentSource": "Computed from STATE_340B in state-data.js (count .cp === true, exclude DC)",
+      "staticValue": 21,
+      "metricKey": "US_STATES_CP_PROTECTION_COUNT",
+      "goldTable": "fact_dashboard_kpi (or derived from dim_state_law)",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getKPIs() → item where key === 'US_STATES_CP_PROTECTION_COUNT'",
+      "updateFrequency": "When state legislation passes or is repealed",
+      "owner": "HAP Advocacy + MultiState",
+      "pbiReady": true
+    },
+    {
+      "placeholderId": "states_unprotected_count",
+      "displayContext": "Home tab — KPI card #4 (data-topic='risk')",
+      "htmlLocation": "340b-mobile.html: #kpi-unprotected[data-count='29']",
+      "currentSource": "Computed as 50 - protectedCount",
+      "staticValue": 29,
+      "metricKey": "US_STATES_NO_CP_PROTECTION_COUNT",
+      "goldTable": "fact_dashboard_kpi (or derived from dim_state_law)",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getKPIs() → item where key === 'US_STATES_NO_CP_PROTECTION_COUNT'",
+      "updateFrequency": "When state legislation passes or is repealed",
+      "owner": "HAP Advocacy",
+      "pbiReady": true
+    }
+  ],
+
+  "paFocusStats": [
+    {
+      "placeholderId": "pa_hospitals_340b",
+      "displayContext": "PA Focus tab — stat card row",
+      "htmlLocation": "340b-mobile.html: .pa-stat-value[data-count='72']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 72,
+      "metricKey": "PA_HOSPITALS_340B_COUNT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getPA() → hospitalCount",
+      "pbiReady": true
+    },
+    {
+      "placeholderId": "pa_rural_percent",
+      "displayContext": "PA Focus tab — stat card ('Rural Hospitals')",
+      "htmlLocation": "340b-mobile.html: .pa-stat-value[data-count='38'][data-suffix='%']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 38,
+      "metricKey": "PA_RURAL_HOSPITAL_PCT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "PERCENT",
+      "dataLayerMethod": "DataLayer.getPA() → ruralPercent",
+      "updateFrequency": "When HRSA or Census reclassifies hospitals",
+      "owner": "HAP Advocacy",
+      "pbiReady": true
+    },
+    {
+      "placeholderId": "pa_operating_loss_percent",
+      "displayContext": "PA Focus tab — stat card ('Operating at a Loss')",
+      "htmlLocation": "340b-mobile.html: .pa-stat-value[data-count='63'][data-suffix='%']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 63,
+      "metricKey": "PA_HOSPITALS_OPERATING_LOSS_PCT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "PERCENT",
+      "dataLayerMethod": "DataLayer.getPA() → operatingAtLossPercent",
+      "updateFrequency": "Annual (financial reports)",
+      "owner": "HAP Advocacy",
+      "pbiReady": true
+    },
+    {
+      "placeholderId": "pa_ld_services_percent",
+      "displayContext": "PA Focus tab — stat card ('L&D Services')",
+      "htmlLocation": "340b-mobile.html: .pa-stat-value[data-count='95'][data-suffix='%']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 95,
+      "metricKey": "PA_LD_SERVICES_PCT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "PERCENT",
+      "dataLayerMethod": "DataLayer.getPA() → ldServicesPercent",
+      "updateFrequency": "Annual",
+      "owner": "HAP Advocacy",
+      "pbiReady": true
+    }
+  ],
+
+  "oversightComparison": [
+    {
+      "placeholderId": "hrsa_hospital_audits",
+      "displayContext": "PA Focus tab — oversight comparison bar",
+      "htmlLocation": "340b-mobile.html: .oversight-value[data-count='179'][data-topic='risk']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 179,
+      "metricKey": "HRSA_HOSPITAL_AUDIT_COUNT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getPA() → hrsaHospitalAudits",
+      "updateFrequency": "Annual (HRSA fiscal year report)",
+      "owner": "HRSA Program Integrity",
+      "pbiReady": true
+    },
+    {
+      "placeholderId": "hrsa_manufacturer_audits",
+      "displayContext": "PA Focus tab — oversight comparison bar",
+      "htmlLocation": "340b-mobile.html: .oversight-value[data-count='5'][data-topic='finance']",
+      "currentSource": "hard-coded data-count attribute",
+      "staticValue": 5,
+      "metricKey": "HRSA_MANUFACTURER_AUDIT_COUNT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getPA() → hrsaManufacturerAudits",
+      "updateFrequency": "Annual (HRSA fiscal year report)",
+      "owner": "HRSA Program Integrity",
+      "pbiReady": true
+    }
+  ],
+
+  "programContextStats": [
+    {
+      "placeholderId": "outpatient_share_pct",
+      "displayContext": "Overview or talking points — 340B as share of total U.S. drug market",
+      "htmlLocation": "340b.html / 340b-mobile.html: referenced in advocacy copy and methodology",
+      "currentSource": "CONFIG.copy in state-data.js (cites Commonwealth Fund via HAP March 2026 talking points)",
+      "staticValue": 7,
+      "metricKey": "OUTPATIENT_SHARE_PCT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "PERCENT",
+      "dataLayerMethod": "DataLayer.getKPIs() → item where key === 'OUTPATIENT_SHARE_PCT'",
+      "updateFrequency": "When source publishes updated market share data",
+      "owner": "HAP Advocacy (citing Commonwealth Fund)",
+      "pbiReady": true,
+      "note": "7% of total U.S. drug market — per HAP March 2026 talking points citing Commonwealth Fund. Currently used in advocacy copy, not as a rendered KPI card. Warehouse should store with SourceCitation naming the specific Commonwealth Fund publication."
+    }
+  ],
+
+  "landscapeStats": [
+    {
+      "placeholderId": "landscape_protected",
+      "displayContext": "Policy tab — landscape section",
+      "htmlLocation": "340b-mobile.html: .landscape-value[data-count='21'] (first instance in landscape)",
+      "currentSource": "hard-coded data-count attribute (mirrors KPI card #3)",
+      "staticValue": 21,
+      "metricKey": "US_STATES_CP_PROTECTION_COUNT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getKPIs()",
+      "pbiReady": true,
+      "note": "Duplicate display of KPI card #3 — same MetricKey"
+    },
+    {
+      "placeholderId": "landscape_unprotected",
+      "displayContext": "Policy tab — landscape section",
+      "htmlLocation": "340b-mobile.html: .landscape-value[data-count='29'] (second instance in landscape)",
+      "currentSource": "hard-coded data-count attribute (mirrors KPI card #4)",
+      "staticValue": 29,
+      "metricKey": "US_STATES_NO_CP_PROTECTION_COUNT",
+      "goldTable": "fact_dashboard_kpi",
+      "goldColumn": "ValueNumeric",
+      "unit": "COUNT",
+      "dataLayerMethod": "DataLayer.getKPIs()",
+      "pbiReady": true,
+      "note": "Duplicate display of KPI card #4 — same MetricKey"
+    }
+  ],
+
+  "charts": [
+    {
+      "chartId": "protection-map",
+      "displayContext": "Map tab — interactive U.S. map showing contract pharmacy protection by state",
+      "dataSource": "DataLayer.getStates()",
+      "fields": [
+        { "field": "stateCode", "goldColumn": "dim_state_law.StateCode" },
+        { "field": "stateName", "goldColumn": "dim_state_law.StateName" },
+        { "field": "hasContractPharmacyLaw", "goldColumn": "dim_state_law.ContractPharmacyProtected" },
+        { "field": "hasPbmLaw", "goldColumn": "dim_state_law.PBMProtected" },
+        { "field": "yearEnacted", "goldColumn": "dim_state_law.YearEnacted" },
+        { "field": "notes", "goldColumn": "dim_state_law.Notes" }
+      ],
+      "pbiVisualType": "Shape Map or Filled Map",
+      "goldTables": ["dim_state_law"],
+      "pbiReady": true
+    },
+    {
+      "chartId": "oversight-comparison",
+      "displayContext": "PA Focus tab — horizontal bar comparing hospital vs manufacturer audits",
+      "dataSource": "DataLayer.getPA()",
+      "fields": [
+        { "field": "hrsaHospitalAudits", "metricKey": "HRSA_HOSPITAL_AUDIT_COUNT", "goldColumn": "fact_dashboard_kpi.ValueNumeric" },
+        { "field": "hrsaManufacturerAudits", "metricKey": "HRSA_MANUFACTURER_AUDIT_COUNT", "goldColumn": "fact_dashboard_kpi.ValueNumeric" }
+      ],
+      "pbiVisualType": "Clustered Bar Chart",
+      "goldTables": ["fact_dashboard_kpi"],
+      "pbiReady": true
+    },
+    {
+      "chartId": "pa-district-map",
+      "displayContext": "PA Focus tab — PA House/Senate district map with hospital pins",
+      "dataSource": "modules/pa-district-map.js (GeoJSON + pa-340b-hospitals.js)",
+      "fields": [
+        { "field": "districtBoundaries", "source": "data/pa-districts/PaHouse2024_03.js, PaSenatorial2024_03.js" },
+        { "field": "hospitalLocations", "source": "data/pa-districts/pa-340b-hospitals.js" },
+        { "field": "hospitalsPerDistrict", "note": "Computed at runtime by spatial join" }
+      ],
+      "pbiVisualType": "ArcGIS or Shape Map with hospital layer",
+      "goldTables": ["dim_pa_hospitals (future)"],
+      "pbiReady": false,
+      "blockedBy": "Spatial data needs warehouse modeling"
+    }
+  ],
+
+  "storySubmissionForm": {
+    "formId": "story-submission",
+    "displayContext": "Story tab — hospital story submission form",
+    "submitMethod": "DataLayer.submitStory(payload)",
+    "currentStorage": "sessionStorage (browser only)",
+    "futureStorage": "POST to warehouse API → fact_story_submission",
+    "fields": [
+      {
+        "field": "hospitalName",
+        "htmlInput": "text input",
+        "validation": "required, max 200 chars",
+        "goldColumn": "fact_story_submission.HospitalName",
+        "goldType": "NVARCHAR(200)"
+      },
+      {
+        "field": "county",
+        "htmlInput": "select (PA counties)",
+        "validation": "required, must be valid PA county",
+        "goldColumn": "fact_story_submission.County",
+        "goldType": "NVARCHAR(50)"
+      },
+      {
+        "field": "category",
+        "htmlInput": "select",
+        "validation": "required, enum: Patient Access | Community Benefit | Rural Care | Financial Impact",
+        "goldColumn": "fact_story_submission.Category",
+        "goldType": "NVARCHAR(50)"
+      },
+      {
+        "field": "storyText",
+        "htmlInput": "textarea",
+        "validation": "required, max 500 chars",
+        "goldColumn": "fact_story_submission.StoryText",
+        "goldType": "NVARCHAR(500)"
+      },
+      {
+        "field": "contactEmail",
+        "htmlInput": "email input",
+        "validation": "optional, valid email format",
+        "goldColumn": "fact_story_submission.ContactEmail",
+        "goldType": "NVARCHAR(255)"
+      },
+      {
+        "field": "submittedAt",
+        "htmlInput": "auto-generated (ISO 8601 timestamp)",
+        "validation": "auto",
+        "goldColumn": "fact_story_submission.SubmittedAt",
+        "goldType": "DATETIME2"
+      }
+    ],
+    "pbiReady": true,
+    "note": "JSON output shape already matches Gold table. When API is available, swap sessionStorage for POST."
+  },
+
+  "configAndCopy": [
+    {
+      "placeholderId": "dashboard_title",
+      "displayContext": "Page title / header",
+      "currentSource": "CONFIG.dashboardTitle in state-data.js",
+      "metricKey": null,
+      "goldTable": "dim_report_copy (optional)",
+      "note": "Advocacy copy, not a warehouse fact"
+    },
+    {
+      "placeholderId": "data_freshness",
+      "displayContext": "Shown near KPIs and in methodology",
+      "currentSource": "CONFIG.dataFreshness in state-data.js",
+      "metricKey": null,
+      "goldTable": "dim_data_freshness",
+      "goldColumn": "DisplayAsOfText",
+      "note": "Controls 'Data as of [month year]' display"
+    },
+    {
+      "placeholderId": "overview_lead",
+      "displayContext": "Hero lead paragraph on Home tab",
+      "currentSource": "CONFIG.copy.overviewLead in state-data.js",
+      "metricKey": null,
+      "goldTable": "dim_report_copy",
+      "note": "Approved advocacy narrative — not a fact"
+    },
+    {
+      "placeholderId": "hap_position_lead",
+      "displayContext": "HAP Position section",
+      "currentSource": "CONFIG.copy.hapPositionLead in state-data.js",
+      "metricKey": null,
+      "goldTable": "dim_report_copy",
+      "note": "HAP policy position statement"
+    },
+    {
+      "placeholderId": "hap_ask_items",
+      "displayContext": "HAP Position — 'What lawmakers can do' bullets",
+      "currentSource": "CONFIG.copy.hapAskItems[] in state-data.js",
+      "metricKey": null,
+      "goldTable": "dim_report_copy",
+      "note": "Array of {label, impactLine} — approved messaging"
+    },
+    {
+      "placeholderId": "source_summary",
+      "displayContext": "Sources / methodology section",
+      "currentSource": "CONFIG.copy.sourceSummary in state-data.js",
+      "metricKey": null,
+      "goldTable": "dim_report_copy",
+      "note": "Citation text"
+    }
+  ],
+
+  "aiHelperOutputs": [
+    {
+      "helperId": "story_summarization",
+      "module": "modules/ai-helpers.js → AIHelpers.summarizeStory()",
+      "input": "storyText (string)",
+      "output": "1-2 sentence summary (string)",
+      "staticMode": "Truncates to first 2 sentences + ellipsis",
+      "liveMode": "Calls LLM API for real summarization",
+      "pbiRelevance": "Summary could be stored in fact_story_submission.SummaryText (future column)"
+    },
+    {
+      "helperId": "chart_narrative",
+      "module": "modules/ai-helpers.js → AIHelpers.generateChartNarrative()",
+      "input": "chartType (string) + data (object)",
+      "output": "Plain-English narrative for the chart (string)",
+      "staticMode": "Template-based sentence from data values",
+      "liveMode": "LLM generates context-aware narrative",
+      "pbiRelevance": "Could power 'Smart Narrative' visual in Power BI"
+    },
+    {
+      "helperId": "policy_alert",
+      "module": "modules/ai-helpers.js → AIHelpers.getPolicyAlert()",
+      "input": "none",
+      "output": "{headline, body, severity, date}",
+      "staticMode": "Returns canned alert from CONFIG",
+      "liveMode": "Fetches from policy alert feed",
+      "pbiRelevance": "Could map to dim_policy_alert table"
+    }
+  ],
+
+  "legislatorData": {
+    "stateLevel": {
+      "displayContext": "Policy tab — PA State Legislature cards",
+      "currentSource": "Hard-coded HTML in 340b-mobile.html",
+      "fields": ["name", "district", "party", "engagementPosture", "suggestedAction"],
+      "goldTable": "dim_pa_legislator",
+      "pbiReady": false,
+      "blockedBy": "Need structured data source; currently HTML-only"
+    },
+    "federalLevel": {
+      "displayContext": "Policy tab — PA Congressional Delegation table",
+      "currentSource": "PA_DELEGATION array in 340b-mobile.js",
+      "fields": ["member", "chamber", "district", "party", "position", "lastContact", "action"],
+      "goldTable": "dim_pa_delegation",
+      "pbiReady": true,
+      "note": "Already structured as JavaScript array; shape matches Gold table"
+    }
+  },
+
+  "advocacyLab": {
+    "entryHtml": "340b-advocacy-lab.html",
+    "logicModule": "modules/advocacy-lab.js",
+    "styles": "advocacy-lab.css",
+    "paHospitalMap": {
+      "displayContext": "Advocacy Lab — Pennsylvania outline + participating hospital dots",
+      "currentSource": "window.HAP_340B_DATA (data/hap-340b-data.js) hydrated from pa-340b-hospitals.js; HAP_PA_340B_HOSPITALS synced for legacy map; DataLayer.getPA340bHospitalPoints()",
+      "goldTableTarget": "gold_dim_hospitals_340b_pa / vw_pbi_hospitals_340b_pa",
+      "pbiReady": true,
+      "validationNote": "List revision_date in pa-340b-hospitals meta; per-facility 340B dollars in hospital_financials_340b only when IT provides Gold — do not fabricate."
+    },
+    "kpiBarChart": {
+      "displayContext": "Advocacy Lab — D3 horizontal bar chart",
+      "dataLayerMethod": "DataLayer.getKPIs()",
+      "metricKeys": [
+        "PA_HOSPITALS_340B_COUNT",
+        "US_STATES_CP_PROTECTION_COUNT",
+        "US_STATES_NO_CP_PROTECTION_COUNT",
+        "OUTPATIENT_SHARE_PCT",
+        "HRSA_AUDIT_COUNT"
+      ],
+      "goldTable": "fact_dashboard_kpi",
+      "pbiReady": true,
+      "note": "COMMUNITY_BENEFIT_TOTAL_BILLIONS is intentionally excluded from this single-axis chart (unit mix)."
+    },
+    "storyFormExtended": {
+      "goldTable": "fact_story_submission",
+      "coreColumns": ["HospitalName", "County", "Category", "StoryText", "ContactEmail", "SubmittedAt"],
+      "extendedNarrativeFields": {
+        "savingsApproximate": "Self-reported text; SME to name Gold column when approved",
+        "communityProgramsFunded": "Narrative; SME to name Gold column when approved",
+        "contractPharmacyUse": "Narrative; SME to name Gold column when approved",
+        "manufacturerCommunications": "Narrative; SME to name Gold column when approved"
+      },
+      "pbiReady": true
+    },
+    "aiHelpers": {
+      "summarizePolicyAlert": "modules/ai-helpers.js → AIHelpers.summarizePolicyAlert()",
+      "pbiRelevance": "Optional text measure or dim_policy_alert narrative column"
+    }
+  }
+}

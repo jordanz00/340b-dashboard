@@ -1,0 +1,21 @@
+{
+  "_description": "Example semantic envelope for API / Power BI ingestion. JSON keys MUST be valid identifiers (no leading digits). Prefer MetricKey + ValueNumeric over ad-hoc names. See powerbi/metric-registry.json and docs/POWER-BI-DATA-MODEL-MAPPING.md.",
+  "_meta": {
+    "source": "state-data.js | fact_dashboard_kpi | warehouse_extract_name",
+    "lastUpdated": "2026-04-04T12:00:00Z",
+    "validationStatus": "verified | pending_sme | illustrative_only"
+  },
+  "hospitalName": "Example Hospital",
+  "metricKey": "COMMUNITY_BENEFIT_TOTAL_BILLIONS",
+  "valueNumeric": 7.95,
+  "valueUnit": "USD_BILLIONS",
+  "communityImpactSummary": "Plain-language impact line (approved copy)",
+  "contractPharmacyIndicator": true,
+  "policyAlerts": [
+    {
+      "headline": "string",
+      "severity": "info | warn",
+      "asOf": "2026-04"
+    }
+  ]
+}

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="description" content="Novice-friendly PA 340B advocacy lab: verified map points, KPI chart, story JSON, print export — Power BI / warehouse aligned.">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
+  <title>HAP 340B Advocacy Lab (PA) — Developer &amp; PBI Reference</title>
+  <link rel="stylesheet" href="advocacy-lab.css">
+</head>
+<body>
+  <a class="lab-skip" href="#lab-main">Skip to content</a>
+
+  <header class="lab-header">
+    <h1>340B Advocacy Lab — Pennsylvania</h1>
+    <p>Verified static data, DataLayer API, and print export. No CDN scripts. Read the comments in <code>modules/advocacy-lab.js</code>.</p>
+  </header>
+
+  <main id="lab-main" class="lab-main">
+
+    <!-- ═══ 1. MAP: real hospital coordinates from HAP list (no fabricated savings) ═══ -->
+    <section class="lab-section" aria-labelledby="map-heading">
+      <h2 id="map-heading">1. Pennsylvania hospital locations</h2>
+      <p class="lab-lead">Dots are geocoded positions from the HAP Resource Center participating-hospital list (see <code>pa-340b-hospitals.js</code> <code>meta</code>). This is <strong>not</strong> per-hospital 340B savings data.</p>
+      <div class="lab-card">
+        <div id="pa-map-wrap" style="min-height:400px" role="region" aria-label="Pennsylvania map"></div>
+        <p id="pa-map-methodology" class="lab-methodology" role="status"></p>
+      </div>
+    </section>
+
+    <!-- ═══ 2. CHART: KPIs from DataLayer (same MetricKeys as Gold) ═══ -->
+    <section class="lab-section" aria-labelledby="chart-heading">
+      <h2 id="chart-heading">2. Headline metrics (bar chart)</h2>
+      <p class="lab-lead">Bars are built from <code>DataLayer.getKPIs()</code>. National community benefit ($7.95B) is a separate metric — see footnote.</p>
+      <div class="lab-card">
+        <div id="kpi-chart-wrap"></div>
+        <p id="kpi-chart-footnote" class="lab-methodology"></p>
+      </div>
+    </section>
+
+    <!-- ═══ 3. STORY FORM: warehouse-shaped JSON via DataLayer.submitStory ═══ -->
+    <section class="lab-section" aria-labelledby="story-heading">
+      <h2 id="story-heading">3. Story submission (structured)</h2>
+      <p class="lab-lead">Fields map toward <code>fact_story_submission</code>; extended columns can be added in Gold. Submissions store in <code>sessionStorage</code> until an API is configured.</p>
+      <div class="lab-card">
+        <form id="advocacy-story-form" class="lab-form" autocomplete="on">
+          <label for="story-hospital-name">Hospital name <span class="lab-hint">(required)</span></label>
+          <input id="story-hospital-name" name="hospitalName" type="text" required maxlength="200" placeholder="e.g. Sample Health System">
+
+          <label for="story-county">County <span class="lab-hint">(required)</span></label>
+          <select id="story-county" name="county" required>
+            <option value="">Select county…</option>
+          </select>
+
+          <label for="story-category">Category <span class="lab-hint">(required)</span></label>
+          <select id="story-category" name="category" required>
+            <option value="">Choose…</option>
+            <option value="Patient Access">Patient Access</option>
+            <option value="Community Benefit">Community Benefit</option>
+            <option value="Rural Care">Rural Care</option>
+            <option value="Financial Impact">Financial Impact</option>
+          </select>
+
+          <label for="story-savings">Approx. 340B savings <span class="lab-hint">(optional; self-reported text, not verified)</span></label>
+          <input id="story-savings" name="savingsApproximate" type="text" maxlength="120" placeholder="e.g. internal estimate — cite finance if publishing">
+
+          <label for="story-community">Community programs funded</label>
+          <textarea id="story-community" name="communityImpact" maxlength="600" placeholder="What services does 340B help support?"></textarea>
+
+          <label for="story-contract-pharmacies">Contract pharmacy use</label>
+          <textarea id="story-contract-pharmacies" name="contractPharmacyUse" maxlength="600"></textarea>
+
+          <label for="story-pharma">Manufacturer communications</label>
+          <textarea id="story-pharma" name="manufacturerCommunications" maxlength="600"></textarea>
+
+          <label for="story-email">Contact email <span class="lab-hint">(optional)</span></label>
+          <input id="story-email" name="contactEmail" type="email" autocomplete="email" placeholder="you@hospital.org">
+
+          <button type="submit">Submit story (local / warehouse-ready JSON)</button>
+          <p id="story-feedback" role="status" aria-live="polite"></p>
+        </form>
+      </div>
+    </section>
+
+    <!-- ═══ 4. PRINT EXPORT (Save as PDF from browser) ═══ -->
+    <section class="lab-section" aria-labelledby="export-heading">
+      <h2 id="export-heading">4. Advocacy report export</h2>
+      <p class="lab-lead">Uses <code>window.print()</code> — choose <strong>Save as PDF</strong> in the print dialog. No jsPDF CDN (matches project security rules).</p>
+      <button type="button" class="lab-btn" id="btn-export-report">Generate printable report</button>
+    </section>
+
+    <!-- ═══ 5. AI HELPERS (offline stubs in modules/ai-helpers.js) ═══ -->
+    <section class="lab-section" aria-labelledby="ai-heading">
+      <h2 id="ai-heading">5. AI helper stubs</h2>
+      <p class="lab-lead"><code>AIHelpers</code> runs offline today; swap in an endpoint later without changing call sites.</p>
+      <div class="lab-card">
+        <div class="lab-ai-row">
+          <button type="button" class="lab-btn" id="btn-ai-story">Summarize sample story</button>
+          <button type="button" class="lab-btn" id="btn-ai-policy">Summarize policy alert</button>
+        </div>
+        <div id="ai-output" class="lab-ai-out" role="status"></div>
+      </div>
+    </section>
+
+    <!-- ═══ 6. SOURCES & METHODOLOGY (human-readable) ═══ -->
+    <section class="lab-section" aria-labelledby="sources-heading">
+      <h2 id="sources-heading">6. Sources &amp; methodology</h2>
+      <div class="lab-card lab-methodology">
+        <ul>
+          <li><strong>Hospital dots:</strong> <code>data/pa-districts/pa-340b-hospitals.js</code> — HAP Resource Center list, revision 2022-05-27; coordinates via OpenStreetMap Nominatim (see each row <code>source</code>).</li>
+          <li><strong>KPI values:</strong> <code>state-data.js</code> (<code>HAP_STATIC_METRICS</code>, <code>CONFIG</code>) and computed state-law counts; warehouse path uses <code>fact_dashboard_kpi</code>.</li>
+          <li><strong>Citations:</strong> <code>powerbi/metric-registry.json</code> and <code>CONFIG.copy.sourceSummary</code> in <code>state-data.js</code>.</li>
+          <li><strong>Not in this repo:</strong> Facility-level 340B savings — load from Gold when IT publishes; do not fabricate for charts.</li>
+        </ul>
+        <p style="margin-top:12px">Full field dictionary: <code>docs/DATA-DICTIONARY.md</code> (Advocacy Lab section).</p>
+      </div>
+    </section>
+
+    <nav class="lab-footer-nav" aria-label="Related dashboards">
+      <a href="340b-mobile.html">Open mobile dashboard</a> ·
+      <a href="340b.html">Open advanced dashboard</a>
+    </nav>
+  </main>
+
+  <!-- Filled before print; hidden on screen -->
+  <div id="advocacy-print-root" aria-hidden="true"></div>
+
+  <!-- Load order: config → PA points → DataLayer → vendors → AI → lab logic -->
+  <script src="state-data.js"></script>
+  <script src="data/pa-districts/pa-340b-hospitals.js"></script>
+  <script src="data/hap-340b-data.js"></script>
+  <script src="modules/data-layer.js"></script>
+  <script src="assets/vendor/d3.min.js"></script>
+  <script src="assets/vendor/topojson-client.min.js"></script>
+  <script src="assets/vendor/states-10m.js"></script>
+  <script src="modules/ai-helpers.js"></script>
+  <script src="modules/advocacy-lab.js"></script>
+</body>
+</html>

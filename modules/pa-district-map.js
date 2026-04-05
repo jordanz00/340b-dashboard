@@ -2,8 +2,11 @@
  * HAP 340B — PA Legislative District Map (House + Senate)
  * ======================================================
  *
- * Renders PA House (203) + Senate (50) district boundaries from local GeoJSON.
- * Colors districts by 340B hospital count when a local hospital points dataset is present.
+ * District boundaries and ZIP centroids load from script-defined globals only
+ * (no fetch/XHR). Include PaHouse2024_03.js, PaSenatorial2024_03.js, and optional
+ * pa-zip-centroids.js / pa-340b-hospitals.js before this file.
+ *
+ * Legislator photos/bios: DataLayer.getPaLegislatorPhotoUrl / getPaLegislatorBioPageUrl.
  *
  * Security: DOM updates use textContent only; no innerHTML from data.
  */
@@ -17,11 +20,6 @@
   var SENATE_GLOBAL = "HAP_PA_DISTRICTS_SENATE";
   var HOSPITALS_GLOBAL = "HAP_PA_340B_HOSPITALS";
   var ZIP_GLOBAL = "HAP_PA_ZIP_CENTROIDS";
-  // Fallback URLs (works under http(s) hosting / local server).
-  var HOUSE_GEOJSON_URL = "data/pa-districts/PaHouse2024_03.geojson";
-  var SENATE_GEOJSON_URL = "data/pa-districts/PaSenatorial2024_03.geojson";
-  var HOSPITAL_POINTS_URL = "data/pa-districts/pa-340b-hospitals.json"; // optional
-  var PA_ZIP_CENTROIDS_URL = "data/pa-districts/pa-zip-centroids.json";
 
   var MAP_ID = "pa-district-map";
   var TOOLTIP_ID = "pa-district-map-tooltip";
@@ -80,8 +78,6 @@
     return document.getElementById(id);
   }
 
-  var PA_LEG_PHOTO_BASE = "https://www.palegis.us/resources/images/members/200/";
-
   function setDetail(payload) {
     var empty = selectEl(DETAIL_EMPTY_ID);
     var panel = selectEl(DETAIL_PANEL_ID);
@@ -103,7 +99,20 @@
 
     if (kicker) kicker.textContent = safeText(payload.kicker || "District");
     if (title) title.textContent = safeText(payload.title || "—");
-    if (leg) leg.textContent = safeText(payload.legislator || "—");
+    if (leg) {
+      while (leg.firstChild) leg.removeChild(leg.firstChild);
+      if (payload.url) {
+        var link = document.createElement("a");
+        link.href = payload.url;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = safeText(payload.legislator || "—");
+        link.className = "pa-detail-leg-link";
+        leg.appendChild(link);
+      } else {
+        leg.textContent = safeText(payload.legislator || "—");
+      }
+    }
     if (party) party.textContent = safeText(payload.party || "—");
     if (count) count.textContent = payload.count == null ? "Data pending" : String(payload.count);
     if (hospitals) hospitals.textContent = safeText(payload.hospitals || (payload.count == null ? "Hospital dataset not loaded yet." : "—"));
@@ -112,8 +121,11 @@
     if (note) note.textContent = safeText(payload.note || "");
 
     if (photo) {
-      if (payload.gpid) {
-        photo.src = PA_LEG_PHOTO_BASE + payload.gpid + ".jpg";
+      var localSrc = (typeof DataLayer !== "undefined" && DataLayer.getPaLegislatorPhotoUrl)
+        ? DataLayer.getPaLegislatorPhotoUrl(payload.gpid, payload.chamber)
+        : "";
+      if (localSrc) {
+        photo.src = localSrc;
         photo.alt = safeText(payload.legislator || "");
         photo.style.display = "";
         photo.onerror = function () { this.style.display = "none"; };
@@ -225,54 +237,6 @@
     });
   }
 
-  function tryLoadJson(url) {
-    // fetch() can fail under file:// in some browsers. Use XHR fallback.
-    function xhrLoad() {
-      return new Promise(function (resolve, reject) {
-        try {
-          var x = new XMLHttpRequest();
-          x.open("GET", url, true);
-          x.overrideMimeType("application/json");
-          x.onreadystatechange = function () {
-            if (x.readyState !== 4) return;
-            if (x.status >= 200 && x.status < 300) {
-              try {
-                resolve(JSON.parse(x.responseText));
-              } catch (e) {
-                reject(e);
-              }
-              return;
-            }
-            // Some browsers return 0 for file:// success — try parse anyway.
-            if (x.status === 0 && x.responseText) {
-              try {
-                resolve(JSON.parse(x.responseText));
-              } catch (e2) {
-                reject(e2);
-              }
-              return;
-            }
-            reject(new Error("xhr failed: " + url + " (" + x.status + ")"));
-          };
-          x.send(null);
-        } catch (err) {
-          reject(err);
-        }
-      });
-    }
-
-    if (typeof fetch !== "function") return xhrLoad();
-
-    return fetch(url, { cache: "no-store" })
-      .then(function (r) {
-        if (!r.ok) throw new Error("fetch failed: " + url);
-        return r.json();
-      })
-      .catch(function () {
-        return xhrLoad();
-      });
-  }
-
   function getLegislatorName(feature, chamber) {
     var p = feature.properties || {};
     if (chamber === "senate") {
@@ -296,33 +260,9 @@
     return null;
   }
 
-  function geocodeZip(zip) {
-    var clean = String(zip || "").replace(/[^0-9]/g, "");
-    if (clean.length !== 5) {
-      return Promise.reject(new Error("invalid_zip"));
-    }
-
-    var url = "https://api.zippopotam.us/us/" + clean;
-    return fetch(url, { cache: "no-store" })
-      .then(function (r) {
-        if (!r.ok) throw new Error("zip_not_found");
-        return r.json();
-      })
-      .then(function (data) {
-        var place = data && data.places && data.places[0];
-        if (!place) throw new Error("zip_not_found");
-        var lat = Number(place.latitude);
-        var lon = Number(place.longitude);
-        if (!isFinite(lat) || !isFinite(lon)) throw new Error("zip_not_found");
-        return { zip: clean, lat: lat, lon: lon };
-      });
-  }
-
   function resolveZipToPoint(zip, zipLookup) {
     var clean = String(zip || "").replace(/[^0-9]/g, "");
     if (clean.length !== 5) return Promise.reject(new Error("invalid_zip"));
-
-    // Primary: local PA ZIP centroids (works offline and avoids API failures).
     if (zipLookup && zipLookup[clean]) {
       var z = zipLookup[clean];
       var lat = Number(z.lat);
@@ -331,11 +271,7 @@
         return Promise.resolve({ zip: clean, lat: lat, lon: lon, source: "local_zip_centroid" });
       }
     }
-
-    // Fallback: public geocoder.
-    return geocodeZip(clean).then(function (loc) {
-      return { zip: clean, lat: loc.lat, lon: loc.lon, source: "remote_geocoder" };
-    });
+    return Promise.reject(new Error("zip_not_in_lookup"));
   }
 
   function computeDistrictSnapshot(chamber, feature, computed) {
@@ -354,11 +290,17 @@
       rel = SENATE_PRIORITY[n].relationship;
       action = SENATE_PRIORITY[n].action;
     }
+    var bioUrl = (typeof DataLayer !== "undefined" && DataLayer.getPaLegislatorBioPageUrl && p.GPID)
+      ? (DataLayer.getPaLegislatorBioPageUrl(p.GPID, chamber) || "")
+      : "";
+
     return {
       districtNumber: n,
       districtLabel: n == null ? "—" : (getDistrictPrefix(chamber) + n),
       legislator: getLegislatorName(feature, chamber),
       gpid: p.GPID || null,
+      chamber: chamber,
+      url: bioUrl,
       party: partyLabel(p.PARTY),
       count: count,
       hospitals: hospNames,
@@ -454,6 +396,8 @@
           title: snap.districtLabel,
           legislator: snap.legislator,
           gpid: snap.gpid,
+          chamber: snap.chamber,
+          url: snap.url,
           party: snap.party,
           count: snap.count,
           hospitals: snap.hospitals,
@@ -560,6 +504,8 @@
           title: snapshot.districtLabel,
           legislator: snapshot.legislator,
           gpid: snapshot.gpid,
+          chamber: snapshot.chamber,
+          url: snapshot.url,
           party: snapshot.party,
           count: snapshot.count,
           hospitals: snapshot.hospitals,
@@ -622,11 +568,18 @@
     var hospitalsInline = g && g[HOSPITALS_GLOBAL] ? g[HOSPITALS_GLOBAL] : null;
     var zipInline = g && g[ZIP_GLOBAL] ? g[ZIP_GLOBAL] : null;
 
+    function requireGeo(name, obj) {
+      if (obj && obj.features && Array.isArray(obj.features)) {
+        return Promise.resolve(obj);
+      }
+      return Promise.reject(new Error("missing_global:" + name));
+    }
+
     Promise.all([
-      houseInline ? Promise.resolve(houseInline) : tryLoadJson(HOUSE_GEOJSON_URL),
-      senateInline ? Promise.resolve(senateInline) : tryLoadJson(SENATE_GEOJSON_URL),
-      hospitalsInline ? Promise.resolve(hospitalsInline) : tryLoadJson(HOSPITAL_POINTS_URL).catch(function () { return null; }),
-      zipInline ? Promise.resolve(zipInline) : tryLoadJson(PA_ZIP_CENTROIDS_URL).catch(function () { return null; }),
+      requireGeo(HOUSE_GLOBAL, houseInline),
+      requireGeo(SENATE_GLOBAL, senateInline),
+      Promise.resolve(hospitalsInline || null),
+      Promise.resolve(zipInline || null),
     ]).then(function (res) {
       state.house = res[0];
       state.senate = res[1];
@@ -689,12 +642,13 @@
       window.addEventListener("hap:pa-district-zip-lookup", function (evt) {
         var detail = evt && evt.detail ? evt.detail : {};
         var zip = String(detail.zip || "").replace(/[^0-9]/g, "");
-        var statusEl = selectEl("pa-district-lookup-status");
-
         function setLookupStatus(msg, isError) {
-          if (!statusEl) return;
-          statusEl.textContent = msg || "";
-          statusEl.classList.toggle("is-error", !!isError);
+          ["pa-district-lookup-status", "zip-lookup-status"].forEach(function (id) {
+            var el = selectEl(id);
+            if (!el) return;
+            el.textContent = msg || "";
+            el.classList.toggle("is-error", !!isError);
+          });
         }
 
         if (zip.length !== 5) {
@@ -729,6 +683,27 @@
           }
           setLookupStatus("ZIP " + zip + " — " + statusParts.join(" | "), false);
 
+          window.dispatchEvent(new CustomEvent("hap:pa-zip-lookup-results", {
+            detail: {
+              zip: zip,
+              usHouseDistrictNumber: houseSnap ? houseSnap.districtNumber : null,
+              stateHouse: houseSnap ? {
+                name: houseSnap.legislator,
+                label: houseSnap.districtLabel,
+                party: houseSnap.party,
+                gpid: houseSnap.gpid,
+                url: houseSnap.url
+              } : null,
+              stateSenate: senateSnap ? {
+                name: senateSnap.legislator,
+                label: senateSnap.districtLabel,
+                party: senateSnap.party,
+                gpid: senateSnap.gpid,
+                url: senateSnap.url
+              } : null
+            }
+          }));
+
           var activeSnap = state.chamber === "senate" ? senateSnap : houseSnap;
           if (!activeSnap) activeSnap = houseSnap || senateSnap;
           if (!activeSnap) return;
@@ -744,6 +719,8 @@
             title: activeSnap.districtLabel,
             legislator: activeSnap.legislator,
             gpid: activeSnap.gpid,
+            chamber: activeSnap.chamber,
+            url: activeSnap.url,
             party: activeSnap.party,
             count: activeSnap.count,
             hospitals: activeSnap.hospitals,
@@ -765,7 +742,7 @@
       t.textContent = "PA district map could not load";
       var p = document.createElement("p");
       p.className = "pa-district-map-fallback-text";
-      p.textContent = "If you opened this page as a local file, try viewing it via a local server/preview so the GeoJSON files can be read. Files expected under data/pa-districts/.";
+      p.textContent = "Include these scripts before pa-district-map.js: data/pa-districts/PaHouse2024_03.js and PaSenatorial2024_03.js. Optional: pa-340b-hospitals.js, pa-zip-centroids.js (ZIP lookup). No network fetch is used.";
       msg.appendChild(t);
       msg.appendChild(p);
       wrap.appendChild(msg);

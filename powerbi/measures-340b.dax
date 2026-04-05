@@ -82,4 +82,44 @@ CALCULATE (
     gold_fact_dashboard_kpi[MetricKey] = "US_STATES_NO_CP_PROTECTION_COUNT"
 )
 
+// --- PA Focus stats (split from aggregate; see metric-registry.json) ---
+
+PA Rural Hospital Pct :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "PA_RURAL_HOSPITAL_PCT"
+)
+
+PA Operating At Loss Pct :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "PA_HOSPITALS_OPERATING_LOSS_PCT"
+)
+
+PA LD Services Pct :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "PA_LD_SERVICES_PCT"
+)
+
+// --- HRSA oversight split (hospital vs manufacturer audits) ---
+
+HRSA Hospital Audit Count :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "HRSA_HOSPITAL_AUDIT_COUNT"
+)
+
+HRSA Manufacturer Audit Count :=
+CALCULATE (
+    MAX ( gold_fact_dashboard_kpi[ValueNumeric] ),
+    gold_fact_dashboard_kpi[MetricKey] = "HRSA_MANUFACTURER_AUDIT_COUNT"
+)
+
+// Oversight disparity ratio (hospital audits / manufacturer audits)
+HRSA Oversight Disparity Ratio :=
+VAR HospitalAudits = [HRSA Hospital Audit Count]
+VAR MfgAudits = [HRSA Manufacturer Audit Count]
+RETURN IF ( MfgAudits > 0, ROUND ( HospitalAudits / MfgAudits, 0 ), BLANK () )
+
 // Generic pattern for new keys: duplicate and change the string literal after review with IT.

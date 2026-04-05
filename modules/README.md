@@ -32,6 +32,33 @@ The Basic page **does not** load these modules. PA Impact and the Policy Simulat
 
 ---
 
+## Data Abstraction Layer
+
+| File | Role |
+|------|------|
+| [data-layer.js](data-layer.js) | Single async-ready data access point. Today reads from `state-data.js` globals; tomorrow swaps to warehouse API or Power BI REST. All methods return Promises. |
+| [ai-helpers.js](ai-helpers.js) | Stub module for AI-assisted features (story summarization, chart narratives, policy alerts). Works offline; set `AIHelpers.apiEndpoint` for live LLM mode. |
+
+---
+
+## Supervisor & Validation
+
+| File | Role |
+|------|------|
+| [supervisor-checks.js](supervisor-checks.js) | Runtime validation for the Multi-Agent Supervisor. Checks semantic layer coverage (every MetricKey registered), DataLayer integrity, AIHelpers offline mode, and story form schema. Works in Node.js (agent pipeline) and browser console. |
+
+Run in browser console: `SupervisorChecks.runAllChecks()` — returns a full gate report.
+
+---
+
+## PA District Map
+
+| File | Role |
+|------|------|
+| [pa-district-map.js](pa-district-map.js) | D3-powered PA House/Senate district map with hospital pins. Loads GeoJSON from `data/pa-districts/`. |
+
+---
+
 ## See also
 
 - [NOVICE-CODE-TOUR.md](../NOVICE-CODE-TOUR.md) — plain-language tour of the whole codebase

@@ -6,6 +6,8 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 
 **Maintainers:** **[NOVICE-MAINTAINER.md](NOVICE-MAINTAINER.md)** (what to edit), **[docs/INDEX.md](docs/INDEX.md)** (all docs), **[GLOSSARY.md](GLOSSARY.md)** (terms), **[CONFIG-INDEX.md](CONFIG-INDEX.md)** (settings).
 
+**Cursor / AI copilot:** **[JARVIS.md](JARVIS.md)** — how **Jarvis** (always-on supervisor + assistant) uses this repo; pair with `.cursor/rules/jarvis-supervisor-assistant.mdc` and [docs/SUPERVISOR-SYSTEM.md](docs/SUPERVISOR-SYSTEM.md).
+
 ## Files
 
 | File | Purpose |
@@ -33,6 +35,7 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 | `print-view.css` | Print view layout and print-specific styles |
 | `EXECUTIVE-READY-UPGRADE.md` | Executive-ready improvements and implementation log |
 | `assets/vendor/` | Local map libraries and U.S. atlas data |
+| `340b-advocacy-lab.html` | **Developer / PBI reference:** PA hospital map (verified points), KPI bar chart via `DataLayer`, story JSON, print export — `modules/advocacy-lab.js`, `advocacy-lab.css` |
 | `SECURITY.md` | Static-host security and audit notes |
 | `config.json` | Multi-agent and self-upgrade config: archive_path, daily_update, ultra_prompt_wave_size, rules_per_wave, security_checks |
 | `ultra_prompts.json` | Self-improvement waves (root copy; also in self_upgrade/). 10 waves, agent file names. |

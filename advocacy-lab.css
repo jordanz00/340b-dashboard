@@ -1,0 +1,229 @@
+/**
+ * advocacy-lab.css — Minimal layout for 340b-advocacy-lab.html
+ * Uses system fonts; colors align with hap-design-tokens where possible.
+ */
+
+:root {
+  --lab-bg: #f2f2f7;
+  --lab-card: #ffffff;
+  --lab-text: #1c1c1e;
+  --lab-muted: #8e8e93;
+  --lab-accent: #007aff;
+  --lab-border: rgba(60, 60, 67, 0.12);
+  --lab-radius: 12px;
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--lab-text);
+  background: var(--lab-bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+.lab-skip {
+  position: absolute;
+  left: -9999px;
+}
+.lab-skip:focus {
+  left: 8px;
+  top: 8px;
+  z-index: 999;
+  padding: 8px 12px;
+  background: var(--lab-accent);
+  color: #fff;
+}
+
+.lab-header {
+  padding: 20px 20px 12px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 0.5px solid var(--lab-border);
+}
+.lab-header h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.lab-header p {
+  margin: 0;
+  font-size: 14px;
+  color: var(--lab-muted);
+}
+
+.lab-main {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.lab-section {
+  margin-bottom: 32px;
+}
+.lab-section h2 {
+  margin: 0 0 8px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+.lab-section > .lab-lead {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: var(--lab-muted);
+}
+
+.lab-card {
+  background: var(--lab-card);
+  border-radius: var(--lab-radius);
+  padding: 16px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+#pa-map-wrap {
+  width: 100%;
+  min-height: 400px;
+}
+#pa-map-wrap svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  background: #e8eef5;
+}
+
+#pa-map-tooltip {
+  position: fixed;
+  z-index: 50;
+  max-width: 280px;
+  padding: 10px 12px;
+  font-size: 13px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+#pa-map-tooltip.visible { opacity: 1; }
+
+#kpi-chart-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+#kpi-chart-wrap svg {
+  display: block;
+  max-width: 100%;
+}
+
+.lab-methodology {
+  margin-top: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  color: var(--lab-muted);
+  background: rgba(120, 120, 128, 0.06);
+  border-radius: 8px;
+}
+.lab-methodology ul {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+.lab-form label {
+  display: block;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--lab-text);
+}
+.lab-form .lab-hint {
+  font-weight: 400;
+  color: var(--lab-muted);
+  font-size: 12px;
+}
+.lab-form input,
+.lab-form textarea,
+.lab-form select {
+  width: 100%;
+  margin-top: 4px;
+  padding: 10px 12px;
+  font: inherit;
+  border: none;
+  border-radius: 8px;
+  background: rgba(120, 120, 128, 0.08);
+}
+.lab-form textarea { min-height: 80px; resize: vertical; }
+
+.lab-form button[type="submit"],
+.lab-btn {
+  margin-top: 16px;
+  padding: 12px 20px;
+  font: inherit;
+  font-weight: 600;
+  color: #fff;
+  background: var(--lab-accent);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.lab-form button[type="submit"]:active,
+.lab-btn:active { opacity: 0.85; }
+
+#story-feedback {
+  margin-top: 12px;
+  font-size: 14px;
+}
+#story-feedback.is-error { color: #d63031; }
+#story-feedback.is-success { color: #1a7f37; }
+
+.lab-ai-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+.lab-ai-out {
+  margin-top: 10px;
+  padding: 12px;
+  font-size: 14px;
+  background: rgba(120, 120, 128, 0.06);
+  border-radius: 8px;
+  white-space: pre-wrap;
+}
+
+#advocacy-print-root {
+  display: none;
+}
+
+@media print {
+  body.printing-advocacy-lab * { visibility: hidden; }
+  body.printing-advocacy-lab #advocacy-print-root,
+  body.printing-advocacy-lab #advocacy-print-root * { visibility: visible; }
+  body.printing-advocacy-lab #advocacy-print-root {
+    display: block !important;
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    padding: 24px;
+    font-size: 11pt;
+    color: #000;
+    background: #fff;
+  }
+}
+
+.lab-footer-nav {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 0.5px solid var(--lab-border);
+  font-size: 14px;
+}
+.lab-footer-nav a {
+  color: var(--lab-accent);
+  text-decoration: none;
+}
+.lab-footer-nav a:hover { text-decoration: underline; }

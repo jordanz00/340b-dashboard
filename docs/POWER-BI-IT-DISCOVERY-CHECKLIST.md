@@ -67,16 +67,33 @@ Use this worksheet with **IT**, **data platform**, and **Strategic Analytics** b
 
 ---
 
+## 7. JSON API for custom dashboard (Path A)
+
+The custom HTML dashboard can consume warehouse data via a JSON API endpoint, keeping the existing design while pulling live data. See [WAREHOUSE-INTEGRATION-GUIDE.md](WAREHOUSE-INTEGRATION-GUIDE.md).
+
+| # | Question | Your answer |
+|---|----------|-------------|
+| 7.1 | Can IT publish a **JSON API** (REST endpoint or scheduled file export) from the Gold tables? URL: | |
+| 7.2 | What **auth method** does the endpoint use (Azure AD cookie, API key, none for internal)? | |
+| 7.3 | **CORS policy** — can the HTML dashboard fetch from this endpoint from its hosting domain? | |
+| 7.4 | Is there a **POST endpoint** for story submissions (`fact_story_submission`)? URL: | |
+| 7.5 | What is the **update cadence** for the JSON data? (Drives the dashboard's polling interval) | |
+| 7.6 | Does the JSON shape need to differ from `data/mock-api-response.json`, or can IT match it? | |
+
+---
+
 ## Decision log
 
 | Date | Decision | Owner |
 |------|----------|-------|
+| 2026-04-04 | Warehouse access granted to Jordan | VP Strategic Analytics |
 | | | |
 
 ---
 
 ## Related docs
 
+- [WAREHOUSE-INTEGRATION-GUIDE.md](WAREHOUSE-INTEGRATION-GUIDE.md) — all three connection paths (Path A/B/C)
 - [POWER-BI-DATA-MODEL-MAPPING.md](POWER-BI-DATA-MODEL-MAPPING.md) — field mapping from `state-data.js` / `340b.js` to Gold tables  
 - [POWER-BI-REPORT-BLUEPRINT.md](POWER-BI-REPORT-BLUEPRINT.md) — report layout and interactivity  
 - [POWER-BI-PUBLISH-RUNBOOK.md](POWER-BI-PUBLISH-RUNBOOK.md) — publish, refresh, lineage  
