@@ -1,5 +1,8 @@
 /* ═══════════════════════════════════════════════════
    HAP 340B Mobile App — JavaScript
+   ═══════════════════════════════════════════════════
+   Security (SECURE-FORCE): Dynamic UI uses createElement + textContent only.
+   No unsafe HTML-string injection into the DOM — avoids XSS if state-data or CONFIG ever contained markup.
    ═══════════════════════════════════════════════════ */
 
 (function () {
@@ -390,13 +393,34 @@
       card.setAttribute("data-pbm", data.pbm ? "1" : "0");
       card.style.animationDelay = (i * 0.03) + "s";
 
-      card.innerHTML =
-        '<span class="state-dot ' + dotClass + '"></span>' +
-        '<div class="state-card-info">' +
-          '<div class="state-card-name">' + safeEscape(STATE_NAMES[abbr]) + '</div>' +
-          '<div class="state-card-status">' + safeEscape(status) + '</div>' +
-        '</div>' +
-        '<svg class="state-card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>';
+      var dot = document.createElement("span");
+      dot.className = "state-dot " + dotClass;
+      var info = document.createElement("div");
+      info.className = "state-card-info";
+      var nameEl = document.createElement("div");
+      nameEl.className = "state-card-name";
+      nameEl.textContent = STATE_NAMES[abbr] || abbr;
+      var statusEl = document.createElement("div");
+      statusEl.className = "state-card-status";
+      statusEl.textContent = status;
+      info.appendChild(nameEl);
+      info.appendChild(statusEl);
+
+      var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("class", "state-card-arrow");
+      svg.setAttribute("width", "16");
+      svg.setAttribute("height", "16");
+      svg.setAttribute("viewBox", "0 0 24 24");
+      svg.setAttribute("fill", "none");
+      svg.setAttribute("stroke", "currentColor");
+      svg.setAttribute("stroke-width", "2");
+      var poly = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
+      poly.setAttribute("points", "9 18 15 12 9 6");
+      svg.appendChild(poly);
+
+      card.appendChild(dot);
+      card.appendChild(info);
+      card.appendChild(svg);
 
       card.addEventListener("click", function () {
         openStateSheet(abbr);
@@ -406,12 +430,6 @@
     });
 
     grid.appendChild(frag);
-  }
-
-  function safeEscape(str) {
-    var div = document.createElement("div");
-    div.textContent = str;
-    return div.innerHTML;
   }
 
   /* ═══════════════════════════════════════════════════
@@ -730,6 +748,26 @@
     }, { passive: true });
   }
 
+  /**
+   * Build one stat cell for the state detail bottom sheet (safe DOM — textContent only).
+   * @param {string} value — display value
+   * @param {string} label — row label
+   * @returns {HTMLDivElement}
+   */
+  function makeSheetStat(value, label) {
+    var wrap = document.createElement("div");
+    wrap.className = "sheet-stat";
+    var valEl = document.createElement("div");
+    valEl.className = "sheet-stat-value";
+    valEl.textContent = value;
+    var labEl = document.createElement("div");
+    labEl.className = "sheet-stat-label";
+    labEl.textContent = label;
+    wrap.appendChild(valEl);
+    wrap.appendChild(labEl);
+    return wrap;
+  }
+
   function openStateSheet(abbr) {
     if (typeof STATE_340B === "undefined" || typeof STATE_NAMES === "undefined") return;
     var data = STATE_340B[abbr];
@@ -743,30 +781,59 @@
     var statusText = data.cp ? "Contract pharmacy protection" : data.pbm ? "PBM regulation only" : "No protection enacted";
     var statusClass = data.cp ? "protected" : "unprotected";
 
-    var html = '<div class="sheet-section">' +
-      '<div class="sheet-status-badge ' + statusClass + '">' +
-        '<span class="state-dot ' + (data.cp ? 'cp' : data.pbm ? 'pbm' : 'none') + '"></span>' +
-        safeEscape(statusText) +
-      '</div>' +
-    '</div>';
+    while (dom.sheetBody.firstChild) {
+      dom.sheetBody.removeChild(dom.sheetBody.firstChild);
+    }
 
-    html += '<div class="sheet-section"><div class="sheet-stat-row">';
-    html += '<div class="sheet-stat"><div class="sheet-stat-value">' + (data.y || "—") + '</div><div class="sheet-stat-label">Year enacted</div></div>';
-    html += '<div class="sheet-stat"><div class="sheet-stat-value">' + (data.cp ? "Yes" : "No") + '</div><div class="sheet-stat-label">Contract pharmacy</div></div>';
-    html += '<div class="sheet-stat"><div class="sheet-stat-value">' + (data.pbm ? "Yes" : "No") + '</div><div class="sheet-stat-label">PBM regulation</div></div>';
-    html += '</div></div>';
+    var secBadge = document.createElement("div");
+    secBadge.className = "sheet-section";
+    var badge = document.createElement("div");
+    badge.className = "sheet-status-badge " + statusClass;
+    var badgeDot = document.createElement("span");
+    badgeDot.className = "state-dot " + (data.cp ? "cp" : data.pbm ? "pbm" : "none");
+    badge.appendChild(badgeDot);
+    badge.appendChild(document.createTextNode(statusText));
+    secBadge.appendChild(badge);
+    dom.sheetBody.appendChild(secBadge);
+
+    var secStats = document.createElement("div");
+    secStats.className = "sheet-section";
+    var row = document.createElement("div");
+    row.className = "sheet-stat-row";
+    row.appendChild(makeSheetStat(data.y != null ? String(data.y) : "—", "Year enacted"));
+    row.appendChild(makeSheetStat(data.cp ? "Yes" : "No", "Contract pharmacy"));
+    row.appendChild(makeSheetStat(data.pbm ? "Yes" : "No", "PBM regulation"));
+    secStats.appendChild(row);
+    dom.sheetBody.appendChild(secStats);
 
     if (data.notes) {
-      html += '<div class="sheet-section"><div class="sheet-section-title">Notes</div>' +
-        '<div class="sheet-notes">' + safeEscape(data.notes) + '</div></div>';
+      var secNotes = document.createElement("div");
+      secNotes.className = "sheet-section";
+      var notesTitle = document.createElement("div");
+      notesTitle.className = "sheet-section-title";
+      notesTitle.textContent = "Notes";
+      var notesBody = document.createElement("div");
+      notesBody.className = "sheet-notes";
+      notesBody.textContent = data.notes;
+      secNotes.appendChild(notesTitle);
+      secNotes.appendChild(notesBody);
+      dom.sheetBody.appendChild(secNotes);
     }
 
     if (abbr === "PA") {
-      html += '<div class="sheet-section"><div class="sheet-section-title">HAP Focus State</div>' +
-        '<div class="sheet-notes">Pennsylvania is HAP\'s home state. 72 hospitals rely on 340B to serve patients. Legislation is in progress to enact contract pharmacy protection.</div></div>';
+      var secPA = document.createElement("div");
+      secPA.className = "sheet-section";
+      var paTitle = document.createElement("div");
+      paTitle.className = "sheet-section-title";
+      paTitle.textContent = "HAP Focus State";
+      var paBody = document.createElement("div");
+      paBody.className = "sheet-notes";
+      paBody.textContent = "Pennsylvania is HAP's home state. 72 hospitals rely on 340B to serve patients. Legislation is in progress to enact contract pharmacy protection.";
+      secPA.appendChild(paTitle);
+      secPA.appendChild(paBody);
+      dom.sheetBody.appendChild(secPA);
     }
 
-    dom.sheetBody.innerHTML = html;
     dom.stateSheet.classList.add("open");
     dom.sheetPanel.style.transform = "";
     dom.sheetPanel.style.transition = "";
@@ -827,10 +894,18 @@
       var card = document.createElement("div");
       card.className = "exec-card";
       card.setAttribute("data-topic", ["policy", "access", "finance"][i] || "policy");
-      card.innerHTML =
-        '<div class="exec-eyebrow">Ask ' + (i + 1) + '</div>' +
-        '<div class="exec-value">' + safeEscape(ask.label) + '</div>' +
-        '<div class="exec-note">' + safeEscape(ask.impactLine) + '</div>';
+      var eyebrow = document.createElement("div");
+      eyebrow.className = "exec-eyebrow";
+      eyebrow.textContent = "Ask " + (i + 1);
+      var valueEl = document.createElement("div");
+      valueEl.className = "exec-value";
+      valueEl.textContent = ask.label || "";
+      var noteEl = document.createElement("div");
+      noteEl.className = "exec-note";
+      noteEl.textContent = ask.impactLine || "";
+      card.appendChild(eyebrow);
+      card.appendChild(valueEl);
+      card.appendChild(noteEl);
       frag.appendChild(card);
     });
     container.appendChild(frag);
@@ -1002,26 +1077,57 @@
      Federal Delegation
      ═══════════════════════════════════════════════════ */
 
+  var CONGRESS_PHOTO_BASE = "https://theunitedstates.io/images/congress/225x275/";
+  var PA_LEG_PHOTO_BASE = "https://www.palegis.us/resources/images/members/200/";
+
+  function congressPhotoUrl(bioguideId) {
+    if (!bioguideId) return "";
+    return CONGRESS_PHOTO_BASE + bioguideId + ".jpg";
+  }
+
+  function paLegPhotoUrl(gpid) {
+    if (!gpid) return "";
+    return PA_LEG_PHOTO_BASE + gpid + ".jpg";
+  }
+
+  function createHeadshot(src, alt, className) {
+    var img = document.createElement("img");
+    img.className = className || "leg-headshot";
+    img.alt = alt || "";
+    img.width = 36;
+    img.height = 36;
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.setAttribute("crossorigin", "anonymous");
+    if (src) {
+      img.src = src;
+    }
+    img.onerror = function () {
+      this.style.display = "none";
+    };
+    return img;
+  }
+
   window._PA_DELEGATION_DATA = [
-    { member: "John Fetterman", chamber: "Senate", district: "Statewide", party: "D", position: "cosponsor", lastContact: "03/15/2026", action: "Schedule meeting" },
-    { member: "Dave McCormick", chamber: "Senate", district: "Statewide", party: "R", position: "supportive", lastContact: "03/10/2026", action: "Schedule meeting" },
-    { member: "Brian Fitzpatrick", chamber: "House", district: "District 1", party: "R", position: "unknown", lastContact: "02/28/2026", action: "Schedule meeting" },
-    { member: "Brendan Boyle", chamber: "House", district: "District 2", party: "D", position: "opposed", lastContact: "01/20/2026", action: "Schedule meeting" },
-    { member: "Dwight Evans", chamber: "House", district: "District 3", party: "D", position: "cosponsor", lastContact: "03/01/2026", action: "Schedule meeting" },
-    { member: "Madeleine Dean", chamber: "House", district: "District 4", party: "D", position: "supportive", lastContact: "02/15/2026", action: "Schedule meeting" },
-    { member: "Mary Gay Scanlon", chamber: "House", district: "District 5", party: "D", position: "unknown", lastContact: "01/10/2026", action: "Schedule meeting" },
-    { member: "Chrissy Houlahan", chamber: "House", district: "District 6", party: "D", position: "supportive", lastContact: "03/05/2026", action: "Schedule meeting" },
-    { member: "Ryan Mackenzie", chamber: "House", district: "District 7", party: "R", position: "opposed", lastContact: "12/01/2025", action: "Schedule meeting" },
-    { member: "Rob Bresnahan", chamber: "House", district: "District 8", party: "R", position: "unknown", lastContact: "02/20/2026", action: "Schedule meeting" },
-    { member: "Dan Meuser", chamber: "House", district: "District 9", party: "R", position: "cosponsor", lastContact: "03/12/2026", action: "Schedule meeting" },
-    { member: "Scott Perry", chamber: "House", district: "District 10", party: "R", position: "supportive", lastContact: "01/30/2026", action: "Schedule meeting" },
-    { member: "Lloyd Smucker", chamber: "House", district: "District 11", party: "R", position: "unknown", lastContact: "02/05/2026", action: "Schedule meeting" },
-    { member: "Summer Lee", chamber: "House", district: "District 12", party: "D", position: "supportive", lastContact: "03/08/2026", action: "Schedule meeting" },
-    { member: "John Joyce", chamber: "House", district: "District 13", party: "R", position: "opposed", lastContact: "11/15/2025", action: "Schedule meeting" },
-    { member: "Guy Reschenthaler", chamber: "House", district: "District 14", party: "R", position: "unknown", lastContact: "01/25/2026", action: "Schedule meeting" },
-    { member: "Glenn Thompson", chamber: "House", district: "District 15", party: "R", position: "supportive", lastContact: "02/22/2026", action: "Schedule meeting" },
-    { member: "Mike Kelly", chamber: "House", district: "District 16", party: "R", position: "unknown", lastContact: "03/02/2026", action: "Schedule meeting" },
-    { member: "Chris Deluzio", chamber: "House", district: "District 17", party: "D", position: "supportive", lastContact: "03/06/2026", action: "Schedule meeting" }
+    { member: "John Fetterman", chamber: "Senate", district: "Statewide", party: "D", position: "cosponsor", lastContact: "03/15/2026", action: "Schedule meeting", bioguideId: "F000462" },
+    { member: "Dave McCormick", chamber: "Senate", district: "Statewide", party: "R", position: "supportive", lastContact: "03/10/2026", action: "Schedule meeting", bioguideId: "M001224" },
+    { member: "Brian Fitzpatrick", chamber: "House", district: "District 1", party: "R", position: "unknown", lastContact: "02/28/2026", action: "Schedule meeting", bioguideId: "F000466" },
+    { member: "Brendan Boyle", chamber: "House", district: "District 2", party: "D", position: "opposed", lastContact: "01/20/2026", action: "Schedule meeting", bioguideId: "B001296" },
+    { member: "Dwight Evans", chamber: "House", district: "District 3", party: "D", position: "cosponsor", lastContact: "03/01/2026", action: "Schedule meeting", bioguideId: "E000296" },
+    { member: "Madeleine Dean", chamber: "House", district: "District 4", party: "D", position: "supportive", lastContact: "02/15/2026", action: "Schedule meeting", bioguideId: "D000631" },
+    { member: "Mary Gay Scanlon", chamber: "House", district: "District 5", party: "D", position: "unknown", lastContact: "01/10/2026", action: "Schedule meeting", bioguideId: "S001205" },
+    { member: "Chrissy Houlahan", chamber: "House", district: "District 6", party: "D", position: "supportive", lastContact: "03/05/2026", action: "Schedule meeting", bioguideId: "H001085" },
+    { member: "Ryan Mackenzie", chamber: "House", district: "District 7", party: "R", position: "opposed", lastContact: "12/01/2025", action: "Schedule meeting", bioguideId: "M001226" },
+    { member: "Rob Bresnahan", chamber: "House", district: "District 8", party: "R", position: "unknown", lastContact: "02/20/2026", action: "Schedule meeting", bioguideId: "B001323" },
+    { member: "Dan Meuser", chamber: "House", district: "District 9", party: "R", position: "cosponsor", lastContact: "03/12/2026", action: "Schedule meeting", bioguideId: "M001204" },
+    { member: "Scott Perry", chamber: "House", district: "District 10", party: "R", position: "supportive", lastContact: "01/30/2026", action: "Schedule meeting", bioguideId: "P000605" },
+    { member: "Lloyd Smucker", chamber: "House", district: "District 11", party: "R", position: "unknown", lastContact: "02/05/2026", action: "Schedule meeting", bioguideId: "S001199" },
+    { member: "Summer Lee", chamber: "House", district: "District 12", party: "D", position: "supportive", lastContact: "03/08/2026", action: "Schedule meeting", bioguideId: "L000603" },
+    { member: "John Joyce", chamber: "House", district: "District 13", party: "R", position: "opposed", lastContact: "11/15/2025", action: "Schedule meeting", bioguideId: "J000302" },
+    { member: "Guy Reschenthaler", chamber: "House", district: "District 14", party: "R", position: "unknown", lastContact: "01/25/2026", action: "Schedule meeting", bioguideId: "R000610" },
+    { member: "Glenn Thompson", chamber: "House", district: "District 15", party: "R", position: "supportive", lastContact: "02/22/2026", action: "Schedule meeting", bioguideId: "T000467" },
+    { member: "Mike Kelly", chamber: "House", district: "District 16", party: "R", position: "unknown", lastContact: "03/02/2026", action: "Schedule meeting", bioguideId: "K000376" },
+    { member: "Chris Deluzio", chamber: "House", district: "District 17", party: "D", position: "supportive", lastContact: "03/06/2026", action: "Schedule meeting", bioguideId: "D000632" }
   ];
   var PA_DELEGATION = window._PA_DELEGATION_DATA;
 
@@ -1043,20 +1149,32 @@
       var top = document.createElement("div");
       top.className = "fed-card-top";
 
+      var photo = createHeadshot(
+        congressPhotoUrl(row.bioguideId),
+        row.member,
+        "leg-headshot fed-card-photo"
+      );
+      top.appendChild(photo);
+
+      var nameWrap = document.createElement("div");
+      nameWrap.className = "fed-card-name-wrap";
+
       var name = document.createElement("div");
       name.className = "fed-card-name";
       name.textContent = row.member;
 
-      var badge = document.createElement("span");
-      badge.className = "leg-badge leg-badge--" + (row.position || "unknown");
-      badge.textContent = POSITION_LABELS[row.position] || "Unknown";
-
-      top.appendChild(name);
-      top.appendChild(badge);
-
       var meta = document.createElement("div");
       meta.className = "fed-card-meta";
       meta.textContent = row.chamber + " · " + row.district + " · " + row.party;
+
+      nameWrap.appendChild(name);
+      nameWrap.appendChild(meta);
+      top.appendChild(nameWrap);
+
+      var badge = document.createElement("span");
+      badge.className = "leg-badge leg-badge--" + (row.position || "unknown");
+      badge.textContent = POSITION_LABELS[row.position] || "Unknown";
+      top.appendChild(badge);
 
       var bottom = document.createElement("div");
       bottom.className = "fed-card-bottom";
@@ -1072,7 +1190,6 @@
       bottom.appendChild(contact);
 
       card.appendChild(top);
-      card.appendChild(meta);
       card.appendChild(bottom);
       frag.appendChild(card);
     });
@@ -1103,6 +1220,7 @@
   function initZipLookup() {
     var form = document.getElementById("zip-lookup-form");
     var input = document.getElementById("zip-lookup-input");
+    var resultsContainer = document.getElementById("zip-lookup-results");
     var status = document.getElementById("zip-lookup-status");
     if (!form || !input || !status) return;
 
@@ -1110,28 +1228,59 @@
       e.preventDefault();
       var zip = input.value.replace(/[^0-9]/g, "");
 
+      if (resultsContainer) {
+        while (resultsContainer.firstChild) resultsContainer.removeChild(resultsContainer.firstChild);
+      }
+
       if (zip.length !== 5) {
         status.textContent = "Enter a valid 5-digit ZIP code.";
         status.className = "zip-lookup-status is-error";
         return;
       }
 
-      status.textContent = "Looking up legislators for ZIP " + zip + "…";
+      status.textContent = "Looking up legislators for ZIP " + zip + "\u2026";
       status.className = "zip-lookup-status";
 
       window.dispatchEvent(new CustomEvent("hap:pa-district-zip-lookup", {
         detail: { zip: zip }
       }));
 
-      var fedMatches = PA_DELEGATION.filter(function (row) {
+      var senators = PA_DELEGATION.filter(function (row) {
         return row.chamber === "Senate" || row.district === "Statewide";
-      }).map(function (row) {
-        return row.member + " (" + row.party + ", " + row.chamber + ")";
       });
 
-      var msg = "ZIP " + zip + " — PA Senators: " + fedMatches.join(", ") + ".";
-      msg += " House member: check the district map on PA Focus for your specific representative.";
-      status.textContent = msg;
+      if (resultsContainer && senators.length) {
+        var heading = document.createElement("p");
+        heading.className = "zip-result-heading";
+        heading.textContent = "PA U.S. Senators";
+        resultsContainer.appendChild(heading);
+
+        senators.forEach(function (row) {
+          var card = document.createElement("div");
+          card.className = "zip-result-card";
+          var img = createHeadshot(congressPhotoUrl(row.bioguideId), row.member, "leg-headshot zip-result-photo");
+          card.appendChild(img);
+          var info = document.createElement("div");
+          info.className = "zip-result-info";
+          var nm = document.createElement("div");
+          nm.className = "zip-result-name";
+          nm.textContent = row.member;
+          var detail = document.createElement("div");
+          detail.className = "zip-result-detail";
+          detail.textContent = row.party + " · " + (POSITION_LABELS[row.position] || "Unknown") + " on 340B";
+          info.appendChild(nm);
+          info.appendChild(detail);
+          card.appendChild(info);
+          resultsContainer.appendChild(card);
+        });
+
+        var houseNote = document.createElement("p");
+        houseNote.className = "zip-result-heading zip-result-heading--house";
+        houseNote.textContent = "PA House member: check the district map above for your specific representative.";
+        resultsContainer.appendChild(houseNote);
+      }
+
+      status.textContent = "";
       status.className = "zip-lookup-status";
     });
   }
@@ -1146,11 +1295,11 @@
 
     var script = document.createElement("script");
     script.src = "modules/pa-district-map.js";
-    script.onload = function () {
+    script.addEventListener("load", function () {
       setTimeout(function () {
         window.dispatchEvent(new Event("resize"));
       }, 300);
-    };
+    });
     document.body.appendChild(script);
   }
 
@@ -1336,14 +1485,11 @@
     document.body.classList.add("printing-report");
     report.classList.add("print-report--visible");
 
-    requestAnimationFrame(function () {
-      window.print();
-      setTimeout(function () {
-        report.classList.remove("print-report--visible");
-        document.body.classList.remove("printing-report");
-        document.body.removeChild(report);
-      }, 800);
-    });
+    window.print();
+
+    report.classList.remove("print-report--visible");
+    document.body.classList.remove("printing-report");
+    document.body.removeChild(report);
   }
 
   /* ── Report building helpers ── */

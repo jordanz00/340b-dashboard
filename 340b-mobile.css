@@ -1686,6 +1686,17 @@ img, svg { display: block; max-width: 100%; }
   padding: 12px 0;
 }
 
+.pa-district-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.pa-detail-photo {
+  width: 40px;
+  height: 40px;
+}
+
 .pa-district-detail-kicker {
   font-family: var(--font-display);
   font-size: 10px;
@@ -1701,7 +1712,10 @@ img, svg { display: block; max-width: 100%; }
   font-size: 20px;
   font-weight: 800;
   color: var(--text-primary);
-  margin-bottom: 12px;
+  margin-bottom: 0;
+}
+.pa-district-detail-header + .pa-district-detail-grid {
+  /* grid sits below the header; no extra margin needed */
 }
 
 .pa-district-detail-grid {
@@ -2057,15 +2071,25 @@ img, svg { display: block; max-width: 100%; }
 }
 .leg-card-top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 4px;
+}
+.leg-card-photo {
+  width: 36px;
+  height: 36px;
+}
+.leg-card-name-wrap {
+  flex: 1;
+  min-width: 0;
 }
 .leg-card-name {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .leg-card-meta {
   font-size: 12px;
@@ -2166,15 +2190,25 @@ img, svg { display: block; max-width: 100%; }
 .fed-card.filtered-out { display: none; }
 .fed-card-top {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 4px;
+}
+.fed-card-photo {
+  width: 36px;
+  height: 36px;
+}
+.fed-card-name-wrap {
+  flex: 1;
+  min-width: 0;
 }
 .fed-card-name {
   font-size: 14px;
   font-weight: 700;
   color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .fed-card-meta {
   font-size: 12px;
@@ -2202,6 +2236,18 @@ img, svg { display: block; max-width: 100%; }
   background: var(--bg-surface);
   border-radius: var(--radius-sm);
   border-left: 3px solid var(--brand-primary);
+}
+
+/* ── Legislator Headshots ── */
+.leg-headshot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  object-position: top center;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--border-light);
+  flex-shrink: 0;
 }
 
 /* ── ZIP Lookup ── */
@@ -2264,6 +2310,56 @@ img, svg { display: block; max-width: 100%; }
 }
 .zip-lookup-status.is-error { color: #c0392b; }
 .zip-lookup-status:empty { display: none; }
+
+/* ── ZIP Lookup Results ── */
+.zip-lookup-results {
+  margin-top: 12px;
+}
+.zip-lookup-results:empty { display: none; }
+.zip-result-heading {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--brand-primary);
+  margin: 0 0 8px;
+}
+.zip-result-heading--house {
+  color: var(--text-muted);
+  text-transform: none;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: 0;
+  margin-top: 10px;
+}
+.zip-result-card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 10px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-light);
+  border-radius: var(--radius-md);
+  margin-bottom: 6px;
+}
+.zip-result-photo {
+  width: 36px;
+  height: 36px;
+}
+.zip-result-info {
+  flex: 1;
+  min-width: 0;
+}
+.zip-result-name {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+.zip-result-detail {
+  font-size: 12px;
+  color: var(--text-muted);
+}
 
 /* ═══════════════════════════════════════════════════
    TAB: MORE

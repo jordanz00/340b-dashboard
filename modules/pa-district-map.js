@@ -80,6 +80,8 @@
     return document.getElementById(id);
   }
 
+  var PA_LEG_PHOTO_BASE = "https://www.palegis.us/resources/images/members/200/";
+
   function setDetail(payload) {
     var empty = selectEl(DETAIL_EMPTY_ID);
     var panel = selectEl(DETAIL_PANEL_ID);
@@ -97,6 +99,7 @@
     var rel = selectEl(EL_REL);
     var action = selectEl(EL_ACTION);
     var note = selectEl(EL_NOTE);
+    var photo = selectEl("pa-district-detail-photo");
 
     if (kicker) kicker.textContent = safeText(payload.kicker || "District");
     if (title) title.textContent = safeText(payload.title || "—");
@@ -107,6 +110,18 @@
     if (rel) rel.textContent = safeText(payload.relationship || "Not tracked yet");
     if (action) action.textContent = safeText(payload.action || "—");
     if (note) note.textContent = safeText(payload.note || "");
+
+    if (photo) {
+      if (payload.gpid) {
+        photo.src = PA_LEG_PHOTO_BASE + payload.gpid + ".jpg";
+        photo.alt = safeText(payload.legislator || "");
+        photo.style.display = "";
+        photo.onerror = function () { this.style.display = "none"; };
+      } else {
+        photo.style.display = "none";
+        photo.src = "";
+      }
+    }
   }
 
   function resetDetail() {
@@ -115,6 +130,8 @@
     if (!empty || !panel) return;
     panel.hidden = true;
     empty.hidden = false;
+    var photo = selectEl("pa-district-detail-photo");
+    if (photo) { photo.style.display = "none"; photo.src = ""; }
   }
 
   function districtFillClass(count) {
@@ -341,6 +358,7 @@
       districtNumber: n,
       districtLabel: n == null ? "—" : (getDistrictPrefix(chamber) + n),
       legislator: getLegislatorName(feature, chamber),
+      gpid: p.GPID || null,
       party: partyLabel(p.PARTY),
       count: count,
       hospitals: hospNames,
@@ -435,6 +453,7 @@
           kicker: snap.chamberLabel,
           title: snap.districtLabel,
           legislator: snap.legislator,
+          gpid: snap.gpid,
           party: snap.party,
           count: snap.count,
           hospitals: snap.hospitals,
@@ -540,6 +559,7 @@
           kicker: snapshot.chamberLabel,
           title: snapshot.districtLabel,
           legislator: snapshot.legislator,
+          gpid: snapshot.gpid,
           party: snapshot.party,
           count: snapshot.count,
           hospitals: snapshot.hospitals,
@@ -723,6 +743,7 @@
             kicker: activeSnap.chamberLabel,
             title: activeSnap.districtLabel,
             legislator: activeSnap.legislator,
+            gpid: activeSnap.gpid,
             party: activeSnap.party,
             count: activeSnap.count,
             hospitals: activeSnap.hospitals,
