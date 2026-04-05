@@ -195,24 +195,88 @@ body {
   white-space: pre-wrap;
 }
 
+/* Print root: filled by modules/advocacy-lab.js — layout matches print-view.css / leave-behind spec */
 #advocacy-print-root {
   display: none;
 }
 
+#advocacy-print-view-root {
+  max-width: 8.5in;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2rem;
+  box-sizing: border-box;
+  background: #fff;
+  color: var(--hap-print-gray-dark, #1a1a2e);
+  font-family: var(--hap-print-font-ui, Tahoma, "Segoe UI", sans-serif);
+  font-size: 9.5pt;
+  line-height: 1.45;
+}
+
+.advocacy-print-map.print-view-map-wrap {
+  min-height: 0;
+}
+
+.advocacy-print-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 @media print {
-  body.printing-advocacy-lab * { visibility: hidden; }
-  body.printing-advocacy-lab #advocacy-print-root,
-  body.printing-advocacy-lab #advocacy-print-root * { visibility: visible; }
+  @page {
+    size: letter portrait;
+    margin: var(--hap-print-page-margin-block-start, 0.55in) var(--hap-print-page-margin-inline, 0.6in)
+      var(--hap-print-page-margin-block-end, 0.5in) var(--hap-print-page-margin-inline, 0.6in);
+  }
+
+  body.printing-advocacy-lab {
+    margin: 0 !important;
+    background: #fff !important;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  body.printing-advocacy-lab .lab-skip,
+  body.printing-advocacy-lab .lab-header,
+  body.printing-advocacy-lab #lab-main,
+  body.printing-advocacy-lab .lab-footer-nav {
+    display: none !important;
+  }
+
   body.printing-advocacy-lab #advocacy-print-root {
     display: block !important;
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    padding: 24px;
-    font-size: 11pt;
-    color: #000;
+    position: static !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #fff !important;
+  }
+
+  body.printing-advocacy-lab #advocacy-print-view-root {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    box-shadow: none;
     background: #fff;
+  }
+
+  body.printing-advocacy-lab .print-view-header,
+  body.printing-advocacy-lab .print-view-section,
+  body.printing-advocacy-lab .print-view-kpi-card {
+    box-shadow: none !important;
+  }
+
+  body.printing-advocacy-lab .print-view-section,
+  body.printing-advocacy-lab .print-view-kpi-strip {
+    page-break-inside: avoid;
+    break-inside: avoid;
+  }
+
+  body.printing-advocacy-lab .advocacy-print-map.print-view-map-wrap svg {
+    max-height: 200pt;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
   }
 }
 

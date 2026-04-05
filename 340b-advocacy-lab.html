@@ -7,6 +7,7 @@
   <meta name="description" content="Novice-friendly PA 340B advocacy lab: verified map points, KPI chart, story JSON, print export — Power BI / warehouse aligned.">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; form-action 'self';">
   <title>HAP 340B Advocacy Lab (PA) — Developer &amp; PBI Reference</title>
+  <link rel="stylesheet" href="print-view.css">
   <link rel="stylesheet" href="advocacy-lab.css">
 </head>
 <body>
@@ -86,7 +87,7 @@
     <!-- ═══ 4. PRINT EXPORT (Save as PDF from browser) ═══ -->
     <section class="lab-section" aria-labelledby="export-heading">
       <h2 id="export-heading">4. Advocacy report export</h2>
-      <p class="lab-lead">Uses <code>window.print()</code> — choose <strong>Save as PDF</strong> in the print dialog. No jsPDF CDN (matches project security rules).</p>
+      <p class="lab-lead">Builds a <strong>one-page HAP brief</strong> using the same print system as the main dashboard (<code>print-view.css</code>, aligned to the leave-behind / <code>340B_032726.pdf</code> spec). Uses <code>window.print()</code> — choose <strong>Save as PDF</strong>. Wait for the PA map to finish loading before printing so the snapshot includes the map.</p>
       <button type="button" class="lab-btn" id="btn-export-report">Generate printable report</button>
     </section>
 

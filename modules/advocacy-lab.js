@@ -12,7 +12,7 @@
  *
  * HOW IT CONNECTS:
  *   - state-data.js → CONFIG, FIPS_TO_ABBR, STATES_WITH_PROTECTION
- *   - data/pa-districts/pa-340b-hospitals.js → window.HAP_PA_340B_HOSPITALS
+ *   - data/hap-340b-data.js → window.HAP_340B_DATA (canonical); HAP_PA_340B_HOSPITALS synced for map
  *   - modules/data-layer.js → DataLayer.getPA340bHospitalPoints, getKPIs, getFreshness, submitStory
  *   - modules/ai-helpers.js → summarizeStory, summarizePolicyAlert, getPolicyAlert
  *   - assets/vendor → d3, topojson, states-10m (same as main dashboard; no CDN)
@@ -381,55 +381,331 @@
   }
 
   /**
-   * Print-based PDF: user chooses “Save as PDF” in the browser dialog (no third-party script).
+   * Look up one KPI object by MetricKey.
+   * @param {Array<Object>} kpis
+   * @param {string} key
+   * @returns {Object|null}
+   */
+  function kpiByKey(kpis, key) {
+    if (!kpis || !key) return null;
+    for (var i = 0; i < kpis.length; i++) {
+      if (kpis[i].key === key) return kpis[i];
+    }
+    return null;
+  }
+
+  /**
+   * @param {Object|null} k
+   * @returns {string}
+   */
+  function formatKpiDisplay(k) {
+    if (!k || k.value == null) return "—";
+    var v = k.value;
+    if (k.decimals != null && !isNaN(Number(v))) v = Number(k.value).toFixed(k.decimals);
+    return (k.prefix || "") + v + (k.suffix || "");
+  }
+
+  /**
+   * @param {HTMLElement} parent
+   * @param {Object|null} k
+   * @param {string} cardClass — e.g. print-view-kpi-card--gold
+   * @param {string} impactText — optional override for meaning line
+   */
+  function appendKpiCard(parent, k, cardClass, impactText) {
+    var art = document.createElement("article");
+    art.className = "print-view-kpi-card" + (cardClass ? " " + cardClass : "");
+    var lab = document.createElement("p");
+    lab.className = "print-view-kpi-label";
+    lab.textContent = k && k.label ? k.label : "—";
+    var val = document.createElement("p");
+    val.className = "print-view-kpi-value";
+    val.textContent = formatKpiDisplay(k);
+    var imp = document.createElement("p");
+    imp.className = "print-view-kpi-impact";
+    imp.textContent = impactText || (k && k.meaning ? k.meaning : "");
+    art.appendChild(lab);
+    art.appendChild(val);
+    art.appendChild(imp);
+    parent.appendChild(art);
+  }
+
+  var _advocacyAfterPrintBound = false;
+
+  /**
+   * One-page advocacy report: HAP leave-behind visual system (print-view.css / 340B_032726.pdf spec).
+   * Uses display:none on screen chrome for print — avoids blank PDFs from visibility:hidden bugs in some browsers.
    */
   function initPrintExport() {
     var btn = document.getElementById("btn-export-report");
     if (!btn) return;
+
+    if (!_advocacyAfterPrintBound) {
+      _advocacyAfterPrintBound = true;
+      window.addEventListener("afterprint", function () {
+        document.body.classList.remove("printing-advocacy-lab");
+      });
+    }
+
     btn.addEventListener("click", function () {
       var target = document.getElementById("advocacy-print-root");
       if (!target) return;
 
-      DataLayer.getKPIs().then(function (kpis) {
-        DataLayer.getFreshness().then(function (fresh) {
+      Promise.all([
+        DataLayer.getKPIs(),
+        DataLayer.getFreshness(),
+        DataLayer.getPA340bHospitalPoints()
+      ])
+        .then(function (results) {
+          var kpis = results[0] || [];
+          var fresh = results[1] || {};
+          var pack = results[2] || { hospitals: [], meta: {} };
           while (target.firstChild) target.removeChild(target.firstChild);
 
+          var root = document.createElement("div");
+          root.id = "advocacy-print-view-root";
+
+          var header = document.createElement("header");
+          header.className = "print-view-header";
+          var logo = document.createElement("img");
+          logo.src = "haplogo_box_blue.jpeg";
+          logo.alt = "";
+          logo.className = "print-view-logo";
+          logo.width = 36;
+          logo.height = 36;
+          var hcopy = document.createElement("div");
+          hcopy.className = "print-view-header-copy";
+          var org = document.createElement("p");
+          org.className = "print-view-org";
+          org.textContent = "The Hospital and Healthsystem Association of Pennsylvania";
           var h1 = document.createElement("h1");
-          h1.textContent = "HAP 340B Advocacy Lab — Export";
-          target.appendChild(h1);
+          h1.textContent = "340B Advocacy Lab — Pennsylvania (developer & Power BI reference)";
+          hcopy.appendChild(org);
+          hcopy.appendChild(h1);
+          var badge = document.createElement("span");
+          badge.className = "print-view-header-badge";
+          badge.textContent = "One-page brief";
+          header.appendChild(logo);
+          header.appendChild(hcopy);
+          header.appendChild(badge);
+          root.appendChild(header);
 
-          var p1 = document.createElement("p");
-          p1.textContent = "Data as of: " + (fresh.displayAsOf || "see CONFIG") + ". " +
-            (typeof CONFIG !== "undefined" && CONFIG.copy && CONFIG.copy.sourceSummary ? CONFIG.copy.sourceSummary : "");
-          target.appendChild(p1);
+          var secIntro = document.createElement("section");
+          secIntro.className = "print-view-section";
+          var ct0 = document.createElement("p");
+          ct0.className = "print-view-card-title";
+          ct0.textContent = "What this page is";
+          secIntro.appendChild(ct0);
+          secIntro.appendChild(document.createElement("h2")).textContent = "Warehouse-ready advocacy surface";
+          var introP = document.createElement("p");
+          introP.textContent =
+            "This lab demonstrates a static-first path to a governed data warehouse and Power BI: verified PA hospital map points (no fabricated per-facility savings), " +
+            "headline KPIs keyed to MetricKeys in fact_dashboard_kpi, a structured story form aligned to fact_story_submission, and a single JSON-shaped bundle (window.HAP_340B_DATA). " +
+            "Use this printout as a stakeholder one-pager describing scope, data contracts, and sources.";
+          secIntro.appendChild(introP);
+          var asOf = document.createElement("p");
+          var strong = document.createElement("strong");
+          strong.textContent = "Data as of: ";
+          asOf.appendChild(strong);
+          var asOfStr =
+            fresh.displayAsOf ||
+            (typeof CONFIG !== "undefined" && CONFIG.dataFreshness ? CONFIG.dataFreshness : null) ||
+            "see CONFIG";
+          asOf.appendChild(document.createTextNode(asOfStr + "."));
+          secIntro.appendChild(asOf);
+          root.appendChild(secIntro);
 
-          var h2 = document.createElement("h2");
-          h2.textContent = "Headline metrics (MetricKey)";
-          target.appendChild(h2);
+          var strip = document.createElement("section");
+          strip.className = "print-view-kpi-strip";
+          strip.setAttribute("aria-label", "Headline metrics");
+          appendKpiCard(
+            strip,
+            kpiByKey(kpis, "COMMUNITY_BENEFIT_TOTAL_BILLIONS"),
+            "print-view-kpi-card--gold",
+            "Reported reinvestment in patient care and community services (2024) — MetricKey COMMUNITY_BENEFIT_TOTAL_BILLIONS"
+          );
+          appendKpiCard(
+            strip,
+            kpiByKey(kpis, "PA_HOSPITALS_340B_COUNT"),
+            "print-view-kpi-card--mid",
+            "Hospitals participating in 340B in Pennsylvania — PA_HOSPITALS_340B_COUNT"
+          );
+          appendKpiCard(
+            strip,
+            kpiByKey(kpis, "US_STATES_CP_PROTECTION_COUNT"),
+            "print-view-kpi-card--green",
+            "States with enacted contract pharmacy protections (excl. D.C. from headline) — US_STATES_CP_PROTECTION_COUNT"
+          );
+          appendKpiCard(
+            strip,
+            kpiByKey(kpis, "HRSA_AUDIT_COUNT"),
+            "",
+            "Total Program Integrity audits (hospitals + manufacturers, FY 2024) — HRSA_AUDIT_COUNT"
+          );
+          root.appendChild(strip);
 
-          var ul = document.createElement("ul");
+          var secMap = document.createElement("section");
+          secMap.className = "print-view-section print-view-map-section";
+          var ctM = document.createElement("p");
+          ctM.className = "print-view-card-title";
+          ctM.textContent = "Pennsylvania hospital locations";
+          secMap.appendChild(ctM);
+          secMap.appendChild(document.createElement("h2")).textContent = "Map snapshot (static list)";
+          var mapP = document.createElement("p");
+          var nPts = (pack.hospitals && pack.hospitals.length) || 0;
+          var rev =
+            (typeof window !== "undefined" &&
+              window.HAP_340B_DATA &&
+              window.HAP_340B_DATA._legacyPackMeta &&
+              window.HAP_340B_DATA._legacyPackMeta.revision_date) ||
+            pack.meta.revision_date ||
+            "see pa-340b-hospitals.js meta";
+          mapP.textContent =
+            "Geocoded participating-hospital points for mapping (" +
+            nPts +
+            " on this build). List revision " +
+            rev +
+            ". Dots are not HRSA enrollment proof and do not show facility-level 340B dollars.";
+          secMap.appendChild(mapP);
+
+          var mapWrap = document.getElementById("pa-map-wrap");
+          var svgEl = mapWrap ? mapWrap.querySelector("svg") : null;
+          if (svgEl) {
+            var mapHolder = document.createElement("div");
+            mapHolder.className = "print-view-map-wrap advocacy-print-map";
+            mapHolder.appendChild(svgEl.cloneNode(true));
+            secMap.appendChild(mapHolder);
+          } else {
+            var miss = document.createElement("p");
+            miss.className = "print-view-selection-text";
+            miss.textContent = "Map not rendered yet — open the Lab page fully, then generate the report again.";
+            secMap.appendChild(miss);
+          }
+          root.appendChild(secMap);
+
+          var secTable = document.createElement("section");
+          secTable.className = "print-view-section";
+          var ctT = document.createElement("p");
+          ctT.className = "print-view-card-title";
+          ctT.textContent = "Full KPI inventory (DataLayer.getKPIs)";
+          secTable.appendChild(ctT);
+          var tbl = document.createElement("table");
+          tbl.style.width = "100%";
+          tbl.style.borderCollapse = "collapse";
+          tbl.style.fontSize = "7.5pt";
+          var thead = document.createElement("thead");
+          var trh = document.createElement("tr");
+          ["MetricKey", "Value", "Label", "Why it matters"].forEach(function (h) {
+            var th = document.createElement("th");
+            th.textContent = h;
+            th.style.textAlign = "left";
+            th.style.borderBottom = "1pt solid var(--hap-print-border, #d0d8e8)";
+            th.style.padding = "4pt 6pt 4pt 0";
+            trh.appendChild(th);
+          });
+          thead.appendChild(trh);
+          tbl.appendChild(thead);
+          var tb = document.createElement("tbody");
           kpis.forEach(function (k) {
+            var tr = document.createElement("tr");
+            [k.key, formatKpiDisplay(k), k.label || "", k.meaning || ""].forEach(function (cell) {
+              var td = document.createElement("td");
+              td.textContent = cell;
+              td.style.padding = "3pt 8pt 3pt 0";
+              td.style.verticalAlign = "top";
+              tr.appendChild(td);
+            });
+            tb.appendChild(tr);
+          });
+          tbl.appendChild(tb);
+          secTable.appendChild(tbl);
+          root.appendChild(secTable);
+
+          var hn = document.getElementById("story-hospital-name");
+          var co = document.getElementById("story-county");
+          var cat = document.getElementById("story-category");
+          var comm = document.getElementById("story-community");
+          var draftName = hn && hn.value ? hn.value.trim() : "";
+          var draftCounty = co && co.value ? co.value : "";
+          var draftCat = cat && cat.value ? cat.value : "";
+          var draftComm = comm && comm.value ? comm.value.trim() : "";
+          if (draftName || draftComm) {
+            var secStory = document.createElement("section");
+            secStory.className = "print-view-section";
+            var ctS = document.createElement("p");
+            ctS.className = "print-view-card-title";
+            ctS.textContent = "Story form (draft on this device — not submitted)";
+            secStory.appendChild(ctS);
+            if (draftName) {
+              var pN = document.createElement("p");
+              var sn = document.createElement("strong");
+              sn.textContent = "Hospital: ";
+              pN.appendChild(sn);
+              pN.appendChild(document.createTextNode(draftName));
+              secStory.appendChild(pN);
+            }
+            if (draftCounty || draftCat) {
+              var pC = document.createElement("p");
+              pC.textContent = (draftCounty ? "County: " + draftCounty + ". " : "") + (draftCat ? "Category: " + draftCat + "." : "");
+              secStory.appendChild(pC);
+            }
+            if (draftComm) {
+              var pCo = document.createElement("p");
+              var s = document.createElement("strong");
+              s.textContent = "Community programs: ";
+              pCo.appendChild(s);
+              pCo.appendChild(document.createTextNode(draftComm.length > 400 ? draftComm.slice(0, 400) + "…" : draftComm));
+              secStory.appendChild(pCo);
+            }
+            root.appendChild(secStory);
+          }
+
+          var secSrc = document.createElement("section");
+          secSrc.className = "print-view-section";
+          var ctSrc = document.createElement("p");
+          ctSrc.className = "print-view-card-title";
+          ctSrc.textContent = "Sources & methodology";
+          secSrc.appendChild(ctSrc);
+          var ul = document.createElement("ul");
+          var items = [
+            "Hospital coordinates: data/pa-districts/pa-340b-hospitals.js → normalized in data/hap-340b-data.js (window.HAP_340B_DATA.hospitals_340b_pa).",
+            "KPIs: state-data.js (HAP_STATIC_METRICS, CONFIG) + computed state-law counts; warehouse path uses fact_dashboard_kpi.",
+            "Semantic keys: powerbi/metric-registry.json, powerbi/semantic-layer-registry.json; field notes in docs/DATA-DICTIONARY.md.",
+            typeof CONFIG !== "undefined" && CONFIG.copy && CONFIG.copy.sourceSummary ? CONFIG.copy.sourceSummary : ""
+          ];
+          items.forEach(function (line) {
+            if (!line) return;
             var li = document.createElement("li");
-            var v = k.value;
-            if (k.decimals != null) v = Number(k.value).toFixed(k.decimals);
-            li.textContent = k.key + ": " + (k.prefix || "") + v + (k.suffix || "") + " — " + k.label;
+            li.textContent = line;
             ul.appendChild(li);
           });
-          target.appendChild(ul);
+          secSrc.appendChild(ul);
+          root.appendChild(secSrc);
 
-          var h3 = document.createElement("h2");
-          h3.textContent = "Map data note";
-          target.appendChild(h3);
-          var p2 = document.createElement("p");
-          p2.textContent = "Hospital dots: HAP Resource Center list (May 2022) geocoded via OpenStreetMap Nominatim — see pa-340b-hospitals.js meta. " +
-            "Not a substitute for HRSA covered entity enrollment.";
-          target.appendChild(p2);
+          target.appendChild(root);
 
-          document.body.classList.add("printing-advocacy-lab");
-          window.print();
-          document.body.classList.remove("printing-advocacy-lab");
+          window.requestAnimationFrame(function () {
+            window.requestAnimationFrame(function () {
+              document.body.classList.add("printing-advocacy-lab");
+              window.print();
+            });
+          });
+        })
+        .catch(function (err) {
+          window.console.error("Advocacy lab print:", err);
+          while (target.firstChild) target.removeChild(target.firstChild);
+          var root = document.createElement("div");
+          root.id = "advocacy-print-view-root";
+          var p = document.createElement("p");
+          p.textContent = "Could not load dashboard data for print. Check that state-data.js and modules/data-layer.js loaded.";
+          root.appendChild(p);
+          target.appendChild(root);
+          window.requestAnimationFrame(function () {
+            window.requestAnimationFrame(function () {
+              document.body.classList.add("printing-advocacy-lab");
+              window.print();
+            });
+          });
         });
-      });
     });
   }
 
