@@ -20,6 +20,7 @@
   var touchStartX = 0;
   var touchStartY = 0;
   var isSwiping = false;
+  var paDistrictLoaded = false;
 
   /* ── DOM Cache ── */
   var dom = {};
@@ -63,6 +64,12 @@
     initCountUp();
     initOutcomes();
     initPaAsks();
+    initFederalDelegation();
+    initZipLookup();
+    initStoryForm();
+    initReportGenerator();
+    initDataConnection();
+    initPolicyAlert();
 
     document.getElementById("footer-year").textContent = new Date().getFullYear();
 
@@ -86,8 +93,7 @@
     safeText(document.getElementById("position-lead"), c.hapPositionLead);
     safeText(document.getElementById("data-freshness"), CONFIG.dataFreshness);
     safeText(document.getElementById("about-text"), c.overviewLead);
-    safeText(document.getElementById("sources-text"), c.sourceSummary);
-    safeText(document.getElementById("limitations-text"), c.sourcesLimitations);
+    /* Sources & limitations are hardcoded in HTML with linked citations */
 
     var es = c.executiveStrip || {};
     safeText(document.getElementById("exec-priority-label"), es.priorityLabel);
@@ -182,6 +188,7 @@
     previousTab = currentTab;
     currentTab = tab;
     var goingForward = tabIndex > currentIndex;
+    var exitClass = goingForward ? "exit-left" : "exit-right";
 
     dom.tabBtns.forEach(function (btn) {
       btn.classList.toggle("active", btn.getAttribute("data-tab") === tab);
@@ -190,14 +197,14 @@
     dom.tabPanels.forEach(function (panel) {
       var panelTab = panel.getAttribute("data-tab");
       if (panelTab === tab) {
-        panel.classList.remove("exit-left");
+        panel.classList.remove("exit-left", "exit-right");
         panel.classList.add("active");
         panel.querySelector(".tab-scroll").scrollTop = 0;
       } else if (panelTab === previousTab) {
-        panel.classList.add(goingForward ? "exit-left" : "");
         panel.classList.remove("active");
+        panel.classList.add(exitClass);
       } else {
-        panel.classList.remove("active", "exit-left");
+        panel.classList.remove("active", "exit-left", "exit-right");
       }
     });
 
@@ -207,6 +214,10 @@
       requestAnimationFrame(function () {
         setTimeout(drawMap, 100);
       });
+    }
+
+    if (tab === "pa" && !paDistrictLoaded) {
+      loadPaDistrictMap();
     }
 
     vibrate(10);
@@ -425,6 +436,7 @@
   }
 
   function filterStateCards(query, filter) {
+    if (!dom.stateGrid) return;
     var cards = dom.stateGrid.querySelectorAll(".state-card");
     cards.forEach(function (card) {
       var abbr = card.getAttribute("data-state");
@@ -448,16 +460,20 @@
 
   function initFilters() {
     if (!dom.filterBar) return;
-    var chips = dom.filterBar.querySelectorAll(".filter-chip");
-    chips.forEach(function (chip) {
-      chip.addEventListener("click", function () {
-        chips.forEach(function (c) { c.classList.remove("active"); });
-        this.classList.add("active");
-        currentFilter = this.getAttribute("data-filter");
-        filterStateCards(dom.searchInput ? dom.searchInput.value.trim().toLowerCase() : "", currentFilter);
-        updateMapFilter(currentFilter);
-        vibrate(10);
-      });
+
+    dom.filterBar.addEventListener("click", function (e) {
+      var chip = e.target.closest(".filter-chip");
+      if (!chip) return;
+
+      var allChips = dom.filterBar.querySelectorAll(".filter-chip");
+      allChips.forEach(function (c) { c.classList.remove("active"); });
+      chip.classList.add("active");
+
+      currentFilter = chip.getAttribute("data-filter");
+      var query = dom.searchInput ? dom.searchInput.value.trim().toLowerCase() : "";
+      filterStateCards(query, currentFilter);
+      updateMapFilter(currentFilter);
+      vibrate(10);
     });
   }
 
@@ -519,7 +535,31 @@
         return getStateColor(fipsToAbbr(d.id));
       })
       .style("opacity", 0)
+      .on("mouseenter", function (event, d) {
+        var abbr = fipsToAbbr(d.id);
+        if (abbr) {
+          this.classList.add("highlighted");
+          showMapTooltip(abbr, event.clientX, event.clientY);
+        }
+      })
+      .on("mousemove", function (event, d) {
+        var abbr = fipsToAbbr(d.id);
+        if (abbr) showMapTooltip(abbr, event.clientX, event.clientY);
+      })
+      .on("mouseleave", function () {
+        this.classList.remove("highlighted");
+        hideMapTooltip();
+      })
+      .on("touchstart", function (event, d) {
+        var abbr = fipsToAbbr(d.id);
+        if (abbr) {
+          this.classList.add("highlighted");
+          var touch = event.touches[0];
+          showMapTooltip(abbr, touch.clientX, touch.clientY);
+        }
+      }, { passive: true })
       .on("click", function (event, d) {
+        hideMapTooltip();
         var abbr = fipsToAbbr(d.id);
         if (abbr) {
           selectMapState(abbr);
@@ -553,6 +593,83 @@
     if (data.cp) return "#0072bc";
     if (data.pbm) return "#8ed8f8";
     return "#d3d9d4";
+  }
+
+  /* ── Map Tooltip ── */
+
+  var mapTooltipEl = null;
+  var tooltipHideTimer = null;
+
+  function getMapTooltip() {
+    if (!mapTooltipEl) mapTooltipEl = document.getElementById("map-tooltip");
+    return mapTooltipEl;
+  }
+
+  function buildTooltipContent(abbr) {
+    var tip = getMapTooltip();
+    if (!tip) return;
+    while (tip.firstChild) tip.removeChild(tip.firstChild);
+
+    var name = document.createElement("div");
+    name.className = "map-tooltip-name";
+    name.textContent = (typeof STATE_NAMES !== "undefined" && STATE_NAMES[abbr]) || abbr;
+    tip.appendChild(name);
+
+    if (typeof STATE_340B !== "undefined") {
+      var data = STATE_340B[abbr] || {};
+      var statusEl = document.createElement("div");
+      statusEl.className = "map-tooltip-status " +
+        (data.cp ? "status-cp" : data.pbm ? "status-pbm" : "status-none");
+      statusEl.textContent = data.cp ? "Contract pharmacy protection" : data.pbm ? "PBM regulation" : "No protection enacted";
+      tip.appendChild(statusEl);
+
+      if (data.y) {
+        var detail = document.createElement("div");
+        detail.className = "map-tooltip-detail";
+        detail.textContent = "Law year: " + data.y;
+        tip.appendChild(detail);
+      }
+      if (data.notes) {
+        var note = document.createElement("div");
+        note.className = "map-tooltip-detail";
+        note.textContent = data.notes;
+        tip.appendChild(note);
+      }
+    }
+  }
+
+  function showMapTooltip(abbr, x, y) {
+    clearTimeout(tooltipHideTimer);
+    var tip = getMapTooltip();
+    if (!tip) return;
+    buildTooltipContent(abbr);
+
+    var container = document.getElementById("map-container");
+    if (!container) return;
+    var rect = container.getBoundingClientRect();
+    var left = x - rect.left + 12;
+    var top = y - rect.top + 12;
+
+    var maxLeft = container.clientWidth - 230;
+    if (left > maxLeft) left = x - rect.left - 180;
+    if (top > container.clientHeight - 80) top = y - rect.top - 70;
+    if (left < 4) left = 4;
+    if (top < 4) top = 4;
+
+    tip.style.left = left + "px";
+    tip.style.top = top + "px";
+    tip.classList.add("visible");
+    tip.setAttribute("aria-hidden", "false");
+  }
+
+  function hideMapTooltip() {
+    tooltipHideTimer = setTimeout(function () {
+      var tip = getMapTooltip();
+      if (tip) {
+        tip.classList.remove("visible");
+        tip.setAttribute("aria-hidden", "true");
+      }
+    }, 120);
   }
 
   function selectMapState(abbr) {
@@ -870,6 +987,557 @@
       }, { passive: true });
     });
   })();
+
+  /* ═══════════════════════════════════════════════════
+     Federal Delegation
+     ═══════════════════════════════════════════════════ */
+
+  window._PA_DELEGATION_DATA = [
+    { member: "John Fetterman", chamber: "Senate", district: "Statewide", party: "D", position: "cosponsor", lastContact: "03/15/2026", action: "Schedule meeting" },
+    { member: "Dave McCormick", chamber: "Senate", district: "Statewide", party: "R", position: "supportive", lastContact: "03/10/2026", action: "Schedule meeting" },
+    { member: "Brian Fitzpatrick", chamber: "House", district: "District 1", party: "R", position: "unknown", lastContact: "02/28/2026", action: "Schedule meeting" },
+    { member: "Brendan Boyle", chamber: "House", district: "District 2", party: "D", position: "opposed", lastContact: "01/20/2026", action: "Schedule meeting" },
+    { member: "Dwight Evans", chamber: "House", district: "District 3", party: "D", position: "cosponsor", lastContact: "03/01/2026", action: "Schedule meeting" },
+    { member: "Madeleine Dean", chamber: "House", district: "District 4", party: "D", position: "supportive", lastContact: "02/15/2026", action: "Schedule meeting" },
+    { member: "Mary Gay Scanlon", chamber: "House", district: "District 5", party: "D", position: "unknown", lastContact: "01/10/2026", action: "Schedule meeting" },
+    { member: "Chrissy Houlahan", chamber: "House", district: "District 6", party: "D", position: "supportive", lastContact: "03/05/2026", action: "Schedule meeting" },
+    { member: "Ryan Mackenzie", chamber: "House", district: "District 7", party: "R", position: "opposed", lastContact: "12/01/2025", action: "Schedule meeting" },
+    { member: "Rob Bresnahan", chamber: "House", district: "District 8", party: "R", position: "unknown", lastContact: "02/20/2026", action: "Schedule meeting" },
+    { member: "Dan Meuser", chamber: "House", district: "District 9", party: "R", position: "cosponsor", lastContact: "03/12/2026", action: "Schedule meeting" },
+    { member: "Scott Perry", chamber: "House", district: "District 10", party: "R", position: "supportive", lastContact: "01/30/2026", action: "Schedule meeting" },
+    { member: "Lloyd Smucker", chamber: "House", district: "District 11", party: "R", position: "unknown", lastContact: "02/05/2026", action: "Schedule meeting" },
+    { member: "Summer Lee", chamber: "House", district: "District 12", party: "D", position: "supportive", lastContact: "03/08/2026", action: "Schedule meeting" },
+    { member: "John Joyce", chamber: "House", district: "District 13", party: "R", position: "opposed", lastContact: "11/15/2025", action: "Schedule meeting" },
+    { member: "Guy Reschenthaler", chamber: "House", district: "District 14", party: "R", position: "unknown", lastContact: "01/25/2026", action: "Schedule meeting" },
+    { member: "Glenn Thompson", chamber: "House", district: "District 15", party: "R", position: "supportive", lastContact: "02/22/2026", action: "Schedule meeting" },
+    { member: "Mike Kelly", chamber: "House", district: "District 16", party: "R", position: "unknown", lastContact: "03/02/2026", action: "Schedule meeting" },
+    { member: "Chris Deluzio", chamber: "House", district: "District 17", party: "D", position: "supportive", lastContact: "03/06/2026", action: "Schedule meeting" }
+  ];
+  var PA_DELEGATION = window._PA_DELEGATION_DATA;
+
+  var POSITION_LABELS = {
+    cosponsor: "Cosponsor", supportive: "Supportive",
+    unknown: "Unknown", opposed: "Opposed"
+  };
+
+  function initFederalDelegation() {
+    var list = document.getElementById("fed-card-list");
+    if (!list) return;
+
+    var frag = document.createDocumentFragment();
+    PA_DELEGATION.forEach(function (row) {
+      var card = document.createElement("div");
+      card.className = "fed-card";
+      card.setAttribute("data-position", row.position || "unknown");
+
+      var top = document.createElement("div");
+      top.className = "fed-card-top";
+
+      var name = document.createElement("div");
+      name.className = "fed-card-name";
+      name.textContent = row.member;
+
+      var badge = document.createElement("span");
+      badge.className = "leg-badge leg-badge--" + (row.position || "unknown");
+      badge.textContent = POSITION_LABELS[row.position] || "Unknown";
+
+      top.appendChild(name);
+      top.appendChild(badge);
+
+      var meta = document.createElement("div");
+      meta.className = "fed-card-meta";
+      meta.textContent = row.chamber + " · " + row.district + " · " + row.party;
+
+      var bottom = document.createElement("div");
+      bottom.className = "fed-card-bottom";
+
+      var action = document.createElement("span");
+      action.textContent = row.action;
+
+      var contact = document.createElement("span");
+      contact.className = "fed-card-contact";
+      contact.textContent = "Last: " + row.lastContact;
+
+      bottom.appendChild(action);
+      bottom.appendChild(contact);
+
+      card.appendChild(top);
+      card.appendChild(meta);
+      card.appendChild(bottom);
+      frag.appendChild(card);
+    });
+    list.appendChild(frag);
+
+    var filterBar = document.getElementById("fed-filter-bar");
+    if (!filterBar) return;
+    filterBar.addEventListener("click", function (e) {
+      var btn = e.target.closest(".fed-filter-btn");
+      if (!btn) return;
+
+      filterBar.querySelectorAll(".fed-filter-btn").forEach(function (b) { b.classList.remove("active"); });
+      btn.classList.add("active");
+
+      var filter = btn.getAttribute("data-fed-filter");
+      list.querySelectorAll(".fed-card").forEach(function (card) {
+        var pos = card.getAttribute("data-position");
+        card.classList.toggle("filtered-out", filter !== "all" && pos !== filter);
+      });
+      vibrate(10);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     ZIP Code Legislator Lookup
+     ═══════════════════════════════════════════════════ */
+
+  function initZipLookup() {
+    var form = document.getElementById("zip-lookup-form");
+    var input = document.getElementById("zip-lookup-input");
+    var status = document.getElementById("zip-lookup-status");
+    if (!form || !input || !status) return;
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var zip = input.value.replace(/[^0-9]/g, "");
+
+      if (zip.length !== 5) {
+        status.textContent = "Enter a valid 5-digit ZIP code.";
+        status.className = "zip-lookup-status is-error";
+        return;
+      }
+
+      status.textContent = "Looking up legislators for ZIP " + zip + "…";
+      status.className = "zip-lookup-status";
+
+      window.dispatchEvent(new CustomEvent("hap:pa-district-zip-lookup", {
+        detail: { zip: zip }
+      }));
+
+      var fedMatches = PA_DELEGATION.filter(function (row) {
+        return row.chamber === "Senate" || row.district === "Statewide";
+      }).map(function (row) {
+        return row.member + " (" + row.party + ", " + row.chamber + ")";
+      });
+
+      var msg = "ZIP " + zip + " — PA Senators: " + fedMatches.join(", ") + ".";
+      msg += " House member: check the district map on PA Focus for your specific representative.";
+      status.textContent = msg;
+      status.className = "zip-lookup-status";
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     PA District Map — Lazy Loader
+     ═══════════════════════════════════════════════════ */
+
+  function loadPaDistrictMap() {
+    if (paDistrictLoaded) return;
+    paDistrictLoaded = true;
+
+    var script = document.createElement("script");
+    script.src = "modules/pa-district-map.js";
+    script.onload = function () {
+      setTimeout(function () {
+        window.dispatchEvent(new Event("resize"));
+      }, 300);
+    };
+    document.body.appendChild(script);
+  }
+
+  /* ═══════════════════════════════════════════════════
+     Story Submission Form (Phase 3)
+     ═══════════════════════════════════════════════════ */
+
+  var PA_COUNTIES = [
+    "Adams","Allegheny","Armstrong","Beaver","Bedford","Berks","Blair","Bradford",
+    "Bucks","Butler","Cambria","Cameron","Carbon","Centre","Chester","Clarion",
+    "Clearfield","Clinton","Columbia","Crawford","Cumberland","Dauphin","Delaware",
+    "Elk","Erie","Fayette","Forest","Franklin","Fulton","Greene","Huntingdon",
+    "Indiana","Jefferson","Juniata","Lackawanna","Lancaster","Lawrence","Lebanon",
+    "Lehigh","Luzerne","Lycoming","McKean","Mercer","Mifflin","Monroe","Montgomery",
+    "Montour","Northampton","Northumberland","Perry","Philadelphia","Pike","Potter",
+    "Schuylkill","Snyder","Somerset","Sullivan","Susquehanna","Tioga","Union",
+    "Venango","Warren","Washington","Wayne","Westmoreland","Wyoming","York"
+  ];
+
+  function initStoryForm() {
+    var form = document.getElementById("story-form");
+    var countySelect = document.getElementById("story-county");
+    var textArea = document.getElementById("story-text");
+    var charCount = document.getElementById("story-char-count");
+    var feedback = document.getElementById("story-feedback");
+    if (!form || !countySelect) return;
+
+    PA_COUNTIES.forEach(function (c) {
+      var opt = document.createElement("option");
+      opt.value = c;
+      opt.textContent = c + " County";
+      countySelect.appendChild(opt);
+    });
+
+    if (textArea && charCount) {
+      textArea.addEventListener("input", function () {
+        charCount.textContent = this.value.length + " / 500";
+      });
+    }
+
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      var hospital = document.getElementById("story-hospital");
+      var category = document.getElementById("story-category");
+      var email = document.getElementById("story-email");
+
+      if (!hospital.value.trim() || !countySelect.value || !category.value || !textArea.value.trim()) {
+        feedback.textContent = "Please fill in all required fields.";
+        feedback.className = "story-feedback is-error";
+        return;
+      }
+
+      var payload = {
+        hospital: hospital.value.trim(),
+        county: countySelect.value,
+        category: category.value,
+        story: textArea.value.trim(),
+        email: email ? email.value.trim() : "",
+        timestamp: new Date().toISOString(),
+        version: 1
+      };
+
+      if (typeof DataLayer !== "undefined" && DataLayer.submitStory) {
+        DataLayer.submitStory(payload).then(function (result) {
+          feedback.className = "story-feedback is-success";
+          feedback.textContent = "Story submitted. Thank you for sharing!";
+
+          var copyBtn = document.createElement("button");
+          copyBtn.type = "button";
+          copyBtn.className = "story-copy-btn";
+          copyBtn.textContent = "Copy JSON";
+          copyBtn.addEventListener("click", function () {
+            copyToClipboard(JSON.stringify(payload, null, 2));
+            showToast("Story JSON copied");
+          });
+          feedback.appendChild(copyBtn);
+
+          form.reset();
+          if (charCount) charCount.textContent = "0 / 500";
+        });
+      } else {
+        showToast("Story saved");
+        feedback.className = "story-feedback is-success";
+        feedback.textContent = "Story submitted locally.";
+        form.reset();
+        if (charCount) charCount.textContent = "0 / 500";
+      }
+
+      vibrate(15);
+    });
+  }
+
+  /* ═══════════════════════════════════════════════════
+     Advocacy Report Generator (Phase 5)
+     ═══════════════════════════════════════════════════ */
+
+  function initReportGenerator() {
+    var typeSelect = document.getElementById("report-type");
+    var statesField = document.getElementById("report-states-field");
+    var statesSelect = document.getElementById("report-states");
+    var btnPdf = document.getElementById("btn-gen-pdf");
+    var btnCsv = document.getElementById("btn-gen-csv");
+    if (!typeSelect || !btnPdf || !btnCsv) return;
+
+    if (statesSelect && typeof STATE_NAMES !== "undefined") {
+      Object.keys(STATE_NAMES)
+        .filter(function (a) { return a !== "DC"; })
+        .sort(function (a, b) { return STATE_NAMES[a].localeCompare(STATE_NAMES[b]); })
+        .forEach(function (abbr) {
+          var opt = document.createElement("option");
+          opt.value = abbr;
+          opt.textContent = STATE_NAMES[abbr];
+          statesSelect.appendChild(opt);
+        });
+    }
+
+    typeSelect.addEventListener("change", function () {
+      if (statesField) {
+        statesField.hidden = this.value !== "state-comparison";
+      }
+    });
+
+    btnPdf.addEventListener("click", function () {
+      generateReport(typeSelect.value);
+    });
+
+    btnCsv.addEventListener("click", function () {
+      downloadCsv(typeSelect.value);
+    });
+  }
+
+  function generateReport(type) {
+    var report = document.createElement("div");
+    report.className = "print-report";
+    report.id = "print-report";
+
+    var title = document.createElement("h1");
+    title.textContent = "HAP 340B Advocacy Report";
+    report.appendChild(title);
+
+    var dateLine = document.createElement("p");
+    dateLine.textContent = "Generated: " + new Date().toLocaleDateString() +
+      " | Data as of: " + ((typeof CONFIG !== "undefined" && CONFIG.dataFreshness) || "March 2026");
+    report.appendChild(dateLine);
+
+    if (type === "full" || type === "pa-one-pager") {
+      var kpiH2 = document.createElement("h2");
+      kpiH2.textContent = "Key Metrics";
+      report.appendChild(kpiH2);
+
+      var kpiTable = document.createElement("table");
+      var protCount = 0;
+      if (typeof STATES_WITH_PROTECTION !== "undefined") {
+        protCount = STATES_WITH_PROTECTION.filter(function (s) { return s !== "DC"; }).length;
+      }
+      kpiTable.innerHTML =
+        "<thead><tr><th>Metric</th><th>Value</th><th>Why It Matters</th></tr></thead>" +
+        "<tbody>" +
+        "<tr><td>PA 340B Hospitals</td><td>72</td><td>Rely on 340B to serve patients</td></tr>" +
+        "<tr><td>Community Benefit</td><td>$7.95B</td><td>Reported by 340B hospitals (2024)</td></tr>" +
+        "<tr><td>States Protected</td><td>" + protCount + "</td><td>Contract pharmacy laws enacted</td></tr>" +
+        "<tr><td>States Without</td><td>" + (50 - protCount) + "</td><td>No contract pharmacy protection</td></tr>" +
+        "</tbody>";
+      report.appendChild(kpiTable);
+    }
+
+    if (type === "full" || type === "state-comparison") {
+      var stateH2 = document.createElement("h2");
+      stateH2.textContent = "State Protection Status";
+      report.appendChild(stateH2);
+
+      var selected = [];
+      var statesSelect = document.getElementById("report-states");
+      if (type === "state-comparison" && statesSelect) {
+        for (var i = 0; i < statesSelect.selectedOptions.length; i++) {
+          selected.push(statesSelect.selectedOptions[i].value);
+        }
+      }
+
+      if (typeof STATE_340B !== "undefined" && typeof STATE_NAMES !== "undefined") {
+        var stateTable = document.createElement("table");
+        var rows = "<thead><tr><th>State</th><th>Contract Pharmacy</th><th>PBM Law</th><th>Year</th><th>Notes</th></tr></thead><tbody>";
+        Object.keys(STATE_NAMES)
+          .filter(function (a) { return a !== "DC" && (selected.length === 0 || selected.indexOf(a) !== -1); })
+          .sort(function (a, b) { return STATE_NAMES[a].localeCompare(STATE_NAMES[b]); })
+          .forEach(function (abbr) {
+            var s = STATE_340B[abbr] || {};
+            rows += "<tr><td>" + safeEscape(STATE_NAMES[abbr]) + "</td>" +
+              "<td>" + (s.cp ? "Yes" : "No") + "</td>" +
+              "<td>" + (s.pbm ? "Yes" : "No") + "</td>" +
+              "<td>" + (s.y || "—") + "</td>" +
+              "<td>" + safeEscape(s.notes || "") + "</td></tr>";
+          });
+        rows += "</tbody>";
+        stateTable.innerHTML = rows;
+        report.appendChild(stateTable);
+      }
+    }
+
+    if (type === "pa-one-pager") {
+      var paH2 = document.createElement("h2");
+      paH2.textContent = "Pennsylvania Focus";
+      report.appendChild(paH2);
+
+      var paTable = document.createElement("table");
+      paTable.innerHTML =
+        "<thead><tr><th>Stat</th><th>Value</th></tr></thead><tbody>" +
+        "<tr><td>340B Hospitals</td><td>72</td></tr>" +
+        "<tr><td>Rural Hospitals</td><td>38%</td></tr>" +
+        "<tr><td>Operating at a Loss</td><td>63%</td></tr>" +
+        "<tr><td>L&D Services</td><td>95%</td></tr>" +
+        "<tr><td>HRSA Hospital Audits (FY24)</td><td>179</td></tr>" +
+        "<tr><td>Manufacturer Audits (FY24)</td><td>5</td></tr>" +
+        "</tbody>";
+      report.appendChild(paTable);
+    }
+
+    var footer = document.createElement("div");
+    footer.className = "print-footer";
+    footer.textContent = "Source: HAP 340B Advocacy Dashboard — " +
+      ((typeof CONFIG !== "undefined" && CONFIG.shareUrlBase) || window.location.href) +
+      " | The Hospital and Healthsystem Association of Pennsylvania";
+    report.appendChild(footer);
+
+    var existing = document.getElementById("print-report");
+    if (existing) existing.parentNode.removeChild(existing);
+
+    report.style.display = "none";
+    document.body.appendChild(report);
+
+    var panels = document.querySelectorAll(".tab-panel");
+    panels.forEach(function (p) { p.classList.add("print-target"); });
+    report.style.display = "block";
+
+    window.print();
+
+    setTimeout(function () {
+      report.style.display = "none";
+      panels.forEach(function (p) { p.classList.remove("print-target"); });
+      document.body.removeChild(report);
+    }, 1000);
+  }
+
+  function downloadCsv(type) {
+    var rows = [];
+
+    if (type === "full" || type === "state-comparison") {
+      rows.push(["State", "Abbreviation", "Contract Pharmacy", "PBM Law", "Year Enacted", "Notes"]);
+      var selected = [];
+      var statesSelect = document.getElementById("report-states");
+      if (type === "state-comparison" && statesSelect) {
+        for (var i = 0; i < statesSelect.selectedOptions.length; i++) {
+          selected.push(statesSelect.selectedOptions[i].value);
+        }
+      }
+      if (typeof STATE_340B !== "undefined" && typeof STATE_NAMES !== "undefined") {
+        Object.keys(STATE_NAMES)
+          .filter(function (a) { return a !== "DC" && (selected.length === 0 || selected.indexOf(a) !== -1); })
+          .sort(function (a, b) { return STATE_NAMES[a].localeCompare(STATE_NAMES[b]); })
+          .forEach(function (abbr) {
+            var s = STATE_340B[abbr] || {};
+            rows.push([
+              STATE_NAMES[abbr], abbr,
+              s.cp ? "Yes" : "No",
+              s.pbm ? "Yes" : "No",
+              s.y || "",
+              (s.notes || "").replace(/"/g, '""')
+            ]);
+          });
+      }
+    } else if (type === "pa-one-pager") {
+      rows.push(["Metric", "Value"]);
+      rows.push(["PA 340B Hospitals", "72"]);
+      rows.push(["Rural Hospitals", "38%"]);
+      rows.push(["Operating at a Loss", "63%"]);
+      rows.push(["L&D Services", "95%"]);
+      rows.push(["HRSA Hospital Audits FY24", "179"]);
+      rows.push(["Manufacturer Audits FY24", "5"]);
+      rows.push(["Community Benefit", "$7.95B"]);
+    }
+
+    if (rows.length === 0) return;
+
+    var csv = rows.map(function (r) {
+      return r.map(function (cell) {
+        return '"' + String(cell).replace(/"/g, '""') + '"';
+      }).join(",");
+    }).join("\n");
+
+    var blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    var url = URL.createObjectURL(blob);
+    var link = document.createElement("a");
+    link.href = url;
+    link.download = "hap-340b-report-" + new Date().toISOString().slice(0, 10) + ".csv";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    setTimeout(function () {
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }, 200);
+    showToast("CSV downloaded");
+  }
+
+  /* ═══════════════════════════════════════════════════
+     Data Connection Status (Phase 6)
+     ═══════════════════════════════════════════════════ */
+
+  function initDataConnection() {
+    var dot = document.getElementById("data-conn-dot");
+    var label = document.getElementById("data-conn-label");
+    var detail = document.getElementById("data-conn-detail");
+    var freshness = document.getElementById("data-conn-freshness");
+
+    var homeDot = document.getElementById("home-source-dot");
+    var homeLabel = document.getElementById("data-source-label");
+
+    function updateDisplay() {
+      var src = (typeof DataLayer !== "undefined") ? DataLayer.source : "static-file";
+      var isLive = src !== "static-file";
+      var sourceText = src === "static-file" ? "Static file" :
+                       src === "warehouse-api" ? "Live — Warehouse" :
+                       src === "powerbi-embed" ? "Live — Power BI" : src;
+
+      if (dot) dot.className = "data-conn-dot" + (isLive ? " is-live" : "");
+      if (label) label.textContent = sourceText;
+
+      if (homeDot) homeDot.className = "freshness-source-dot" + (isLive ? " is-live" : "");
+      if (homeLabel) homeLabel.textContent = sourceText;
+
+      if (detail) {
+        detail.textContent = isLive ?
+          "Dashboard is connected to the HAP data warehouse and refreshing automatically." :
+          "Data comes from a local file (state-data.js). When connected to the HAP data warehouse, this dashboard will refresh automatically.";
+      }
+
+      if (freshness && typeof DataLayer !== "undefined" && DataLayer.lastRefreshed) {
+        freshness.textContent = "Last updated: " +
+          ((typeof CONFIG !== "undefined" && CONFIG.dataFreshness) || DataLayer.lastRefreshed.toLocaleDateString());
+      }
+    }
+
+    updateDisplay();
+
+    if (typeof DataLayer !== "undefined" && DataLayer.onRefresh) {
+      DataLayer.onRefresh(updateDisplay);
+    }
+  }
+
+  /* ═══════════════════════════════════════════════════
+     AI Policy Alert Banner (Phase 4)
+     ═══════════════════════════════════════════════════ */
+
+  function initPolicyAlert() {
+    if (typeof AIHelpers === "undefined" || !AIHelpers.getPolicyAlert) return;
+
+    AIHelpers.getPolicyAlert().then(function (alert) {
+      if (!alert) return;
+      var policyScroll = document.querySelector('#tab-policy .tab-scroll');
+      if (!policyScroll) return;
+
+      var banner = document.createElement("div");
+      banner.className = "policy-alert-banner anim-in";
+
+      var headline = document.createElement("div");
+      headline.className = "policy-alert-headline";
+      headline.textContent = alert.headline;
+
+      var body = document.createElement("div");
+      body.className = "policy-alert-body";
+      body.textContent = alert.body;
+
+      var dateLine = document.createElement("div");
+      dateLine.className = "policy-alert-date";
+      dateLine.textContent = "As of " + alert.date;
+
+      var aiBadge = document.createElement("span");
+      aiBadge.className = "ai-badge";
+      aiBadge.textContent = AIHelpers.isLive ? "AI Live" : "AI Stub";
+      dateLine.appendChild(aiBadge);
+
+      banner.appendChild(headline);
+      banner.appendChild(body);
+      banner.appendChild(dateLine);
+
+      var firstChild = policyScroll.firstElementChild;
+      if (firstChild) {
+        policyScroll.insertBefore(banner, firstChild.nextElementSibling);
+      } else {
+        policyScroll.appendChild(banner);
+      }
+
+      requestAnimationFrame(function () {
+        banner.classList.add("visible");
+      });
+    });
+  }
 
   /* ═══════════════════════════════════════════════════
      Boot

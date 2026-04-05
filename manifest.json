@@ -9,9 +9,9 @@
   "theme_color": "#0072bc",
   "icons": [
     {
-      "src": "hap-logo.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "haplogo_box_blue.jpeg",
+      "sizes": "200x200",
+      "type": "image/jpeg",
       "purpose": "any"
     }
   ]

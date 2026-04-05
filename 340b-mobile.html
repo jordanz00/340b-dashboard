@@ -13,6 +13,7 @@
   <title>HAP 340B Dashboard</title>
   <meta name="description" content="HAP 340B Advocacy Dashboard — Protect 340B, protect patients. Interactive mobile experience.">
   <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="haplogo_box_blue.jpeg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -21,6 +22,7 @@
   <script src="assets/vendor/d3.min.js"></script>
   <script src="assets/vendor/topojson-client.min.js"></script>
   <script src="assets/vendor/states-10m.js"></script>
+  <script src="data/pa-districts/pa-340b-hospitals.js"></script>
 </head>
 <body>
 
@@ -31,12 +33,10 @@
     <div class="app-header-blur"></div>
     <div class="app-header-inner">
       <div class="app-brand">
-        <svg class="app-logo" viewBox="0 0 120 48" aria-hidden="true">
-          <path fill="#fff" d="M8 8h6v14h4V8h6v32h-6V26h-4v14H8z"/>
-          <path fill="#8ed8f8" d="M38 36c2-4 4-10 4-16 0-4-.5-8-1.5-11L44 8h8l4 14c1 3 1.5 6 1.5 10 0 6 2 12 4 16l-4 2-2-6h-8l-2 6z" opacity="0.95"/>
-          <path fill="#fbb040" d="M52 20c0-2 .5-4 1-6l-3-6h8l3 6c.5 2 1 4 1 6v16h-4l-1-4h-4zm4 8h4l-2-8-2 8z"/>
-          <path fill="#fff" d="M72 8h10c6 0 10 4 10 10s-3 8-8 9l6 15h-6l-6-14h-4v14h-6zM78 18h4c2 0 4-1.5 4-4s-2-4-4-4h-4z"/>
-        </svg>
+        <picture class="app-logo">
+          <source srcset="hap_logo.avif" type="image/avif">
+          <img src="haplogo_box_blue.jpeg" alt="HAP logo" width="42" height="42" loading="eager">
+        </picture>
         <div class="app-title-group">
           <span class="app-title">340B Dashboard</span>
           <span class="app-subtitle">HAP Advocacy</span>
@@ -52,7 +52,7 @@
   <main class="app-content" id="app-content">
 
     <!-- ═══ TAB: HOME ═══ -->
-    <section class="tab-panel active" id="tab-home" data-tab="home">
+    <section class="tab-panel active" id="tab-home" data-tab="home" role="region" aria-label="Home">
       <div class="tab-scroll">
 
         <!-- Hero -->
@@ -152,15 +152,16 @@
 
         <!-- Data Freshness -->
         <div class="freshness-badge anim-in">
+          <span class="freshness-source-dot" id="home-source-dot"></span>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-          Data as of <span id="data-freshness"></span>
+          Data as of <span id="data-freshness"></span> · <span id="data-source-label">Static file</span>
         </div>
 
       </div>
     </section>
 
     <!-- ═══ TAB: MAP ═══ -->
-    <section class="tab-panel" id="tab-map" data-tab="map">
+    <section class="tab-panel" id="tab-map" data-tab="map" role="region" aria-label="State protection map">
       <div class="tab-scroll">
 
         <!-- Map Search -->
@@ -189,6 +190,7 @@
         <!-- Map Container -->
         <div class="map-container anim-in" id="map-container">
           <div class="map-wrap" id="mobile-map"></div>
+          <div class="map-tooltip" id="map-tooltip" role="tooltip" aria-hidden="true"></div>
           <div class="map-legend">
             <div class="legend-item"><span class="legend-swatch" style="background:#0072bc"></span>Contract pharmacy</div>
             <div class="legend-item"><span class="legend-swatch" style="background:#8ed8f8"></span>PBM only</div>
@@ -237,7 +239,7 @@
     </section>
 
     <!-- ═══ TAB: PA FOCUS ═══ -->
-    <section class="tab-panel" id="tab-pa" data-tab="pa">
+    <section class="tab-panel" id="tab-pa" data-tab="pa" role="region" aria-label="Pennsylvania focus">
       <div class="tab-scroll">
 
         <!-- PA Hero -->
@@ -306,11 +308,121 @@
           <div class="benefit-detail">Free prescriptions, cancer screening, rural clinics, behavioral health, and charity care for the uninsured.</div>
         </div>
 
+        <!-- PA District Maps -->
+        <div class="section-label anim-in">340B Hospitals by Legislative District</div>
+        <div class="pa-district-section-mobile anim-in">
+          <p class="pa-district-intro">Tap a district to see its legislator, 340B hospital count, and hospital names. Orange dots are 340B hospitals.</p>
+
+          <div class="pa-district-controls-mobile" role="group" aria-label="Choose chamber">
+            <button type="button" class="pa-district-toggle is-active" data-pa-district-chamber="house" aria-pressed="true">House (203)</button>
+            <button type="button" class="pa-district-toggle" data-pa-district-chamber="senate" aria-pressed="false">Senate (50)</button>
+          </div>
+
+          <div class="pa-district-legend pa-district-legend--interactive" role="group" aria-label="Filter by hospital density">
+            <button type="button" class="pa-district-legend__chip is-active" data-pa-bucket="all" aria-pressed="true">
+              <span class="pa-district-swatch pa-district-swatch--all" aria-hidden="true"></span> All
+            </button>
+            <button type="button" class="pa-district-legend__chip" data-pa-bucket="hi" aria-pressed="false">
+              <span class="pa-district-swatch pa-district-swatch--hi" aria-hidden="true"></span> 3+
+            </button>
+            <button type="button" class="pa-district-legend__chip" data-pa-bucket="mid" aria-pressed="false">
+              <span class="pa-district-swatch pa-district-swatch--mid" aria-hidden="true"></span> 1–2
+            </button>
+            <button type="button" class="pa-district-legend__chip" data-pa-bucket="zero" aria-pressed="false">
+              <span class="pa-district-swatch pa-district-swatch--zero" aria-hidden="true"></span> None
+            </button>
+          </div>
+
+          <div class="pa-district-map-stage">
+            <div id="pa-district-map" class="pa-district-map-wrap pa-district-map-wrap--interactive"></div>
+            <div id="pa-district-map-tooltip" class="pa-district-map-tooltip" hidden aria-hidden="true"></div>
+          </div>
+
+          <div class="pa-district-detail-mobile">
+            <div id="pa-district-detail-empty" class="pa-district-detail-empty">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"><path d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5"/></svg>
+              <span>Tap a district on the map</span>
+            </div>
+            <div id="pa-district-detail-panel" class="pa-district-detail-panel" hidden>
+              <div class="pa-district-detail-kicker" id="pa-district-detail-kicker">District</div>
+              <div class="pa-district-detail-title" id="pa-district-detail-title">—</div>
+              <div class="pa-district-detail-grid">
+                <div class="pa-district-detail-row">
+                  <span class="pa-district-detail-label">Legislator</span>
+                  <span class="pa-district-detail-value" id="pa-district-detail-legislator">—</span>
+                </div>
+                <div class="pa-district-detail-row">
+                  <span class="pa-district-detail-label">Party</span>
+                  <span class="pa-district-detail-value" id="pa-district-detail-party">—</span>
+                </div>
+                <div class="pa-district-detail-row">
+                  <span class="pa-district-detail-label">340B Hospitals</span>
+                  <span class="pa-district-detail-value" id="pa-district-detail-count">—</span>
+                </div>
+                <div class="pa-district-detail-row pa-district-detail-row--full">
+                  <span class="pa-district-detail-label">Hospital Names</span>
+                  <span class="pa-district-detail-value" id="pa-district-detail-hospitals">—</span>
+                </div>
+                <div class="pa-district-detail-row">
+                  <span class="pa-district-detail-label">Engagement</span>
+                  <span class="pa-district-detail-value" id="pa-district-detail-relationship">—</span>
+                </div>
+                <div class="pa-district-detail-row">
+                  <span class="pa-district-detail-label">Suggested Action</span>
+                  <span class="pa-district-detail-value" id="pa-district-detail-action">—</span>
+                </div>
+              </div>
+              <div class="pa-district-detail-note" id="pa-district-detail-note"></div>
+            </div>
+          </div>
+          <p class="pa-district-map-note" id="pa-district-map-note">Loading hospital data…</p>
+        </div>
+
+        <!-- Story Submission Form -->
+        <div class="section-label anim-in">Share Your Hospital's 340B Story</div>
+        <div class="story-form-card anim-in">
+          <p class="story-form-intro">Help HAP advocate for 340B by sharing how the program supports your hospital and community.</p>
+          <form id="story-form" class="story-form" novalidate>
+            <div class="story-field">
+              <label class="story-label" for="story-hospital">Hospital Name</label>
+              <input type="text" id="story-hospital" class="story-input" placeholder="e.g. UPMC Mercy" required autocomplete="organization">
+            </div>
+            <div class="story-field">
+              <label class="story-label" for="story-county">County</label>
+              <select id="story-county" class="story-select" required>
+                <option value="">Select a PA county…</option>
+              </select>
+            </div>
+            <div class="story-field">
+              <label class="story-label" for="story-category">Story Category</label>
+              <select id="story-category" class="story-select" required>
+                <option value="">Choose a category…</option>
+                <option value="Patient Access">Patient Access</option>
+                <option value="Community Benefit">Community Benefit</option>
+                <option value="Rural Care">Rural Care</option>
+                <option value="Financial Impact">Financial Impact</option>
+              </select>
+            </div>
+            <div class="story-field">
+              <label class="story-label" for="story-text">Your Story <span class="story-char-count" id="story-char-count">0 / 500</span></label>
+              <textarea id="story-text" class="story-textarea" placeholder="Describe how 340B helps your hospital serve patients…" maxlength="500" rows="4" required></textarea>
+            </div>
+            <div class="story-field">
+              <label class="story-label" for="story-email">Contact Email <span class="story-optional">(optional)</span></label>
+              <input type="email" id="story-email" class="story-input" placeholder="you@hospital.org" autocomplete="email">
+            </div>
+            <div class="story-actions">
+              <button type="submit" class="story-submit-btn">Submit Story</button>
+            </div>
+            <div class="story-feedback" id="story-feedback" aria-live="polite"></div>
+          </form>
+        </div>
+
       </div>
     </section>
 
     <!-- ═══ TAB: POLICY ═══ -->
-    <section class="tab-panel" id="tab-policy" data-tab="policy">
+    <section class="tab-panel" id="tab-policy" data-tab="policy" role="region" aria-label="Policy landscape">
       <div class="tab-scroll">
 
         <!-- Policy Hero -->
@@ -401,11 +513,134 @@
           </details>
         </div>
 
+        <!-- PA State Legislature — Key Committee Members -->
+        <div class="section-label anim-in">PA Legislature — Key Committee Members</div>
+        <div class="leg-committee-section anim-in">
+          <p class="leg-committee-note">Illustrative outreach examples for hospital advocates. Labels describe engagement posture.</p>
+
+          <div class="leg-chamber-label">House</div>
+          <div class="leg-card-list">
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Rep. Dan Frankel</div>
+                <span class="leg-badge leg-badge--ally">Supportive</span>
+              </div>
+              <div class="leg-card-meta">District 23 · D</div>
+              <div class="leg-card-action">Schedule policy meeting</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Rep. Kathy L. Rapp</div>
+                <span class="leg-badge leg-badge--persuadable">Engage</span>
+              </div>
+              <div class="leg-card-meta">District 65 · R</div>
+              <div class="leg-card-action">Request district visit</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Rep. Arvind Venkat</div>
+                <span class="leg-badge leg-badge--ally">Supportive</span>
+              </div>
+              <div class="leg-card-meta">District 30 · D</div>
+              <div class="leg-card-action">Send thank-you and co-sponsor ask</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Rep. Tim Twardzik</div>
+                <span class="leg-badge leg-badge--persuadable">Engage</span>
+              </div>
+              <div class="leg-card-meta">District 123 · R</div>
+              <div class="leg-card-action">Schedule constituent call</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Rep. Timothy Bonner</div>
+                <span class="leg-badge leg-badge--opposed">Opposed</span>
+              </div>
+              <div class="leg-card-meta">District 17 · R</div>
+              <div class="leg-card-action">Targeted follow-up with member hospitals</div>
+            </div>
+          </div>
+
+          <div class="leg-chamber-label">Senate</div>
+          <div class="leg-card-list">
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Sen. Michele Brooks</div>
+                <span class="leg-badge leg-badge--persuadable">Engage</span>
+              </div>
+              <div class="leg-card-meta">District 50 · R</div>
+              <div class="leg-card-action">Schedule chair briefing</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Sen. Art Haywood</div>
+                <span class="leg-badge leg-badge--ally">Supportive</span>
+              </div>
+              <div class="leg-card-meta">District 4 · D</div>
+              <div class="leg-card-action">Coordinate floor support</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Sen. Lynda Schlegel Culver</div>
+                <span class="leg-badge leg-badge--persuadable">Engage</span>
+              </div>
+              <div class="leg-card-meta">District 27 · R</div>
+              <div class="leg-card-action">Request district-level impact meeting</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Sen. Judy Ward</div>
+                <span class="leg-badge leg-badge--opposed">Opposed</span>
+              </div>
+              <div class="leg-card-meta">District 30 · R</div>
+              <div class="leg-card-action">Targeted member outreach before vote</div>
+            </div>
+            <div class="leg-card">
+              <div class="leg-card-top">
+                <div class="leg-card-name">Sen. Maria Collett</div>
+                <span class="leg-badge leg-badge--ally">Supportive</span>
+              </div>
+              <div class="leg-card-meta">District 12 · D</div>
+              <div class="leg-card-action">Send thank-you and hearing prep</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PA Congressional Delegation -->
+        <div class="section-label anim-in">PA Congressional Delegation — 340B</div>
+        <div class="fed-delegation-section anim-in">
+          <div class="fed-filter-bar" id="fed-filter-bar" role="group" aria-label="Filter by 340B position">
+            <button class="fed-filter-btn active" data-fed-filter="all">All</button>
+            <button class="fed-filter-btn" data-fed-filter="cosponsor">Cosponsor</button>
+            <button class="fed-filter-btn" data-fed-filter="supportive">Supportive</button>
+            <button class="fed-filter-btn" data-fed-filter="unknown">Unknown</button>
+            <button class="fed-filter-btn" data-fed-filter="opposed">Opposed</button>
+          </div>
+          <div class="fed-card-list" id="fed-card-list"></div>
+          <div class="fed-statute-note anim-in">
+            <strong>Federal statutory basis:</strong> 340B is established in 42 U.S.C. &sect;256b, which bars duplicate discounts; manufacturer limits on contract pharmacies are not explicitly authorized in that statute.
+          </div>
+        </div>
+
+        <!-- ZIP Legislator Lookup -->
+        <div class="section-label anim-in">Find Your Legislator</div>
+        <div class="zip-lookup-section anim-in">
+          <p class="zip-lookup-intro">Enter a Pennsylvania ZIP code to find your state House, Senate, and Congressional representatives.</p>
+          <form class="zip-lookup-form" id="zip-lookup-form">
+            <div class="zip-lookup-row">
+              <input type="text" id="zip-lookup-input" class="zip-lookup-input" placeholder="Enter PA ZIP code" inputmode="numeric" pattern="[0-9]*" maxlength="5" autocomplete="postal-code">
+              <button type="submit" class="zip-lookup-btn">Look Up</button>
+            </div>
+            <div class="zip-lookup-status" id="zip-lookup-status" aria-live="polite"></div>
+          </form>
+        </div>
+
       </div>
     </section>
 
     <!-- ═══ TAB: MORE ═══ -->
-    <section class="tab-panel" id="tab-more" data-tab="more">
+    <section class="tab-panel" id="tab-more" data-tab="more" role="region" aria-label="More information and tools">
       <div class="tab-scroll">
 
         <!-- About 340B -->
@@ -447,11 +682,96 @@
         <!-- Sources -->
         <div class="section-label anim-in">Sources &amp; Methodology</div>
         <div class="sources-card anim-in">
-          <p class="sources-text" id="sources-text"></p>
+          <div class="sources-heading">Primary Sources</div>
+          <ul class="sources-list">
+            <li class="source-item">
+              <a href="fact-sheet-hap-2026-protects-access-to-care-pennsylvania-march2026.pdf" target="_blank" rel="noopener noreferrer" class="source-link">HAP PA Fact Sheet</a>
+              <span class="source-detail">340B Protects Access to Care in Pennsylvania (March 2026)</span>
+            </li>
+            <li class="source-item">
+              <a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer" class="source-link">HAP 340B Talking Points</a>
+              <span class="source-detail">Priority framing and program statistics (March 2026)</span>
+            </li>
+            <li class="source-item">
+              <a href="https://www.multistate.us" target="_blank" rel="noopener noreferrer" class="source-link">MultiState</a>
+              <span class="source-detail">State legislation tracking &mdash; primary verification for state law counts</span>
+            </li>
+            <li class="source-item">
+              <a href="https://www.ashp.org/advocacy-and-issues/key-issues/340b" target="_blank" rel="noopener noreferrer" class="source-link">ASHP</a>
+              <span class="source-detail">American Society of Health-System Pharmacists &mdash; secondary verification</span>
+            </li>
+            <li class="source-item">
+              <a href="https://essentialhospitals.org/340b/" target="_blank" rel="noopener noreferrer" class="source-link">America's Essential Hospitals</a>
+              <span class="source-detail">State law tracking &mdash; tertiary verification</span>
+            </li>
+            <li class="source-item">
+              <a href="https://www.340bhealth.org" target="_blank" rel="noopener noreferrer" class="source-link">340B Health</a>
+              <span class="source-detail">Community benefit totals and program advocacy data</span>
+            </li>
+            <li class="source-item">
+              <a href="https://www.aha.org/statistics/fast-facts-us-hospitals" target="_blank" rel="noopener noreferrer" class="source-link">AHA</a>
+              <span class="source-detail">American Hospital Association &mdash; community benefit reporting</span>
+            </li>
+            <li class="source-item">
+              <a href="https://www.commonwealthfund.org/publications/explainer/2025/aug/340b-drug-pricing-program-how-it-works-and-why-its-controversial" target="_blank" rel="noopener noreferrer" class="source-link">Commonwealth Fund</a>
+              <span class="source-detail">340B explainer &mdash; 7% of total U.S. drug market context (per HAP talking points)</span>
+            </li>
+            <li class="source-item">
+              <a href="https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" target="_blank" rel="noopener noreferrer" class="source-link">HRSA Program Integrity FY 2024</a>
+              <span class="source-detail">Federal audit counts &mdash; 179 entity vs. 5 manufacturer audits</span>
+            </li>
+          </ul>
+          <div class="sources-heading sources-heading--secondary">Methodology</div>
+          <p class="sources-text">Verification order for state law: MultiState, then ASHP, then America's Essential Hospitals. State counts in <code>state-data.js</code> cover 50 states; D.C. appears in data but is excluded from headline totals. All figures trace to named sources above.</p>
         </div>
         <div class="limitations-card anim-in">
           <div class="limitations-title">Limitations</div>
-          <p class="limitations-text" id="limitations-text"></p>
+          <p class="limitations-text">State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited. PDF briefings match HAP March 2026 advocacy materials; confirm against <a href="https://www.haponline.org" target="_blank" rel="noopener noreferrer">haponline.org</a> if republished.</p>
+        </div>
+
+        <!-- Report Generator -->
+        <div class="section-label anim-in">Advocacy Reports</div>
+        <div class="report-gen-card anim-in">
+          <p class="report-gen-intro">Generate a print-ready advocacy report or export data for presentations and outreach.</p>
+          <div class="report-gen-options">
+            <div class="report-field">
+              <label class="story-label" for="report-type">Report Type</label>
+              <select id="report-type" class="story-select">
+                <option value="full">Full 340B Briefing</option>
+                <option value="pa-one-pager">PA One-Pager</option>
+                <option value="state-comparison">State Comparison</option>
+              </select>
+            </div>
+            <div class="report-field report-states-field" id="report-states-field" hidden>
+              <label class="story-label" for="report-states">Select States to Compare</label>
+              <select id="report-states" class="story-select" multiple size="6"></select>
+              <span class="story-optional">Hold Ctrl/Cmd to select multiple</span>
+            </div>
+          </div>
+          <div class="report-gen-actions">
+            <button type="button" class="report-gen-btn report-gen-btn--pdf" id="btn-gen-pdf">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+              Generate PDF
+            </button>
+            <button type="button" class="report-gen-btn" id="btn-gen-csv">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Export CSV
+            </button>
+          </div>
+        </div>
+
+        <!-- Data Connection Status -->
+        <div class="section-label anim-in">Data Connection</div>
+        <div class="data-connection-card anim-in">
+          <div class="data-conn-header">
+            <span class="data-conn-dot" id="data-conn-dot"></span>
+            <span class="data-conn-label" id="data-conn-label">Static File</span>
+          </div>
+          <p class="data-conn-detail" id="data-conn-detail">Data comes from a local file (state-data.js). When connected to the HAP data warehouse, this dashboard will refresh automatically.</p>
+          <div class="data-conn-meta">
+            <span id="data-conn-freshness">Last updated: —</span>
+          </div>
+          <div id="pbi-embed-slot" class="pbi-embed-slot"></div>
         </div>
 
         <!-- Actions -->
@@ -486,12 +806,10 @@
         <!-- Footer -->
         <div class="app-footer anim-in">
           <div class="footer-brand">
-            <svg class="footer-logo" viewBox="0 0 120 48" aria-hidden="true">
-              <path fill="#0072bc" d="M8 8h6v14h4V8h6v32h-6V26h-4v14H8z"/>
-              <path fill="#8ed8f8" d="M38 36c2-4 4-10 4-16 0-4-.5-8-1.5-11L44 8h8l4 14c1 3 1.5 6 1.5 10 0 6 2 12 4 16l-4 2-2-6h-8l-2 6z" opacity="0.95"/>
-              <path fill="#fbb040" d="M52 20c0-2 .5-4 1-6l-3-6h8l3 6c.5 2 1 4 1 6v16h-4l-1-4h-4zm4 8h4l-2-8-2 8z"/>
-              <path fill="#0072bc" d="M72 8h10c6 0 10 4 10 10s-3 8-8 9l6 15h-6l-6-14h-4v14h-6zM78 18h4c2 0 4-1.5 4-4s-2-4-4-4h-4z"/>
-            </svg>
+            <picture class="footer-logo">
+              <source srcset="hap_logo.avif" type="image/avif">
+              <img src="haplogo_box_blue.jpeg" alt="HAP logo" width="60" height="60" loading="lazy">
+            </picture>
           </div>
           <p class="footer-text">The Hospital and Healthsystem Association of Pennsylvania</p>
           <p class="footer-address">30 North Third Street, Suite 600 &middot; Harrisburg, PA 17101</p>
@@ -528,7 +846,7 @@
   </nav>
 
   <!-- Toast Notification -->
-  <div class="toast-container" id="toast-container"></div>
+  <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
   <!-- Share Sheet -->
   <div class="share-sheet hidden" id="share-sheet">
@@ -560,6 +878,8 @@
 
 </div>
 
+<script src="modules/data-layer.js"></script>
+<script src="modules/ai-helpers.js"></script>
 <script src="340b-mobile.js"></script>
 </body>
 </html>

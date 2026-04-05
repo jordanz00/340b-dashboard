@@ -128,4 +128,38 @@ Repeat for `vw_pbi_fact_dashboard_kpi` and `vw_pbi_dim_data_freshness` **if** th
 
 ---
 
+---
+
+## 10. Mobile App Integration (`DataLayer` swap point)
+
+The **340B mobile dashboard** (`340b-mobile.html`) uses a data abstraction layer (`modules/data-layer.js`) that decouples the UI from raw data globals. This is the **single swap point** for connecting the mobile app to live data.
+
+### How it works today (static)
+
+`DataLayer` methods (`getStates()`, `getKPIs()`, `getPA()`, etc.) read from global variables defined in `state-data.js` and return Promises that resolve immediately.
+
+### How to connect to the warehouse
+
+1. **Publish a JSON API** that returns the same shape as `state-data.js` (STATE_340B, STATE_NAMES, CONFIG objects).
+2. In the mobile app's init code, call:
+   ```js
+   DataLayer.connectAPI("https://your-api.haponline.org/340b/data.json");
+   ```
+3. `DataLayer` will poll that endpoint every 15 minutes and re-render all components.
+4. The "Data Connection" card in the More tab will show "Live — Warehouse API" with a green indicator.
+
+### Power BI embed path
+
+For embedded PBI visuals, call:
+```js
+DataLayer.connectPowerBI({ type: "report", id: "...", embedUrl: "...", accessToken: "..." });
+```
+This mounts the PBI iframe in the `#pbi-embed-slot` container.
+
+### Field mapping
+
+See [DATA-DICTIONARY.md](DATA-DICTIONARY.md) for plain-English descriptions of every field, including the Power BI column name for each.
+
+---
+
 *Last aligned with dashboard `DATA_DATES` and `CONFIG` as documented in `powerbi/metric-registry.json` — update that file when static provenance changes.*
