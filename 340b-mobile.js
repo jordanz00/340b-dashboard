@@ -566,6 +566,12 @@
           openStateSheet(abbr);
         }
       })
+      .on("touchend", function () {
+        this.classList.remove("highlighted");
+      }, { passive: true })
+      .on("touchcancel", function () {
+        this.classList.remove("highlighted");
+      }, { passive: true })
       .transition()
       .delay(function (d, i) { return i * 25; })
       .duration(400)
@@ -573,7 +579,9 @@
 
     svg.append("path")
       .datum(topojson.mesh(usData, usData.objects.states, function (a, b) { return a !== b; }))
+      .attr("class", "state-mesh")
       .attr("fill", "none")
+      .attr("pointer-events", "none")
       .attr("stroke", "#fff")
       .attr("stroke-width", 0.8)
       .attr("stroke-linejoin", "round")
@@ -676,7 +684,9 @@
     if (!dom.mapContainer) return;
     var paths = dom.mapContainer.querySelectorAll("path.state");
     paths.forEach(function (p) {
-      p.classList.toggle("selected", p.getAttribute("data-state") === abbr);
+      p.classList.remove("highlighted");
+      var match = p.getAttribute("data-state") === abbr;
+      p.classList.toggle("selected", match);
     });
     selectedState = abbr;
   }
@@ -770,8 +780,8 @@
     selectedState = null;
 
     if (dom.mapContainer) {
-      dom.mapContainer.querySelectorAll("path.state.selected").forEach(function (p) {
-        p.classList.remove("selected");
+      dom.mapContainer.querySelectorAll("path.state").forEach(function (p) {
+        p.classList.remove("selected", "highlighted");
       });
     }
   }
@@ -1273,115 +1283,382 @@
   }
 
   function generateReport(type) {
-    var report = document.createElement("div");
-    report.className = "print-report";
-    report.id = "print-report";
-
-    var title = document.createElement("h1");
-    title.textContent = "HAP 340B Advocacy Report";
-    report.appendChild(title);
-
-    var dateLine = document.createElement("p");
-    dateLine.textContent = "Generated: " + new Date().toLocaleDateString() +
-      " | Data as of: " + ((typeof CONFIG !== "undefined" && CONFIG.dataFreshness) || "March 2026");
-    report.appendChild(dateLine);
-
-    if (type === "full" || type === "pa-one-pager") {
-      var kpiH2 = document.createElement("h2");
-      kpiH2.textContent = "Key Metrics";
-      report.appendChild(kpiH2);
-
-      var kpiTable = document.createElement("table");
-      var protCount = 0;
-      if (typeof STATES_WITH_PROTECTION !== "undefined") {
-        protCount = STATES_WITH_PROTECTION.filter(function (s) { return s !== "DC"; }).length;
-      }
-      kpiTable.innerHTML =
-        "<thead><tr><th>Metric</th><th>Value</th><th>Why It Matters</th></tr></thead>" +
-        "<tbody>" +
-        "<tr><td>PA 340B Hospitals</td><td>72</td><td>Rely on 340B to serve patients</td></tr>" +
-        "<tr><td>Community Benefit</td><td>$7.95B</td><td>Reported by 340B hospitals (2024)</td></tr>" +
-        "<tr><td>States Protected</td><td>" + protCount + "</td><td>Contract pharmacy laws enacted</td></tr>" +
-        "<tr><td>States Without</td><td>" + (50 - protCount) + "</td><td>No contract pharmacy protection</td></tr>" +
-        "</tbody>";
-      report.appendChild(kpiTable);
+    var freshness = (typeof CONFIG !== "undefined" && CONFIG.dataFreshness) || "March 2026";
+    var protCount = 0;
+    if (typeof STATES_WITH_PROTECTION !== "undefined") {
+      protCount = STATES_WITH_PROTECTION.filter(function (s) { return s !== "DC"; }).length;
     }
-
-    if (type === "full" || type === "state-comparison") {
-      var stateH2 = document.createElement("h2");
-      stateH2.textContent = "State Protection Status";
-      report.appendChild(stateH2);
-
-      var selected = [];
-      var statesSelect = document.getElementById("report-states");
-      if (type === "state-comparison" && statesSelect) {
-        for (var i = 0; i < statesSelect.selectedOptions.length; i++) {
-          selected.push(statesSelect.selectedOptions[i].value);
-        }
-      }
-
-      if (typeof STATE_340B !== "undefined" && typeof STATE_NAMES !== "undefined") {
-        var stateTable = document.createElement("table");
-        var rows = "<thead><tr><th>State</th><th>Contract Pharmacy</th><th>PBM Law</th><th>Year</th><th>Notes</th></tr></thead><tbody>";
-        Object.keys(STATE_NAMES)
-          .filter(function (a) { return a !== "DC" && (selected.length === 0 || selected.indexOf(a) !== -1); })
-          .sort(function (a, b) { return STATE_NAMES[a].localeCompare(STATE_NAMES[b]); })
-          .forEach(function (abbr) {
-            var s = STATE_340B[abbr] || {};
-            rows += "<tr><td>" + safeEscape(STATE_NAMES[abbr]) + "</td>" +
-              "<td>" + (s.cp ? "Yes" : "No") + "</td>" +
-              "<td>" + (s.pbm ? "Yes" : "No") + "</td>" +
-              "<td>" + (s.y || "—") + "</td>" +
-              "<td>" + safeEscape(s.notes || "") + "</td></tr>";
-          });
-        rows += "</tbody>";
-        stateTable.innerHTML = rows;
-        report.appendChild(stateTable);
-      }
-    }
-
-    if (type === "pa-one-pager") {
-      var paH2 = document.createElement("h2");
-      paH2.textContent = "Pennsylvania Focus";
-      report.appendChild(paH2);
-
-      var paTable = document.createElement("table");
-      paTable.innerHTML =
-        "<thead><tr><th>Stat</th><th>Value</th></tr></thead><tbody>" +
-        "<tr><td>340B Hospitals</td><td>72</td></tr>" +
-        "<tr><td>Rural Hospitals</td><td>38%</td></tr>" +
-        "<tr><td>Operating at a Loss</td><td>63%</td></tr>" +
-        "<tr><td>L&D Services</td><td>95%</td></tr>" +
-        "<tr><td>HRSA Hospital Audits (FY24)</td><td>179</td></tr>" +
-        "<tr><td>Manufacturer Audits (FY24)</td><td>5</td></tr>" +
-        "</tbody>";
-      report.appendChild(paTable);
-    }
-
-    var footer = document.createElement("div");
-    footer.className = "print-footer";
-    footer.textContent = "Source: HAP 340B Advocacy Dashboard — " +
-      ((typeof CONFIG !== "undefined" && CONFIG.shareUrlBase) || window.location.href) +
-      " | The Hospital and Healthsystem Association of Pennsylvania";
-    report.appendChild(footer);
 
     var existing = document.getElementById("print-report");
     if (existing) existing.parentNode.removeChild(existing);
 
-    report.style.display = "none";
+    var report = document.createElement("div");
+    report.className = "print-report";
+    report.id = "print-report";
+
+    var titleMap = {
+      full: "340B: Protecting access to care in Pennsylvania",
+      "pa-one-pager": "340B: Pennsylvania one-pager",
+      "state-comparison": "340B: State protection comparison"
+    };
+    var badgeMap = {
+      full: "Advocacy Briefing",
+      "pa-one-pager": "PA One-Pager",
+      "state-comparison": "State Comparison"
+    };
+
+    appendHeader(report, titleMap[type] || titleMap.full, badgeMap[type] || badgeMap.full, freshness);
+
+    if (type === "full" || type === "pa-one-pager") {
+      appendStatGrid(report, protCount);
+    }
+
+    if (type === "full") {
+      appendAsks(report);
+      appendAuditBlock(report);
+      appendRebuttalTable(report);
+    }
+
+    if (type === "pa-one-pager") {
+      appendPAStakes(report);
+      appendAuditBlock(report);
+      appendAsks(report);
+    }
+
+    if (type === "full" || type === "state-comparison") {
+      appendStateTable(report, type);
+    }
+
+    appendSources(report);
+    appendFooter(report, freshness);
+
     document.body.appendChild(report);
+    document.body.classList.add("printing-report");
+    report.classList.add("print-report--visible");
 
-    var panels = document.querySelectorAll(".tab-panel");
-    panels.forEach(function (p) { p.classList.add("print-target"); });
-    report.style.display = "block";
+    requestAnimationFrame(function () {
+      window.print();
+      setTimeout(function () {
+        report.classList.remove("print-report--visible");
+        document.body.classList.remove("printing-report");
+        document.body.removeChild(report);
+      }, 800);
+    });
+  }
 
-    window.print();
+  /* ── Report building helpers ── */
 
-    setTimeout(function () {
-      report.style.display = "none";
-      panels.forEach(function (p) { p.classList.remove("print-target"); });
-      document.body.removeChild(report);
-    }, 1000);
+  function appendHeader(parent, title, badge, freshness) {
+    var hdr = document.createElement("div");
+    hdr.className = "pr-header";
+    var textBlock = document.createElement("div");
+    var org = document.createElement("p");
+    org.className = "pr-header-org";
+    org.textContent = "The Hospital and Healthsystem Association of Pennsylvania";
+    var ttl = document.createElement("p");
+    ttl.className = "pr-header-title";
+    ttl.textContent = title;
+    textBlock.appendChild(org);
+    textBlock.appendChild(ttl);
+    var bdg = document.createElement("span");
+    bdg.className = "pr-badge";
+    bdg.textContent = badge + " \u2014 " + freshness;
+    hdr.appendChild(textBlock);
+    hdr.appendChild(bdg);
+    parent.appendChild(hdr);
+  }
+
+  function appendStatGrid(parent, protCount) {
+    var grid = document.createElement("div");
+    grid.className = "pr-stat-grid";
+
+    var cards = [
+      { label: "Reported community benefit (2024)", value: "$7.95B", impact: "Reinvested in patient care and community services", cls: "" },
+      { label: "PA hospitals in 340B", value: "72", impact: "30% of Pennsylvania\u2019s 235 hospitals", cls: "pr-stat-card--mid" },
+      { label: "States with contract pharmacy protection", value: String(protCount), impact: (50 - protCount) + " states still lack protection \u2014 including PA", cls: "pr-stat-card--green" },
+      { label: "Share of U.S. drug market", value: "7%", impact: "Small program, outsized impact for patients", cls: "pr-stat-card--gold" }
+    ];
+
+    cards.forEach(function (c) {
+      var card = document.createElement("div");
+      card.className = "pr-stat-card" + (c.cls ? " " + c.cls : "");
+      var lbl = document.createElement("p");
+      lbl.className = "pr-stat-label";
+      lbl.textContent = c.label;
+      var val = document.createElement("p");
+      val.className = "pr-stat-value";
+      val.textContent = c.value;
+      var imp = document.createElement("p");
+      imp.className = "pr-stat-impact";
+      imp.textContent = c.impact;
+      card.appendChild(lbl);
+      card.appendChild(val);
+      card.appendChild(imp);
+      grid.appendChild(card);
+    });
+
+    parent.appendChild(grid);
+  }
+
+  function appendAsks(parent) {
+    var sec = document.createElement("p");
+    sec.className = "pr-section";
+    sec.textContent = "What HAP is asking lawmakers to do";
+    parent.appendChild(sec);
+
+    var grid = document.createElement("ul");
+    grid.className = "pr-ask-grid";
+
+    var items = [
+      { title: "Protect the 340B discount", body: "Keep hospital access to the outpatient drug prices Congress set for charity care and community benefit.", cls: "" },
+      { title: "Defend contract pharmacy partnerships", body: "Patients fill prescriptions through local pharmacies \u2014 not one distant site selected by manufacturers.", cls: "pr-ask-item--gold" },
+      { title: "Oppose rules that shrink safety-net access", body: "Rural and underserved communities keep an affordable path to medications hospitals are required to support.", cls: "pr-ask-item--green" }
+    ];
+
+    items.forEach(function (it) {
+      var li = document.createElement("li");
+      li.className = "pr-ask-item" + (it.cls ? " " + it.cls : "");
+      var t = document.createElement("p");
+      t.className = "pr-ask-title";
+      t.textContent = it.title;
+      var b = document.createElement("p");
+      b.className = "pr-ask-body";
+      b.textContent = it.body;
+      li.appendChild(t);
+      li.appendChild(b);
+      grid.appendChild(li);
+    });
+
+    parent.appendChild(grid);
+  }
+
+  function appendAuditBlock(parent) {
+    var block = document.createElement("div");
+    block.className = "pr-audit";
+
+    var left = document.createElement("div");
+    var kicker = document.createElement("p");
+    kicker.className = "pr-audit-kicker";
+    kicker.textContent = "HRSA Program Integrity FY 2024";
+    left.appendChild(kicker);
+
+    var cells = document.createElement("div");
+    cells.className = "pr-audit-cells";
+
+    var c1 = document.createElement("div");
+    c1.className = "pr-audit-cell";
+    var c1l = document.createElement("p");
+    c1l.className = "pr-audit-cell-label";
+    c1l.textContent = "Covered entity audits";
+    var c1v = document.createElement("p");
+    c1v.className = "pr-audit-cell-value";
+    c1v.textContent = "179";
+    c1.appendChild(c1l);
+    c1.appendChild(c1v);
+
+    var vs = document.createElement("div");
+    vs.className = "pr-audit-vs";
+    vs.textContent = "vs.";
+
+    var c2 = document.createElement("div");
+    c2.className = "pr-audit-cell";
+    var c2l = document.createElement("p");
+    c2l.className = "pr-audit-cell-label";
+    c2l.textContent = "Manufacturer audits";
+    var c2v = document.createElement("p");
+    c2v.className = "pr-audit-cell-value";
+    c2v.textContent = "5";
+    c2.appendChild(c2l);
+    c2.appendChild(c2v);
+
+    cells.appendChild(c1);
+    cells.appendChild(vs);
+    cells.appendChild(c2);
+    left.appendChild(cells);
+
+    var conclusion = document.createElement("div");
+    conclusion.className = "pr-audit-conclusion";
+    var strong = document.createElement("strong");
+    strong.textContent = "36\u00D7 more hospital audits than manufacturer audits";
+    conclusion.appendChild(strong);
+    conclusion.appendChild(document.createTextNode(
+      "Hospitals and manufacturers should face the same level of federal scrutiny. The current imbalance is an equity argument."
+    ));
+
+    block.appendChild(left);
+    block.appendChild(conclusion);
+    parent.appendChild(block);
+  }
+
+  function appendRebuttalTable(parent) {
+    var sec = document.createElement("p");
+    sec.className = "pr-section";
+    sec.textContent = "What manufacturers argue \u2014 and the response";
+    parent.appendChild(sec);
+
+    var table = document.createElement("table");
+    table.className = "pr-rebuttal";
+
+    var rebuttals = [
+      [
+        "340B creates duplicate discounts.",
+        "PA DHS runs the 340B Drug Exclusion List preventing this. Federal law (42 U.S.C. \u00A7256b) already prohibits duplicate discounts.",
+        "PA DHS Exclusion List; HRSA program integrity rules"
+      ],
+      [
+        "Hospitals use 340B savings for profit.",
+        "$7.95B in reported community benefit (2024) funds free prescriptions, cancer screening, dental care, and rural services.",
+        "340B Health 2024 community benefit report"
+      ],
+      [
+        "Contract pharmacy networks are unaudited.",
+        "HRSA conducted 179 covered-entity audits vs. only 5 manufacturer audits in FY 2024.",
+        "HRSA Program Integrity FY 2024"
+      ]
+    ];
+
+    var thead = document.createElement("thead");
+    var headRow = document.createElement("tr");
+    ["Manufacturer claim", "HAP response", "Evidence"].forEach(function (h) {
+      var th = document.createElement("th");
+      th.textContent = h;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement("tbody");
+    rebuttals.forEach(function (row) {
+      var tr = document.createElement("tr");
+      row.forEach(function (cell) {
+        var td = document.createElement("td");
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);
+    parent.appendChild(table);
+  }
+
+  function appendPAStakes(parent) {
+    var sec = document.createElement("p");
+    sec.className = "pr-section";
+    sec.textContent = "Pennsylvania operating stakes";
+    parent.appendChild(sec);
+
+    var block = document.createElement("div");
+    block.className = "pr-pa-stakes";
+    var title = document.createElement("p");
+    title.className = "pr-pa-stakes-title";
+    title.textContent = "Why 340B is not optional for PA hospitals";
+    block.appendChild(title);
+
+    var ul = document.createElement("ul");
+    [
+      "72 PA hospitals (30% of all) depend on 340B to serve patients",
+      "63% of PA 340B hospitals operate at a financial loss",
+      "38% are rural \u2014 contract pharmacies are the only access point for many patients",
+      "95% provide labor & delivery services",
+      "179 HRSA audits vs. 5 manufacturer audits (FY 2024) \u2014 hospitals face 36\u00D7 more scrutiny"
+    ].forEach(function (text) {
+      var li = document.createElement("li");
+      li.textContent = text;
+      ul.appendChild(li);
+    });
+    block.appendChild(ul);
+    parent.appendChild(block);
+  }
+
+  function appendStateTable(parent, type) {
+    if (typeof STATE_340B === "undefined" || typeof STATE_NAMES === "undefined") return;
+
+    var sec = document.createElement("p");
+    sec.className = "pr-section";
+    sec.textContent = "State contract pharmacy protection status";
+    parent.appendChild(sec);
+
+    var selected = [];
+    var statesSelect = document.getElementById("report-states");
+    if (type === "state-comparison" && statesSelect) {
+      for (var i = 0; i < statesSelect.selectedOptions.length; i++) {
+        selected.push(statesSelect.selectedOptions[i].value);
+      }
+    }
+
+    var table = document.createElement("table");
+    table.className = "pr-state-table";
+
+    var thead = document.createElement("thead");
+    var headRow = document.createElement("tr");
+    ["State", "Contract Pharmacy", "PBM Law", "Year", "Notes"].forEach(function (h) {
+      var th = document.createElement("th");
+      th.textContent = h;
+      headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+
+    var tbody = document.createElement("tbody");
+    Object.keys(STATE_NAMES)
+      .filter(function (a) { return a !== "DC" && (selected.length === 0 || selected.indexOf(a) !== -1); })
+      .sort(function (a, b) { return STATE_NAMES[a].localeCompare(STATE_NAMES[b]); })
+      .forEach(function (abbr) {
+        var s = STATE_340B[abbr] || {};
+        var tr = document.createElement("tr");
+
+        var tdName = document.createElement("td");
+        tdName.textContent = STATE_NAMES[abbr];
+        tr.appendChild(tdName);
+
+        var tdCp = document.createElement("td");
+        tdCp.textContent = s.cp ? "Yes" : "No";
+        tdCp.className = s.cp ? "pr-state-yes" : "pr-state-no";
+        tr.appendChild(tdCp);
+
+        var tdPbm = document.createElement("td");
+        tdPbm.textContent = s.pbm ? "Yes" : "No";
+        tdPbm.className = s.pbm ? "pr-state-yes" : "pr-state-no";
+        tr.appendChild(tdPbm);
+
+        var tdYear = document.createElement("td");
+        tdYear.textContent = s.y || "\u2014";
+        tr.appendChild(tdYear);
+
+        var tdNotes = document.createElement("td");
+        tdNotes.textContent = s.notes || "";
+        tr.appendChild(tdNotes);
+
+        tbody.appendChild(tr);
+      });
+    table.appendChild(tbody);
+    parent.appendChild(table);
+  }
+
+  function appendSources(parent) {
+    var p = document.createElement("p");
+    p.className = "pr-sources";
+    p.textContent = "Sources: MultiState \u00B7 ASHP \u00B7 America\u2019s Essential Hospitals (state law) \u00B7 340B Health \u00B7 AHA (community benefit) \u00B7 HRSA Program Integrity FY 2024 (audit counts) \u00B7 42 U.S.C. \u00A7256b (federal statutory basis)";
+    parent.appendChild(p);
+    var lim = document.createElement("p");
+    lim.className = "pr-sources";
+    lim.textContent = "Limitations: State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.";
+    parent.appendChild(lim);
+  }
+
+  function appendFooter(parent, freshness) {
+    var footer = document.createElement("div");
+    footer.className = "pr-footer";
+    var left = document.createElement("span");
+    left.textContent = "The Hospital and Healthsystem Association of Pennsylvania \u2014 haponline.org/340b";
+    var mid = document.createElement("span");
+    mid.textContent = "(717) 564-9200";
+    var right = document.createElement("span");
+    right.textContent = freshness + " \u2014 Generated " + new Date().toLocaleDateString();
+    footer.appendChild(left);
+    footer.appendChild(mid);
+    footer.appendChild(right);
+    parent.appendChild(footer);
   }
 
   function downloadCsv(type) {
