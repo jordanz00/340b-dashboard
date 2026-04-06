@@ -18,6 +18,51 @@
   <!-- System SF Pro stack — no external font needed -->
   <link rel="stylesheet" href="hap-design-tokens.css">
   <link rel="stylesheet" href="340b-mobile.css">
+  <style id="map-all-states-compact">
+    /* Map tab — denser “All States” list (mobile); map + chips stay default sizing */
+    #tab-map .map-all-states-label {
+      font-size: 0.8125rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--text-muted, #5c6368);
+      margin: 20px 0 8px;
+    }
+    #state-grid {
+      gap: 6px;
+      padding-bottom: 12px;
+      grid-template-columns: repeat(2, 1fr);
+    }
+    @media (min-width: 414px) {
+      #state-grid { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 768px) {
+      #state-grid { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    }
+    #state-grid .state-card {
+      padding: 10px 10px;
+      gap: 8px;
+      border-radius: var(--radius-sm, 10px);
+    }
+    #state-grid .state-dot {
+      width: 8px;
+      height: 8px;
+    }
+    #state-grid .state-card-name {
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+    #state-grid .state-card-status {
+      font-size: 9px;
+      margin-top: 1px;
+      line-height: 1.2;
+    }
+    #state-grid .state-card-arrow {
+      width: 14px;
+      height: 14px;
+    }
+  </style>
   <script src="state-data.js"></script>
   <script src="data/dataset-metadata.js"></script>
   <script src="config/settings.js"></script>
@@ -170,16 +215,6 @@
     <section class="tab-panel" id="tab-map" data-tab="map" role="region" aria-label="State protection map">
       <div class="tab-scroll">
 
-        <!-- Map Search -->
-        <div class="map-search-bar anim-in">
-          <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" class="search-input" id="state-search" placeholder="Find a state by name…" autocomplete="off" list="state-search-datalist" enterkeyhint="search" aria-label="Find a state by name">
-          <datalist id="state-search-datalist"></datalist>
-          <button class="search-clear hidden" id="search-clear" aria-label="Clear search">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-
         <!-- Filter Chips -->
         <div class="filter-bar anim-in" id="filter-bar">
           <button class="filter-chip active" data-filter="all">All States</button>
@@ -224,7 +259,7 @@
         </div>
 
         <!-- State Grid -->
-        <div class="section-label anim-in">All States</div>
+        <div class="section-label map-all-states-label anim-in">All States</div>
         <div class="state-grid" id="state-grid"></div>
 
       </div>
