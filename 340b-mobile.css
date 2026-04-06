@@ -3266,6 +3266,11 @@ details summary:focus-visible {
     font-size: 9.5pt;
     color: #1a1a2e;
   }
+
+  /* Hide iOS print-preview toolbar in printed output */
+  #pr-ios-bar {
+    display: none !important;
+  }
 }
 
 @page {
@@ -3833,6 +3838,61 @@ details summary:focus-visible {
 @media (min-width: 768px) {
   .state-grid { grid-template-columns: repeat(4, 1fr); }
   .share-options { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+}
+
+/* ═══════════════════════════════════════════════════
+   Laptop / desktop — centered column (mobile-first)
+   Full-bleed .hap-app reads as an oversized phone on wide monitors;
+   constrain width and letterbox so layout stays intentional. No
+   transform on .hap-app — keeps position:fixed overlays correct.
+   ═══════════════════════════════════════════════════ */
+
+@media (min-width: 900px) {
+  :root {
+    --hap-desktop-shell-max: 600px;
+  }
+
+  html {
+    background: var(--bg-subtle, #e5e5ea);
+  }
+
+  body {
+    background: transparent;
+  }
+
+  .hap-app {
+    inset: unset;
+    top: 0;
+    bottom: 0;
+    left: max(0px, calc((100vw - min(100vw, var(--hap-desktop-shell-max))) / 2));
+    width: min(100vw, var(--hap-desktop-shell-max));
+    right: auto;
+    box-shadow:
+      0 0 0 1px var(--border-light),
+      0 12px 48px rgba(0, 0, 0, 0.1);
+  }
+
+  .app-header-inner,
+  .app-tab-bar {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+
+  .tab-scroll {
+    padding-left: 28px;
+    padding-right: 28px;
+  }
+
+  /* Hero lead was capped for narrow phones; allow full column width here */
+  .hero-lead {
+    max-width: none;
+  }
+}
+
+@media (min-width: 1200px) {
+  :root {
+    --hap-desktop-shell-max: 680px;
+  }
 }
 
 /* ═══════════════════════════════════════════════════

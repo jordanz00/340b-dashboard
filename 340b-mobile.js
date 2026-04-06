@@ -1849,8 +1849,9 @@
     btnPdf.addEventListener("click", function () {
       var t = typeSelect.value;
       var savedTab = currentTab;
+      var iosWin = _isIOSDevice() ? window.open("", "_blank") : null;
       prepareReportMapSnapshots(t, function (snaps) {
-        generateReport(t, snaps, savedTab);
+        generateReport(t, snaps, savedTab, iosWin);
       });
     });
 
@@ -2107,11 +2108,21 @@
   }
 
   /**
+   * Detect iOS (iPhone / iPad / iPod) including iPadOS 13+ (which reports as "MacIntel").
+   * @returns {boolean}
+   */
+  function _isIOSDevice() {
+    return /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+      (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  }
+
+  /**
    * @param {string} type
    * @param {ReportMapSnaps} [mapSnaps]
    * @param {string} [restoreTab] — tab id to return to after cloning maps into the report
+   * @param {Window|null} [iosWindow] — pre-opened blank window for iOS (must be opened in click handler to avoid popup-block)
    */
-  function generateReport(type, mapSnaps, restoreTab) {
+  function generateReport(type, mapSnaps, restoreTab, iosWindow) {
     mapSnaps = mapSnaps || {};
     var freshness = (typeof CONFIG !== "undefined" && CONFIG.dataFreshness) || "March 2026";
     var protCount = 0;
@@ -2192,15 +2203,110 @@
       switchTab(restoreTab);
     }
 
+    if (iosWindow && !iosWindow.closed) {
+      _writeReportToIOSWindow(iosWindow, report);
+    } else {
+      _triggerDesktopPrint(report);
+    }
+  }
+
+  /**
+   * iOS path: write a complete standalone HTML page into the pre-opened window.
+   * The entire page IS the report, so iOS Safari prints it reliably.
+   * A <base> tag ensures relative stylesheet URLs resolve against the original host.
+   */
+  function _writeReportToIOSWindow(w, reportEl) {
+    var base = window.location.href.replace(/[^/]*$/, "");
+
+    var shell = "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n" +
+      "<meta charset=\"utf-8\">\n" +
+      "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n" +
+      "<title>HAP 340B Advocacy Report</title>\n" +
+      "<base href=\"" + base.replace(/&/g, "&amp;").replace(/"/g, "&quot;") + "\">\n" +
+      "<link rel=\"stylesheet\" href=\"hap-design-tokens.css\">\n" +
+      "<link rel=\"stylesheet\" href=\"340b-mobile.css\">\n" +
+      "<style>\n" +
+      "*, *::before, *::after { box-sizing: border-box; }\n" +
+      "body { margin: 0; padding: 0; background: #fff; }\n" +
+      ".print-report { display: block !important; position: static !important; " +
+        "visibility: visible !important; width: 100%; " +
+        "font-family: Tahoma, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; " +
+        "font-size: 9.5pt; color: #1a1a2e; padding: 0 4pt; }\n" +
+      "#pr-ios-bar { position: sticky; top: 0; z-index: 9999; background: #0072bc; " +
+        "padding: 10px 16px; display: flex; align-items: center; " +
+        "justify-content: space-between; gap: 10px; " +
+        "font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }\n" +
+      "#pr-ios-bar span { color: #fff; font-weight: 700; font-size: 15px; }\n" +
+      "#pr-ios-bar button { border: none; border-radius: 8px; padding: 10px 18px; " +
+        "font-size: 15px; font-weight: 600; cursor: pointer; min-height: 44px; " +
+        "-webkit-appearance: none; }\n" +
+      ".pr-ios-print-btn { background: #fff; color: #0072bc; }\n" +
+      ".pr-ios-done-btn { background: rgba(255,255,255,0.2); color: #fff; " +
+        "border: 1px solid rgba(255,255,255,0.4) !important; }\n" +
+      "@media print { #pr-ios-bar { display: none !important; } " +
+        "body { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }\n" +
+      "@page { size: letter portrait; margin: 0.55in 0.6in 0.5in 0.6in; }\n" +
+      "</style>\n" +
+      "</head>\n<body>\n" +
+      "<div id=\"pr-ios-bar\">" +
+        "<span>Report Preview</span>" +
+        "<div style=\"display:flex;gap:8px;\">" +
+          "<button class=\"pr-ios-print-btn\" id=\"pr-ios-print\">Print / Save PDF</button>" +
+          "<button class=\"pr-ios-done-btn\" id=\"pr-ios-done\">Done</button>" +
+        "</div>" +
+      "</div>\n" +
+      "</body>\n</html>";
+
+    w.document.open();
+    w.document.write(shell);
+    w.document.close();
+
+    var imported = w.document.importNode(reportEl, true);
+    imported.style.display = "block";
+    imported.style.position = "static";
+    imported.style.visibility = "visible";
+    w.document.body.appendChild(imported);
+
+    var printBtn = w.document.getElementById("pr-ios-print");
+    var doneBtn = w.document.getElementById("pr-ios-done");
+    if (printBtn) {
+      printBtn.addEventListener("click", function () { w.print(); });
+    }
+    if (doneBtn) {
+      doneBtn.addEventListener("click", function () { w.close(); });
+    }
+  }
+
+  /**
+   * Desktop / non-iOS path: append to current page, auto-trigger window.print(),
+   * clean up via afterprint. Works perfectly on macOS Safari and Chrome.
+   */
+  function _triggerDesktopPrint(report) {
     document.body.appendChild(report);
     document.body.classList.add("printing-report");
     report.classList.add("print-report--visible");
+    void report.offsetHeight;
 
-    window.print();
+    var printCleanupDone = false;
 
-    report.classList.remove("print-report--visible");
-    document.body.classList.remove("printing-report");
-    document.body.removeChild(report);
+    function cleanup() {
+      if (printCleanupDone) return;
+      printCleanupDone = true;
+      window.removeEventListener("afterprint", cleanup);
+      report.classList.remove("print-report--visible");
+      document.body.classList.remove("printing-report");
+      if (report.parentNode) {
+        report.parentNode.removeChild(report);
+      }
+    }
+
+    window.addEventListener("afterprint", cleanup);
+
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        window.print();
+      });
+    });
   }
 
   /* ── Report building helpers ── */

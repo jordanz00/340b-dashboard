@@ -1,0 +1,96 @@
+name: Dashboard CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  audit-and-typecheck:
+    name: Audit, Lint & Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Node dependencies
+        run: npm install --ignore-scripts
+
+      - name: TypeScript type check
+        run: npx tsc --noEmit
+
+      - name: Run dashboard audit
+        run: python3 dashboard-audit.py --verbose
+
+      - name: Run E2E smoke tests
+        run: python3 tests/e2e-smoke.py
+
+      - name: Save audit JSON artifact
+        if: always()
+        run: python3 dashboard-audit.py --json > audit-results.json
+
+      - name: Upload audit results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: audit-results
+          path: audit-results.json
+
+  security:
+    name: Semgrep Security Scan
+    runs-on: ubuntu-latest
+    container:
+      image: semgrep/semgrep
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run Semgrep
+        run: |
+          semgrep scan \
+            --config .semgrep.yml \
+            --config "p/javascript" \
+            --severity ERROR \
+            --severity WARNING \
+            --json -o semgrep-results.json \
+            . || true
+
+      - name: Check for HIGH severity findings
+        run: |
+          python3 -c "
+          import json, sys
+          data = json.load(open('semgrep-results.json'))
+          results = data.get('results', [])
+          high = [r for r in results if r.get('extra',{}).get('severity','').upper() in ('ERROR','HIGH')]
+          print(f'Semgrep: {len(results)} total finding(s), {len(high)} HIGH/ERROR')
+          for r in results:
+            sev = r.get('extra',{}).get('severity','?')
+            msg = r.get('extra',{}).get('message', r.get('check_id',''))
+            path = r.get('path','?')
+            line = r.get('start',{}).get('line','?')
+            print(f'  [{sev.upper()}] {path}:{line} — {msg[:120]}')
+          if not results:
+            print('  No findings — clean scan.')
+          if high:
+            print(f'\nFAIL: {len(high)} HIGH severity finding(s) must be fixed.')
+            sys.exit(1)
+          "
+
+      - name: Upload Semgrep results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: semgrep-results
+          path: semgrep-results.json
