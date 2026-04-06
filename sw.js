@@ -6,11 +6,13 @@
  * WHAT IT DOES NOT DO: Replace a data warehouse — dynamic KPIs still come from state-data.js / DataLayer when the page runs.
  *
  * HOW TO TEST: Serve the site over HTTPS (or localhost), open 340b-mobile.html, reload twice, then toggle offline in DevTools.
- * BUMP CACHE_NAME when you change precached files so clients get fresh copies.
+ * BUMP CACHE_NAME when you change precached files so old CacheStorage buckets are dropped on activate.
+ * Fetch uses stale-while-revalidate: show cache immediately when offline or slow, but refresh shell
+ * assets in the background so CSS/JS updates (e.g. desktop layout) reach GitHub Pages without manual SW clear.
  */
 /* global self, caches */
 
-var CACHE_NAME = "hap-340b-mobile-shell-v1";
+var CACHE_NAME = "hap-340b-mobile-shell-v2";
 
 /** Minimal shell — expand cautiously (large GeoJSON bundles slow first install). */
 var PRECACHE_URLS = [
@@ -72,23 +74,22 @@ self.addEventListener("fetch", function (event) {
   }
 
   event.respondWith(
-    caches.match(event.request).then(function (cached) {
-      if (cached) {
-        return cached;
-      }
-      return fetch(event.request)
-        .then(function (response) {
+    caches.open(CACHE_NAME).then(function (cache) {
+      return cache.match(event.request).then(function (cached) {
+        var networkFetch = fetch(event.request).then(function (response) {
           if (response && response.status === 200 && response.type === "basic") {
-            var copy = response.clone();
-            caches.open(CACHE_NAME).then(function (cache) {
-              cache.put(event.request, copy);
-            });
+            cache.put(event.request, response.clone());
           }
           return response;
-        })
-        .catch(function () {
+        });
+        if (cached) {
+          event.waitUntil(networkFetch.catch(function () {}));
+          return cached;
+        }
+        return networkFetch.catch(function () {
           return caches.match("340b-mobile.html");
         });
+      });
     })
   );
 });
