@@ -20,7 +20,7 @@ import type {
   TopicColor,
   StateRecord,
   PAStats,
-} from "../types/data-layer";
+} from "../../types/data-layer";
 
 /**
  * All known MetricKeys from the metric registry.
@@ -220,7 +220,7 @@ export function validatePAStats(pa: PAStats): ValidationResult[] {
     if (typeof val !== "number" || val < 0 || val > 100) {
       results.push({
         passed: false,
-        check: `pa-${field}-range`,
+        check: `pa-${String(field)}-range`,
         message: `PA ${label} is ${val}, expected 0–100`,
         severity: "error",
       });
