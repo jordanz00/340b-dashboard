@@ -1,9 +1,25 @@
-/* ═══════════════════════════════════════════════════
-   HAP 340B Mobile App — JavaScript
-   ═══════════════════════════════════════════════════
-   Security (SECURE-FORCE): Dynamic UI uses createElement + textContent only.
-   No unsafe HTML-string injection into the DOM — avoids XSS if state-data or CONFIG ever contained markup.
-   ═══════════════════════════════════════════════════ */
+/**
+ * HAP 340B Mobile App — runtime behavior
+ *
+ * WHO THIS IS FOR: New developers maintaining the mobile-first PWA. Read top to bottom once; then jump to the section you need.
+ *
+ * WHAT THIS FILE CONTROLS:
+ * - Bottom tabs + swipe between tabs (see initTabs, initSwipeNavigation, switchTab)
+ * - U.S. protection map, PA district map, state bottom sheet
+ * - KPI count-up, copy from CONFIG / state-data.js, DataLayer metric hydration
+ * - Share sheet, story form, zip lookup, federal delegation, optional AI policy banner
+ * - PWA: registers sw.js after load (offline-friendly shell — see initPwaServiceWorker)
+ *
+ * DATA FLOW (simple):
+ * 1. Numbers in the HTML often have data-metric-key + data-count (fallback).
+ * 2. state-data.js defines CONFIG and STATE_340B (source of truth until the warehouse).
+ * 3. modules/data-layer.js can override KPIs when warehouse mode is on.
+ * 4. powerbi/metric-registry.json + semantic-layer-registry.json name each metric for Power BI later.
+ *
+ * RELATED FILES: 340b-mobile.html (structure), 340b-mobile.css (look), hap-design-tokens.css (HAP brand tokens).
+ *
+ * Security (SECURE-FORCE): Dynamic UI uses createElement + textContent only — avoid HTML-string injection for untrusted text.
+ */
 
 (function () {
   "use strict";
@@ -22,6 +38,7 @@
   var currentFilter = "all";
   var touchStartX = 0;
   var touchStartY = 0;
+  var touchStartTime = 0;
   var isSwiping = false;
   /** @type {Element|null} focus target to restore when state sheet closes */
   var sheetFocusReturnEl = null;
@@ -40,7 +57,7 @@
     dom.app = document.getElementById("app");
     dom.content = document.getElementById("app-content");
     dom.tabBar = document.getElementById("app-tab-bar");
-    dom.tabBtns = dom.tabBar.querySelectorAll(".tab-btn");
+    dom.tabBtns = dom.tabBar ? dom.tabBar.querySelectorAll(".tab-btn") : [];
     dom.tabPanels = document.querySelectorAll(".tab-panel");
     dom.toastContainer = document.getElementById("toast-container");
     dom.shareSheet = document.getElementById("share-sheet");
@@ -80,12 +97,14 @@
       initCountUp();
       initOutcomes();
       initPaAsks();
+      upgradeStaticPaLegislatorCards();
       initFederalDelegation();
       initZipLookup();
       initStoryForm();
       initReportGenerator();
       initDataConnection();
       initPolicyAlert();
+      initPwaServiceWorker();
 
       var fy = document.getElementById("footer-year");
       if (fy) fy.textContent = new Date().getFullYear();
@@ -234,6 +253,11 @@
 
     triggerAnimations("tab-" + tab);
 
+    if (tab === "map") {
+      var q = dom.searchInput ? dom.searchInput.value.trim().toLowerCase() : "";
+      filterStateCards(q, currentFilter);
+    }
+
     if (tab === "map" && !mapDrawn) {
       requestAnimationFrame(function () {
         setTimeout(drawMap, 100);
@@ -247,6 +271,19 @@
      Swipe Navigation
      ═══════════════════════════════════════════════════ */
 
+  /**
+   * Registers the service worker for installable PWA + offline shell (see sw.js).
+   * Safe no-op on file:// or if the browser blocks workers.
+   */
+  function initPwaServiceWorker() {
+    if (!("serviceWorker" in navigator)) return;
+    window.addEventListener("load", function () {
+      navigator.serviceWorker.register("sw.js", { scope: "./" }).catch(function () {
+        /* Expected when not on HTTPS / localhost or when sw.js is missing */
+      });
+    });
+  }
+
   function initSwipeNavigation() {
     dom.content.addEventListener("touchstart", onTouchStart, { passive: true });
     dom.content.addEventListener("touchmove", onTouchMove, { passive: true });
@@ -258,6 +295,7 @@
     var touch = e.touches[0];
     touchStartX = touch.clientX;
     touchStartY = touch.clientY;
+    touchStartTime = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
     isSwiping = false;
   }
 
@@ -275,8 +313,15 @@
     if (!isSwiping) return;
     var touch = e.changedTouches[0];
     var dx = touch.clientX - touchStartX;
-    var minSwipe = 60;
-    if (Math.abs(dx) < minSwipe) return;
+    var t1 = typeof performance !== "undefined" && performance.now ? performance.now() : Date.now();
+    var dt = Math.max(1, t1 - touchStartTime);
+    var velocity = Math.abs(dx) / dt;
+    var minSwipe = 48;
+    var fastSwipe = velocity > 0.45 && Math.abs(dx) > 28;
+    if (Math.abs(dx) < minSwipe && !fastSwipe) {
+      isSwiping = false;
+      return;
+    }
 
     var idx = TABS.indexOf(currentTab);
     if (dx < 0 && idx < TABS.length - 1) {
@@ -562,43 +607,149 @@
   }
 
   /* ═══════════════════════════════════════════════════
-     Search
+     Search (state grid + US map stay in sync)
      ═══════════════════════════════════════════════════ */
 
-  function initSearch() {
-    if (!dom.searchInput || !dom.searchClear) return;
+  function stateMatchesSearchAbbr(abbr, qRaw) {
+    var q = (qRaw || "").trim().toLowerCase();
+    if (!q) return true;
+    if (typeof STATE_NAMES === "undefined") return false;
+    var name = (STATE_NAMES[abbr] || "").toLowerCase();
+    if (name.indexOf(q) !== -1) return true;
+    if (abbr.toLowerCase().indexOf(q) !== -1) return true;
+    var nm = name.replace(/\./g, "").replace(/\s+/g, " ");
+    var qq = q.replace(/\./g, "").replace(/\s+/g, " ");
+    return nm.indexOf(qq) !== -1;
+  }
 
-    dom.searchInput.addEventListener("input", function () {
-      var query = this.value.trim().toLowerCase();
-      dom.searchClear.classList.toggle("hidden", query.length === 0);
-      filterStateCards(query, currentFilter);
+  function stateMatchesFilterAbbr(abbr, filter) {
+    if (typeof STATE_340B === "undefined") return false;
+    var data = STATE_340B[abbr] || {};
+    var isCP = !!data.cp;
+    var isPBM = !!data.pbm;
+    return filter === "all" ||
+      (filter === "protected" && isCP) ||
+      (filter === "unprotected" && !isCP && !isPBM) ||
+      (filter === "pbm" && isPBM && !isCP);
+  }
+
+  /**
+   * Best abbr for Enter key: exact name, then name prefix, then any substring match (alphabetical).
+   */
+  function findBestStateMatchAbbr(query, filter) {
+    var q = (query || "").trim().toLowerCase();
+    if (!q || typeof STATE_NAMES === "undefined" || typeof STATE_340B === "undefined") return null;
+    var abbrs = Object.keys(STATE_NAMES).filter(function (a) { return a !== "DC"; });
+    abbrs.sort(function (a, b) {
+      return (STATE_NAMES[a] || "").localeCompare(STATE_NAMES[b] || "");
     });
+    function ok(ab) {
+      return stateMatchesSearchAbbr(ab, q) && stateMatchesFilterAbbr(ab, filter);
+    }
+    var i;
+    for (i = 0; i < abbrs.length; i++) {
+      if (!ok(abbrs[i])) continue;
+      if ((STATE_NAMES[abbrs[i]] || "").toLowerCase() === q) return abbrs[i];
+    }
+    for (i = 0; i < abbrs.length; i++) {
+      if (!ok(abbrs[i])) continue;
+      var nm = (STATE_NAMES[abbrs[i]] || "").toLowerCase();
+      if (nm.indexOf(q) === 0) return abbrs[i];
+    }
+    for (i = 0; i < abbrs.length; i++) {
+      if (ok(abbrs[i])) return abbrs[i];
+    }
+    return null;
+  }
 
-    dom.searchClear.addEventListener("click", function () {
-      dom.searchInput.value = "";
-      dom.searchClear.classList.add("hidden");
-      filterStateCards("", currentFilter);
-      dom.searchInput.focus();
+  function populateStateSearchDatalist() {
+    var dl = document.getElementById("state-search-datalist");
+    if (!dl || typeof STATE_NAMES === "undefined") return;
+    while (dl.firstChild) dl.removeChild(dl.firstChild);
+    Object.keys(STATE_NAMES).forEach(function (abbr) {
+      if (abbr === "DC") return;
+      var opt = document.createElement("option");
+      opt.value = STATE_NAMES[abbr];
+      dl.appendChild(opt);
     });
   }
 
-  function filterStateCards(query, filter) {
-    if (!dom.stateGrid) return;
-    var cards = dom.stateGrid.querySelectorAll(".state-card");
-    cards.forEach(function (card) {
-      var abbr = card.getAttribute("data-state");
-      var name = (STATE_NAMES[abbr] || "").toLowerCase();
-      var isCP = card.getAttribute("data-cp") === "1";
-      var isPBM = card.getAttribute("data-pbm") === "1";
+  function initSearch() {
+    if (!dom.searchInput) return;
+    populateStateSearchDatalist();
 
-      var matchesSearch = !query || name.indexOf(query) !== -1 || abbr.toLowerCase().indexOf(query) !== -1;
-      var matchesFilter = filter === "all" ||
-        (filter === "protected" && isCP) ||
-        (filter === "unprotected" && !isCP && !isPBM) ||
-        (filter === "pbm" && isPBM && !isCP);
+    function syncClearVisibility(query) {
+      if (dom.searchClear) dom.searchClear.classList.toggle("hidden", query.length === 0);
+    }
 
-      card.classList.toggle("filtered-out", !(matchesSearch && matchesFilter));
+    function applySearchQuery(raw) {
+      var query = (raw || "").trim().toLowerCase();
+      syncClearVisibility(query);
+      filterStateCards(query, currentFilter);
+    }
+
+    dom.searchInput.addEventListener("input", function () {
+      applySearchQuery(this.value);
     });
+    /* iOS Safari: clearing the native search "x" may not fire input; "search" covers that */
+    dom.searchInput.addEventListener("search", function () {
+      applySearchQuery(this.value);
+    });
+    /* IME / composed text (e.g. some mobile keyboards) */
+    dom.searchInput.addEventListener("compositionend", function () {
+      applySearchQuery(this.value);
+    });
+
+    dom.searchInput.addEventListener("keydown", function (e) {
+      if (e.key !== "Enter") return;
+      e.preventDefault();
+      var raw = this.value || "";
+      var abbr = findBestStateMatchAbbr(raw, currentFilter);
+      if (abbr) {
+        selectMapState(abbr);
+        openStateSheet(abbr);
+      }
+    });
+
+    if (dom.searchClear) {
+      dom.searchClear.addEventListener("click", function () {
+        dom.searchInput.value = "";
+        dom.searchClear.classList.add("hidden");
+        filterStateCards("", currentFilter);
+        dom.searchInput.focus();
+      });
+    }
+  }
+
+  /**
+   * Filters the state card grid and applies the same rules to map paths (dim non-matches, outline search matches).
+   */
+  function filterStateCards(query, filter) {
+    var q = (query || "").trim().toLowerCase();
+    if (typeof STATE_NAMES === "undefined" || typeof STATE_340B === "undefined") return;
+
+    if (dom.stateGrid) {
+      var cards = dom.stateGrid.querySelectorAll(".state-card");
+      cards.forEach(function (card) {
+        var abbr = card.getAttribute("data-state");
+        if (!abbr) return;
+        var show = stateMatchesSearchAbbr(abbr, q) && stateMatchesFilterAbbr(abbr, filter);
+        card.classList.toggle("filtered-out", !show);
+      });
+    }
+
+    if (dom.mapContainer) {
+      var paths = dom.mapContainer.querySelectorAll("path.state");
+      paths.forEach(function (path) {
+        var abbr = path.getAttribute("data-state");
+        if (!abbr) return;
+        var ms = stateMatchesSearchAbbr(abbr, q);
+        var mf = stateMatchesFilterAbbr(abbr, filter);
+        var show = ms && mf;
+        path.classList.toggle("dimmed", !show);
+        path.classList.toggle("search-highlight", q.length > 0 && ms && mf);
+      });
+    }
   }
 
   /* ═══════════════════════════════════════════════════
@@ -619,23 +770,7 @@
       currentFilter = chip.getAttribute("data-filter");
       var query = dom.searchInput ? dom.searchInput.value.trim().toLowerCase() : "";
       filterStateCards(query, currentFilter);
-      updateMapFilter(currentFilter);
       vibrate(10);
-    });
-  }
-
-  function updateMapFilter(filter) {
-    if (!dom.mapContainer) return;
-    var paths = dom.mapContainer.querySelectorAll("path.state");
-    paths.forEach(function (path) {
-      var abbr = path.getAttribute("data-state");
-      if (!abbr || typeof STATE_340B === "undefined") return;
-      var data = STATE_340B[abbr] || {};
-      var show = filter === "all" ||
-        (filter === "protected" && data.cp) ||
-        (filter === "unprotected" && !data.cp && !data.pbm) ||
-        (filter === "pbm" && data.pbm && !data.cp);
-      path.classList.toggle("dimmed", !show);
     });
   }
 
@@ -657,11 +792,14 @@
     if (typeof d3 === "undefined" || typeof topojson === "undefined") return;
     var usData = window.US_ATLAS_STATES_10M || window.us;
     if (!usData) return;
-    mapDrawn = true;
 
     var container = dom.mapContainer;
     if (!container) return;
+    /* Tab was display:none — clientWidth can be 0; use a sane fallback for projection */
     var width = container.clientWidth;
+    if (!width || width < 48) {
+      width = Math.max(280, Math.min(560, (window.innerWidth || 375) - 32));
+    }
     var height = Math.round(width * 0.6);
 
     var svg = d3.select(container)
@@ -757,6 +895,10 @@
       .attr("stroke-width", 0.8)
       .attr("stroke-linejoin", "round")
       .attr("d", path);
+
+    mapDrawn = true;
+    var searchQ = dom.searchInput ? dom.searchInput.value.trim().toLowerCase() : "";
+    filterStateCards(searchQ, currentFilter);
   }
 
   function fipsToAbbr(id) {
@@ -1235,6 +1377,34 @@
     return "images/headshots/congress/" + bioguideId + ".jpg";
   }
 
+  /**
+   * Official legislator profile URL only — empty when missing or not on the allowlist (no #, no random hosts).
+   * @param {string|null|undefined} raw
+   * @returns {string}
+   */
+  function safeLegislatorProfileUrl(raw) {
+    if (typeof DataLayer === "undefined" || typeof DataLayer.isTrustedLegislatorUrl !== "function") return "";
+    if (!DataLayer.isTrustedLegislatorUrl(raw)) return "";
+    return String(raw).trim();
+  }
+
+  /**
+   * Static HTML leg-cards: drop anchor when href is not an official legislative URL (avoids 404 / placeholder taps).
+   */
+  function upgradeStaticPaLegislatorCards() {
+    var tab = document.getElementById("tab-pa");
+    if (!tab) return;
+    tab.querySelectorAll("a.leg-card[href]").forEach(function (a) {
+      var href = a.getAttribute("href") || "";
+      if (safeLegislatorProfileUrl(href)) return;
+      var div = document.createElement("div");
+      div.className = a.className + " leg-card--no-link";
+      div.setAttribute("role", "group");
+      while (a.firstChild) div.appendChild(a.firstChild);
+      a.parentNode.replaceChild(div, a);
+    });
+  }
+
   function paLegPhotoUrl(gpid, chamber) {
     if (typeof DataLayer !== "undefined" && DataLayer.getPaLegislatorPhotoUrl) {
       return DataLayer.getPaLegislatorPhotoUrl(gpid, chamber);
@@ -1273,8 +1443,8 @@
     var img = document.createElement("img");
     img.className = cls;
     img.alt = alt || "";
-    img.width = 36;
-    img.height = 36;
+    img.width = 54;
+    img.height = 54;
     img.loading = "lazy";
     img.decoding = "async";
     img.src = src;
@@ -1321,11 +1491,16 @@
 
     var frag = document.createDocumentFragment();
     PA_DELEGATION.forEach(function (row) {
-      var card = document.createElement("a");
-      card.className = "fed-card";
-      card.href = row.url || "#";
-      card.target = "_blank";
-      card.rel = "noopener noreferrer";
+      var profileUrl = safeLegislatorProfileUrl(row.url);
+      var card = profileUrl ? document.createElement("a") : document.createElement("div");
+      card.className = "fed-card" + (profileUrl ? "" : " fed-card--no-link");
+      if (profileUrl) {
+        card.href = profileUrl;
+        card.target = "_blank";
+        card.rel = "noopener noreferrer";
+      } else {
+        card.setAttribute("role", "group");
+      }
       card.setAttribute("data-position", row.position || "unknown");
 
       var top = document.createElement("div");
@@ -1413,12 +1588,15 @@
     }
 
     function addLegRow(opts) {
-      var row = opts.url ? document.createElement("a") : document.createElement("div");
-      row.className = "zip-result-card";
-      if (opts.url) {
-        row.href = opts.url;
+      var profileUrl = safeLegislatorProfileUrl(opts && opts.url);
+      var row = profileUrl ? document.createElement("a") : document.createElement("div");
+      row.className = "zip-result-card" + (profileUrl ? "" : " zip-result-card--no-link");
+      if (profileUrl) {
+        row.href = profileUrl;
         row.target = "_blank";
         row.rel = "noopener noreferrer";
+      } else {
+        row.setAttribute("role", "group");
       }
       var photoSrc = opts.photoSrc || "";
       row.appendChild(createHeadshot(photoSrc, opts.name, "leg-headshot zip-result-photo"));
@@ -1521,11 +1699,16 @@
         resultsContainer.appendChild(heading);
 
         senators.forEach(function (row) {
-          var card = document.createElement("a");
-          card.className = "zip-result-card";
-          card.href = row.url || "#";
-          card.target = "_blank";
-          card.rel = "noopener noreferrer";
+          var profileUrl = safeLegislatorProfileUrl(row.url);
+          var card = profileUrl ? document.createElement("a") : document.createElement("div");
+          card.className = "zip-result-card" + (profileUrl ? "" : " zip-result-card--no-link");
+          if (profileUrl) {
+            card.href = profileUrl;
+            card.target = "_blank";
+            card.rel = "noopener noreferrer";
+          } else {
+            card.setAttribute("role", "group");
+          }
           card.appendChild(createHeadshot(congressPhotoUrl(row.bioguideId), row.member, "leg-headshot zip-result-photo"));
           var info = document.createElement("div");
           info.className = "zip-result-info";
@@ -1664,7 +1847,11 @@
     });
 
     btnPdf.addEventListener("click", function () {
-      generateReport(typeSelect.value);
+      var t = typeSelect.value;
+      var savedTab = currentTab;
+      prepareReportMapSnapshots(t, function (snaps) {
+        generateReport(t, snaps, savedTab);
+      });
     });
 
     btnCsv.addEventListener("click", function () {
@@ -1693,7 +1880,239 @@
     }
   }
 
-  function generateReport(type) {
+  var REPORT_MAP_WAIT_MS = 5000;
+  var REPORT_MAP_POLL_MS = 90;
+
+  /** @typedef {{ usSvg?: SVGElement|null, paSvg?: SVGElement|null }} ReportMapSnaps */
+
+  /**
+   * Switch to the tab that hosts the needed map, wait for SVG, then callback (for PDF advocacy reports).
+   * @param {string} type — report type key
+   * @param {function(ReportMapSnaps): void} done
+   */
+  function prepareReportMapSnapshots(type, done) {
+    var snaps = { usSvg: null, paSvg: null };
+    if (type !== "full" && type !== "pa-one-pager" && type !== "state-comparison") {
+      done(snaps);
+      return;
+    }
+
+    function waitForSvg(selector, cb) {
+      var start = Date.now();
+      (function tick() {
+        var svg = document.querySelector(selector);
+        if (svg && svg.querySelector) {
+          var paths = svg.querySelectorAll("path");
+          if (paths && paths.length > 0) {
+            cb(svg);
+            return;
+          }
+        }
+        if (Date.now() - start > REPORT_MAP_WAIT_MS) {
+          cb(null);
+          return;
+        }
+        setTimeout(tick, REPORT_MAP_POLL_MS);
+      })();
+    }
+
+    if (type === "pa-one-pager") {
+      switchTab("pa");
+      window.setTimeout(function () {
+        var houseBtn = document.querySelector('.pa-district-toggle[data-pa-district-chamber="house"]');
+        if (houseBtn && !houseBtn.classList.contains("is-active")) {
+          houseBtn.click();
+        }
+        var allLegend = document.querySelector('.pa-district-legend__chip[data-pa-bucket="all"]');
+        if (allLegend) {
+          allLegend.click();
+        }
+        window.setTimeout(function () {
+          waitForSvg("#pa-district-map svg", function (svg) {
+            /* Dots animate cy for up to ~2050ms; wait so clone captures final positions (not cy=-12). */
+            window.setTimeout(function () {
+              snaps.paSvg = svg;
+              done(snaps);
+            }, 2200);
+          });
+        }, 320);
+      }, 160);
+      return;
+    }
+
+    /* full + state-comparison: U.S. protection map */
+    switchTab("map");
+    window.setTimeout(function () {
+      /* If already on Map, switchTab no-ops and may not schedule drawMap — ensure SVG exists */
+      if (!mapDrawn) {
+        drawMap();
+      }
+      waitForSvg("#mobile-map svg", function (svg) {
+        snaps.usSvg = svg;
+        done(snaps);
+      });
+    }, 380);
+  }
+
+  /**
+   * Clone map SVG for print: no interaction, full colors (undimmed), safe for static snapshot.
+   * @param {SVGElement|null} svg
+   * @param {number} [printScale] — multiply intrinsic width/height (e.g. 2 for 200% PA district map in one-pager PDF)
+   * @returns {SVGElement|null}
+   */
+  function cloneSvgForPrintReport(svg, printScale) {
+    printScale = printScale > 0 ? printScale : 1;
+    if (!svg || typeof svg.cloneNode !== "function") return null;
+    var c = svg.cloneNode(true);
+    if (!c.getAttribute || !c.getAttribute("xmlns")) {
+      c.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+    }
+    /* Print/PDF: explicit pixel width+height from viewBox (or source attrs). Stripping height + width=100% breaks WebKit/Safari print preview. */
+    var vbRaw = (svg.getAttribute("viewBox") || "").trim();
+    var vbParts = vbRaw.split(/[\s,]+/).filter(Boolean);
+    var vw = vbParts.length >= 4 ? parseFloat(vbParts[2]) : NaN;
+    var vh = vbParts.length >= 4 ? parseFloat(vbParts[3]) : NaN;
+    var rawW = svg.getAttribute("width");
+    var rawH = svg.getAttribute("height");
+    var baseW = rawW && !/%/.test(String(rawW)) ? parseFloat(rawW) : vw;
+    var baseH = rawH && !/%/.test(String(rawH)) ? parseFloat(rawH) : vh;
+    if (baseW && baseH && isFinite(baseW) && isFinite(baseH)) {
+      c.setAttribute("width", String(Math.round(baseW * printScale)));
+      c.setAttribute("height", String(Math.round(baseH * printScale)));
+    } else if (isFinite(vw) && isFinite(vh)) {
+      c.setAttribute("width", String(Math.round(vw * printScale)));
+      c.setAttribute("height", String(Math.round(vh * printScale)));
+    } else {
+      var cvb = (c.getAttribute("viewBox") || "").trim().split(/[\s,]+/).filter(Boolean);
+      if (cvb.length >= 4) {
+        var cw = parseFloat(cvb[2]);
+        var ch = parseFloat(cvb[3]);
+        if (isFinite(cw) && isFinite(ch)) {
+          c.setAttribute("width", String(Math.round(cw * printScale)));
+          c.setAttribute("height", String(Math.round(ch * printScale)));
+        } else {
+          c.setAttribute("width", "100%");
+        }
+      } else {
+        c.setAttribute("width", "100%");
+      }
+    }
+    c.setAttribute("preserveAspectRatio", "xMidYMid meet");
+    c.style.pointerEvents = "none";
+    c.style.maxWidth = "100%";
+    /* US map: D3 staggers path opacity (0→1). Snapshot often runs mid-animation — clone would show only a few states. */
+    c.querySelectorAll("path.state").forEach(function (el) {
+      el.style.opacity = "1";
+    });
+    /* PA map: hospital dots animate cy + opacity; force visible for static export. */
+    c.querySelectorAll("circle").forEach(function (el) {
+      el.setAttribute("opacity", "1");
+      el.style.opacity = "1";
+    });
+    c.querySelectorAll("[tabindex]").forEach(function (el) {
+      el.removeAttribute("tabindex");
+    });
+    c.querySelectorAll('[role="button"]').forEach(function (el) {
+      el.removeAttribute("role");
+    });
+    c.querySelectorAll(".dimmed").forEach(function (el) {
+      el.classList.remove("dimmed");
+    });
+    c.querySelectorAll(".search-highlight").forEach(function (el) {
+      el.classList.remove("search-highlight");
+    });
+    c.querySelectorAll(".highlighted").forEach(function (el) {
+      el.classList.remove("highlighted");
+    });
+    c.querySelectorAll(".pa-district-shape--dimmed").forEach(function (el) {
+      el.classList.remove("pa-district-shape--dimmed");
+      el.style.opacity = "1";
+    });
+    c.querySelectorAll(".pa-district-shape").forEach(function (el) {
+      el.style.opacity = "1";
+    });
+    c.querySelectorAll(".pa-district-shape--hover, .pa-district-shape--selected, .pa-district-shape--pulse").forEach(function (el) {
+      el.classList.remove("pa-district-shape--hover", "pa-district-shape--selected", "pa-district-shape--pulse");
+    });
+    return c;
+  }
+
+  var PR_US_MAP_LEGEND = [
+    { color: "#0072bc", label: "Contract pharmacy protection enacted" },
+    { color: "#8ed8f8", label: "PBM regulation only (no contract pharmacy protection)" },
+    { color: "#d3d9d4", label: "No enacted contract pharmacy protection" }
+  ];
+
+  var PR_PA_MAP_LEGEND = [
+    { color: "#003087", label: "Three or more 340B hospitals in district" },
+    { color: "#0072bc", label: "One to two 340B hospitals in district" },
+    { color: "rgba(148, 163, 184, 0.55)", label: "No 340B hospitals in district (boundary only)" }
+  ];
+
+  /**
+   * Map + key underneath; kept together on print (no page break through block).
+   * @param {HTMLElement} parent
+   * @param {{ title: string, svgSource: SVGElement|null, legendRows: Array<{color:string,label:string}>, mapNote?: string, blockClass?: string, svgPrintScale?: number, frameClass?: string }} opts
+   */
+  function appendPrintMapSection(parent, opts) {
+    var block = document.createElement("div");
+    block.className = "pr-print-map-block" + (opts.blockClass ? " " + opts.blockClass : "");
+
+    var heading = document.createElement("p");
+    heading.className = "pr-print-map-heading";
+    heading.textContent = opts.title;
+    block.appendChild(heading);
+
+    var frame = document.createElement("div");
+    frame.className = "pr-print-map-frame" + (opts.frameClass ? " " + opts.frameClass : "");
+    var scale = typeof opts.svgPrintScale === "number" && opts.svgPrintScale > 0 ? opts.svgPrintScale : 1;
+    var clone = cloneSvgForPrintReport(opts.svgSource, scale);
+    if (clone) {
+      frame.appendChild(clone);
+    } else {
+      var fb = document.createElement("p");
+      fb.className = "pr-print-map-fallback";
+      fb.textContent =
+        "Map preview unavailable. Open the Map or Pennsylvania tab once, wait for the map to finish loading, then tap Generate PDF again.";
+      frame.appendChild(fb);
+    }
+    block.appendChild(frame);
+
+    if (opts.mapNote) {
+      var note = document.createElement("p");
+      note.className = "pr-print-map-note";
+      note.textContent = opts.mapNote;
+      block.appendChild(note);
+    }
+
+    var leg = document.createElement("div");
+    leg.className = "pr-print-map-legend";
+    leg.setAttribute("role", "group");
+    (opts.legendRows || []).forEach(function (row) {
+      var rowEl = document.createElement("div");
+      rowEl.className = "pr-print-map-legend-row";
+      var sw = document.createElement("span");
+      sw.className = "pr-print-map-swatch";
+      sw.style.backgroundColor = row.color;
+      rowEl.appendChild(sw);
+      var lab = document.createElement("span");
+      lab.className = "pr-print-map-legend-label";
+      lab.textContent = row.label;
+      rowEl.appendChild(lab);
+      leg.appendChild(rowEl);
+    });
+    block.appendChild(leg);
+
+    parent.appendChild(block);
+  }
+
+  /**
+   * @param {string} type
+   * @param {ReportMapSnaps} [mapSnaps]
+   * @param {string} [restoreTab] — tab id to return to after cloning maps into the report
+   */
+  function generateReport(type, mapSnaps, restoreTab) {
+    mapSnaps = mapSnaps || {};
     var freshness = (typeof CONFIG !== "undefined" && CONFIG.dataFreshness) || "March 2026";
     var protCount = 0;
     if (typeof STATES_WITH_PROTECTION !== "undefined") {
@@ -1706,6 +2125,12 @@
     var report = document.createElement("div");
     report.className = "print-report";
     report.id = "print-report";
+    if (type === "pa-one-pager") {
+      report.classList.add("print-report--one-pager");
+    }
+    if (type === "full") {
+      report.classList.add("print-report--full-brief");
+    }
 
     var titleMap = {
       full: "340B: Protecting access to care in Pennsylvania",
@@ -1720,28 +2145,52 @@
 
     appendHeader(report, titleMap[type] || titleMap.full, badgeMap[type] || badgeMap.full, freshness);
 
+    var onePager = type === "pa-one-pager";
+
     if (type === "full" || type === "pa-one-pager") {
-      appendStatGrid(report, protCount);
+      appendStatGrid(report, protCount, onePager);
+    }
+
+    if (type === "full" || type === "state-comparison") {
+      appendPrintMapSection(report, {
+        title: "Contract pharmacy protection by state (U.S.)",
+        svgSource: mapSnaps.usSvg || null,
+        legendRows: PR_US_MAP_LEGEND,
+        blockClass: "pr-print-map-block--us"
+      });
     }
 
     if (type === "full") {
-      appendAsks(report);
-      appendAuditBlock(report);
+      appendAsks(report, onePager);
+      appendAuditBlock(report, onePager);
       appendRebuttalTable(report);
     }
 
     if (type === "pa-one-pager") {
-      appendPAStakes(report);
-      appendAuditBlock(report);
-      appendAsks(report);
+      appendPrintMapSection(report, {
+        title: "Pennsylvania House districts and 340B hospital locations",
+        svgSource: mapSnaps.paSvg || null,
+        legendRows: PR_PA_MAP_LEGEND,
+        mapNote: "Orange markers: 340B hospital sites (same symbols as the live dashboard). District shading reflects hospital counts per district.",
+        blockClass: "pr-print-map-block--pa",
+        frameClass: "pr-print-map-frame--pa-one-pager",
+        svgPrintScale: 2
+      });
+      appendPAStakes(report, onePager);
+      appendAuditBlock(report, onePager);
+      appendAsks(report, onePager);
     }
 
     if (type === "full" || type === "state-comparison") {
       appendStateTable(report, type);
     }
 
-    appendSources(report);
-    appendFooter(report, freshness);
+    appendSources(report, onePager);
+    appendFooter(report, freshness, onePager);
+
+    if (restoreTab && restoreTab !== currentTab) {
+      switchTab(restoreTab);
+    }
 
     document.body.appendChild(report);
     document.body.classList.add("printing-report");
@@ -1776,9 +2225,9 @@
     parent.appendChild(hdr);
   }
 
-  function appendStatGrid(parent, protCount) {
+  function appendStatGrid(parent, protCount, onePager) {
     var grid = document.createElement("div");
-    grid.className = "pr-stat-grid";
+    grid.className = "pr-stat-grid" + (onePager ? " pr-stat-grid--compact" : "");
 
     var cb = staticMetric("COMMUNITY_BENEFIT_TOTAL_BILLIONS", 7.95);
     var paH = staticMetric("PA_HOSPITALS_340B_COUNT", 72);
@@ -1811,14 +2260,14 @@
     parent.appendChild(grid);
   }
 
-  function appendAsks(parent) {
+  function appendAsks(parent, onePager) {
     var sec = document.createElement("p");
     sec.className = "pr-section";
     sec.textContent = "What HAP is asking lawmakers to do";
     parent.appendChild(sec);
 
     var grid = document.createElement("ul");
-    grid.className = "pr-ask-grid";
+    grid.className = "pr-ask-grid" + (onePager ? " pr-ask-grid--compact" : "");
 
     var items = [
       { title: "Protect the 340B discount", body: "Keep hospital access to the outpatient drug prices Congress set for charity care and community benefit.", cls: "" },
@@ -1843,9 +2292,9 @@
     parent.appendChild(grid);
   }
 
-  function appendAuditBlock(parent) {
+  function appendAuditBlock(parent, onePager) {
     var block = document.createElement("div");
-    block.className = "pr-audit";
+    block.className = "pr-audit" + (onePager ? " pr-audit--compact" : "");
 
     var left = document.createElement("div");
     var kicker = document.createElement("p");
@@ -1958,14 +2407,14 @@
     parent.appendChild(table);
   }
 
-  function appendPAStakes(parent) {
+  function appendPAStakes(parent, onePager) {
     var sec = document.createElement("p");
     sec.className = "pr-section";
     sec.textContent = "Pennsylvania operating stakes";
     parent.appendChild(sec);
 
     var block = document.createElement("div");
-    block.className = "pr-pa-stakes";
+    block.className = "pr-pa-stakes" + (onePager ? " pr-pa-stakes--compact" : "");
     var title = document.createElement("p");
     title.className = "pr-pa-stakes-title";
     title.textContent = "Why 340B is not optional for PA hospitals";
@@ -1975,13 +2424,21 @@
     var hA = staticMetric("HRSA_HOSPITAL_AUDIT_COUNT", 179);
     var mA = staticMetric("HRSA_MANUFACTURER_AUDIT_COUNT", 5);
     var xMult = mA > 0 ? Math.round(hA / mA) : 36;
-    [
-      staticMetric("PA_HOSPITALS_340B_COUNT", 72) + " PA hospitals (30% of all) depend on 340B to serve patients",
-      staticMetric("PA_HOSPITALS_OPERATING_LOSS_PCT", 63) + "% of PA 340B hospitals operate at a financial loss",
-      staticMetric("PA_RURAL_HOSPITAL_PCT", 38) + "% are rural \u2014 contract pharmacies are the only access point for many patients",
-      staticMetric("PA_LD_SERVICES_PCT", 95) + "% provide labor & delivery services",
-      hA + " HRSA audits vs. " + mA + " manufacturer audits (FY 2024) \u2014 hospitals face " + xMult + "\u00D7 more scrutiny"
-    ].forEach(function (text) {
+    (onePager
+      ? [
+          staticMetric("PA_HOSPITALS_340B_COUNT", 72) + " PA hospitals (30% of all) depend on 340B",
+          staticMetric("PA_HOSPITALS_OPERATING_LOSS_PCT", 63) + "% of PA 340B hospitals operate at a loss",
+          staticMetric("PA_RURAL_HOSPITAL_PCT", 38) + "% rural \u2014 contract pharmacies often the only access point",
+          hA + " HRSA audits vs. " + mA + " manufacturer audits (FY 2024) \u2014 " + xMult + "\u00D7 more hospital scrutiny"
+        ]
+      : [
+          staticMetric("PA_HOSPITALS_340B_COUNT", 72) + " PA hospitals (30% of all) depend on 340B to serve patients",
+          staticMetric("PA_HOSPITALS_OPERATING_LOSS_PCT", 63) + "% of PA 340B hospitals operate at a financial loss",
+          staticMetric("PA_RURAL_HOSPITAL_PCT", 38) + "% are rural \u2014 contract pharmacies are the only access point for many patients",
+          staticMetric("PA_LD_SERVICES_PCT", 95) + "% provide labor & delivery services",
+          hA + " HRSA audits vs. " + mA + " manufacturer audits (FY 2024) \u2014 hospitals face " + xMult + "\u00D7 more scrutiny"
+        ]
+    ).forEach(function (text) {
       var li = document.createElement("li");
       li.textContent = text;
       ul.appendChild(li);
@@ -2055,20 +2512,27 @@
     parent.appendChild(table);
   }
 
-  function appendSources(parent) {
+  function appendSources(parent, onePager) {
     var p = document.createElement("p");
-    p.className = "pr-sources";
+    p.className = "pr-sources" + (onePager ? " pr-sources--compact" : "");
     p.textContent = "Sources: MultiState \u00B7 ASHP \u00B7 America\u2019s Essential Hospitals (state law) \u00B7 340B Health \u00B7 AHA (community benefit) \u00B7 HRSA Program Integrity FY 2024 (audit counts) \u00B7 42 U.S.C. \u00A7256b (federal statutory basis)";
     parent.appendChild(p);
-    var lim = document.createElement("p");
-    lim.className = "pr-sources";
-    lim.textContent = "Limitations: State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.";
-    parent.appendChild(lim);
+    if (!onePager) {
+      var lim = document.createElement("p");
+      lim.className = "pr-sources";
+      lim.textContent = "Limitations: State law counts change as legislatures meet. Community benefit totals are self-reported aggregates, not independently audited.";
+      parent.appendChild(lim);
+    } else {
+      var lim2 = document.createElement("p");
+      lim2.className = "pr-sources pr-sources--compact";
+      lim2.textContent = "Limitations: State law counts change with sessions; community benefit figures are self-reported.";
+      parent.appendChild(lim2);
+    }
   }
 
-  function appendFooter(parent, freshness) {
+  function appendFooter(parent, freshness, onePager) {
     var footer = document.createElement("div");
-    footer.className = "pr-footer";
+    footer.className = "pr-footer" + (onePager ? " pr-footer--compact" : "");
     var left = document.createElement("span");
     left.textContent = "The Hospital and Healthsystem Association of Pennsylvania \u2014 haponline.org/340b";
     var mid = document.createElement("span");

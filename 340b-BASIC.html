@@ -2,13 +2,17 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0072bc">
+  <meta name="color-scheme" content="light">
   <meta name="referrer" content="strict-origin-when-cross-origin">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'self';">
-  <title>340B Drug Pricing Program | HAP Advocacy Dashboard (Basic)</title>
-  <meta name="description" content="HAP 340B Advocacy Dashboard — safe for employer hosting. Interactive map, full content, local scripts only.">
+  <title>340B protects access to care in Pennsylvania | HAP Advocacy Dashboard (BASIC)</title>
+  <meta name="description" content="Protect 340B, protect patients. 72 Pennsylvania hospitals rely on the program; savings fund community care. HAP communications edition: interactive U.S. map, key metrics, and sources — local scripts only (IT-safe).">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Hospital and Healthsystem Association of Pennsylvania">
   <link rel="stylesheet" href="hap-design-tokens.css">
-  <link rel="stylesheet" href="340b.css?v=dmx-27">
+  <link rel="stylesheet" href="340b.css?v=dmx-28">
   <style>
     /* BASIC (static) — no scripts. Keep lightweight tooltip + sparklines inline. */
     .basic-legal-scope {
@@ -139,36 +143,60 @@
 </svg>
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
-  <!-- ========== HEADER + shell (OW hap-header pattern; BASIC has no PDF/simulators) ========== -->
+  <!-- ========== HEADER (matches full dashboard branding; no analytics or third-party scripts) ========== -->
   <header class="dashboard-header dashboard-header--suite" role="banner">
     <div class="hap-header">
       <img src="haplogo_box_blue.jpeg" alt="HAP logo" class="hap-header-logo" width="40" height="40" loading="eager">
       <div class="hap-header-text">
         <p class="hap-header-org">The Hospital and Healthsystem Association of Pennsylvania</p>
-        <h1 class="hap-header-title">340B: Federal discount for hospital and community care</h1>
-        <span class="hap-header-badge">ADVOCACY DASHBOARD — Communications edition</span>
+        <h1 class="hap-header-title">340B protects access to care in Pennsylvania&mdash;and that access is under pressure.</h1>
+        <span class="hap-header-badge">ADVOCACY DASHBOARD &mdash; BASIC (IT-safe)</span>
       </div>
+      <nav class="hap-header-utility" aria-label="HAP utility links">
+        <a href="https://www.haponline.org/" target="_blank" rel="noopener noreferrer">HAP home</a>
+        <a href="https://www.haponline.org/advocacy" target="_blank" rel="noopener noreferrer">Advocacy</a>
+        <a href="https://www.haponline.org/contact" target="_blank" rel="noopener noreferrer">Contact</a>
+      </nav>
     </div>
     <nav class="dashboard-nav dashboard-nav--suite basic-dashboard-nav" id="dashboard-nav" aria-label="Dashboard sections">
-      <a href="#section-overview" class="active" aria-current="page">Overview</a>
-      <a href="#key-metrics">Key metrics</a>
-      <a href="#state-laws">Map &amp; states</a>
-      <a href="#legal-trends">Legal landscape</a>
-      <a href="#methodology-section">Sources</a>
-      <a href="340b.html" title="Full 340B dashboard: print, PDF, share, state lists, map filters, and simulators">Full dashboard</a>
-    </nav>
-  </header>
-
-  <div class="hap-body">
-  <aside class="hap-sidebar hap-sidebar--340b" aria-label="Section navigation">
-    <nav class="hap-sidebar-nav" id="hap-sidebar-nav">
-      <a href="#section-overview">Overview</a>
-      <a href="#key-metrics">Key metrics</a>
+      <a href="#section-overview" class="active" aria-current="page">Start here</a>
+      <a href="#pa-impact">PA stakes</a>
+      <a href="#overview">HAP position</a>
+      <a href="#what-is-overview">Overview</a>
+      <a href="#data-sources">Data sources</a>
       <a href="#community-benefit">Community benefit</a>
       <a href="#state-laws">Map &amp; states</a>
       <a href="#legal-trends">Legal landscape</a>
       <a href="#methodology-section">Methodology</a>
+      <a href="#pa-impact-mode">PA impact</a>
+      <a href="#policy-impact-simulator">Policy simulator</a>
+      <a href="340b.html" title="Full 340B dashboard: print, PDF, share, state lists, map filters, and simulators">Full dashboard</a>
+    </nav>
+  </header>
+
+  <noscript>
+    <section class="noscript-card" aria-label="JavaScript notice" style="margin:1rem;padding:1rem;background:#fff3cd;border-radius:8px;max-width:900px;margin-left:auto;margin-right:auto;">
+      <p><strong>Interactive map is unavailable.</strong> JavaScript is disabled. Policy summaries and metrics below remain readable. Enable JavaScript for the U.S. state map, or open the <a href="340b.html">full dashboard</a>.</p>
+    </section>
+  </noscript>
+
+  <div class="hap-body">
+  <aside class="hap-sidebar hap-sidebar--340b" aria-label="Section navigation">
+    <nav class="hap-sidebar-nav" id="hap-sidebar-nav">
+      <a href="#section-overview">Start here</a>
+      <a href="#pa-impact">PA stakes</a>
       <a href="#overview">HAP position</a>
+      <a href="#what-is-overview">Overview</a>
+      <a href="#data-sources">Data sources</a>
+      <a href="#community-benefit">Community benefit</a>
+      <a href="#key-metrics">Key metrics</a>
+      <a href="#state-laws">Map &amp; states</a>
+      <a href="#legal-trends">Legal landscape</a>
+      <a href="#methodology-section">Methodology</a>
+      <div class="hap-sidebar-divider" role="presentation"></div>
+      <a href="#pa-impact-mode">PA impact</a>
+      <a href="#policy-impact-simulator">Policy simulator</a>
+      <a href="#hearing-prep">Briefing Q&amp;A</a>
       <div class="hap-sidebar-divider" role="presentation"></div>
       <span class="hap-sidebar-label" id="hap-nav-suite-label">Related reports &amp; tools</span>
       <a href="340b.html" class="hap-cross-link hap-cross-link--stack" title="Full 340B dashboard: print, PDF, share, state lists, map filters, and simulators">
@@ -195,44 +223,116 @@
   <main id="main-content" role="main">
     <div class="dashboard-grid">
 
-      <!-- ========== INTRO: What is 340B + HAP Position ========== -->
-      <div id="section-overview" class="intro-section ow-section ow-section--band-a">
-        <div class="intro-section-stack">
-          <article class="card intro-overview-card">
-            <div class="card-heading">
-              <div class="card-heading-text">
-                <p class="card-title">Overview</p>
-                <h2>What is 340B?</h2>
-                <p class="card-subtitle">A federal discount drug program that helps hospitals serve more patients.</p>
-              </div>
-            </div>
-            <p>340B is a federal discount that helps eligible hospitals (covered entities) stretch dollars further so more patients get care and affordable medicines—without new taxpayer cost.</p>
-            <div class="stat-block">
-              <div class="stat">
-                <p class="stat-label">Market share</p>
-                <p class="stat-value ban-stat">7%</p>
-                <p class="stat-desc">340B share of total U.S. drug market (per HAP Mar 2026 talking points; Commonwealth Fund)</p>
-                <p class="stat-impact">Impact: Benchmarks national scale — see <a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer">HAP talking points (PDF)</a> and <a href="https://www.commonwealthfund.org/publications/explainer/2025/aug/340b-drug-pricing-program-how-it-works-and-why-its-controversial" target="_blank" rel="noopener noreferrer">Commonwealth Fund</a>.</p>
-              </div>
-            </div>
-            <div class="glossary-strip" aria-label="Key terms on this page">
-              <p class="glossary-strip-title">Terms used here</p>
-              <dl class="glossary-dl">
-                <dt title="Federal outpatient drug discount program for eligible hospitals and clinics (short definition below).">340B</dt>
-                <dd>Federal program that requires manufacturers to charge certain eligible hospitals and clinics lower prices on outpatient drugs.</dd>
-                <dt title="A hospital or clinic that meets federal rules and can buy outpatient drugs at 340B prices.">Covered entity</dt>
-                <dd>A hospital or clinic that qualifies for 340B pricing.</dd>
-                <dt title="Pharmacy that fills 340B prescriptions under agreement with a covered entity hospital.">Contract pharmacy</dt>
-                <dd>A community pharmacy that dispenses 340B-discounted drugs on a hospital’s behalf.</dd>
-                <dt title="Pharmacy benefit manager: third party that manages drug benefits for insurers and employers.">PBM</dt>
-                <dd>Pharmacy benefit manager—coordinates drug benefits for health plans.</dd>
-              </dl>
-            </div>
-          </article>
-        </div>
-      </div>
+      <!-- ========== Start here (plain language; matches full dashboard lead) ========== -->
+      <section id="section-overview" class="dashboard-welcome span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="Start here" aria-labelledby="what-is-340b-basic">
+        <header class="dashboard-welcome__head">
+          <p class="hap-section-eyebrow">Start here</p>
+          <h2 id="what-is-340b-basic" class="dashboard-welcome__title">What is 340B?</h2>
+          <p class="dashboard-welcome__lead"><strong>340B</strong> is a federal drug discount program: eligible hospitals and clinics buy certain outpatient drugs at reduced prices from manufacturers and reinvest savings in care for underserved patients and community services—without using federal appropriations. <strong>PBM</strong> means pharmacy benefit manager (the middlemen who administer many drug plans). A <strong>contract pharmacy</strong> is a retail or specialty pharmacy a covered entity partners with so patients can fill prescriptions in their community.</p>
+        </header>
+        <blockquote class="dashboard-welcome__patient-quote">
+          <p>“The pharmacy at my hospital is the only reason I can afford my insulin. Without 340B, I don’t know what I would do.”</p>
+          <cite>— Pennsylvania patient, safety-net hospital (name withheld)</cite>
+        </blockquote>
+        <p class="dashboard-welcome__why"><strong>Why it matters:</strong> When margins are thin, 340B savings help fund prescriptions, screening, and access in rural and underserved communities.</p>
+        <nav class="dashboard-welcome__next" aria-label="Jump to key sections">
+          <a href="#overview" class="footer-pill footer-pill--outline">HAP position</a>
+          <a href="#hearing-prep" class="footer-pill footer-pill--outline">Briefing Q&amp;A</a>
+          <a href="https://www.haponline.org/contact" class="footer-pill footer-pill--primary hap-btn-primary" target="_blank" rel="noopener noreferrer">Contact HAP</a>
+        </nav>
+      </section>
 
-      <section id="overview" class="hap-position-flagship span-12 scroll-reveal ow-section ow-section--band-hap" aria-labelledby="hap-position-heading-basic">
+      <!-- ========== Pennsylvania operating stakes (static; no count-up scripts) ========== -->
+      <section class="pa-operating-stakes-hero span-12 scroll-reveal ow-section ow-section--band-pa-hero nav-section-block" data-nav-label="PA operating stakes" aria-labelledby="pa-stakes-heading-basic">
+        <header class="pa-stakes-hero-head">
+          <p class="hap-section-eyebrow">Pennsylvania operating stakes</p>
+          <h2 id="pa-stakes-heading-basic" class="pa-stakes-hero-title">340B is material to hospitals and patients in PA</h2>
+          <p class="pa-stakes-hero-dek">Issue: contract pharmacy pressure. Impact: access and finances for safety-net care. Action: protect the discount and partnerships.</p>
+        </header>
+        <article id="pa-impact" class="supporting-panel supporting-panel--pa supporting-panel--pa-hero" aria-labelledby="pa-stakes-heading-basic">
+          <div class="pa-primary">
+            <div class="pa-primary-row">
+              <div class="pa-primary-icon-wrap" aria-hidden="true">
+                <div class="pa-stakes-glass-icon pa-stakes-glass-icon--hospitals">
+                  <svg class="pa-stakes-svg pa-stakes-svg--40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false" aria-hidden="true">
+                    <rect x="2.5" y="20" width="10" height="17" rx="1.2"/>
+                    <rect x="27.5" y="21.5" width="10" height="15.5" rx="1.2"/>
+                    <rect x="12.5" y="8.5" width="15" height="28.5" rx="1.6"/>
+                    <path d="M16.5 37V31a3.5 3.5 0 0 1 7 0v6" stroke-linecap="round" stroke-linejoin="round"/>
+                    <rect x="5" y="24.5" width="2.4" height="3" rx="0.35"/>
+                    <rect x="30.5" y="25.5" width="2.4" height="3" rx="0.35"/>
+                    <rect x="15" y="24" width="2.8" height="2.8" rx="0.4"/>
+                    <rect x="22.2" y="24" width="2.8" height="2.8" rx="0.4"/>
+                  </svg>
+                </div>
+              </div>
+              <div class="pa-primary-copy">
+                <p class="pa-primary-value">
+                  <span class="ban-stat">72</span>
+                  <span class="pa-primary-unit">hospitals</span>
+                </p>
+                <p class="pa-primary-sub"><span class="ban-stat">30%</span> of Pennsylvania’s 235 hospitals participate in 340B (see <a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer">HAP talking points, March 2026</a>).</p>
+              </div>
+            </div>
+          </div>
+          <div class="pa-metrics pa-metrics--hero">
+            <div class="pa-metric">
+              <div class="pa-metric-row">
+                <div class="pa-stakes-glass-icon pa-stakes-glass-icon--rural" aria-hidden="true">
+                  <svg class="pa-stakes-svg pa-stakes-svg--40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <circle cx="30" cy="10" r="5.5"/>
+                    <path d="M4 32 L11 14 l6.5 9.5 9-14L38 32H4z"/>
+                    <path d="M4 32h32" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="pa-metric-copy">
+                  <p class="pa-metric-value ban-stat">49%</p>
+                  <p class="pa-metric-label">Rural</p>
+                </div>
+              </div>
+            </div>
+            <div class="pa-metric">
+              <div class="pa-metric-row">
+                <div class="pa-stakes-glass-icon pa-stakes-glass-icon--loss" aria-hidden="true">
+                  <svg class="pa-stakes-svg pa-stakes-svg--40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <path d="M3 34h34" stroke-linecap="round"/>
+                    <rect x="5" y="11" width="7" height="23" rx="1.4"/>
+                    <rect x="14" y="16" width="7" height="18" rx="1.4"/>
+                    <rect x="23" y="21" width="7" height="13" rx="1.4"/>
+                    <rect x="32" y="26" width="7" height="8" rx="1.4"/>
+                    <path d="M8.5 9 L17.5 15.5 L26.5 22 L33.5 29" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M28.5 29 L33.5 29 L33.5 24" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <div class="pa-metric-copy">
+                  <p class="pa-metric-value ban-stat stat--perf-negative">53%</p>
+                  <p class="pa-metric-label">Operating at a loss</p>
+                </div>
+              </div>
+            </div>
+            <div class="pa-metric">
+              <div class="pa-metric-row">
+                <div class="pa-stakes-glass-icon pa-stakes-glass-icon--ld" aria-hidden="true">
+                  <svg class="pa-stakes-svg pa-stakes-svg--40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <circle cx="20" cy="11" r="7"/>
+                    <path d="M11.5 14.5 Q9 18 9.5 22" stroke-linecap="round"/>
+                    <path d="M28.5 14.5 Q31 18 30.5 22" stroke-linecap="round"/>
+                    <ellipse cx="20" cy="27" rx="10" ry="9.5"/>
+                    <path d="M14 33 Q20 30 26 33" stroke-linecap="round"/>
+                  </svg>
+                </div>
+                <div class="pa-metric-copy">
+                  <p class="pa-metric-value ban-stat">49%</p>
+                  <p class="pa-metric-label">Labor and delivery</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <p class="pa-stakes-source">Source: Oliver Wyman hospital sustainability analysis for HAP. See <a href="OW_report_dashboard.html">PA hospitals report</a> for methodology and definitions.</p>
+        </article>
+      </section>
+
+      <section id="overview" class="hap-position-flagship span-12 scroll-reveal ow-section ow-section--band-hap nav-section-block" data-nav-label="HAP position" aria-labelledby="hap-position-heading-basic">
         <article class="card card-hap card-hap--featured hap-position-flagship-card">
           <div class="hap-position-featured-inner">
             <div class="card-heading card-heading--hap-featured">
@@ -272,6 +372,43 @@
           </div>
         </article>
       </section>
+
+      <!-- ========== Overview card: program scale + glossary (nav: Overview) ========== -->
+      <div id="what-is-overview" class="intro-section ow-section ow-section--band-a nav-section-block" data-nav-label="Overview">
+        <div class="intro-section-stack">
+          <article class="card intro-overview-card">
+            <div class="card-heading">
+              <div class="card-heading-text">
+                <p class="card-title">Overview</p>
+                <h2>Program scale &amp; terms</h2>
+                <p class="card-subtitle">A federal discount drug program that helps hospitals serve more patients.</p>
+              </div>
+            </div>
+            <p>340B is a federal discount that helps eligible hospitals (covered entities) stretch dollars further so more patients get care and affordable medicines—without new taxpayer cost.</p>
+            <div class="stat-block">
+              <div class="stat">
+                <p class="stat-label">Market share</p>
+                <p class="stat-value ban-stat">7%</p>
+                <p class="stat-desc">340B share of total U.S. drug market (per HAP Mar 2026 talking points; Commonwealth Fund)</p>
+                <p class="stat-impact">Impact: Benchmarks national scale — see <a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer">HAP talking points (PDF)</a> and <a href="https://www.commonwealthfund.org/publications/explainer/2025/aug/340b-drug-pricing-program-how-it-works-and-why-its-controversial" target="_blank" rel="noopener noreferrer">Commonwealth Fund</a>.</p>
+              </div>
+            </div>
+            <div class="glossary-strip" aria-label="Key terms on this page">
+              <p class="glossary-strip-title">Terms used here</p>
+              <dl class="glossary-dl">
+                <dt title="Federal outpatient drug discount program for eligible hospitals and clinics (short definition below).">340B</dt>
+                <dd>Federal program that requires manufacturers to charge certain eligible hospitals and clinics lower prices on outpatient drugs.</dd>
+                <dt title="A hospital or clinic that meets federal rules and can buy outpatient drugs at 340B prices.">Covered entity</dt>
+                <dd>A hospital or clinic that qualifies for 340B pricing.</dd>
+                <dt title="Pharmacy that fills 340B prescriptions under agreement with a covered entity hospital.">Contract pharmacy</dt>
+                <dd>A community pharmacy that dispenses 340B-discounted drugs on a hospital’s behalf.</dd>
+                <dt title="Pharmacy benefit manager: third party that manages drug benefits for insurers and employers.">PBM</dt>
+                <dd>Pharmacy benefit manager—coordinates drug benefits for health plans.</dd>
+              </dl>
+            </div>
+          </article>
+        </div>
+      </div>
 
       <!-- ========== KEY FINDINGS: The numbers that matter ========== -->
       <section class="key-findings-strip span-12 ow-section ow-section--band-b" aria-label="Key findings">
@@ -383,8 +520,77 @@
         </article>
       </section>
 
+      <!-- ========== Data sources (static &lt;details&gt;; no warehouse or API) ========== -->
+      <section id="data-sources" class="hap-data-sources-compact span-12 nav-section-block ow-section ow-section--band-a" aria-labelledby="data-sources-heading-basic" data-nav-label="Data sources">
+        <details class="hap-data-sources-compact__panel">
+          <summary class="hap-data-sources-compact__summary"><span id="data-sources-heading-basic" class="hap-data-sources-compact__summary-title">Data sources</span><span class="hap-data-sources-compact__summary-hint"> Metric → primary source (expand)</span></summary>
+          <div class="hap-data-sources-compact__body">
+            <p class="hap-data-sources-compact__lede">Priority citations: HAP March 2026 <a href="fact-sheet-hap-2026-protects-access-to-care-pennsylvania-march2026.pdf" target="_blank" rel="noopener noreferrer">PA fact sheet</a> and <a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer">talking points</a> (PDFs alongside this page). BASIC uses the same <code>state-data.js</code> flags as the full dashboard for the map.</p>
+            <div class="hap-provenance-table-wrap hap-provenance-table-wrap--compact table-scroll" role="region" aria-label="Statistics and primary sources">
+              <table class="hap-provenance-table hap-provenance-table--compact">
+                <thead>
+                  <tr>
+                    <th scope="col">Metric</th>
+                    <th scope="col">Source</th>
+                    <th scope="col">As of</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>State map &amp; protection counts (50 states; D.C. in data, not in headline totals)</td>
+                    <td>MultiState → ASHP → America's Essential Hospitals; <code>state-data.js</code></td>
+                    <td>Mar 2026</td>
+                  </tr>
+                  <tr>
+                    <td>$7.95B community benefit (2024); ~9% YoY in narrative</td>
+                    <td><a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer">HAP talking points (Mar 2026)</a>; 340B Health · AHA reported totals</td>
+                    <td>2024 / Mar 2026</td>
+                  </tr>
+                  <tr>
+                    <td>179 entity vs 5 manufacturer audits (FY24)</td>
+                    <td><a href="https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" target="_blank" rel="noopener noreferrer">HRSA FY24 audits</a></td>
+                    <td>FY 2024</td>
+                  </tr>
+                  <tr>
+                    <td>72 PA hospitals; 30% of 235 hospitals; 7% total U.S. drug market (340B)</td>
+                    <td>HRSA OPAIS + HAP; <a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer">HAP talking points (Mar 2026)</a>; <a href="https://www.commonwealthfund.org/publications/explainer/2025/aug/340b-drug-pricing-program-how-it-works-and-why-its-controversial" target="_blank" rel="noopener noreferrer">Commonwealth Fund</a></td>
+                    <td>Jan 2026 / Mar 2026</td>
+                  </tr>
+                  <tr>
+                    <td>PA 49% / 53% / 49% (rural, loss, L&amp;D)</td>
+                    <td><a href="340b-talking-points-march2026.pdf" target="_blank" rel="noopener noreferrer">HAP talking points (Mar 2026)</a>; <a href="OW_report_dashboard.html">Oliver Wyman for HAP</a></td>
+                    <td>Mar 2026 / OW report vintage</td>
+                  </tr>
+                  <tr>
+                    <td>23% Rx savings (survey avg.)</td>
+                    <td>340B Health · AHA survey (not audited)</td>
+                    <td>Survey cycle</td>
+                  </tr>
+                  <tr>
+                    <td>Legal landscape text (BASIC)</td>
+                    <td>HAP Finance &amp; Legal review</td>
+                    <td>Mar 2026</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <details class="hap-independent-reviews">
+              <summary class="hap-independent-reviews__summary">Independent government reviews (oversight context)</summary>
+              <div class="hap-independent-reviews__body">
+                <p>For <strong>agency and advisory perspectives</strong> alongside hospital voices (not endorsements):</p>
+                <ul class="hap-independent-reviews__list">
+                  <li><a href="https://www.gao.gov/products/gao-22-104456" target="_blank" rel="noopener noreferrer">U.S. Government Accountability Office</a> — 340B oversight (example product).</li>
+                  <li><a href="https://oig.hhs.gov/" target="_blank" rel="noopener noreferrer">HHS Office of Inspector General</a></li>
+                  <li><a href="https://www.macpac.gov/" target="_blank" rel="noopener noreferrer">MACPAC</a></li>
+                </ul>
+              </div>
+            </details>
+          </div>
+        </details>
+      </section>
+
       <!-- ========== STATE MAP: BASIC local interactive map (IT-safe local scripts) ========== -->
-      <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a">
+      <section id="state-laws" class="map-hero-section span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="Map and states">
         <div class="map-hero-inner">
           <article class="map-hero-card">
             <p class="map-hero-title">State map</p>
@@ -700,7 +906,7 @@
       </article>
 
       <!-- ========== PA IMPACT MODE: Current status (static snapshot for BASIC) ========== -->
-      <section class="pa-impact-mode-section span-12" aria-label="Pennsylvania Impact Mode">
+      <section id="pa-impact-mode" class="pa-impact-mode-section span-12 nav-section-block" aria-label="Pennsylvania Impact Mode" data-nav-label="PA impact">
         <article class="card pa-impact-mode-card">
           <div class="pa-impact-header">
             <p class="pa-impact-title">Pennsylvania Impact Mode</p>
@@ -736,7 +942,7 @@
       </section>
 
       <!-- ========== POLICY IMPACT SIMULATOR: Keep today's mix (static snapshot for BASIC) ========== -->
-      <section class="impact-simulator-section span-12" aria-labelledby="impact-simulator-heading-basic">
+      <section id="policy-impact-simulator" class="impact-simulator-section span-12 nav-section-block" aria-labelledby="impact-simulator-heading-basic" data-nav-label="Policy simulator">
         <article class="card impact-simulator-card">
           <header class="impact-simulator-header">
             <p class="impact-simulator-kicker">Policy simulator · illustrative scenarios</p>
@@ -779,6 +985,46 @@
         </div>
         <p>Federal rules allow hospitals to use in-house or community pharmacies for 340B. Some drugmakers limit hospitals to <strong>one contract pharmacy</strong>, which hurts rural and underserved patients when hospitals rely on local pharmacy networks.</p>
       </article>
+
+      <!-- ========== Briefing Q&A (native &lt;details&gt;; use browser Print for a handout) ========== -->
+      <section id="hearing-prep" class="hearing-prep-section span-12 ow-section ow-section--band-a nav-section-block" aria-labelledby="hearing-prep-heading-basic" data-nav-label="Briefing Q and A">
+        <header class="hearing-prep-head">
+          <h2 id="hearing-prep-heading-basic" class="hearing-prep-title">Briefing Q&amp;A</h2>
+          <p class="basic-static-note" style="margin:0;">Use your browser’s print dialog for a one-page handout. The full dashboard includes a dedicated print control.</p>
+        </header>
+        <div class="hearing-prep-accordion" role="region" aria-label="Hearing prep questions">
+          <details class="hearing-prep-item">
+            <summary class="hearing-prep-summary">Q1: Isn’t 340B just a hospital slush fund?</summary>
+            <div class="hearing-prep-answer">
+              <p>No. $7.95B in reported community benefit (2024) is documented reinvestment in free prescriptions, cancer screening, dental care, and rural services — up 9% from 2023. HRSA audits 179 covered entities annually to verify compliance.</p>
+            </div>
+          </details>
+          <details class="hearing-prep-item">
+            <summary class="hearing-prep-summary">Q2: Why should manufacturers have to give discounts to large health systems?</summary>
+            <div class="hearing-prep-answer">
+              <p>340B eligibility is tied to DSH percentage and safety-net status — not system size. Eligible hospitals must serve a disproportionate share of low-income and uninsured patients to qualify. Large systems that qualify do so because of their charity care load.</p>
+            </div>
+          </details>
+          <details class="hearing-prep-item">
+            <summary class="hearing-prep-summary">Q3: Doesn’t 340B create duplicate discounts?</summary>
+            <div class="hearing-prep-answer">
+              <p>Federal law already prohibits it. HRSA and CMS coordinate exclusion lists so manufacturers cannot be required to provide both a 340B price and a Medicaid rebate on the same drug. Pennsylvania runs its own exclusion list through DHS as an added safeguard.</p>
+            </div>
+          </details>
+          <details class="hearing-prep-item">
+            <summary class="hearing-prep-summary">Q4: Shouldn’t manufacturers be able to limit contract pharmacies?</summary>
+            <div class="hearing-prep-answer">
+              <p>The statute doesn’t give manufacturers that authority. Courts in 6 states (AR, LA, MO, MN, TN, RI) have upheld state protections against manufacturer restrictions. Unilateral restrictions by manufacturers go beyond what federal law requires and reduce patient access.</p>
+            </div>
+          </details>
+          <details class="hearing-prep-item">
+            <summary class="hearing-prep-summary">Q5: Is 340B too big — 7% of the U.S. drug market?</summary>
+            <div class="hearing-prep-answer">
+              <p>HAP’s March 2026 talking points frame 7% as the share of the total U.S. drug market flowing through 340B, citing the Commonwealth Fund — a bounded scale context, not “program overreach.” Federal oversight (179 covered-entity audits in FY 2024) continues to verify that covered entities use the program as intended.</p>
+            </div>
+          </details>
+        </div>
+      </section>
 
       <!-- ========== PENNSYLVANIA SAFEGUARDS ========== -->
       <article class="card span-12" id="pa-safeguards">

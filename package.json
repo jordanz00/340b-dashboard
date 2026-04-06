@@ -1,0 +1,20 @@
+{
+  "name": "hap-340b-dashboard",
+  "version": "1.0.0",
+  "description": "HAP 340B Advocacy Dashboard — interactive policy dashboard for the Hospital and Healthsystem Association of Pennsylvania",
+  "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "audit": "python3 dashboard-audit.py --verbose",
+    "audit:json": "python3 dashboard-audit.py --json",
+    "build:types": "tsc --declaration --emitDeclarationOnly --outDir types/generated",
+    "test:e2e": "python3 tests/e2e-smoke.py",
+    "ci": "npm run typecheck && npm run audit && npm run test:e2e"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

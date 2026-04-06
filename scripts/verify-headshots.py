@@ -166,7 +166,9 @@ def main() -> int:
             entry = bucket[gk]
             img_id = entry.get("img_id")
             if img_id is None:
-                warns.append(f"PA {chamber} GPID {gk}: no img_id ({entry.get('name')})")
+                # Intentional after GPID reconciliation (vacant / unknown portrait).
+                if "vacant" not in (entry.get("name") or "").lower():
+                    warns.append(f"PA {chamber} GPID {gk}: no img_id ({entry.get('name')})")
                 continue
             folder = "pa-senate" if chamber == "senate" else "pa-house"
             ip = ROOT / "images" / "headshots" / folder / f"{img_id}.jpg"

@@ -1,0 +1,79 @@
+rules:
+  - id: no-innerhtml-user-input
+    patterns:
+      - pattern: $EL.innerHTML = $VAL
+      - metavariable-regex:
+          metavariable: $VAL
+          regex: ".*(location|hash|search|input|param|query|window\\.name|document\\.URL).*"
+    message: >
+      innerHTML assigned from user-controlled source ($VAL).
+      Use textContent, createElement, or a sanitizer instead.
+    languages: [javascript]
+    severity: ERROR
+
+  - id: no-eval
+    pattern: eval(...)
+    message: >
+      eval() executes arbitrary code. Remove or replace with a safe alternative.
+    languages: [javascript]
+    severity: ERROR
+
+  - id: no-new-function
+    pattern: new Function(...)
+    message: >
+      new Function() is equivalent to eval(). Use a safe alternative.
+    languages: [javascript]
+    severity: ERROR
+
+  - id: no-document-write
+    pattern: document.write(...)
+    message: >
+      document.write() can overwrite the page and enables XSS.
+      Use DOM APIs (createElement, appendChild) instead.
+    languages: [javascript]
+    severity: WARNING
+
+  - id: no-template-sql
+    patterns:
+      - pattern: $DB.query(`...`)
+      - pattern: $DB.execute(`...`)
+      - pattern: $DB.prepare(`...`)
+    message: >
+      Template literal in SQL query — use parameterized queries ($1, ?) instead.
+    languages: [javascript]
+    severity: ERROR
+
+  - id: no-fetch-unvalidated
+    patterns:
+      - pattern: fetch($URL, ...)
+      - metavariable-regex:
+          metavariable: $URL
+          regex: ".*(location|hash|search|param|input|window).*"
+    message: >
+      fetch() called with user-controlled URL. Validate the URL scheme
+      and host against an allowlist before fetching.
+    languages: [javascript]
+    severity: WARNING
+
+  - id: no-innerhtml-clear
+    pattern: $EL.innerHTML = ""
+    message: >
+      Use while(el.firstChild) el.removeChild(el.firstChild) instead
+      of innerHTML = "" to avoid bypassing CSP in strict environments.
+    languages: [javascript]
+    severity: WARNING
+    metadata:
+      confidence: LOW
+
+  - id: no-hardcoded-secrets
+    patterns:
+      - pattern: |
+          $KEY = "..."
+      - metavariable-regex:
+          metavariable: $KEY
+          regex: ".*(apiKey|secret|password|token|bearer|credentials).*"
+    message: >
+      Possible hardcoded secret in variable $KEY. Use environment
+      variables or a secret store.
+    languages: [javascript]
+    severity: ERROR

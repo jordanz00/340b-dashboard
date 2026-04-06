@@ -4411,7 +4411,8 @@ html:has(.dashboard) {
 .pa-district-shape--hi { fill: var(--hap-brand-deep, #003087); }
 .pa-district-shape--mid { fill: var(--hap-brand-primary, #0072bc); }
 .pa-district-shape--zero { fill: rgba(148, 163, 184, 0.35); }
-.pa-district-shape--unknown { fill: rgba(148, 163, 184, 0.18); }
+/* Stronger than 0.18 so district boundaries read when hospital counts are pending or data failed to load */
+.pa-district-shape--unknown { fill: rgba(148, 163, 184, 0.38); }
 
 .pa-district-hospital-dot {
   pointer-events: auto;

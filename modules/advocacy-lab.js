@@ -95,7 +95,7 @@
 
       var w = Math.min(wrap.clientWidth || 800, 880);
       var h = 400;
-      wrap.innerHTML = "";
+      while (wrap.firstChild) wrap.removeChild(wrap.firstChild);
 
       var projection = d3.geoMercator().fitExtent([[8, 8], [w - 8, h - 8]], paFeature);
       var path = d3.geoPath(projection);
@@ -191,7 +191,7 @@
       var w = innerW + margin.left + margin.right;
       var h = innerH + margin.top + margin.bottom;
 
-      host.innerHTML = "";
+      while (host.firstChild) host.removeChild(host.firstChild);
       var svg = d3.select(host)
         .append("svg")
         .attr("viewBox", "0 0 " + w + " " + h)

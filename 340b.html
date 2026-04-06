@@ -236,10 +236,9 @@
     </nav>
   </div>
   <nav class="dashboard-nav dashboard-nav--suite" id="dashboard-nav" aria-label="Dashboard sections">
-    <a href="#welcome">Start here</a>
+    <a href="#section-overview" class="active" aria-current="page">Start here</a>
     <a href="#pa-impact">PA stakes</a>
     <a href="#overview">HAP position</a>
-    <a href="#section-overview" class="active" aria-current="page">Overview</a>
     <a href="#data-sources">Data sources</a>
     <a href="#state-laws">Map &amp; states</a>
     <a href="#legal-trends">Legal landscape</a>
@@ -254,10 +253,9 @@
 <div class="hap-body">
 <aside class="hap-sidebar hap-sidebar--340b" aria-label="Section navigation">
   <nav class="hap-sidebar-nav" id="hap-sidebar-nav">
-    <a href="#welcome">Start here</a>
+    <a href="#section-overview">Start here</a>
     <a href="#pa-impact">PA stakes</a>
     <a href="#overview">HAP position</a>
-    <a href="#section-overview">Overview</a>
     <a href="#data-sources">Data sources</a>
     <a href="#community-benefit">Community benefit</a>
     <a href="#state-laws">Map &amp; states</a>
@@ -359,10 +357,10 @@
   <div class="dashboard-grid">
 
     <!-- ========== SECTION: Start here — plain 340B + patient voice (focus-group: cold visitors, patient-first) ========== -->
-    <section id="welcome" class="dashboard-welcome span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="Start here" aria-labelledby="welcome-heading">
+    <section id="section-overview" class="dashboard-welcome span-12 scroll-reveal ow-section ow-section--band-a nav-section-block" data-nav-label="Start here" aria-labelledby="what-is-340b">
       <header class="dashboard-welcome__head">
         <p class="hap-section-eyebrow">Start here</p>
-        <h2 id="welcome-heading" class="dashboard-welcome__title">What is 340B?</h2>
+        <h2 id="what-is-340b" class="dashboard-welcome__title">What is 340B?</h2>
         <p class="dashboard-welcome__lead"><strong>340B</strong> is a federal drug discount program: eligible hospitals and clinics buy certain outpatient drugs at reduced prices from manufacturers and reinvest savings in care for underserved patients and community services—without using federal appropriations. <strong>PBM</strong> means pharmacy benefit manager (the middlemen who administer many drug plans). A <strong>contract pharmacy</strong> is a retail or specialty pharmacy a covered entity partners with so patients can fill prescriptions in their community.</p>
       </header>
       <blockquote class="dashboard-welcome__patient-quote">
@@ -371,7 +369,6 @@
       </blockquote>
       <p class="dashboard-welcome__why"><strong>Why it matters:</strong> When margins are thin, 340B savings help fund prescriptions, screening, and access in rural and underserved communities.</p>
       <nav class="dashboard-welcome__next" aria-label="Jump to key sections">
-        <a href="#section-overview" class="footer-pill footer-pill--outline">Full overview &amp; context</a>
         <a href="#overview" class="footer-pill footer-pill--outline">HAP position</a>
         <a href="#hearing-prep" class="footer-pill footer-pill--outline">Briefing Q&amp;A</a>
         <a href="https://www.haponline.org/contact" class="footer-pill footer-pill--primary hap-btn-primary" target="_blank" rel="noopener noreferrer" data-track="grassroots_contact">Contact HAP — reach your legislator</a>
@@ -1100,23 +1097,6 @@
         </article>
       </div>
     </section>
-
-    <!-- ========== SECTION: Intro — Program basics & glossary (follows map in page flow) ========== -->
-    <div id="section-overview" class="intro-section ow-section ow-section--band-a nav-section-block" data-nav-label="Overview">
-      <div class="intro-section-stack">
-        <article id="what-is-340b" class="card intro-overview-card">
-          <div class="card-heading">
-            <div class="card-heading-text">
-              <p class="card-title hap-section-eyebrow hap-section-eyebrow--on-light">Overview</p>
-              <h2>What is 340B?</h2>
-              <p class="card-subtitle">340B protects access to care in Pennsylvania: a federal discount, at no cost to taxpayers, reinvested in patients and communities.</p>
-            </div>
-            <div class="card-icon card-icon--pill" aria-hidden="true"><svg viewBox="0 0 48 24" fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="8"/><rect x="26" y="4" width="20" height="16" rx="8"/></svg></div>
-          </div>
-          <p id="overview-lead">340B allows eligible hospitals and clinics to buy outpatient drugs at a federal discount and reinvest those savings in patient care and community services, at no cost to taxpayers.</p>
-        </article>
-      </div>
-    </div>
 
     <!-- ========== SECTION: Supporting context — eligible providers ========== -->
     <section class="supporting-section supporting-section--executive supporting-section--executive-single span-12 scroll-reveal ow-section ow-section--band-a" aria-labelledby="leaders-impact-title">
@@ -1886,6 +1866,7 @@
   <script src="data/hap-340b-data.js" defer></script>
   <script src="data/pa-districts/pa-zip-centroids.js" defer></script>
   <script src="data/pa-member-photo-map.js" defer></script>
+  <script src="data/pa-legislator-incumbency.js" defer></script>
   <script src="modules/pa-district-map.js" defer></script>
   <!-- Policy Impact Simulator — loads after main dashboard; fully isolated -->
   <script src="modules/impact-data.js"></script>

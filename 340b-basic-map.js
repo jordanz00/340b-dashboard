@@ -42,19 +42,35 @@
 
     var width = Math.min(container.offsetWidth || 800, MAP_MAX_WIDTH);
     var height = Math.round(width * MAP_ASPECT);
-    var states = topojson.feature(atlas, atlas.objects.states);
-    var projection = d3.geoAlbersUsa().fitSize([width, height], states);
-    var pathGen = d3.geoPath(projection);
+    var states;
+    var projection;
+    var pathGen;
+    try {
+      states = topojson.feature(atlas, atlas.objects.states);
+      projection = d3.geoAlbersUsa().fitSize([width, height], states);
+      pathGen = d3.geoPath(projection);
+    } catch (err) {
+      container.textContent = "";
+      var fall = document.createElement("p");
+      fall.className = "basic-map-fallback";
+      fall.textContent = "Map could not be drawn. Open 340b.html for the full dashboard map.";
+      container.appendChild(fall);
+      return;
+    }
     var rootStyles = window.getComputedStyle(document.documentElement);
     var protectionColor = (rootStyles.getPropertyValue("--hap-topic-access") || "").trim() || "#0b67c2";
     var noProtectionColor = (rootStyles.getPropertyValue("--hap-topic-neutral-soft") || "").trim() || "#d7e0ea";
 
     container.textContent = "";
+    /* Numeric width/height + preserveAspectRatio (same as 340b.js). SVG attribute height="auto" is invalid and hides paths in WebKit/Chromium. */
     var svg = d3.select(container)
       .append("svg")
       .attr("viewBox", [0, 0, width, height])
-      .attr("width", "100%")
-      .attr("height", "auto")
+      .attr("width", width)
+      .attr("height", height)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("max-width", "100%")
+      .style("height", "auto")
       .attr("role", "img")
       .attr("aria-label", "US map: blue = contract pharmacy protection, gray = no state law");
 

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#f2f2f7">
+  <meta name="theme-color" content="#0072bc">
   <meta name="color-scheme" content="light">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -173,7 +173,8 @@
         <!-- Map Search -->
         <div class="map-search-bar anim-in">
           <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          <input type="search" class="search-input" id="state-search" placeholder="Find a state by name…" autocomplete="off">
+          <input type="search" class="search-input" id="state-search" placeholder="Find a state by name…" autocomplete="off" list="state-search-datalist" enterkeyhint="search" aria-label="Find a state by name">
+          <datalist id="state-search-datalist"></datalist>
           <button class="search-clear hidden" id="search-clear" aria-label="Clear search">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
@@ -351,7 +352,7 @@
             </div>
             <div id="pa-district-detail-panel" class="pa-district-detail-panel" hidden>
               <div class="pa-district-detail-header">
-                <img class="leg-headshot pa-detail-photo" id="pa-district-detail-photo" alt="" width="40" height="40" loading="lazy" decoding="async" style="display:none">
+                <img class="leg-headshot pa-detail-photo" id="pa-district-detail-photo" alt="" width="60" height="60" loading="lazy" decoding="async" style="display:none">
                 <div>
                   <div class="pa-district-detail-kicker" id="pa-district-detail-kicker">District</div>
                   <div class="pa-district-detail-title" id="pa-district-detail-title">—</div>
@@ -531,9 +532,9 @@
 
           <div class="leg-chamber-label">House</div>
           <div class="leg-card-list">
-            <a class="leg-card" href="https://www.palegis.us/house/members/bio/84" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/84/rep-frankel" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/84.jpg" alt="Rep. Dan Frankel" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/84.jpg" alt="Rep. Dan Frankel" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Dan Frankel</div>
                   <div class="leg-card-meta">District 23 · D</div>
@@ -542,9 +543,9 @@
               </div>
               <div class="leg-card-action">Schedule policy meeting</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1028" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1028/rep-rapp" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1028.jpg" alt="Rep. Kathy L. Rapp" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1028.jpg" alt="Rep. Kathy L. Rapp" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Kathy L. Rapp</div>
                   <div class="leg-card-meta">District 65 · R</div>
@@ -553,9 +554,9 @@
               </div>
               <div class="leg-card-action">Request district visit</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1944" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1944/rep-venkat" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1944.jpg" alt="Rep. Arvind Venkat" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1944.jpg" alt="Rep. Arvind Venkat" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Arvind Venkat</div>
                   <div class="leg-card-meta">District 30 · D</div>
@@ -564,9 +565,9 @@
               </div>
               <div class="leg-card-action">Send thank-you and co-sponsor ask</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1906" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1906/rep-twardzik" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1906.jpg" alt="Rep. Tim Twardzik" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1906.jpg" alt="Rep. Tim Twardzik" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Tim Twardzik</div>
                   <div class="leg-card-meta">District 123 · R</div>
@@ -575,9 +576,9 @@
               </div>
               <div class="leg-card-action">Schedule constituent call</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1877" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/house/members/bio/1877/rep-bonner" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1877.jpg" alt="Rep. Timothy Bonner" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-house/1877.jpg" alt="Rep. Timothy Bonner" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Rep. Timothy Bonner</div>
                   <div class="leg-card-meta">District 17 · R</div>
@@ -590,9 +591,9 @@
 
           <div class="leg-chamber-label">Senate</div>
           <div class="leg-card-list">
-            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1087" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1087/sen-brooks" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1087.jpg" alt="Sen. Michele Brooks" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1087.jpg" alt="Sen. Michele Brooks" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Michele Brooks</div>
                   <div class="leg-card-meta">District 50 · R</div>
@@ -601,9 +602,9 @@
               </div>
               <div class="leg-card-action">Schedule chair briefing</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1689" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1689/sen-haywood" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1689.jpg" alt="Sen. Art Haywood" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1689.jpg" alt="Sen. Art Haywood" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Art Haywood</div>
                   <div class="leg-card-meta">District 4 · D</div>
@@ -612,9 +613,9 @@
               </div>
               <div class="leg-card-action">Coordinate floor support</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1202" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1202/sen-culver" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1202.jpg" alt="Sen. Lynda Schlegel Culver" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1202.jpg" alt="Sen. Lynda Schlegel Culver" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Lynda Schlegel Culver</div>
                   <div class="leg-card-meta">District 27 · R</div>
@@ -623,9 +624,9 @@
               </div>
               <div class="leg-card-action">Request district-level impact meeting</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1683" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1683/sen-j-ward" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1683.jpg" alt="Sen. Judy Ward" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1683.jpg" alt="Sen. Judy Ward" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Judy Ward</div>
                   <div class="leg-card-meta">District 30 · R</div>
@@ -634,9 +635,9 @@
               </div>
               <div class="leg-card-action">Targeted member outreach before vote</div>
             </a>
-            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1799" target="_blank" rel="noopener noreferrer">
+            <a class="leg-card" href="https://www.palegis.us/senate/members/bio/1799/sen-collett" target="_blank" rel="noopener noreferrer">
               <div class="leg-card-top">
-                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1799.jpg" alt="Sen. Maria Collett" width="36" height="36" loading="lazy" decoding="async">
+                <img class="leg-headshot leg-card-photo" src="images/headshots/pa-senate/1799.jpg" alt="Sen. Maria Collett" width="54" height="54" loading="lazy" decoding="async">
                 <div class="leg-card-name-wrap">
                   <div class="leg-card-name">Sen. Maria Collett</div>
                   <div class="leg-card-meta">District 12 · D</div>
@@ -925,8 +926,9 @@
 </div>
 
 <script src="modules/ai-helpers.js"></script>
-<script src="data/pa-member-photo-map.js"></script>
-<script src="modules/pa-district-map.js"></script>
+  <script src="data/pa-member-photo-map.js"></script>
+  <script src="data/pa-legislator-incumbency.js"></script>
+  <script src="modules/pa-district-map.js"></script>
 <script src="340b-mobile.js"></script>
 </body>
 </html>

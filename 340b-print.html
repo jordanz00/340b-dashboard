@@ -471,22 +471,22 @@
   <div class="stat-grid">
     <div class="stat-card">
       <p class="stat-card__label">Reported community benefit (2024)</p>
-      <p class="stat-card__value">$7.95B</p>
+      <p class="stat-card__value" id="pv-kpi-benefit">$7.95B</p>
       <p class="stat-card__impact">Reinvested in patient care and community services - up 9% from 2023</p>
     </div>
     <div class="stat-card stat-card--mid">
       <p class="stat-card__label">PA hospitals in 340B</p>
-      <p class="stat-card__value">72</p>
+      <p class="stat-card__value" id="pv-kpi-pa">72</p>
       <p class="stat-card__impact">30% of Pennsylvania’s 235 hospitals (HAP Mar 2026 talking points)</p>
     </div>
     <div class="stat-card stat-card--green">
       <p class="stat-card__label">States with contract pharmacy protection</p>
-      <p class="stat-card__value">21</p>
+      <p class="stat-card__value" id="pv-stat-states-protected-count">21</p>
       <p class="stat-card__impact">29 states still lack enacted protection - including Pennsylvania</p>
     </div>
     <div class="stat-card stat-card--gold">
       <p class="stat-card__label">Share of total U.S. drug market (340B)</p>
-      <p class="stat-card__value">7%</p>
+      <p class="stat-card__value" id="pv-kpi-drug">7%</p>
       <p class="stat-card__impact">HAP Mar 2026 materials cite Commonwealth Fund</p>
     </div>
   </div>
@@ -564,7 +564,7 @@
       <div class="audit-cells">
         <div class="audit-cell">
           <p class="audit-cell__label">Covered entity audits</p>
-          <p class="audit-cell__value">179</p>
+          <p class="audit-cell__value" id="pv-kpi-oversight">179</p>
         </div>
         <div class="audit-vs">vs.</div>
         <div class="audit-cell">
@@ -757,12 +757,13 @@
 
   function applyPayload(payload) {
     if (!payload || typeof payload !== "object") return;
-    setText("pv-landscape", payload.landscapeValue);
-    setText("pv-protection", payload.protectionCount);
-    setText("pv-no-protection", payload.noProtectionCount);
     setText("pv-kpi-drug", payload.kpiDrug);
     setText("pv-kpi-benefit", payload.kpiBenefit);
     setText("pv-kpi-pa", payload.kpiPA);
+    setText("pv-kpi-oversight", payload.kpiOversight);
+    if (payload.protectionCount != null) {
+      setText("pv-stat-states-protected-count", payload.protectionCount);
+    }
     /* Prefer serialized SVG from the live dashboard. html2canvas often produces valid but
        empty PNGs for D3/SVG maps; those used to win over SVG and hid the maps entirely. */
     var usSvgOk = injectSvgMap(usMap, payload.mapSvg, "U.S. contract pharmacy protection map");
@@ -858,9 +859,17 @@
       }
       for (var j = 0; j < svgs.length; j += 1) {
         var s = svgs[j];
-        if (!s.getAttribute("viewBox") && !s.getAttribute("width") && !s.getAttribute("height")) ready = false;
+        var hasDim = !!(s.getAttribute("viewBox") || s.getAttribute("width") || s.getAttribute("height"));
+        if (!hasDim && typeof s.getBBox === "function") {
+          try {
+            var bb = s.getBBox();
+            if (bb && (bb.width > 0 || bb.height > 0)) hasDim = true;
+          } catch (eDim) { /* ignore */ }
+        }
+        if (!hasDim) ready = false;
       }
-      if ((ready && usHasMap && paHasMap) || Date.now() - started > 12000) {
+      /* Cap wait so print dialog still opens with static layout if maps are slow or blocked */
+      if ((ready && usHasMap && paHasMap) || Date.now() - started > 12000 || (Date.now() - started > 3500 && (!usHasMap || !paHasMap)) {
         window.print();
         return;
       }

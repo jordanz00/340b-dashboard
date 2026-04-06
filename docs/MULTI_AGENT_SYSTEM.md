@@ -64,6 +64,13 @@ node agents/run-waves.js --dry-run
 - **Agent 9** compares all proposals. When two proposals target the same file and change type, the one with the higher weighted score wins; the other is recorded in `conflictWith`.
 - **Winning proposals** are written to `approved-changes-*.json`. Maintainers (or an AI) can apply them in order. The system is **competitive** in that only the best-scoring proposal wins per conflict, and **collaborative** in that all agents contribute to the same pool.
 
+### Parallel work and continuous feedback
+
+- **Within one run**, waves 1–8 execute in order so the log is deterministic; each wave is still a separate “subagent” with its own proposal set.
+- **Across runs**, you get continuous feedback by re-running `node agents/run-waves.js` after changes; Agent 9 always reconciles the **full** new proposal pool.
+- **Parallelism:** You can run **separate terminals** with `node agents/run-waves.js --wave=N` for different waves while iterating, then run a full `run-waves.js` (or rely on Agent 9 in a full run) to merge and validate everything together.
+- **Human / org “departments”:** Use Cursor with **`.cursor/rules/multi-agent-supervisor.mdc`** (and Jarvis) so advocacy, compliance, data, and IT-style gates are applied on top of the Node agents — not via extra Python “fake role” scripts.
+
 ---
 
 ## Adding new prompts and versioning

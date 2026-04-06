@@ -5,6 +5,8 @@
  * District boundaries and ZIP centroids load from script-defined globals only
  * (no fetch/XHR). Include PaHouse2024_03.js, PaSenatorial2024_03.js, and optional
  * pa-zip-centroids.js / pa-340b-hospitals.js before this file.
+ * Optional: data/pa-legislator-incumbency.js after pa-member-photo-map.js — dedupes ZIP results
+ * when the same bio_id appears in both chambers (e.g. Senate special election).
  *
  * Legislator photos/bios: DataLayer.getPaLegislatorPhotoUrl / getPaLegislatorBioPageUrl.
  *
@@ -101,9 +103,13 @@
     if (title) title.textContent = safeText(payload.title || "—");
     if (leg) {
       while (leg.firstChild) leg.removeChild(leg.firstChild);
-      if (payload.url) {
+      var legUrl = "";
+      if (payload.url && typeof DataLayer !== "undefined" && typeof DataLayer.isTrustedLegislatorUrl === "function" && DataLayer.isTrustedLegislatorUrl(payload.url)) {
+        legUrl = String(payload.url).trim();
+      }
+      if (legUrl) {
         var link = document.createElement("a");
-        link.href = payload.url;
+        link.href = legUrl;
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.textContent = safeText(payload.legislator || "—");
@@ -237,12 +243,42 @@
     });
   }
 
+  function photoMapLegislatorRow(gpid, chamber) {
+    var map = typeof window !== "undefined" ? window.HAP_PA_MEMBER_PHOTO_MAP : null;
+    if (!map || gpid == null || gpid === "") return null;
+    var bucket = chamber === "senate" ? map.senate : map.house;
+    return bucket[String(gpid)] || null;
+  }
+
   function getLegislatorName(feature, chamber) {
     var p = feature.properties || {};
+    var row = photoMapLegislatorRow(p.GPID, chamber);
+    if (row) {
+      if (row.display_name) return safeText(row.display_name).trim() || "—";
+      if (row.name) {
+        var parts = safeText(row.name).trim().split(/\s+/).filter(Boolean);
+        if (parts.length >= 2) {
+          return parts.slice(1).join(" ") + " " + parts[0];
+        }
+        return parts.join(" ") || "—";
+      }
+    }
     if (chamber === "senate") {
       return [p.S_FIRSTNAM, p.S_LASTNAME].filter(Boolean).join(" ").trim() || "—";
     }
     return [p.H_FIRSTNAM, p.H_LASTNAME].filter(Boolean).join(" ").trim() || "—";
+  }
+
+  /**
+   * Collapse name variants (middle initials, punctuation) for duplicate-person detection at ZIP lookup.
+   * @param {string} displayName
+   * @returns {string}
+   */
+  function legislatorIdentityKey(displayName) {
+    var s = safeText(displayName).toLowerCase().replace(/[^a-z\s]/g, " ");
+    var parts = s.split(/\s+/).filter(function (w) { return w.length > 1; });
+    parts.sort();
+    return parts.join(" ");
   }
 
   function getDistrictNumber(feature) {
@@ -308,6 +344,69 @@
       action: action || "Schedule district briefing",
       chamberLabel: getChamberLabel(chamber)
     };
+  }
+
+  /**
+   * Resolve palegis bio_id for a district snapshot via HAP_PA_MEMBER_PHOTO_MAP (GPID → row).
+   * @param {{ gpid?: string|number|null }} snap
+   * @param {"house"|"senate"} chamber
+   * @returns {string|null}
+   */
+  function getBioIdFromSnapshot(snap, chamber) {
+    if (!snap || snap.gpid == null || snap.gpid === "") return null;
+    var map = typeof window !== "undefined" && window.HAP_PA_MEMBER_PHOTO_MAP;
+    if (!map) return null;
+    var bucket = chamber === "senate" ? map.senate : map.house;
+    var row = bucket[String(snap.gpid)];
+    if (!row || row.bio_id == null || row.bio_id === "") return null;
+    var bid = String(row.bio_id).trim();
+    return bid || null;
+  }
+
+  /**
+   * When House + Senate ZIP hits resolve to the same person (same bio_id), show only their
+   * current chamber per HAP_PA_LEGISLATOR_INCUMBENCY (April 2026 baseline; extend by_bio_id as needed).
+   */
+  function dedupeZipSnapshotsByIncumbency(houseSnap, senateSnap) {
+    var reg = typeof window !== "undefined" && window.HAP_PA_LEGISLATOR_INCUMBENCY;
+    var hb = houseSnap ? getBioIdFromSnapshot(houseSnap, "house") : null;
+    var sb = senateSnap ? getBioIdFromSnapshot(senateSnap, "senate") : null;
+    if (hb && sb && hb === sb) {
+      var rule = reg && reg.by_bio_id ? reg.by_bio_id[hb] : null;
+      if (rule && rule.current_chamber === "house") {
+        return { houseSnap: houseSnap, senateSnap: null };
+      }
+      return { houseSnap: null, senateSnap: senateSnap };
+    }
+    if (houseSnap && senateSnap) {
+      var hk = legislatorIdentityKey(houseSnap.legislator);
+      var sk = legislatorIdentityKey(senateSnap.legislator);
+      if (hk && sk && hk === sk) {
+        return { houseSnap: null, senateSnap: senateSnap };
+      }
+    }
+    return { houseSnap: houseSnap, senateSnap: senateSnap };
+  }
+
+  /**
+   * Apply display_name from incumbency registry (consistent naming across chambers).
+   * @param {Object|null} snap
+   * @param {"house"|"senate"} chamber
+   * @returns {Object|null}
+   */
+  function enrichSnapshotFromIncumbencyRegistry(snap, chamber) {
+    if (!snap) return null;
+    var reg = typeof window !== "undefined" && window.HAP_PA_LEGISLATOR_INCUMBENCY;
+    if (!reg || !reg.by_bio_id) return snap;
+    var bid = getBioIdFromSnapshot(snap, chamber);
+    if (!bid || !reg.by_bio_id[bid]) return snap;
+    var rule = reg.by_bio_id[bid];
+    var out = {};
+    Object.keys(snap).forEach(function (k) {
+      out[k] = snap[k];
+    });
+    if (rule.display_name) out.legislator = rule.display_name;
+    return out;
   }
 
   function computeCounts(features, hospitals) {
@@ -673,6 +772,10 @@
 
           var houseSnap = houseFeature ? computeDistrictSnapshot("house", houseFeature, state.computedHouse) : null;
           var senateSnap = senateFeature ? computeDistrictSnapshot("senate", senateFeature, state.computedSenate) : null;
+
+          var deduped = dedupeZipSnapshotsByIncumbency(houseSnap, senateSnap);
+          houseSnap = enrichSnapshotFromIncumbencyRegistry(deduped.houseSnap, "house");
+          senateSnap = enrichSnapshotFromIncumbencyRegistry(deduped.senateSnap, "senate");
 
           var statusParts = [];
           if (houseSnap) {

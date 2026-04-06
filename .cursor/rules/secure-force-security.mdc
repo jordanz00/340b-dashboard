@@ -1,5 +1,5 @@
 ---
-description: Secure Force — no hardcoded creds, parameterized queries, input validation, auth on routes
+description: Secure Force — no hardcoded creds, parameterized queries, input validation, auth on routes, AI-generated code review
 alwaysApply: true
 ---
 
@@ -10,16 +10,22 @@ When editing code in this project, follow these rules. They align with [SECURE-F
 ## Never
 
 - **Hardcode credentials:** No API keys, passwords, bearer tokens, or secrets in source. Use environment variables or a secret store. If you add a backend, document where secrets live in NOVICE-MAINTAINER.md.
-- **Use unsafe DOM with user input:** No `innerHTML`, `outerHTML`, `eval()`, or inline event handlers with unsanitized user data. Use `textContent`, `createElement`, `appendChild`, and attribute setters. For hash/URL/input-driven content, validate and allowlist (e.g. state codes) before use.
+- **Use unsafe DOM with user input:** No `innerHTML`, `outerHTML`, `eval()`, or inline event handlers with unsanitized user data. Use `textContent`, `createElement`, `appendChild`, and attribute setters. For hash/URL/input-driven content, validate and allowlist (e.g. state codes) before use. To clear a container, use `while (el.firstChild) el.removeChild(el.firstChild)` — never `innerHTML = ""`.
 - **Skip input validation:** Every place user input touches the app (hash, filters, forms, URL params) must be validated and bounded. Dashboard filters must not pass raw input to any data or API layer without validation.
 - **Skip authorization on routes:** If you add auth, every protected route (including nested routes) must enforce it. Do not assume one middleware is enough; manually verify each route and chained data source.
+- **Interpolate user input into SQL:** Never use template literals or string concatenation to build SQL queries. Always use parameterized/prepared statements (`$1`, `?`, or named params). This is the number one AI-generated vulnerability.
+- **Generate phantom validation functions:** Never call `_normalize*()`, `_sanitize*()`, or `_validate*()` without implementing the function. Every validation/normalization call must resolve to a real implementation with type coercion, length limits, and allowlists.
+- **Fetch unvalidated URLs:** Never pass user-supplied or config-supplied URLs to `fetch()` without validating the scheme (https only for production), host, and path. Use `_isAllowedEndpoint()` in `data-layer.js` for all DataLayer fetch calls. Block `javascript:`, `data:`, and `file:` schemes.
 
 ## Always
 
-- **Parameterized queries:** If you add database access, use parameterized/prepared statements. Never concatenate user input into SQL.
+- **Parameterized queries:** If you add database access, use parameterized/prepared statements. Never concatenate user input into SQL. This includes server-side scripts (Python, Node), ETL pipelines, and stored procedures.
+- **Sanitize POST payloads:** All data submitted to warehouse/API endpoints must pass through a normalization function (e.g. `_normalizeStoryPayload()`) that enforces types, lengths, allowlists, and strips unknown keys.
+- **Validate API responses:** Before caching or rendering warehouse/API responses, validate the response shape against known schemas. Reject responses with unexpected keys or malformed structures.
 - **Resource limits in infra:** If you add Docker, Terraform, or K8s, set CPU/memory limits. Add to configs; do not leave unbounded.
 - **Fail safely:** On validation or auth failure, do not expose internal errors to the client. Use generic messages and log details server-side if applicable.
 - **Run SAST after security-sensitive changes:** After touching auth, webhooks, or user-input handling, run `semgrep scan --config auto` (or project Semgrep config) and fix or document findings.
+- **Run post-AI-session review:** After every AI coding session that touches data paths, run the checklist in SECURE-FORCE.md: template literal audit, phantom function check, innerHTML scan, fetch URL validation, response shape check.
 
 ## Dashboard-Specific
 
@@ -28,4 +34,38 @@ When editing code in this project, follow these rules. They align with [SECURE-F
 - **Third-party scripts:** Prefer local vendor copies; if using CDN, add SRI and `crossorigin="anonymous"`.
 - **IT-safe hosting:** **340b-BASIC.html** uses only local scripts (`state-data.js`, vendor D3/topojson/states, `340b-basic-map.js`). No CDN, no inline script, no eval, no localStorage. Do not add unpkg or external script to 340b-BASIC.html. See [SECURITY.md](SECURITY.md).
 
-For full workflow (SAST, manual checklist, infra scan), see [SECURE-FORCE.md](SECURE-FORCE.md).
+## Warehouse Integration Security
+
+- **No credentials in source.** `config/settings.js` stores endpoint URLs and feature flags only. Connection strings, tokens, and secrets are managed by IT (Azure AD, Key Vault, gateway).
+- **Endpoint URL validation.** `connectWarehouse()` and `connectAPI()` validate URLs via `_isAllowedEndpoint()` before fetching.
+- **Response validation.** Warehouse JSON is checked against a known-table allowlist before caching. Unknown keys are rejected.
+- **Story submission.** `_normalizeStoryPayload()` sanitizes all fields: type coercion, length limits (200 chars hospital name, 500 chars story text, 254 chars email), category allowlist, email format check, unknown-key stripping.
+- **Read-only access.** Dashboard has read-only access to Gold tables. Write endpoints (story POST) are separate and IT-controlled.
+
+## SQL Injection Defense in Depth (CrowdStrike framework)
+
+Five mandatory defense layers — apply all five, not just one:
+
+1. **Prepared statements (parameterized queries):** Separate SQL code from user data. Use `$1`/`?`/named params in every `query()`, `execute()`, `prepare()` call. Never use template literals or string concatenation to build SQL. This is the primary defense.
+2. **Input validation (strict whitelisting):** Allow only expected characters and formats. State codes from an allowlist. Categories from an enum. Email with regex. Length limits on all text fields. Every new user input surface needs a validation rule before merge. In this project: `_normalizeStoryPayload()`, `_isAllowedEndpoint()`, `isTrustedLegislatorUrl()`, `_paPalegisBioSlugOk()`, hash state allowlist.
+3. **Least privilege:** Dashboard accounts are read-only on Gold tables. Story POST goes to a separate INSERT-only endpoint. No admin rights for any dashboard-facing identity. PBI embed tokens are view-only scope.
+4. **Suppress detailed errors:** Never expose SQL error text, table names, column names, or stack traces to the client. Return generic HTTP status codes. Log details server-side only. Already enforced: `DataLayer.refresh()` returns generic error objects; `submitStory()` falls back silently.
+5. **WAF (when applicable):** If the warehouse JSON API sits behind an API gateway, enable WAF rules for SQL injection and XSS detection. Ask IT during the first warehouse meeting. Record answer in `docs/POWER-BI-IT-DISCOVERY-CHECKLIST.md`.
+
+## AI-Generated Code Red Flags (grep after every session)
+
+```bash
+# Template literals in query/execute calls (SQL injection)
+rg '(query|execute|prepare|run)\s*\(' --glob '*.js' --glob '*.ts'
+
+# innerHTML assignments (XSS)
+rg '\.innerHTML\s*=' --glob '*.js'
+
+# Phantom validation functions (missing implementations)
+rg '_normalize|_sanitize|_validate' --glob '*.js'
+
+# Hardcoded secrets
+rg 'apiKey|secret|password|token|bearer' --glob '*.js' --glob '*.ts' --glob '*.env'
+```
+
+For full workflow (SAST, manual checklist, AI review, warehouse security), see [SECURE-FORCE.md](SECURE-FORCE.md).

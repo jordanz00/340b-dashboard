@@ -1,0 +1,15 @@
+{
+  "house": {
+    "4527": {
+      "bio_id": "1939",
+      "bio_slug": "rep-scialabba",
+      "note": "HD 12 — not listed on palegis /house/members grid (data-district 012 absent); slug verified 200."
+    },
+    "4662": {
+      "bio_id": "1171",
+      "bio_slug": "rep-grove",
+      "note": "HD 196 — absent from members grid; may show Archives layout if seat changed — URL still canonical palegis path."
+    }
+  },
+  "senate": {}
+}

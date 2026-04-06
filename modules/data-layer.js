@@ -34,6 +34,75 @@
     return bucket[String(gpid)] || null;
   }
 
+  /**
+   * palegis bio URL slug segment only (no slashes). Allows apostrophes (e.g. rep-d'orsie).
+   * @param {string} slug
+   * @returns {boolean}
+   */
+  function _paPalegisBioSlugOk(slug) {
+    var s = String(slug || "").trim();
+    if (!s || s.length > 160) return false;
+    if (/\.\./.test(s) || /[/?#<>\x00-\x1f\\]/.test(s)) return false;
+    return /^[a-z0-9][a-z0-9'\-]*$/i.test(s);
+  }
+
+  /**
+   * True if the URL uses https and points at a known official legislative domain/path.
+   * Used by mobile + PA map so taps never open junk schemes, placeholders, or generic homepages.
+   * Does not HTTP-verify the page still exists (CORS). palegis.us requires a slug segment
+   * (/members/bio/{id}/{slug}); numeric-only /bio/{id} returns 404 — use pa-member-photo-map.json
+   * bio_slug from scripts/sync-pa-palegis-bio-slugs.py.
+   *
+   * @param {string|null|undefined} raw
+   * @returns {boolean}
+   */
+  function isTrustedLegislatorUrl(raw) {
+    if (raw == null) return false;
+    var s = String(raw).trim();
+    if (!s || s === "#" || /^javascript:/i.test(s)) return false;
+    var u;
+    try {
+      u = new URL(s);
+    } catch (e) {
+      return false;
+    }
+    if (u.protocol !== "https:") return false;
+    var host = u.hostname.toLowerCase();
+    var path = u.pathname || "";
+
+    if (host === "www.palegis.us" || host === "palegis.us") {
+      var pm = path.match(/^\/(house|senate)\/members\/bio\/(\d+)\/([^/?#]+)\/?$/i);
+      if (!pm) return false;
+      var seg = pm[3];
+      try {
+        seg = decodeURIComponent(seg);
+      } catch (_e) {
+        return false;
+      }
+      return _paPalegisBioSlugOk(seg);
+    }
+
+    if (/\.house\.gov$/i.test(host)) {
+      if (/^(www\.)?house\.gov$/i.test(host)) return false;
+      return true;
+    }
+
+    if (/\.senate\.gov$/i.test(host)) {
+      if (/^(www\.)?senate\.gov$/i.test(host)) return false;
+      return true;
+    }
+
+    if (host === "www.congress.gov" || host === "congress.gov") {
+      return /\/member\//i.test(path);
+    }
+
+    if (host === "bioguide.congress.gov") {
+      return true;
+    }
+
+    return false;
+  }
+
   var _refreshCallbacks = [];
   var _pollTimer = null;
 
@@ -420,7 +489,7 @@
     },
 
     /**
-     * Official PA legislature bio page URL when bio_id exists on the static map.
+     * Official PA legislature bio page URL when bio_id and bio_slug exist on the static map.
      *
      * @param {string|number} gpid
      * @param {string} chamber
@@ -428,11 +497,23 @@
      */
     getPaLegislatorBioPageUrl: function (gpid, chamber) {
       var e = _paLegislatorEntry(gpid, chamber);
-      if (!e || !e.bio_id) return "";
+      if (!e || e.bio_id == null || e.bio_id === "") return "";
+      var bid = String(e.bio_id).trim();
+      if (!/^\d+$/.test(bid)) return "";
+      var slug = e.bio_slug != null ? String(e.bio_slug).trim() : "";
+      if (!_paPalegisBioSlugOk(slug)) return "";
       var ch = (chamber || "").toLowerCase();
       var chamberSlug = ch === "senate" ? "senate" : "house";
-      return "https://www.palegis.us/" + chamberSlug + "/members/bio/" + e.bio_id;
+      var url = "https://www.palegis.us/" + chamberSlug + "/members/bio/" + bid + "/" + slug;
+      return isTrustedLegislatorUrl(url) ? url : "";
     },
+
+    /**
+     * Whether a string is safe to use as an outbound legislator/profile link from the dashboard.
+     * @param {string|null|undefined} raw
+     * @returns {boolean}
+     */
+    isTrustedLegislatorUrl: isTrustedLegislatorUrl,
 
     /* ─── Story submission ─── */
 
@@ -572,7 +653,13 @@
      * @returns {Promise<{connected, source, tablesLoaded}>}
      */
     connectWarehouse: function (endpointUrl, options) {
+      if (!_isAllowedEndpoint(endpointUrl)) {
+        return Promise.resolve({ connected: false, reason: "blocked-url" });
+      }
       var opts = options || {};
+      if (opts.storyApiUrl && !_isAllowedEndpoint(opts.storyApiUrl)) {
+        return Promise.resolve({ connected: false, reason: "blocked-story-url" });
+      }
       DataLayer._warehouseUrl = endpointUrl;
       DataLayer._storyApiUrl = opts.storyApiUrl || null;
       DataLayer._fetchHeaders = opts.headers || {};
@@ -593,6 +680,9 @@
      * @param {number} [intervalMs=900000] — polling interval (default 15 min)
      */
     connectAPI: function (endpointUrl, intervalMs) {
+      if (!_isAllowedEndpoint(endpointUrl)) {
+        return Promise.resolve({ connected: false, reason: "blocked-url" });
+      }
       DataLayer._apiUrl = endpointUrl;
       DataLayer.source = "warehouse-api";
       var ms = intervalMs || 900000;
@@ -646,6 +736,21 @@
             return r.json();
           })
           .then(function (data) {
+            if (!data || typeof data !== "object") {
+              throw new Error("Warehouse response is not a valid JSON object");
+            }
+            var KNOWN_TABLES = [
+              "dim_state_law", "fact_dashboard_kpi", "dim_data_freshness",
+              "dim_pa_delegation", "dim_pa_legislator", "hospitals_340b_pa",
+              "hospital_financials_340b", "hospital_stories", "dim_pa_340b_hospital",
+              "_meta"
+            ];
+            var keys = Object.keys(data);
+            for (var ki = 0; ki < keys.length; ki++) {
+              if (KNOWN_TABLES.indexOf(keys[ki]) === -1 && keys[ki].charAt(0) !== "_") {
+                throw new Error("Unexpected table key in warehouse response: " + keys[ki]);
+              }
+            }
             _warehouseCache = data;
             _syncWarehouseGlobals(data);
             DataLayer.lastRefreshed = new Date();
@@ -963,6 +1068,103 @@
         dataSource: "warehouse"
       };
     });
+  }
+
+  /**
+   * Validate that a warehouse/API endpoint URL is safe to fetch from.
+   * Blocks javascript:, data:, file:, and non-HTTPS URLs (except relative paths
+   * and same-origin for local mock testing). Prevents open-redirect or SSRF-style
+   * attacks if config/settings.js is tampered with or if someone calls
+   * connectWarehouse() from the console with a malicious URL.
+   *
+   * @param {string} url
+   * @returns {boolean}
+   */
+  function _isAllowedEndpoint(url) {
+    if (url == null || typeof url !== "string") return false;
+    var s = url.trim();
+    if (!s) return false;
+    if (/^javascript:/i.test(s) || /^data:/i.test(s) || /^file:/i.test(s)) return false;
+    if (s.charAt(0) === "/" || s.indexOf("data/") === 0) return true;
+    try {
+      var u = new URL(s, window.location.href);
+      if (u.protocol !== "https:" && u.protocol !== "http:") return false;
+      if (/^(127\.|10\.|192\.168\.|0\.)/.test(u.hostname) || u.hostname === "localhost") {
+        return u.origin === window.location.origin;
+      }
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
+
+  /**
+   * Sanitize and normalize a story submission payload before storage or POST.
+   *
+   * WHY THIS EXISTS: Story payloads may originate from user-controlled form fields.
+   * Before sending to the warehouse API, every field must be coerced to the expected
+   * type, trimmed, length-bounded, and stripped of unexpected keys. This prevents
+   * injection if the API constructs queries from payload fields, and ensures the
+   * JSON shape matches fact_story_submission exactly.
+   *
+   * SECURITY: Warehouse APIs that insert this data MUST still use parameterized
+   * queries server-side. Client-side sanitization is defense-in-depth, not a
+   * substitute for server-side validation.
+   *
+   * @param {Object} raw — form payload (untrusted)
+   * @returns {Object} — sanitized payload with only known keys
+   */
+  function _normalizeStoryPayload(raw) {
+    if (!raw || typeof raw !== "object") return {};
+    var SK = DataLayer.STORY_PAYLOAD_KEYS;
+    var VALID_CATEGORIES = [
+      "Patient Access", "Community Benefit", "Rural Care", "Financial Impact"
+    ];
+    var MAX_LENGTHS = {
+      hospitalName: 200,
+      county: 100,
+      storyText: 500,
+      contactEmail: 254,
+      savingsApproximate: 100,
+      communityProgramsFunded: 200,
+      contractPharmacyUse: 200,
+      manufacturerCommunications: 200
+    };
+
+    function safeStr(val, maxLen) {
+      if (val == null) return "";
+      var s = String(val).trim();
+      if (maxLen && s.length > maxLen) s = s.slice(0, maxLen);
+      return s;
+    }
+
+    var category = safeStr(raw[SK.category] || raw.category, 50);
+    if (VALID_CATEGORIES.indexOf(category) === -1) category = "";
+
+    var email = safeStr(raw[SK.contactEmail] || raw.email, MAX_LENGTHS.contactEmail);
+    if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) email = "";
+
+    var out = {};
+    out[SK.hospitalName]  = safeStr(raw[SK.hospitalName] || raw.hospital, MAX_LENGTHS.hospitalName);
+    out[SK.county]        = safeStr(raw[SK.county] || raw.county, MAX_LENGTHS.county);
+    out[SK.category]      = category;
+    out[SK.storyText]     = safeStr(raw[SK.storyText] || raw.story, MAX_LENGTHS.storyText);
+    out[SK.contactEmail]  = email;
+    out[SK.submittedAt]   = raw[SK.submittedAt] || raw.timestamp || new Date().toISOString();
+    out[SK.schemaVersion] = 2;
+
+    if (raw[SK.savingsApproximate])          out[SK.savingsApproximate]          = safeStr(raw[SK.savingsApproximate], MAX_LENGTHS.savingsApproximate);
+    if (raw[SK.communityProgramsFunded])     out[SK.communityProgramsFunded]     = safeStr(raw[SK.communityProgramsFunded], MAX_LENGTHS.communityProgramsFunded);
+    if (raw[SK.contractPharmacyUse])         out[SK.contractPharmacyUse]         = safeStr(raw[SK.contractPharmacyUse], MAX_LENGTHS.contractPharmacyUse);
+    if (raw[SK.manufacturerCommunications])  out[SK.manufacturerCommunications]  = safeStr(raw[SK.manufacturerCommunications], MAX_LENGTHS.manufacturerCommunications);
+
+    out[SK.hospital]  = out[SK.hospitalName];
+    out[SK.story]     = out[SK.storyText];
+    out[SK.email]     = out[SK.contactEmail];
+    out[SK.timestamp] = out[SK.submittedAt];
+    out[SK.version]   = 2;
+
+    return out;
   }
 
   /** Infer unit string from KPI shape for export. */

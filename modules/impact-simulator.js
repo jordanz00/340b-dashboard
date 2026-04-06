@@ -2,11 +2,18 @@
  * HAP 340B Policy Impact Simulator — Core Logic
  * ==============================================
  *
- * Pure computation. No DOM, no side effects.
- * Takes a scenario ID and returns structured impact data for the UI.
+ * WHO THIS IS FOR: Anyone wiring the Policy simulator UI (340b.html or 340b-mobile.html).
  *
- * ISOLATION: This module does NOT depend on 340b.js, the map, or print/PDF.
- * It only reads HAP340B_IMPACT from impact-data.js.
+ * WHAT IT DOES: Pure functions — given a scenario id string, returns labels and illustrative
+ * numbers for the briefing cards. No DOM, no network, no side effects.
+ *
+ * HOW IT CONNECTS: impact-data.js must load first (it creates window.HAP340B_IMPACT).
+ * impact-ui.js calls IMPACT.getScenarioImpact() when users tap scenario buttons.
+ *
+ * COMPLIANCE: Values are advocacy illustrations — not HRSA statistics. See semantic-layer-registry
+ * advocacyTools.policyImpactSimulator and docs/DATA-DICTIONARY.md §1a.
+ *
+ * ISOLATION: Does NOT depend on 340b.js, the map, or print/PDF.
  */
 
 (function (global) {

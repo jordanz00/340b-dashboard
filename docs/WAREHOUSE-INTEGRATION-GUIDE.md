@@ -2,6 +2,8 @@
 
 **What this file is:** A single-page guide to connecting the 340B dashboard to the HAP data warehouse so all numbers come from real, governed data that updates automatically.
 
+**See also:** [Mobile + Power BI alignment summary](MOBILE-POWERBI-ALIGNMENT-SUMMARY.md) — novice-friendly steps and every `MetricKey` used on `340b-mobile.html`.
+
 **Who this is for:** Jordan, IT/Strategic Analytics, or any developer doing the integration.
 
 **Status:** Warehouse access granted. Dashboard is integration-ready — all three paths below are supported in `modules/data-layer.js`.

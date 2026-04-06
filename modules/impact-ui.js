@@ -7,6 +7,13 @@
  *
  * ISOLATION: Does not modify 340b.js, map, print, or PDF.
  * Uses only textContent for dynamic content (no innerHTML with data).
+ *
+ * SURFACES: Mounts into any element whose id is listed in SIMULATOR_ROOT_IDS
+ * (advanced dashboard). Each root gets its own scoped buttons
+ * (data-impact-scenario-id) so there are no duplicate DOM ids.
+ *
+ * SEMANTIC LAYER: Scenario numbers are illustrative — see modules/impact-data.js
+ * and powerbi/semantic-layer-registry.json (advocacyTools.policyImpactSimulator).
  */
 
 (function (global) {
@@ -18,13 +25,12 @@
     return;
   }
 
-  /* ==========================================
-     IMPACT SIMULATOR UI — CONFIG
-     ==========================================
-     IDs and selectors. Matches 340b.html structure.
-     */
-  var CONTAINER_ID = "policy-impact-simulator-root";
-  var SCENARIO_BTN_PREFIX = "impact-scenario-btn-";
+  /**
+   * Every container id we should initialize when present on the page.
+   * AGENT[D1]: New mount point = add id here + registry row (+ page CSS if needed).
+   */
+  var SIMULATOR_ROOT_IDS = ["policy-impact-simulator-root"];
+
   var ROOT_SCENARIO_ATTR = "data-impact-scenario";
   var SCENARIO_META = {
     protect: {
@@ -80,22 +86,29 @@
     return el;
   }
 
-  /* ==========================================
-     IMPACT SIMULATOR UI — RENDER
-     ==========================================
-     Builds the panel HTML structure (via DOM, not innerHTML with data).
-     */
+  /**
+   * Stable, unique ids for a11y wiring (avoids duplicate ids when two simulators exist).
+   */
+  function rootIdPrefix(root) {
+    return root && root.id ? root.id : "impact-simulator";
+  }
+
+  /**
+   * Builds one simulator instance inside `root`. Returns the results container element.
+   */
   function renderSimulator(root) {
-    if (!root) return;
+    if (!root) return null;
 
     root.replaceChildren();
+    var rid = rootIdPrefix(root);
 
     var header = document.createElement("header");
-    header.className = "impact-simulator-header";
+    header.className = "impact-simulator-header anim-in";
     header.appendChild(makeEl("p", "impact-simulator-kicker hap-section-eyebrow hap-section-eyebrow--on-light", "Policy simulator"));
     var title = document.createElement("h2");
     title.className = "impact-simulator-headline";
-    title.id = "impact-simulator-heading";
+    /* Keep stable id on advanced dashboard for bookmarks / a11y extensions */
+    title.id = root.id === "policy-impact-simulator-root" ? "impact-simulator-heading" : rid + "-heading";
     title.textContent = "Instant read: strengthen, hold, or roll back protections";
     header.appendChild(title);
     header.appendChild(
@@ -115,17 +128,17 @@
 
     var scenarioIds = IMPACT.getScenarioIds();
     var toolbar = document.createElement("div");
-    toolbar.className = "impact-simulator-toolbar";
+    toolbar.className = "impact-simulator-toolbar anim-in";
     var toolbarLabel = document.createElement("p");
     toolbarLabel.className = "impact-simulator-toolbar-label";
-    toolbarLabel.id = "impact-simulator-scenario-label";
+    toolbarLabel.id = rid + "-scenario-label";
     toolbarLabel.textContent = "Scenario";
     toolbar.appendChild(toolbarLabel);
 
     var buttonGroup = document.createElement("div");
     buttonGroup.className = "impact-simulator-buttons impact-simulator-buttons--segmented";
     buttonGroup.setAttribute("role", "group");
-    buttonGroup.setAttribute("aria-labelledby", "impact-simulator-scenario-label");
+    buttonGroup.setAttribute("aria-labelledby", toolbarLabel.id);
 
     scenarioIds.forEach(function (id, index) {
       var data = IMPACT.getScenarioImpact(id);
@@ -135,7 +148,7 @@
       var btn = document.createElement("button");
       btn.type = "button";
       btn.className = "impact-scenario-btn impact-scenario-btn--" + slug + (index === 1 ? " active" : "");
-      btn.id = SCENARIO_BTN_PREFIX + id;
+      btn.setAttribute("data-impact-scenario-id", id);
       btn.setAttribute("data-impact-scenario-btn", slug);
       btn.setAttribute("aria-pressed", index === 1 ? "true" : "false");
       btn.setAttribute("aria-label", safeText(data.label) + ". " + safeText(SCENARIO_META[slug].buttonHint));
@@ -157,8 +170,8 @@
     root.appendChild(toolbar);
 
     var results = document.createElement("div");
-    results.className = "impact-simulator-results";
-    results.id = "impact-simulator-results";
+    results.className = "impact-simulator-results anim-in";
+    results.id = rid + "-results";
     results.setAttribute("aria-live", "polite");
     root.appendChild(results);
 
@@ -178,7 +191,7 @@
     container.replaceChildren();
     var scenarioSlug = scenarioToken(scenarioId);
     container.setAttribute("data-scenario", scenarioSlug);
-    container.className = "impact-simulator-results impact-simulator-results--" + scenarioSlug;
+    container.className = "impact-simulator-results impact-simulator-results--" + scenarioSlug + " anim-in";
 
     var scenarioSignal = document.createElement("div");
     scenarioSignal.className = "impact-scenario-signal";
@@ -238,40 +251,43 @@
     container.appendChild(narrative);
   }
 
-  /* ==========================================
-     IMPACT SIMULATOR UI — INIT
-     ==========================================
-     Mounts the simulator and binds events. Called after DOM ready.
-     */
-  function init() {
-    var root = document.getElementById(CONTAINER_ID);
+  /**
+   * Wire one simulator root: scoped buttons, no global getElementById collision.
+   */
+  function initSimulatorRoot(root) {
     if (!root) return;
 
     var resultsEl = renderSimulator(root);
     if (!resultsEl) return;
 
     var scenarioIds = IMPACT.getScenarioIds();
-    var activeIndex = 1;
 
     applyScenarioVisualState(root, IMPACT.SCENARIO_CURRENT);
     renderResults(resultsEl, IMPACT.SCENARIO_CURRENT);
 
-    scenarioIds.forEach(function (id, index) {
-      var btn = document.getElementById(SCENARIO_BTN_PREFIX + id);
+    scenarioIds.forEach(function (scenarioId, index) {
+      var btn = root.querySelector('[data-impact-scenario-id="' + scenarioId + '"]');
       if (!btn) return;
 
       btn.addEventListener("click", function () {
-        scenarioIds.forEach(function (oid, i) {
-          var b = document.getElementById(SCENARIO_BTN_PREFIX + oid);
-          if (b) {
-            b.classList.toggle("active", i === index);
-            b.setAttribute("aria-pressed", i === index ? "true" : "false");
-          }
+        root.querySelectorAll("[data-impact-scenario-id]").forEach(function (b) {
+          var bid = b.getAttribute("data-impact-scenario-id");
+          var i = scenarioIds.indexOf(bid);
+          b.classList.toggle("active", i === index);
+          b.setAttribute("aria-pressed", i === index ? "true" : "false");
         });
-        activeIndex = index;
-        applyScenarioVisualState(root, id);
-        renderResults(resultsEl, id);
+        applyScenarioVisualState(root, scenarioId);
+        renderResults(resultsEl, scenarioId);
       });
+    });
+  }
+
+  function init() {
+    SIMULATOR_ROOT_IDS.forEach(function (id) {
+      var root = document.getElementById(id);
+      if (root) {
+        initSimulatorRoot(root);
+      }
     });
   }
 
@@ -280,5 +296,4 @@
   } else {
     init();
   }
-
 })(typeof window !== "undefined" ? window : this);

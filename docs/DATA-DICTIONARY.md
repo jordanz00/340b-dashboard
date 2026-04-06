@@ -23,6 +23,20 @@
 
 ---
 
+## 1a. Policy Impact Simulator (Home tab + full desktop dashboard)
+
+**What you see:** A “CEO briefing” block on the **mobile Home** tab and the **Policy simulator** section on `340b.html` — three buttons (protect the discount / keep today’s mix / remove protections) and three result cards.
+
+**What it means:** These are **illustrative advocacy storylines** so executives can compare directions of travel. They are **not** live forecasts, HRSA statistics, or warehouse-backed metrics.
+
+**Where the data lives today:** `modules/impact-data.js` defines `HAP340B_IMPACT` (scenario labels + rounded “estimates” for briefings). `modules/impact-simulator.js` reads that object. `modules/impact-ui.js` draws the UI into `#policy-impact-simulator-root` (desktop) and `#mobile-impact-simulator-root` (mobile).
+
+**Power BI later:** Tracked in `powerbi/semantic-layer-registry.json` under `advocacyTools.policyImpactSimulator` with `validationStatus: illustrative_only`. IT would need an explicit Gold/dim design before any “real” numbers appear here.
+
+**How to update copy or illustration values:** Edit `modules/impact-data.js` only after advocacy/SME sign-off — do not present these as verified program statistics in external materials without review.
+
+---
+
 ## 1. Home Screen KPIs
 
 These are the four big number cards at the top of the Home tab.
@@ -63,8 +77,9 @@ These are the four big number cards at the top of the Home tab.
 | **What it means** | The number of U.S. states (out of 50, excluding D.C.) that have enacted a law protecting 340B contract pharmacy relationships |
 | **Where it lives today** | Computed from `state-data.js`: count of states where `STATE_340B[abbr].cp === true`, excluding D.C. |
 | **Code variable** | `STATES_WITH_PROTECTION` array in `state-data.js` → filtered to exclude "DC" → `.length` |
-| **Power BI column** | DAX measure: `COUNTROWS(FILTER(dim_state_law, dim_state_law[ContractPharmacyProtected] = TRUE AND dim_state_law[StateCode] <> "DC"))` |
-| **Gold table** | Derived from `dim_state_law` |
+| **MetricKey** | `US_STATES_CP_PROTECTION_COUNT` |
+| **Power BI column** | `fact_dashboard_kpi.ValueNumeric` where `MetricKey = 'US_STATES_CP_PROTECTION_COUNT'`, or DAX: `COUNTROWS(FILTER(dim_state_law, [ContractPharmacyProtected] = TRUE AND [StateCode] <> "DC"))` |
+| **Gold table** | `fact_dashboard_kpi` or derived from `dim_state_law` |
 | **How often it changes** | When a new state passes (or repeals) a contract pharmacy protection law |
 | **Who owns the number** | HAP advocacy team verifies against MultiState, ASHP, and America's Essential Hospitals |
 | **Update trigger** | New state legislation signed → HAP confirms → update `state-data.js` or warehouse |
@@ -77,11 +92,39 @@ These are the four big number cards at the top of the Home tab.
 | **What it means** | 50 minus the number of states with contract pharmacy protection = states that have NOT enacted protection |
 | **Where it lives today** | Computed in `340b-mobile.js` as `50 - protectedCount` |
 | **Code variable** | Calculated at runtime |
-| **Power BI column** | DAX measure: `50 - [States Protected Count]` |
-| **Gold table** | Derived from `dim_state_law` |
+| **MetricKey** | `US_STATES_NO_CP_PROTECTION_COUNT` |
+| **Power BI column** | `fact_dashboard_kpi.ValueNumeric` where `MetricKey = 'US_STATES_NO_CP_PROTECTION_COUNT'`, or DAX: `50 - [States Protected Count]` |
+| **Gold table** | `fact_dashboard_kpi` or derived from `dim_state_law` |
 | **How often it changes** | Whenever the "States Protected" count changes |
 | **Who owns the number** | Same as States Protected |
 | **Update trigger** | Same as States Protected |
+
+### 7% — 340B Drug Market Share
+
+| Question | Answer |
+|----------|--------|
+| **What you see** | "7%" with the label "340B Drug Market Share" |
+| **What it means** | 340B purchases represent approximately 7% of the total U.S. outpatient drug market — a small fraction despite industry claims |
+| **Where it lives today** | `HAP_STATIC_METRICS.OUTPATIENT_SHARE_PCT` in `state-data.js`; hard-coded `data-count="7"` in HTML |
+| **MetricKey** | `OUTPATIENT_SHARE_PCT` |
+| **Power BI column** | `fact_dashboard_kpi.ValueNumeric` where `MetricKey = 'OUTPATIENT_SHARE_PCT'` |
+| **Gold table** | `fact_dashboard_kpi` |
+| **Source** | HAP March 2026 talking points, citing Commonwealth Fund |
+| **Update trigger** | New market share analysis published → HAP reviews → update |
+
+### 184 — HRSA Audits (Aggregate)
+
+| Question | Answer |
+|----------|--------|
+| **What you see** | "184" with the label "HRSA Audits (FY 2024)" |
+| **What it means** | Total HRSA Program Integrity audits in FY 2024 (179 hospital + 5 manufacturer). Shown on the executive KPI strip as the combined figure |
+| **Where it lives today** | `HAP_STATIC_METRICS.HRSA_AUDIT_COUNT` in `state-data.js` |
+| **MetricKey** | `HRSA_AUDIT_COUNT` |
+| **Power BI column** | `fact_dashboard_kpi.ValueNumeric` where `MetricKey = 'HRSA_AUDIT_COUNT'` |
+| **Gold table** | `fact_dashboard_kpi` |
+| **Source** | HRSA Program Integrity FY 2024 audit results |
+| **Update trigger** | HRSA publishes new fiscal year audit data → HAP updates |
+| **Note** | Split into `HRSA_HOSPITAL_AUDIT_COUNT` (179) and `HRSA_MANUFACTURER_AUDIT_COUNT` (5) for the oversight disparity visual |
 
 ---
 

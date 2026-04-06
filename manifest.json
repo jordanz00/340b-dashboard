@@ -3,6 +3,7 @@
   "short_name": "340B",
   "description": "HAP 340B Advocacy Dashboard — Protect 340B, protect patients.",
   "start_url": "340b-mobile.html",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#0072bc",

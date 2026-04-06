@@ -14,7 +14,7 @@
  * Function-level map (if maintained): docs/340b-js-map.md
  *
  * Startup: DOMContentLoaded → init() at bottom of file (each feature wrapped in runTaskSafely).
- * Print tab: if CONFIG.printCanonicalPdf is set, opens that PDF; else openPrintView → print.html (or leave-behind → 340b-print.html).
+ * Print tab: if CONFIG.printCanonicalPdf is set, opens that PDF; else openPrintView → 340b-print.html (canonical 2-page layout; leave-behind uses same URL).
  * Map click: bindMapEvents → selectState → URL hash, detail panel, highlights
  *
  * Count-up: elements with [data-count-up] animate on scroll; finalizeCountUpValues() freezes them for print.
@@ -233,7 +233,7 @@
       noProtectionBlock: document.getElementById("state-list-block-no-protection"),
       printButton: document.getElementById("btn-print"),
       shareButton: document.getElementById("btn-share"),
-      introSection: document.querySelector(".dashboard-grid > .intro-section"),
+      introSection: document.getElementById("section-overview"),
       methodologyWrap: document.getElementById("methodology-wrap"),
       methodologyButton: document.getElementById("methodology-toggle"),
       methodologyContent: document.getElementById("methodology-content"),
@@ -1173,9 +1173,9 @@
      ⚠ DO NOT MODIFY
      This section controls the Print/PDF system and must remain unchanged.
      Changes here can break the print pipeline and PDF output.
-     Key: hap340b:printSnapshot in localStorage; print.html reads it (and legacy hap340bPrint).
+     Key: hap340b:printSnapshot in localStorage; 340b-print.html / print.html read it (and legacy hap340bPrint).
      */
-  // Assembles the canonical 2-page payload consumed by print.html for both
+  // Assembles the canonical 2-page payload consumed by 340b-print.html (and legacy print.html) for both
   // Print/PDF dialog and downloadable leave-behind export.
   function getPrintViewPayload(outputMode) {
     var summary = gatherPrintPayloadSummaryAndKpis();
@@ -1208,14 +1208,14 @@
 
   // Opens the print view and injects the map and snapshot data from localStorage so the user can save as PDF from the browser.
   // Mobile/tablet: same-tab navigation (reliable localStorage + no popup). Desktop: new tab when allowed.
-  // options.fromPdfImage: opened from "Download PDF (image)" on mobile — print.html shows tailored steps (canvas PDF stalls on iOS).
+  // options.fromPdfImage: opened from "Download PDF (image)" on mobile (canvas PDF stalls on iOS); 340b-print may use query for future UX hints.
   function buildPrintViewUrl(payloadId, options) {
     var mode = options && options.mode === "download" ? "download" : "print";
     var fromPdfImage = !!(options && options.fromPdfImage);
-    var printQs = "auto=1&mode=" + encodeURIComponent(mode);
+    var printQs = "print=1&mode=" + encodeURIComponent(mode);
     if (fromPdfImage) printQs += "&from=pdfimage";
     printQs += "&pid=" + encodeURIComponent(payloadId);
-    return resolveAppUrl("print.html?" + printQs);
+    return resolveAppUrl("340b-print.html?" + printQs);
   }
 
   /**

@@ -1,0 +1,1512 @@
+{
+  "asOf": "2026-04",
+  "source": "palegis.us member rosters (sync script)",
+  "legislators": [
+    {
+      "name": "Patrick J. Harkins",
+      "chamber": "House",
+      "district": "HD 1",
+      "party": "D"
+    },
+    {
+      "name": "Robert E. Merski",
+      "chamber": "House",
+      "district": "HD 2",
+      "party": "D"
+    },
+    {
+      "name": "Ryan A. Bizzarro",
+      "chamber": "House",
+      "district": "HD 3",
+      "party": "D"
+    },
+    {
+      "name": "Jacob D. Banta",
+      "chamber": "House",
+      "district": "HD 4",
+      "party": "R"
+    },
+    {
+      "name": "Eric J. Weaknecht",
+      "chamber": "House",
+      "district": "HD 5",
+      "party": "R"
+    },
+    {
+      "name": "Brad Roae",
+      "chamber": "House",
+      "district": "HD 6",
+      "party": "R"
+    },
+    {
+      "name": "Parke Wentling",
+      "chamber": "House",
+      "district": "HD 7",
+      "party": "R"
+    },
+    {
+      "name": "Aaron Bernstine",
+      "chamber": "House",
+      "district": "HD 8",
+      "party": "R"
+    },
+    {
+      "name": "Marla Brown",
+      "chamber": "House",
+      "district": "HD 9",
+      "party": "R"
+    },
+    {
+      "name": "Amen Brown",
+      "chamber": "House",
+      "district": "HD 10",
+      "party": "D"
+    },
+    {
+      "name": "Marci Mustello",
+      "chamber": "House",
+      "district": "HD 11",
+      "party": "R"
+    },
+    {
+      "name": "John A. Lawrence",
+      "chamber": "House",
+      "district": "HD 13",
+      "party": "R"
+    },
+    {
+      "name": "Roman Kozak",
+      "chamber": "House",
+      "district": "HD 14",
+      "party": "R"
+    },
+    {
+      "name": "Joshua D. Kail",
+      "chamber": "House",
+      "district": "HD 15",
+      "party": "R"
+    },
+    {
+      "name": "Robert F. Matzie",
+      "chamber": "House",
+      "district": "HD 16",
+      "party": "D"
+    },
+    {
+      "name": "Timothy R. Bonner",
+      "chamber": "House",
+      "district": "HD 17",
+      "party": "R"
+    },
+    {
+      "name": "Kathleen C. Tomlinson",
+      "chamber": "House",
+      "district": "HD 18",
+      "party": "R"
+    },
+    {
+      "name": "Aerion Abney",
+      "chamber": "House",
+      "district": "HD 19",
+      "party": "D"
+    },
+    {
+      "name": "Emily Kinkead",
+      "chamber": "House",
+      "district": "HD 20",
+      "party": "D"
+    },
+    {
+      "name": "Lindsay Powell",
+      "chamber": "House",
+      "district": "HD 21",
+      "party": "D"
+    },
+    {
+      "name": "Ana Tiburcio",
+      "chamber": "House",
+      "district": "HD 22",
+      "party": "D"
+    },
+    {
+      "name": "Dan Frankel",
+      "chamber": "House",
+      "district": "HD 23",
+      "party": "D"
+    },
+    {
+      "name": "La'Tasha D. Mayes",
+      "chamber": "House",
+      "district": "HD 24",
+      "party": "D"
+    },
+    {
+      "name": "Brandon J. Markosek",
+      "chamber": "House",
+      "district": "HD 25",
+      "party": "D"
+    },
+    {
+      "name": "Paul Friel",
+      "chamber": "House",
+      "district": "HD 26",
+      "party": "D"
+    },
+    {
+      "name": "Daniel J. Deasy",
+      "chamber": "House",
+      "district": "HD 27",
+      "party": "D"
+    },
+    {
+      "name": "Jeremy Shaffer",
+      "chamber": "House",
+      "district": "HD 28",
+      "party": "R"
+    },
+    {
+      "name": "Tim Brennan",
+      "chamber": "House",
+      "district": "HD 29",
+      "party": "D"
+    },
+    {
+      "name": "Arvind Venkat",
+      "chamber": "House",
+      "district": "HD 30",
+      "party": "D"
+    },
+    {
+      "name": "Perry S. Warren",
+      "chamber": "House",
+      "district": "HD 31",
+      "party": "D"
+    },
+    {
+      "name": "Joe McAndrew",
+      "chamber": "House",
+      "district": "HD 32",
+      "party": "D"
+    },
+    {
+      "name": "Mandy Steele",
+      "chamber": "House",
+      "district": "HD 33",
+      "party": "D"
+    },
+    {
+      "name": "Abigail Salisbury",
+      "chamber": "House",
+      "district": "HD 34",
+      "party": "D"
+    },
+    {
+      "name": "Dan Goughnour",
+      "chamber": "House",
+      "district": "HD 35",
+      "party": "D"
+    },
+    {
+      "name": "Jessica Benham",
+      "chamber": "House",
+      "district": "HD 36",
+      "party": "D"
+    },
+    {
+      "name": "Mindy Fee",
+      "chamber": "House",
+      "district": "HD 37",
+      "party": "R"
+    },
+    {
+      "name": "John C. Inglis III",
+      "chamber": "House",
+      "district": "HD 38",
+      "party": "D"
+    },
+    {
+      "name": "Andrew Kuzma",
+      "chamber": "House",
+      "district": "HD 39",
+      "party": "R"
+    },
+    {
+      "name": "Natalie Mihalek",
+      "chamber": "House",
+      "district": "HD 40",
+      "party": "R"
+    },
+    {
+      "name": "Brett R. Miller",
+      "chamber": "House",
+      "district": "HD 41",
+      "party": "R"
+    },
+    {
+      "name": "Jen Mazzocco",
+      "chamber": "House",
+      "district": "HD 42",
+      "party": "D"
+    },
+    {
+      "name": "Keith J. Greiner",
+      "chamber": "House",
+      "district": "HD 43",
+      "party": "R"
+    },
+    {
+      "name": "Valerie S. Gaydos",
+      "chamber": "House",
+      "district": "HD 44",
+      "party": "R"
+    },
+    {
+      "name": "Anita Astorino Kulik",
+      "chamber": "House",
+      "district": "HD 45",
+      "party": "D"
+    },
+    {
+      "name": "Jason Ortitay",
+      "chamber": "House",
+      "district": "HD 46",
+      "party": "R"
+    },
+    {
+      "name": "Joseph D'Orsie",
+      "chamber": "House",
+      "district": "HD 47",
+      "party": "R"
+    },
+    {
+      "name": "Timothy J. O'Neal",
+      "chamber": "House",
+      "district": "HD 48",
+      "party": "R"
+    },
+    {
+      "name": "Ismail Smith-Wade-El",
+      "chamber": "House",
+      "district": "HD 49",
+      "party": "D"
+    },
+    {
+      "name": "Bud Cook",
+      "chamber": "House",
+      "district": "HD 50",
+      "party": "R"
+    },
+    {
+      "name": "Charity Grimm Krupa",
+      "chamber": "House",
+      "district": "HD 51",
+      "party": "R"
+    },
+    {
+      "name": "Ryan Warner",
+      "chamber": "House",
+      "district": "HD 52",
+      "party": "R"
+    },
+    {
+      "name": "Steven R. Malagari",
+      "chamber": "House",
+      "district": "HD 53",
+      "party": "D"
+    },
+    {
+      "name": "Greg Scott",
+      "chamber": "House",
+      "district": "HD 54",
+      "party": "D"
+    },
+    {
+      "name": "Jill N. Cooper",
+      "chamber": "House",
+      "district": "HD 55",
+      "party": "R"
+    },
+    {
+      "name": "Brian C. Rasel",
+      "chamber": "House",
+      "district": "HD 56",
+      "party": "R"
+    },
+    {
+      "name": "Eric R. Nelson",
+      "chamber": "House",
+      "district": "HD 57",
+      "party": "R"
+    },
+    {
+      "name": "Eric Davanzo",
+      "chamber": "House",
+      "district": "HD 58",
+      "party": "R"
+    },
+    {
+      "name": "Leslie Rossi",
+      "chamber": "House",
+      "district": "HD 59",
+      "party": "R"
+    },
+    {
+      "name": "Abby Major",
+      "chamber": "House",
+      "district": "HD 60",
+      "party": "R"
+    },
+    {
+      "name": "Liz Hanbidge",
+      "chamber": "House",
+      "district": "HD 61",
+      "party": "D"
+    },
+    {
+      "name": "James B. Struzzi",
+      "chamber": "House",
+      "district": "HD 62",
+      "party": "R"
+    },
+    {
+      "name": "Josh Bashline",
+      "chamber": "House",
+      "district": "HD 63",
+      "party": "R"
+    },
+    {
+      "name": "R. Lee James",
+      "chamber": "House",
+      "district": "HD 64",
+      "party": "R"
+    },
+    {
+      "name": "Kathy L. Rapp",
+      "chamber": "House",
+      "district": "HD 65",
+      "party": "R"
+    },
+    {
+      "name": "Brian Smith",
+      "chamber": "House",
+      "district": "HD 66",
+      "party": "R"
+    },
+    {
+      "name": "Martin T. Causer",
+      "chamber": "House",
+      "district": "HD 67",
+      "party": "R"
+    },
+    {
+      "name": "Clint Owlett",
+      "chamber": "House",
+      "district": "HD 68",
+      "party": "R"
+    },
+    {
+      "name": "Carl Walker Metzgar",
+      "chamber": "House",
+      "district": "HD 69",
+      "party": "R"
+    },
+    {
+      "name": "Matthew D. Bradford",
+      "chamber": "House",
+      "district": "HD 70",
+      "party": "D"
+    },
+    {
+      "name": "Jim Rigby",
+      "chamber": "House",
+      "district": "HD 71",
+      "party": "R"
+    },
+    {
+      "name": "Frank Burns",
+      "chamber": "House",
+      "district": "HD 72",
+      "party": "D"
+    },
+    {
+      "name": "Dallas Kephart",
+      "chamber": "House",
+      "district": "HD 73",
+      "party": "R"
+    },
+    {
+      "name": "Dan K. Williams",
+      "chamber": "House",
+      "district": "HD 74",
+      "party": "D"
+    },
+    {
+      "name": "Mike Armanini",
+      "chamber": "House",
+      "district": "HD 75",
+      "party": "R"
+    },
+    {
+      "name": "Stephanie Borowicz",
+      "chamber": "House",
+      "district": "HD 76",
+      "party": "R"
+    },
+    {
+      "name": "Scott Conklin",
+      "chamber": "House",
+      "district": "HD 77",
+      "party": "D"
+    },
+    {
+      "name": "Jesse Topper",
+      "chamber": "House",
+      "district": "HD 78",
+      "party": "R"
+    },
+    {
+      "name": "Andrea Verobish",
+      "chamber": "House",
+      "district": "HD 79",
+      "party": "R"
+    },
+    {
+      "name": "Scott Barger",
+      "chamber": "House",
+      "district": "HD 80",
+      "party": "R"
+    },
+    {
+      "name": "Rich Irvin",
+      "chamber": "House",
+      "district": "HD 81",
+      "party": "R"
+    },
+    {
+      "name": "Paul Takac",
+      "chamber": "House",
+      "district": "HD 82",
+      "party": "D"
+    },
+    {
+      "name": "Jamie L. Flick",
+      "chamber": "House",
+      "district": "HD 83",
+      "party": "R"
+    },
+    {
+      "name": "Joe Hamm",
+      "chamber": "House",
+      "district": "HD 84",
+      "party": "R"
+    },
+    {
+      "name": "David H. Rowe",
+      "chamber": "House",
+      "district": "HD 85",
+      "party": "R"
+    },
+    {
+      "name": "Perry A. Stambaugh",
+      "chamber": "House",
+      "district": "HD 86",
+      "party": "R"
+    },
+    {
+      "name": "Thomas H. Kutz",
+      "chamber": "House",
+      "district": "HD 87",
+      "party": "R"
+    },
+    {
+      "name": "Sheryl M. Delozier",
+      "chamber": "House",
+      "district": "HD 88",
+      "party": "R"
+    },
+    {
+      "name": "Rob W. Kauffman",
+      "chamber": "House",
+      "district": "HD 89",
+      "party": "R"
+    },
+    {
+      "name": "Chad G. Reichard",
+      "chamber": "House",
+      "district": "HD 90",
+      "party": "R"
+    },
+    {
+      "name": "Dan Moul",
+      "chamber": "House",
+      "district": "HD 91",
+      "party": "R"
+    },
+    {
+      "name": "Marc S. Anderson",
+      "chamber": "House",
+      "district": "HD 92",
+      "party": "R"
+    },
+    {
+      "name": "Mike Jones",
+      "chamber": "House",
+      "district": "HD 93",
+      "party": "R"
+    },
+    {
+      "name": "Wendy Fink",
+      "chamber": "House",
+      "district": "HD 94",
+      "party": "R"
+    },
+    {
+      "name": "Carol Hill-Evans",
+      "chamber": "House",
+      "district": "HD 95",
+      "party": "D"
+    },
+    {
+      "name": "Nikki Rivera",
+      "chamber": "House",
+      "district": "HD 96",
+      "party": "D"
+    },
+    {
+      "name": "Steven C. Mentzer",
+      "chamber": "House",
+      "district": "HD 97",
+      "party": "R"
+    },
+    {
+      "name": "Tom Jones",
+      "chamber": "House",
+      "district": "HD 98",
+      "party": "R"
+    },
+    {
+      "name": "David H. Zimmerman",
+      "chamber": "House",
+      "district": "HD 99",
+      "party": "R"
+    },
+    {
+      "name": "Bryan Cutler",
+      "chamber": "House",
+      "district": "HD 100",
+      "party": "R"
+    },
+    {
+      "name": "John A. Schlegel",
+      "chamber": "House",
+      "district": "HD 101",
+      "party": "R"
+    },
+    {
+      "name": "Russ Diamond",
+      "chamber": "House",
+      "district": "HD 102",
+      "party": "R"
+    },
+    {
+      "name": "Nathan Davidson",
+      "chamber": "House",
+      "district": "HD 103",
+      "party": "D"
+    },
+    {
+      "name": "Dave Madsen",
+      "chamber": "House",
+      "district": "HD 104",
+      "party": "D"
+    },
+    {
+      "name": "Justin C. Fleming",
+      "chamber": "House",
+      "district": "HD 105",
+      "party": "D"
+    },
+    {
+      "name": "Thomas L. Mehaffie",
+      "chamber": "House",
+      "district": "HD 106",
+      "party": "R"
+    },
+    {
+      "name": "Joanne Stehr",
+      "chamber": "House",
+      "district": "HD 107",
+      "party": "R"
+    },
+    {
+      "name": "Michael Stender",
+      "chamber": "House",
+      "district": "HD 108",
+      "party": "R"
+    },
+    {
+      "name": "Robert Leadbeter",
+      "chamber": "House",
+      "district": "HD 109",
+      "party": "R"
+    },
+    {
+      "name": "Tina Pickett",
+      "chamber": "House",
+      "district": "HD 110",
+      "party": "R"
+    },
+    {
+      "name": "Jonathan Fritz",
+      "chamber": "House",
+      "district": "HD 111",
+      "party": "R"
+    },
+    {
+      "name": "Kyle J. Mullins",
+      "chamber": "House",
+      "district": "HD 112",
+      "party": "D"
+    },
+    {
+      "name": "Kyle Donahue",
+      "chamber": "House",
+      "district": "HD 113",
+      "party": "D"
+    },
+    {
+      "name": "Bridget M. Kosierowski",
+      "chamber": "House",
+      "district": "HD 114",
+      "party": "D"
+    },
+    {
+      "name": "Maureen E. Madden",
+      "chamber": "House",
+      "district": "HD 115",
+      "party": "D"
+    },
+    {
+      "name": "Dane Watro",
+      "chamber": "House",
+      "district": "HD 116",
+      "party": "R"
+    },
+    {
+      "name": "Jamie Walsh",
+      "chamber": "House",
+      "district": "HD 117",
+      "party": "R"
+    },
+    {
+      "name": "Jim Haddock",
+      "chamber": "House",
+      "district": "HD 118",
+      "party": "D"
+    },
+    {
+      "name": "Alec J. Ryncavage",
+      "chamber": "House",
+      "district": "HD 119",
+      "party": "R"
+    },
+    {
+      "name": "Brenda M. Pugh",
+      "chamber": "House",
+      "district": "HD 120",
+      "party": "R"
+    },
+    {
+      "name": "Eddie Day Pashinski",
+      "chamber": "House",
+      "district": "HD 121",
+      "party": "D"
+    },
+    {
+      "name": "Doyle Heffley",
+      "chamber": "House",
+      "district": "HD 122",
+      "party": "R"
+    },
+    {
+      "name": "Tim Twardzik",
+      "chamber": "House",
+      "district": "HD 123",
+      "party": "R"
+    },
+    {
+      "name": "Jamie Barton",
+      "chamber": "House",
+      "district": "HD 124",
+      "party": "R"
+    },
+    {
+      "name": "Joe Kerwin",
+      "chamber": "House",
+      "district": "HD 125",
+      "party": "R"
+    },
+    {
+      "name": "Jacklyn Rusnock",
+      "chamber": "House",
+      "district": "HD 126",
+      "party": "D"
+    },
+    {
+      "name": "Manuel Guzman",
+      "chamber": "House",
+      "district": "HD 127",
+      "party": "D"
+    },
+    {
+      "name": "Mark M. Gillen",
+      "chamber": "House",
+      "district": "HD 128",
+      "party": "R"
+    },
+    {
+      "name": "Johanny Cepeda-Freytiz",
+      "chamber": "House",
+      "district": "HD 129",
+      "party": "D"
+    },
+    {
+      "name": "David M. Maloney",
+      "chamber": "House",
+      "district": "HD 130",
+      "party": "R"
+    },
+    {
+      "name": "Milou Mackenzie",
+      "chamber": "House",
+      "district": "HD 131",
+      "party": "R"
+    },
+    {
+      "name": "Michael H. Schlossberg",
+      "chamber": "House",
+      "district": "HD 132",
+      "party": "D"
+    },
+    {
+      "name": "Jeanne McNeill",
+      "chamber": "House",
+      "district": "HD 133",
+      "party": "D"
+    },
+    {
+      "name": "Peter Schweyer",
+      "chamber": "House",
+      "district": "HD 134",
+      "party": "D"
+    },
+    {
+      "name": "Steve Samuelson",
+      "chamber": "House",
+      "district": "HD 135",
+      "party": "D"
+    },
+    {
+      "name": "Robert Freeman",
+      "chamber": "House",
+      "district": "HD 136",
+      "party": "D"
+    },
+    {
+      "name": "Joe Emrick",
+      "chamber": "House",
+      "district": "HD 137",
+      "party": "R"
+    },
+    {
+      "name": "Ann Flood",
+      "chamber": "House",
+      "district": "HD 138",
+      "party": "R"
+    },
+    {
+      "name": "Jeff Olsommer",
+      "chamber": "House",
+      "district": "HD 139",
+      "party": "R"
+    },
+    {
+      "name": "Jim Prokopiak",
+      "chamber": "House",
+      "district": "HD 140",
+      "party": "D"
+    },
+    {
+      "name": "Tina M. Davis",
+      "chamber": "House",
+      "district": "HD 141",
+      "party": "D"
+    },
+    {
+      "name": "Joe Hogan",
+      "chamber": "House",
+      "district": "HD 142",
+      "party": "R"
+    },
+    {
+      "name": "Shelby Labs",
+      "chamber": "House",
+      "district": "HD 143",
+      "party": "R"
+    },
+    {
+      "name": "Brian Munroe",
+      "chamber": "House",
+      "district": "HD 144",
+      "party": "D"
+    },
+    {
+      "name": "Craig T. Staats",
+      "chamber": "House",
+      "district": "HD 145",
+      "party": "R"
+    },
+    {
+      "name": "Joe Ciresi",
+      "chamber": "House",
+      "district": "HD 146",
+      "party": "D"
+    },
+    {
+      "name": "Donna Scheuren",
+      "chamber": "House",
+      "district": "HD 147",
+      "party": "R"
+    },
+    {
+      "name": "Mary Jo Daley",
+      "chamber": "House",
+      "district": "HD 148",
+      "party": "D"
+    },
+    {
+      "name": "Tim Briggs",
+      "chamber": "House",
+      "district": "HD 149",
+      "party": "D"
+    },
+    {
+      "name": "Joe Webster",
+      "chamber": "House",
+      "district": "HD 150",
+      "party": "D"
+    },
+    {
+      "name": "Melissa Cerrato",
+      "chamber": "House",
+      "district": "HD 151",
+      "party": "D"
+    },
+    {
+      "name": "Nancy Guenst",
+      "chamber": "House",
+      "district": "HD 152",
+      "party": "D"
+    },
+    {
+      "name": "Benjamin V. Sanchez",
+      "chamber": "House",
+      "district": "HD 153",
+      "party": "D"
+    },
+    {
+      "name": "Napoleon J. Nelson",
+      "chamber": "House",
+      "district": "HD 154",
+      "party": "D"
+    },
+    {
+      "name": "Danielle Friel Otten",
+      "chamber": "House",
+      "district": "HD 155",
+      "party": "D"
+    },
+    {
+      "name": "Chris Pielli",
+      "chamber": "House",
+      "district": "HD 156",
+      "party": "D"
+    },
+    {
+      "name": "Melissa L. Shusterman",
+      "chamber": "House",
+      "district": "HD 157",
+      "party": "D"
+    },
+    {
+      "name": "Christina D. Sappey",
+      "chamber": "House",
+      "district": "HD 158",
+      "party": "D"
+    },
+    {
+      "name": "Carol Kazeem",
+      "chamber": "House",
+      "district": "HD 159",
+      "party": "D"
+    },
+    {
+      "name": "Craig Williams",
+      "chamber": "House",
+      "district": "HD 160",
+      "party": "R"
+    },
+    {
+      "name": "Leanne Krueger",
+      "chamber": "House",
+      "district": "HD 161",
+      "party": "D"
+    },
+    {
+      "name": "David M. Delloso",
+      "chamber": "House",
+      "district": "HD 162",
+      "party": "D"
+    },
+    {
+      "name": "Heather Boyd",
+      "chamber": "House",
+      "district": "HD 163",
+      "party": "D"
+    },
+    {
+      "name": "Gina H. Curry",
+      "chamber": "House",
+      "district": "HD 164",
+      "party": "D"
+    },
+    {
+      "name": "Jennifer O'Mara",
+      "chamber": "House",
+      "district": "HD 165",
+      "party": "D"
+    },
+    {
+      "name": "Greg Vitali",
+      "chamber": "House",
+      "district": "HD 166",
+      "party": "D"
+    },
+    {
+      "name": "Kristine C. Howard",
+      "chamber": "House",
+      "district": "HD 167",
+      "party": "D"
+    },
+    {
+      "name": "Lisa A. Borowski",
+      "chamber": "House",
+      "district": "HD 168",
+      "party": "D"
+    },
+    {
+      "name": "Kate A. Klunk",
+      "chamber": "House",
+      "district": "HD 169",
+      "party": "R"
+    },
+    {
+      "name": "Martina A. White",
+      "chamber": "House",
+      "district": "HD 170",
+      "party": "R"
+    },
+    {
+      "name": "Kerry A. Benninghoff",
+      "chamber": "House",
+      "district": "HD 171",
+      "party": "R"
+    },
+    {
+      "name": "Sean Dougherty",
+      "chamber": "House",
+      "district": "HD 172",
+      "party": "D"
+    },
+    {
+      "name": "Pat Gallagher",
+      "chamber": "House",
+      "district": "HD 173",
+      "party": "D"
+    },
+    {
+      "name": "Ed Neilson",
+      "chamber": "House",
+      "district": "HD 174",
+      "party": "D"
+    },
+    {
+      "name": "MaryLouise Isaacson",
+      "chamber": "House",
+      "district": "HD 175",
+      "party": "D"
+    },
+    {
+      "name": "Jack Rader",
+      "chamber": "House",
+      "district": "HD 176",
+      "party": "R"
+    },
+    {
+      "name": "Joseph C. Hohenstein",
+      "chamber": "House",
+      "district": "HD 177",
+      "party": "D"
+    },
+    {
+      "name": "Kristin Marcell",
+      "chamber": "House",
+      "district": "HD 178",
+      "party": "R"
+    },
+    {
+      "name": "Jason Dawkins",
+      "chamber": "House",
+      "district": "HD 179",
+      "party": "D"
+    },
+    {
+      "name": "Jose Giral",
+      "chamber": "House",
+      "district": "HD 180",
+      "party": "D"
+    },
+    {
+      "name": "Malcolm Kenyatta",
+      "chamber": "House",
+      "district": "HD 181",
+      "party": "D"
+    },
+    {
+      "name": "Ben Waxman",
+      "chamber": "House",
+      "district": "HD 182",
+      "party": "D"
+    },
+    {
+      "name": "Zachary Mako",
+      "chamber": "House",
+      "district": "HD 183",
+      "party": "R"
+    },
+    {
+      "name": "Elizabeth Fiedler",
+      "chamber": "House",
+      "district": "HD 184",
+      "party": "D"
+    },
+    {
+      "name": "Regina G. Young",
+      "chamber": "House",
+      "district": "HD 185",
+      "party": "D"
+    },
+    {
+      "name": "Jordan A. Harris",
+      "chamber": "House",
+      "district": "HD 186",
+      "party": "D"
+    },
+    {
+      "name": "Gary W. Day",
+      "chamber": "House",
+      "district": "HD 187",
+      "party": "R"
+    },
+    {
+      "name": "Rick Krajewski",
+      "chamber": "House",
+      "district": "HD 188",
+      "party": "D"
+    },
+    {
+      "name": "Tarah Probst",
+      "chamber": "House",
+      "district": "HD 189",
+      "party": "D"
+    },
+    {
+      "name": "G. Roni Green",
+      "chamber": "House",
+      "district": "HD 190",
+      "party": "D"
+    },
+    {
+      "name": "Joanna E. McClinton",
+      "chamber": "House",
+      "district": "HD 191",
+      "party": "D"
+    },
+    {
+      "name": "Morgan Cephas",
+      "chamber": "House",
+      "district": "HD 192",
+      "party": "D"
+    },
+    {
+      "name": "Catherine Wallen",
+      "chamber": "House",
+      "district": "HD 193",
+      "party": "R"
+    },
+    {
+      "name": "Tarik Khan",
+      "chamber": "House",
+      "district": "HD 194",
+      "party": "D"
+    },
+    {
+      "name": "Keith S. Harris",
+      "chamber": "House",
+      "district": "HD 195",
+      "party": "D"
+    },
+    {
+      "name": "Danilo Burgos",
+      "chamber": "House",
+      "district": "HD 197",
+      "party": "D"
+    },
+    {
+      "name": "Darisha K. Parker",
+      "chamber": "House",
+      "district": "HD 198",
+      "party": "D"
+    },
+    {
+      "name": "Barbara Gleim",
+      "chamber": "House",
+      "district": "HD 199",
+      "party": "R"
+    },
+    {
+      "name": "Christopher M. Rabb",
+      "chamber": "House",
+      "district": "HD 200",
+      "party": "D"
+    },
+    {
+      "name": "Andre D. Carroll",
+      "chamber": "House",
+      "district": "HD 201",
+      "party": "D"
+    },
+    {
+      "name": "Jared G. Solomon",
+      "chamber": "House",
+      "district": "HD 202",
+      "party": "D"
+    },
+    {
+      "name": "Anthony A. Bellmon",
+      "chamber": "House",
+      "district": "HD 203",
+      "party": "D"
+    },
+    {
+      "name": "Nikil Saval",
+      "chamber": "Senate",
+      "district": "SD 1",
+      "party": "D"
+    },
+    {
+      "name": "Christine M. Tartaglione",
+      "chamber": "Senate",
+      "district": "SD 2",
+      "party": "D"
+    },
+    {
+      "name": "Sharif Street",
+      "chamber": "Senate",
+      "district": "SD 3",
+      "party": "D"
+    },
+    {
+      "name": "Art Haywood",
+      "chamber": "Senate",
+      "district": "SD 4",
+      "party": "D"
+    },
+    {
+      "name": "Joe Picozzi",
+      "chamber": "Senate",
+      "district": "SD 5",
+      "party": "R"
+    },
+    {
+      "name": "Frank A. Farry",
+      "chamber": "Senate",
+      "district": "SD 6",
+      "party": "R"
+    },
+    {
+      "name": "Vincent J. Hughes",
+      "chamber": "Senate",
+      "district": "SD 7",
+      "party": "D"
+    },
+    {
+      "name": "Anthony H. Williams",
+      "chamber": "Senate",
+      "district": "SD 8",
+      "party": "D"
+    },
+    {
+      "name": "John I. Kane",
+      "chamber": "Senate",
+      "district": "SD 9",
+      "party": "D"
+    },
+    {
+      "name": "Steven J. Santarsiero",
+      "chamber": "Senate",
+      "district": "SD 10",
+      "party": "D"
+    },
+    {
+      "name": "Judith L. Schwank",
+      "chamber": "Senate",
+      "district": "SD 11",
+      "party": "D"
+    },
+    {
+      "name": "Maria Collett",
+      "chamber": "Senate",
+      "district": "SD 12",
+      "party": "D"
+    },
+    {
+      "name": "Scott Martin",
+      "chamber": "Senate",
+      "district": "SD 13",
+      "party": "R"
+    },
+    {
+      "name": "Nick Miller",
+      "chamber": "Senate",
+      "district": "SD 14",
+      "party": "D"
+    },
+    {
+      "name": "Patty Kim",
+      "chamber": "Senate",
+      "district": "SD 15",
+      "party": "D"
+    },
+    {
+      "name": "Jarrett Coleman",
+      "chamber": "Senate",
+      "district": "SD 16",
+      "party": "R"
+    },
+    {
+      "name": "Amanda M. Cappelletti",
+      "chamber": "Senate",
+      "district": "SD 17",
+      "party": "D"
+    },
+    {
+      "name": "Lisa M. Boscola",
+      "chamber": "Senate",
+      "district": "SD 18",
+      "party": "D"
+    },
+    {
+      "name": "Carolyn T. Comitta",
+      "chamber": "Senate",
+      "district": "SD 19",
+      "party": "D"
+    },
+    {
+      "name": "Lisa Baker",
+      "chamber": "Senate",
+      "district": "SD 20",
+      "party": "R"
+    },
+    {
+      "name": "Scott E. Hutchinson",
+      "chamber": "Senate",
+      "district": "SD 21",
+      "party": "R"
+    },
+    {
+      "name": "Marty Flynn",
+      "chamber": "Senate",
+      "district": "SD 22",
+      "party": "D"
+    },
+    {
+      "name": "Gene Yaw",
+      "chamber": "Senate",
+      "district": "SD 23",
+      "party": "R"
+    },
+    {
+      "name": "Tracy Pennycuick",
+      "chamber": "Senate",
+      "district": "SD 24",
+      "party": "R"
+    },
+    {
+      "name": "Cris Dush",
+      "chamber": "Senate",
+      "district": "SD 25",
+      "party": "R"
+    },
+    {
+      "name": "Timothy P. Kearney",
+      "chamber": "Senate",
+      "district": "SD 26",
+      "party": "D"
+    },
+    {
+      "name": "Lynda Schlegel Culver",
+      "chamber": "Senate",
+      "district": "SD 27",
+      "party": "R"
+    },
+    {
+      "name": "Kristin Phillips-Hill",
+      "chamber": "Senate",
+      "district": "SD 28",
+      "party": "R"
+    },
+    {
+      "name": "David G. Argall",
+      "chamber": "Senate",
+      "district": "SD 29",
+      "party": "R"
+    },
+    {
+      "name": "Judy Ward",
+      "chamber": "Senate",
+      "district": "SD 30",
+      "party": "R"
+    },
+    {
+      "name": "Dawn W. Keefer",
+      "chamber": "Senate",
+      "district": "SD 31",
+      "party": "R"
+    },
+    {
+      "name": "Patrick J. Stefano",
+      "chamber": "Senate",
+      "district": "SD 32",
+      "party": "R"
+    },
+    {
+      "name": "Doug Mastriano",
+      "chamber": "Senate",
+      "district": "SD 33",
+      "party": "R"
+    },
+    {
+      "name": "Greg Rothman",
+      "chamber": "Senate",
+      "district": "SD 34",
+      "party": "R"
+    },
+    {
+      "name": "Wayne Langerholc",
+      "chamber": "Senate",
+      "district": "SD 35",
+      "party": "R"
+    },
+    {
+      "name": "James Andrew Malone",
+      "chamber": "Senate",
+      "district": "SD 36",
+      "party": "D"
+    },
+    {
+      "name": "Devlin J. Robinson",
+      "chamber": "Senate",
+      "district": "SD 37",
+      "party": "R"
+    },
+    {
+      "name": "Lindsey M. Williams",
+      "chamber": "Senate",
+      "district": "SD 38",
+      "party": "D"
+    },
+    {
+      "name": "Kim L. Ward",
+      "chamber": "Senate",
+      "district": "SD 39",
+      "party": "R"
+    },
+    {
+      "name": "Rosemary M. Brown",
+      "chamber": "Senate",
+      "district": "SD 40",
+      "party": "R"
+    },
+    {
+      "name": "Joe Pittman",
+      "chamber": "Senate",
+      "district": "SD 41",
+      "party": "R"
+    },
+    {
+      "name": "Wayne D. Fontana",
+      "chamber": "Senate",
+      "district": "SD 42",
+      "party": "D"
+    },
+    {
+      "name": "Jay Costa",
+      "chamber": "Senate",
+      "district": "SD 43",
+      "party": "D"
+    },
+    {
+      "name": "Katie J. Muth",
+      "chamber": "Senate",
+      "district": "SD 44",
+      "party": "D"
+    },
+    {
+      "name": "Nick Pisciottano",
+      "chamber": "Senate",
+      "district": "SD 45",
+      "party": "D"
+    },
+    {
+      "name": "Camera Bartolotta",
+      "chamber": "Senate",
+      "district": "SD 46",
+      "party": "R"
+    },
+    {
+      "name": "Elder A. Vogel",
+      "chamber": "Senate",
+      "district": "SD 47",
+      "party": "R"
+    },
+    {
+      "name": "Chris Gebhard",
+      "chamber": "Senate",
+      "district": "SD 48",
+      "party": "R"
+    },
+    {
+      "name": "Daniel Laughlin",
+      "chamber": "Senate",
+      "district": "SD 49",
+      "party": "R"
+    },
+    {
+      "name": "Michele Brooks",
+      "chamber": "Senate",
+      "district": "SD 50",
+      "party": "R"
+    }
+  ]
+}

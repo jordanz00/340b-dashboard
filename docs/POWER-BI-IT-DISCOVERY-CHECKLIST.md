@@ -45,6 +45,10 @@ Use this worksheet with **IT**, **data platform**, and **Strategic Analytics** b
 | 4.1 | Is **row-level security (RLS)** required on any dimension or fact? Define roles. | |
 | 4.2 | **Certified / promoted dataset** policy: who signs off before leadership-facing reports? | |
 | 4.3 | **Sensitivity labels** or export restrictions for this workspace? | |
+| 4.4 | Is the dashboard read-only identity **least privilege** (read-only on Gold, no DDL, no admin)? Confirm account/group name: | |
+| 4.5 | Does the story submission POST endpoint use **parameterized INSERT** (not string concatenation)? | |
+| 4.6 | Does the JSON API sit behind an **API gateway with WAF** (Azure Front Door, AWS WAF, Cloudflare, etc.)? | |
+| 4.7 | Are **detailed database errors suppressed** in API responses (generic HTTP codes only, no SQL error text)? | |
 
 ---
 

@@ -434,7 +434,14 @@
     }
 
     clearElement(container);
-    var svg = d3.select("#us-map").append("svg").attr("viewBox", [0, 0, width, height]).attr("width", "100%").attr("height", "auto").attr("aria-hidden", "true");
+    var svg = d3.select("#us-map").append("svg")
+      .attr("viewBox", [0, 0, width, height])
+      .attr("width", width)
+      .attr("height", height)
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .style("max-width", "100%")
+      .style("height", "auto")
+      .attr("aria-hidden", "true");
     var states = topojson.feature(atlas, atlas.objects.states);
     var projection = d3.geoAlbersUsa().fitSize([width, height], states);
     var path = d3.geoPath(projection);

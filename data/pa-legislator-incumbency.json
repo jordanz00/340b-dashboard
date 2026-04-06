@@ -1,0 +1,13 @@
+{
+  "asOf": "2026-04",
+  "notes": "ZIP lookup: when the same palegis bio_id appears in both chambers (data error), current_chamber picks the row to show. Name-based dedupe in pa-district-map.js also drops the House row when normalized names match (stale GeoJSON). Regenerate pa-legislator-incumbency.js after edits.",
+  "by_bio_id": {
+    "1636": {
+      "display_name": "Patty Kim",
+      "current_chamber": "senate",
+      "current_role": "PA State Senate",
+      "district": "SD 15",
+      "status": "active"
+    }
+  }
+}

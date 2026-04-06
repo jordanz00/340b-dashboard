@@ -16,6 +16,12 @@ Thumbs.db
 *.swp
 *~
 
+# Node.js / TypeScript
+node_modules/
+dist/
+types/generated/
+package-lock.json
+
 # Local env (if added later)
 .env
 .env.local

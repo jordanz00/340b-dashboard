@@ -3,1259 +3,2009 @@
     "4584": {
       "img_id": "1877",
       "bio_id": "1877",
-      "name": "Bonner Timothy R."
+      "name": "Bonner Timothy R.",
+      "bio_slug": "rep-bonner",
+      "display_name": "Timothy R. Bonner",
+      "party": "R"
     },
     "4585": {
       "img_id": "1619",
       "bio_id": "1619",
-      "name": "Bizzarro Ryan A."
+      "name": "Bizzarro Ryan A.",
+      "bio_slug": "rep-bizzarro",
+      "display_name": "Ryan A. Bizzarro",
+      "party": "D"
     },
     "4586": {
       "img_id": "1822",
       "bio_id": "1822",
-      "name": "Merski Robert E."
+      "name": "Merski Robert E.",
+      "bio_slug": "rep-merski",
+      "display_name": "Robert E. Merski",
+      "party": "D"
     },
     "4587": {
       "img_id": "1081",
       "bio_id": "1081",
-      "name": "Harkins Patrick J."
+      "name": "Harkins Patrick J.",
+      "bio_slug": "rep-harkins",
+      "display_name": "Patrick J. Harkins",
+      "party": "D"
     },
     "4588": {
       "img_id": "1163",
       "bio_id": "1163",
-      "name": "Burns Frank"
+      "name": "Burns Frank",
+      "bio_slug": "rep-burns",
+      "display_name": "Frank Burns",
+      "party": "D"
     },
     "4589": {
       "img_id": "1836",
       "bio_id": "1836",
-      "name": "Rigby Jim"
+      "name": "Rigby Jim",
+      "bio_slug": "rep-rigby",
+      "display_name": "Jim Rigby",
+      "party": "R"
     },
     "4590": {
       "img_id": "1835",
       "bio_id": "1835",
-      "name": "Struzzi James B."
+      "name": "Struzzi James B.",
+      "bio_slug": "rep-struzzi",
+      "display_name": "James B. Struzzi",
+      "party": "R"
     },
     "4591": {
       "img_id": "2027",
       "bio_id": "2027",
-      "name": "Barger Scott"
+      "name": "Barger Scott",
+      "bio_slug": "rep-barger",
+      "display_name": "Scott Barger",
+      "party": "R"
     },
     "4592": {
-      "img_id": null,
+      "img_id": "2065",
       "bio_id": "2065",
-      "name": "Verobish Andrea"
+      "name": "Verobish Andrea",
+      "bio_slug": "rep-verobish",
+      "display_name": "Andrea Verobish",
+      "party": "R"
     },
     "4593": {
       "img_id": "1028",
       "bio_id": "1028",
-      "name": "Rapp Kathy L."
+      "name": "Rapp Kathy L.",
+      "bio_slug": "rep-rapp",
+      "display_name": "Kathy L. Rapp",
+      "party": "R"
     },
     "4594": {
       "img_id": "982",
       "bio_id": "982",
-      "name": "Causer Martin T."
+      "name": "Causer Martin T.",
+      "bio_slug": "rep-causer",
+      "display_name": "Martin T. Causer",
+      "party": "R"
     },
     "4595": {
       "img_id": "1903",
       "bio_id": "1903",
-      "name": "Armanini Mike"
+      "name": "Armanini Mike",
+      "bio_slug": "rep-armanini",
+      "display_name": "Mike Armanini",
+      "party": "R"
     },
     "4596": {
       "img_id": "1902",
       "bio_id": "1902",
-      "name": "Smith Brian"
+      "name": "Smith Brian",
+      "bio_slug": "rep-smith",
+      "display_name": "Brian Smith",
+      "party": "R"
     },
     "4597": {
       "img_id": "1909",
       "bio_id": "1909",
-      "name": "Mackenzie Milou"
+      "name": "Mackenzie Milou",
+      "bio_slug": "rep-m-mackenzie",
+      "display_name": "Milou Mackenzie",
+      "party": "R"
     },
     "4598": {
       "img_id": "136",
       "bio_id": "136",
-      "name": "Freeman Robert"
+      "name": "Freeman Robert",
+      "bio_slug": "rep-freeman",
+      "display_name": "Robert Freeman",
+      "party": "D"
     },
     "4599": {
       "img_id": "80",
       "bio_id": "80",
-      "name": "Samuelson Steve"
+      "name": "Samuelson Steve",
+      "bio_slug": "rep-samuelson",
+      "display_name": "Steve Samuelson",
+      "party": "D"
     },
     "4600": {
       "img_id": "1793",
       "bio_id": "1793",
-      "name": "McNeill Jeanne"
+      "name": "McNeill Jeanne",
+      "bio_slug": "rep-mcneill",
+      "display_name": "Jeanne McNeill",
+      "party": "D"
     },
     "4601": {
       "img_id": "1866",
       "bio_id": "1866",
-      "name": "Kosierowski Bridget M."
+      "name": "Kosierowski Bridget M.",
+      "bio_slug": "rep-kosierowski",
+      "display_name": "Bridget M. Kosierowski",
+      "party": "D"
     },
     "4602": {
       "img_id": "1964",
       "bio_id": "1964",
-      "name": "Watro Dane"
+      "name": "Watro Dane",
+      "bio_slug": "rep-watro",
+      "display_name": "Dane Watro",
+      "party": "R"
     },
     "4603": {
       "img_id": "1211",
       "bio_id": "1211",
-      "name": "Heffley Doyle"
+      "name": "Heffley Doyle",
+      "bio_slug": "rep-heffley",
+      "display_name": "Doyle Heffley",
+      "party": "R"
     },
     "4604": {
-      "img_id": "2018",
-      "bio_id": "2018",
-      "name": "Olsommer Jeff"
+      "img_id": null,
+      "bio_id": null,
+      "name": "Vacant"
     },
     "4605": {
       "img_id": "1753",
       "bio_id": "1753",
-      "name": "Madden Maureen E."
+      "name": "Madden Maureen E.",
+      "bio_slug": "rep-madden",
+      "display_name": "Maureen E. Madden",
+      "party": "D"
     },
     "4606": {
       "img_id": "1982",
       "bio_id": "1982",
-      "name": "Probst Tarah"
+      "name": "Probst Tarah",
+      "bio_slug": "rep-probst",
+      "display_name": "Tarah Probst",
+      "party": "D"
     },
     "4607": {
       "img_id": "1906",
       "bio_id": "1906",
-      "name": "Twardzik Tim"
+      "name": "Twardzik Tim",
+      "bio_slug": "rep-twardzik",
+      "display_name": "Tim Twardzik",
+      "party": "R"
     },
     "4608": {
       "img_id": "1961",
       "bio_id": "1961",
-      "name": "Stehr Joanne"
+      "name": "Stehr Joanne",
+      "bio_slug": "rep-stehr",
+      "display_name": "Joanne Stehr",
+      "party": "R"
     },
     "4609": {
       "img_id": "1190",
       "bio_id": "1190",
-      "name": "Day Gary W."
+      "name": "Day Gary W.",
+      "bio_slug": "rep-day",
+      "display_name": "Gary W. Day",
+      "party": "R"
     },
     "4610": {
       "img_id": "1649",
       "bio_id": "1649",
-      "name": "Schlossberg Michael H."
+      "name": "Schlossberg Michael H.",
+      "bio_slug": "rep-schlossberg",
+      "display_name": "Michael H. Schlossberg",
+      "party": "D"
     },
     "4611": {
       "img_id": "1207",
       "bio_id": "1207",
-      "name": "Emrick Joe"
+      "name": "Emrick Joe",
+      "bio_slug": "rep-emrick",
+      "display_name": "Joe Emrick",
+      "party": "R"
     },
     "4612": {
       "img_id": "1622",
       "bio_id": "1622",
-      "name": "Daley Mary Jo"
+      "name": "Daley Mary Jo",
+      "bio_slug": "rep-daley",
+      "display_name": "Mary Jo Daley",
+      "party": "D"
     },
     "4613": {
       "img_id": "1159",
       "bio_id": "1159",
-      "name": "Briggs Tim"
+      "name": "Briggs Tim",
+      "bio_slug": "rep-briggs",
+      "display_name": "Tim Briggs",
+      "party": "D"
     },
     "4614": {
       "img_id": "210",
       "bio_id": "210",
-      "name": "Vitali Greg"
+      "name": "Vitali Greg",
+      "bio_slug": "rep-vitali",
+      "display_name": "Greg Vitali",
+      "party": "D"
     },
     "4615": {
       "img_id": "1855",
       "bio_id": "1855",
-      "name": "O&#x27;Mara Jennifer"
+      "name": "O&#x27;Mara Jennifer",
+      "bio_slug": "rep-o'mara",
+      "display_name": "Jennifer O'Mara",
+      "party": "D"
     },
     "4616": {
       "img_id": "1977",
       "bio_id": "1977",
-      "name": "Borowski Lisa A."
+      "name": "Borowski Lisa A.",
+      "bio_slug": "rep-borowski",
+      "display_name": "Lisa A. Borowski",
+      "party": "D"
     },
     "4617": {
       "img_id": "1916",
       "bio_id": "1916",
-      "name": "Williams Craig"
+      "name": "Williams Craig",
+      "bio_slug": "rep-c-williams",
+      "display_name": "Craig Williams",
+      "party": "R"
     },
     "4618": {
       "img_id": "1976",
       "bio_id": "1976",
-      "name": "Kazeem Carol"
+      "name": "Kazeem Carol",
+      "bio_slug": "rep-kazeem",
+      "display_name": "Carol Kazeem",
+      "party": "D"
     },
     "4619": {
       "img_id": "1941",
       "bio_id": "1941",
-      "name": "Mayes La&#x27;Tasha D."
+      "name": "Mayes La&#x27;Tasha D.",
+      "bio_slug": "rep-mayes",
+      "display_name": "La'Tasha D. Mayes",
+      "party": "D"
     },
     "4620": {
       "img_id": "84",
       "bio_id": "84",
-      "name": "Frankel Dan"
+      "name": "Frankel Dan",
+      "bio_slug": "rep-frankel",
+      "display_name": "Dan Frankel",
+      "party": "D"
     },
     "4621": {
       "img_id": "2062",
       "bio_id": "2062",
-      "name": "Tiburcio Ana"
+      "name": "Tiburcio Ana",
+      "bio_slug": "rep-tiburcio",
+      "display_name": "Ana Tiburcio",
+      "party": "D"
     },
     "4622": {
       "img_id": "1896",
       "bio_id": "1896",
-      "name": "Kinkead Emily"
+      "name": "Kinkead Emily",
+      "bio_slug": "rep-kinkead",
+      "display_name": "Emily Kinkead",
+      "party": "D"
     },
     "4623": {
       "img_id": "1868",
       "bio_id": "1868",
-      "name": "Mustello Marci"
+      "name": "Mustello Marci",
+      "bio_slug": "rep-mustello",
+      "display_name": "Marci Mustello",
+      "party": "R"
     },
     "4624": {
       "img_id": "2022",
       "bio_id": "2022",
-      "name": "Kozak Roman"
+      "name": "Kozak Roman",
+      "bio_slug": "rep-kozak",
+      "display_name": "Roman Kozak",
+      "party": "R"
     },
     "4625": {
       "img_id": "1938",
       "bio_id": "1938",
-      "name": "Brown Marla"
+      "name": "Brown Marla",
+      "bio_slug": "rep-m-brown",
+      "display_name": "Marla Brown",
+      "party": "R"
     },
     "4626": {
       "img_id": "1823",
       "bio_id": "1823",
-      "name": "Kail Joshua D."
+      "name": "Kail Joshua D.",
+      "bio_slug": "rep-kail",
+      "display_name": "Joshua D. Kail",
+      "party": "R"
     },
     "4627": {
       "img_id": "2026",
       "bio_id": "2026",
-      "name": "Bashline Josh"
+      "name": "Bashline Josh",
+      "bio_slug": "rep-bashline",
+      "display_name": "Josh Bashline",
+      "party": "R"
     },
     "4628": {
       "img_id": "1978",
       "bio_id": "1978",
-      "name": "Gallagher Pat"
+      "name": "Gallagher Pat",
+      "bio_slug": "rep-gallagher",
+      "display_name": "Pat Gallagher",
+      "party": "D"
     },
     "4629": {
       "img_id": "2035",
       "bio_id": "2035",
-      "name": "Dougherty Sean"
+      "name": "Dougherty Sean",
+      "bio_slug": "rep-dougherty",
+      "display_name": "Sean Dougherty",
+      "party": "D"
     },
     "4630": {
       "img_id": "2024",
       "bio_id": "2024",
-      "name": "Inglis III John C."
+      "name": "Inglis III John C.",
+      "bio_slug": "rep-inglis",
+      "display_name": "John C. Inglis III",
+      "party": "D"
     },
     "4631": {
       "img_id": "1831",
       "bio_id": "1831",
-      "name": "Gaydos Valerie S."
+      "name": "Gaydos Valerie S.",
+      "bio_slug": "rep-gaydos",
+      "display_name": "Valerie S. Gaydos",
+      "party": "R"
     },
     "4632": {
       "img_id": "1837",
       "bio_id": "1837",
-      "name": "Williams Dan K."
+      "name": "Williams Dan K.",
+      "bio_slug": "rep-d-williams",
+      "display_name": "Dan K. Williams",
+      "party": "D"
     },
     "4633": {
       "img_id": "1166",
       "bio_id": "1166",
-      "name": "Deasy Daniel J."
+      "name": "Deasy Daniel J.",
+      "bio_slug": "rep-deasy",
+      "display_name": "Daniel J. Deasy",
+      "party": "D"
     },
     "4634": {
       "img_id": "1943",
       "bio_id": "1943",
-      "name": "Brennan Tim"
+      "name": "Brennan Tim",
+      "bio_slug": "rep-brennan",
+      "display_name": "Tim Brennan",
+      "party": "D"
     },
     "4635": {
       "img_id": "1944",
       "bio_id": "1944",
-      "name": "Venkat Arvind"
+      "name": "Venkat Arvind",
+      "bio_slug": "rep-venkat",
+      "display_name": "Arvind Venkat",
+      "party": "D"
     },
     "4636": {
       "img_id": "1830",
       "bio_id": "1830",
-      "name": "Mihalek Natalie"
+      "name": "Mihalek Natalie",
+      "bio_slug": "rep-mihalek",
+      "display_name": "Natalie Mihalek",
+      "party": "R"
     },
     "4637": {
       "img_id": "1699",
       "bio_id": "1699",
-      "name": "Miller Brett R."
+      "name": "Miller Brett R.",
+      "bio_slug": "rep-b-miller",
+      "display_name": "Brett R. Miller",
+      "party": "R"
     },
     "4638": {
       "img_id": "1899",
       "bio_id": "1899",
-      "name": "Benham Jessica"
+      "name": "Benham Jessica",
+      "bio_slug": "rep-benham",
+      "display_name": "Jessica Benham",
+      "party": "D"
     },
     "4639": {
       "img_id": "1972",
       "bio_id": "1972",
-      "name": "Munroe Brian"
+      "name": "Munroe Brian",
+      "bio_slug": "rep-munroe",
+      "display_name": "Brian Munroe",
+      "party": "D"
     },
     "4640": {
       "img_id": "1625",
       "bio_id": "1625",
-      "name": "Fee Mindy"
+      "name": "Fee Mindy",
+      "bio_slug": "rep-fee",
+      "display_name": "Mindy Fee",
+      "party": "R"
     },
     "4641": {
       "img_id": "1642",
       "bio_id": "1642",
-      "name": "Mentzer Steven C."
+      "name": "Mentzer Steven C.",
+      "bio_slug": "rep-mentzer",
+      "display_name": "Steven C. Mentzer",
+      "party": "R"
     },
     "4642": {
       "img_id": "1711",
       "bio_id": "1711",
-      "name": "Zimmerman David H."
+      "name": "Zimmerman David H.",
+      "bio_slug": "rep-zimmerman",
+      "display_name": "David H. Zimmerman",
+      "party": "R"
     },
     "4643": {
       "img_id": "1957",
       "bio_id": "1957",
-      "name": "Jones Tom"
+      "name": "Jones Tom",
+      "bio_slug": "rep-t-jones",
+      "display_name": "Tom Jones",
+      "party": "R"
     },
     "4644": {
       "img_id": "1749",
       "bio_id": "1749",
-      "name": "Hill-Evans Carol"
+      "name": "Hill-Evans Carol",
+      "bio_slug": "rep-hill-evans",
+      "display_name": "Carol Hill-Evans",
+      "party": "D"
     },
     "4645": {
       "img_id": "1842",
       "bio_id": "1842",
-      "name": "Jones Mike"
+      "name": "Jones Mike",
+      "bio_slug": "rep-m-jones",
+      "display_name": "Mike Jones",
+      "party": "R"
     },
     "4646": {
       "img_id": "1956",
       "bio_id": "1956",
-      "name": "Fink Wendy"
+      "name": "Fink Wendy",
+      "bio_slug": "rep-fink",
+      "display_name": "Wendy Fink",
+      "party": "R"
     },
     "4647": {
       "img_id": "1983",
       "bio_id": "1983",
-      "name": "Khan Tarik"
+      "name": "Khan Tarik",
+      "bio_slug": "rep-khan",
+      "display_name": "Tarik Khan",
+      "party": "D"
     },
     "4648": {
       "img_id": "1863",
       "bio_id": "1863",
-      "name": "Burgos Danilo"
+      "name": "Burgos Danilo",
+      "bio_slug": "rep-burgos",
+      "display_name": "Danilo Burgos",
+      "party": "D"
     },
     "4649": {
       "img_id": "1735",
       "bio_id": "1735",
-      "name": "Krueger Leanne"
+      "name": "Krueger Leanne",
+      "bio_slug": "rep-krueger",
+      "display_name": "Leanne Krueger",
+      "party": "D"
     },
     "4650": {
       "img_id": "1937",
       "bio_id": "1937",
-      "name": "Banta Jacob D."
+      "name": "Banta Jacob D.",
+      "bio_slug": "rep-banta",
+      "display_name": "Jacob D. Banta",
+      "party": "R"
     },
     "4651": {
       "img_id": "1161",
       "bio_id": "1161",
-      "name": "Bradford Matthew D."
+      "name": "Bradford Matthew D.",
+      "bio_slug": "rep-bradford",
+      "display_name": "Matthew D. Bradford",
+      "party": "D"
     },
     "4652": {
       "img_id": "1709",
       "bio_id": "1709",
-      "name": "Wentling Parke"
+      "name": "Wentling Parke",
+      "bio_slug": "rep-wentling",
+      "display_name": "Parke Wentling",
+      "party": "R"
     },
     "4653": {
       "img_id": "1744",
       "bio_id": "1744",
-      "name": "Kulik Anita ASTORINO"
+      "name": "Kulik Anita ASTORINO",
+      "bio_slug": "rep-kulik",
+      "display_name": "Anita Astorino Kulik",
+      "party": "D"
     },
     "4654": {
       "img_id": "1685",
       "bio_id": "1685",
-      "name": "Dawkins Jason"
+      "name": "Dawkins Jason",
+      "bio_slug": "rep-dawkins",
+      "display_name": "Jason Dawkins",
+      "party": "D"
     },
     "4655": {
       "img_id": "1759",
       "bio_id": "1759",
-      "name": "Cephas Morgan"
+      "name": "Cephas Morgan",
+      "bio_slug": "rep-cephas",
+      "display_name": "Morgan Cephas",
+      "party": "D"
     },
     "4656": {
       "img_id": "1874",
       "bio_id": "1874",
-      "name": "Green G. Roni"
+      "name": "Green G. Roni",
+      "bio_slug": "rep-green",
+      "display_name": "G. Roni Green",
+      "party": "D"
     },
     "4657": {
       "img_id": "1918",
       "bio_id": "1918",
-      "name": "Krajewski Rick"
+      "name": "Krajewski Rick",
+      "bio_slug": "rep-krajewski",
+      "display_name": "Rick Krajewski",
+      "party": "D"
     },
     "4658": {
       "img_id": "2020",
       "bio_id": "2020",
-      "name": "Harris Keith S."
+      "name": "Harris Keith S.",
+      "bio_slug": "rep-k-harris",
+      "display_name": "Keith S. Harris",
+      "party": "D"
     },
     "4659": {
       "img_id": "1853",
       "bio_id": "1853",
-      "name": "Delloso David M."
+      "name": "Delloso David M.",
+      "bio_slug": "rep-delloso",
+      "display_name": "David M. Delloso",
+      "party": "D"
     },
     "4660": {
       "img_id": "1734",
       "bio_id": "1734",
-      "name": "McClinton Joanna E."
+      "name": "McClinton Joanna E.",
+      "bio_slug": "rep-mcclinton",
+      "display_name": "Joanna E. McClinton",
+      "party": "D"
     },
     "4661": {
       "img_id": "1861",
       "bio_id": "1861",
-      "name": "Fiedler Elizabeth"
+      "name": "Fiedler Elizabeth",
+      "bio_slug": "rep-fiedler",
+      "display_name": "Elizabeth Fiedler",
+      "party": "D"
     },
     "4663": {
-      "img_id": null,
+      "img_id": "2064",
       "bio_id": "2064",
-      "name": "Wallen Catherine"
+      "name": "Wallen Catherine",
+      "bio_slug": "rep-wallen",
+      "display_name": "Catherine Wallen",
+      "party": "R"
     },
     "4664": {
       "img_id": "1856",
       "bio_id": "1856",
-      "name": "Howard Kristine C."
+      "name": "Howard Kristine C.",
+      "bio_slug": "rep-howard",
+      "display_name": "Kristine C. Howard",
+      "party": "D"
     },
     "4665": {
       "img_id": "1615",
       "bio_id": "1615",
-      "name": "Neilson Ed"
+      "name": "Neilson Ed",
+      "bio_slug": "rep-neilson",
+      "display_name": "Ed Neilson",
+      "party": "D"
     },
     "4666": {
       "img_id": "1979",
       "bio_id": "1979",
-      "name": "Marcell Kristin"
+      "name": "Marcell Kristin",
+      "bio_slug": "rep-marcell",
+      "display_name": "Kristin Marcell",
+      "party": "R"
     },
     "4667": {
       "img_id": "1980",
       "bio_id": "1980",
-      "name": "Giral Jose"
+      "name": "Giral Jose",
+      "bio_slug": "rep-giral",
+      "display_name": "Jose Giral",
+      "party": "D"
     },
     "4668": {
       "img_id": "1981",
       "bio_id": "1981",
-      "name": "Waxman Ben"
+      "name": "Waxman Ben",
+      "bio_slug": "rep-waxman",
+      "display_name": "Ben Waxman",
+      "party": "D"
     },
     "4669": {
       "img_id": "1633",
       "bio_id": "1633",
-      "name": "Harris Jordan A."
+      "name": "Harris Jordan A.",
+      "bio_slug": "rep-j-harris",
+      "display_name": "Jordan A. Harris",
+      "party": "D"
     },
     "4670": {
       "img_id": "1971",
       "bio_id": "1971",
-      "name": "Hogan Joe"
+      "name": "Hogan Joe",
+      "bio_slug": "rep-hogan",
+      "display_name": "Joe Hogan",
+      "party": "R"
     },
     "4468": {
       "img_id": "1850",
       "bio_id": "1850",
-      "name": "Otten Danielle Friel"
+      "name": "Otten Danielle Friel",
+      "bio_slug": "rep-otten",
+      "display_name": "Danielle Friel Otten",
+      "party": "D"
     },
     "4469": {
       "img_id": "1942",
       "bio_id": "1942",
-      "name": "Friel Paul"
+      "name": "Friel Paul",
+      "bio_slug": "rep-friel",
+      "display_name": "Paul Friel",
+      "party": "D"
     },
     "4470": {
       "img_id": "1847",
       "bio_id": "1847",
-      "name": "Ciresi Joe"
+      "name": "Ciresi Joe",
+      "bio_slug": "rep-ciresi",
+      "display_name": "Joe Ciresi",
+      "party": "D"
     },
     "4471": {
       "img_id": "1851",
       "bio_id": "1851",
-      "name": "Shusterman Melissa L."
+      "name": "Shusterman Melissa L.",
+      "bio_slug": "rep-shusterman",
+      "display_name": "Melissa L. Shusterman",
+      "party": "D"
     },
     "4472": {
       "img_id": "1848",
       "bio_id": "1848",
-      "name": "Webster Joe"
+      "name": "Webster Joe",
+      "bio_slug": "rep-webster",
+      "display_name": "Joe Webster",
+      "party": "D"
     },
     "4473": {
       "img_id": "2023",
       "bio_id": "2023",
-      "name": "Shaffer Jeremy"
+      "name": "Shaffer Jeremy",
+      "bio_slug": "rep-shaffer",
+      "display_name": "Jeremy Shaffer",
+      "party": "R"
     },
     "4474": {
       "img_id": "1950",
       "bio_id": "1950",
-      "name": "Scott Greg"
+      "name": "Scott Greg",
+      "bio_slug": "rep-scott",
+      "display_name": "Greg Scott",
+      "party": "D"
     },
     "4475": {
       "img_id": "1951",
       "bio_id": "1951",
-      "name": "Cooper Jill N."
+      "name": "Cooper Jill N.",
+      "bio_slug": "rep-cooper",
+      "display_name": "Jill N. Cooper",
+      "party": "R"
     },
     "4476": {
       "img_id": "1738",
       "bio_id": "1738",
-      "name": "Nelson Eric R."
+      "name": "Nelson Eric R.",
+      "bio_slug": "rep-e-nelson",
+      "display_name": "Eric R. Nelson",
+      "party": "R"
     },
     "4477": {
       "img_id": "2025",
       "bio_id": "2025",
-      "name": "Rasel Brian C."
+      "name": "Rasel Brian C.",
+      "bio_slug": "rep-rasel",
+      "display_name": "Brian C. Rasel",
+      "party": "R"
     },
     "4478": {
       "img_id": "1825",
       "bio_id": "1825",
-      "name": "Markosek Brandon J."
+      "name": "Markosek Brandon J.",
+      "bio_slug": "rep-markosek",
+      "display_name": "Brandon J. Markosek",
+      "party": "D"
     },
     "4479": {
       "img_id": "2011",
       "bio_id": "2011",
-      "name": "McAndrew Joe"
+      "name": "McAndrew Joe",
+      "bio_slug": "rep-mcandrew",
+      "display_name": "Joe McAndrew",
+      "party": "D"
     },
     "4480": {
       "img_id": "1946",
       "bio_id": "1946",
-      "name": "Kuzma Andrew"
+      "name": "Kuzma Andrew",
+      "bio_slug": "rep-kuzma",
+      "display_name": "Andrew Kuzma",
+      "party": "R"
     },
     "4481": {
       "img_id": "1875",
       "bio_id": "1875",
-      "name": "Davanzo Eric"
+      "name": "Davanzo Eric",
+      "bio_slug": "rep-davanzo",
+      "display_name": "Eric Davanzo",
+      "party": "R"
     },
     "4482": {
       "img_id": "2060",
       "bio_id": "2060",
-      "name": "Goughnour Dan"
+      "name": "Goughnour Dan",
+      "bio_slug": "rep-goughnour",
+      "display_name": "Dan Goughnour",
+      "party": "D"
     },
     "4483": {
       "img_id": "2012",
       "bio_id": "2012",
-      "name": "Salisbury Abigail"
+      "name": "Salisbury Abigail",
+      "bio_slug": "rep-salisbury",
+      "display_name": "Abigail Salisbury",
+      "party": "D"
     },
     "4484": {
       "img_id": "1758",
       "bio_id": "1758",
-      "name": "Mako Zachary"
+      "name": "Mako Zachary",
+      "bio_slug": "rep-mako",
+      "display_name": "Zachary Mako",
+      "party": "R"
     },
     "4485": {
       "img_id": "1691",
       "bio_id": "1691",
-      "name": "Irvin Rich"
+      "name": "Irvin Rich",
+      "bio_slug": "rep-irvin",
+      "display_name": "Rich Irvin",
+      "party": "R"
     },
     "4486": {
       "img_id": "1101",
       "bio_id": "1101",
-      "name": "Moul Dan"
+      "name": "Moul Dan",
+      "bio_slug": "rep-moul",
+      "display_name": "Dan Moul",
+      "party": "R"
     },
     "4487": {
       "img_id": "1953",
       "bio_id": "1953",
-      "name": "Takac Paul"
+      "name": "Takac Paul",
+      "bio_slug": "rep-takac",
+      "display_name": "Paul Takac",
+      "party": "D"
     },
     "4488": {
       "img_id": "1905",
       "bio_id": "1905",
-      "name": "Stambaugh Perry A."
+      "name": "Stambaugh Perry A.",
+      "bio_slug": "rep-stambaugh",
+      "display_name": "Perry A. Stambaugh",
+      "party": "R"
     },
     "4489": {
       "img_id": "1955",
       "bio_id": "1955",
-      "name": "Kutz Thomas H."
+      "name": "Kutz Thomas H.",
+      "bio_slug": "rep-kutz",
+      "display_name": "Thomas H. Kutz",
+      "party": "R"
     },
     "4490": {
       "img_id": "1167",
       "bio_id": "1167",
-      "name": "Delozier Sheryl M."
+      "name": "Delozier Sheryl M.",
+      "bio_slug": "rep-delozier",
+      "display_name": "Sheryl M. Delozier",
+      "party": "R"
     },
     "4491": {
       "img_id": "1864",
       "bio_id": "1864",
-      "name": "Gleim Barbara"
+      "name": "Gleim Barbara",
+      "bio_slug": "rep-gleim",
+      "display_name": "Barbara Gleim",
+      "party": "R"
     },
     "4492": {
-      "img_id": "patty-kim-rep",
-      "bio_id": "1636",
-      "name": "Kim Patty H."
+      "img_id": "2031",
+      "bio_id": "2031",
+      "name": "Davidson Nathan",
+      "bio_slug": "rep-davidson",
+      "display_name": "Nathan Davidson",
+      "party": "D"
     },
     "4493": {
       "img_id": "1960",
       "bio_id": "1960",
-      "name": "Fleming Justin C."
+      "name": "Fleming Justin C.",
+      "bio_slug": "rep-fleming",
+      "display_name": "Justin C. Fleming",
+      "party": "D"
     },
     "4494": {
       "img_id": "1751",
       "bio_id": "1751",
-      "name": "Mehaffie Thomas L."
+      "name": "Mehaffie Thomas L.",
+      "bio_slug": "rep-mehaffie",
+      "display_name": "Thomas L. Mehaffie",
+      "party": "R"
     },
     "4495": {
       "img_id": "2029",
       "bio_id": "2029",
-      "name": "Anderson Marc S."
+      "name": "Anderson Marc S.",
+      "bio_slug": "rep-anderson",
+      "display_name": "Marc S. Anderson",
+      "party": "R"
     },
     "4496": {
       "img_id": "215",
       "bio_id": "215",
-      "name": "Benninghoff Kerry A."
+      "name": "Benninghoff Kerry A.",
+      "bio_slug": "rep-benninghoff",
+      "display_name": "Kerry A. Benninghoff",
+      "party": "R"
     },
     "4497": {
       "img_id": "1871",
       "bio_id": "1871",
-      "name": "Rowe David H."
+      "name": "Rowe David H.",
+      "bio_slug": "rep-rowe",
+      "display_name": "David H. Rowe",
+      "party": "R"
     },
     "4498": {
       "img_id": "2017",
       "bio_id": "2017",
-      "name": "Prokopiak Jim"
+      "name": "Prokopiak Jim",
+      "bio_slug": "rep-prokopiak",
+      "display_name": "Jim Prokopiak",
+      "party": "D"
     },
     "4499": {
       "img_id": "1974",
       "bio_id": "1974",
-      "name": "Cerrato Melissa"
+      "name": "Cerrato Melissa",
+      "bio_slug": "rep-cerrato",
+      "display_name": "Melissa Cerrato",
+      "party": "D"
     },
     "4500": {
       "img_id": "1849",
       "bio_id": "1849",
-      "name": "Sanchez Benjamin V."
+      "name": "Sanchez Benjamin V.",
+      "bio_slug": "rep-sanchez",
+      "display_name": "Benjamin V. Sanchez",
+      "party": "D"
     },
     "4501": {
       "img_id": "1743",
       "bio_id": "1743",
-      "name": "Warren Perry S."
+      "name": "Warren Perry S.",
+      "bio_slug": "rep-warren",
+      "display_name": "Perry S. Warren",
+      "party": "D"
     },
     "4502": {
       "img_id": "1913",
       "bio_id": "1913",
-      "name": "Guenst Nancy"
+      "name": "Guenst Nancy",
+      "bio_slug": "rep-guenst",
+      "display_name": "Nancy Guenst",
+      "party": "D"
     },
     "4503": {
       "img_id": "1954",
       "bio_id": "1954",
-      "name": "Flick Jamie L."
+      "name": "Flick Jamie L.",
+      "bio_slug": "rep-flick",
+      "display_name": "Jamie L. Flick",
+      "party": "R"
     },
     "4504": {
       "img_id": "1796",
       "bio_id": "1796",
-      "name": "Owlett Clint"
+      "name": "Owlett Clint",
+      "bio_slug": "rep-owlett",
+      "display_name": "Clint Owlett",
+      "party": "R"
     },
     "4505": {
       "img_id": "1752",
       "bio_id": "1752",
-      "name": "Fritz Jonathan"
+      "name": "Fritz Jonathan",
+      "bio_slug": "rep-fritz",
+      "display_name": "Jonathan Fritz",
+      "party": "R"
     },
     "4506": {
       "img_id": "1105",
       "bio_id": "1105",
-      "name": "Cutler Bryan"
+      "name": "Cutler Bryan",
+      "bio_slug": "rep-cutler",
+      "display_name": "Bryan Cutler",
+      "party": "R"
     },
     "4507": {
       "img_id": "2030",
       "bio_id": "2030",
-      "name": "Rivera Nikki"
+      "name": "Rivera Nikki",
+      "bio_slug": "rep-rivera",
+      "display_name": "Nikki Rivera",
+      "party": "D"
     },
     "4508": {
       "img_id": "1632",
       "bio_id": "1632",
-      "name": "Greiner Keith J."
+      "name": "Greiner Keith J.",
+      "bio_slug": "rep-greiner",
+      "display_name": "Keith J. Greiner",
+      "party": "R"
     },
     "4509": {
       "img_id": "1911",
       "bio_id": "1911",
-      "name": "Labs Shelby"
+      "name": "Labs Shelby",
+      "bio_slug": "rep-labs",
+      "display_name": "Shelby Labs",
+      "party": "R"
     },
     "4510": {
       "img_id": "1215",
       "bio_id": "1215",
-      "name": "Lawrence John A."
+      "name": "Lawrence John A.",
+      "bio_slug": "rep-lawrence",
+      "display_name": "John A. Lawrence",
+      "party": "R"
     },
     "4511": {
       "img_id": "1852",
       "bio_id": "1852",
-      "name": "Sappey Christina D."
+      "name": "Sappey Christina D.",
+      "bio_slug": "rep-sappey",
+      "display_name": "Christina D. Sappey",
+      "party": "D"
     },
     "4512": {
       "img_id": "1908",
       "bio_id": "1908",
-      "name": "Guzman Manuel"
+      "name": "Guzman Manuel",
+      "bio_slug": "rep-guzman",
+      "display_name": "Manuel Guzman",
+      "party": "D"
     },
     "4513": {
       "img_id": "1209",
       "bio_id": "1209",
-      "name": "Gillen Mark M."
+      "name": "Gillen Mark M.",
+      "bio_slug": "rep-gillen",
+      "display_name": "Mark M. Gillen",
+      "party": "R"
     },
     "4514": {
       "img_id": "1707",
       "bio_id": "1707",
-      "name": "Staats Craig T."
+      "name": "Staats Craig T.",
+      "bio_slug": "rep-staats",
+      "display_name": "Craig T. Staats",
+      "party": "R"
     },
     "4515": {
       "img_id": "1760",
       "bio_id": "1760",
-      "name": "Rabb Christopher M."
+      "name": "Rabb Christopher M.",
+      "bio_slug": "rep-rabb",
+      "display_name": "Christopher M. Rabb",
+      "party": "D"
     },
     "4516": {
       "img_id": "1920",
       "bio_id": "1920",
-      "name": "Parker Darisha K."
+      "name": "Parker Darisha K.",
+      "bio_slug": "rep-parker",
+      "display_name": "Darisha K. Parker",
+      "party": "D"
     },
     "4517": {
       "img_id": "2019",
       "bio_id": "2019",
-      "name": "Carroll Andre D."
+      "name": "Carroll Andre D.",
+      "bio_slug": "rep-carroll",
+      "display_name": "Andre D. Carroll",
+      "party": "D"
     },
     "4518": {
       "img_id": "1984",
       "bio_id": "1984",
-      "name": "Bellmon Anthony A."
+      "name": "Bellmon Anthony A.",
+      "bio_slug": "rep-bellmon",
+      "display_name": "Anthony A. Bellmon",
+      "party": "D"
     },
     "4519": {
       "img_id": "1761",
       "bio_id": "1761",
-      "name": "Solomon Jared G."
+      "name": "Solomon Jared G.",
+      "bio_slug": "rep-solomon",
+      "display_name": "Jared G. Solomon",
+      "party": "D"
     },
     "4520": {
       "img_id": "1732",
       "bio_id": "1732",
-      "name": "White Martina A."
+      "name": "White Martina A.",
+      "bio_slug": "rep-white",
+      "display_name": "Martina A. White",
+      "party": "R"
     },
     "4521": {
       "img_id": "1204",
       "bio_id": "1204",
-      "name": "Davis Tina M."
+      "name": "Davis Tina M.",
+      "bio_slug": "rep-t-davis",
+      "display_name": "Tina M. Davis",
+      "party": "D"
     },
     "4522": {
       "img_id": "1876",
       "bio_id": "1876",
-      "name": "Tomlinson Kathleen C."
+      "name": "Tomlinson Kathleen C.",
+      "bio_slug": "rep-tomlinson",
+      "display_name": "Kathleen C. Tomlinson",
+      "party": "R"
     },
     "4523": {
       "img_id": "1694",
       "bio_id": "1694",
-      "name": "Klunk Kate A."
+      "name": "Klunk Kate A.",
+      "bio_slug": "rep-klunk",
+      "display_name": "Kate A. Klunk",
+      "party": "R"
     },
     "4524": {
       "img_id": "1703",
       "bio_id": "1703",
-      "name": "Rader Jack"
+      "name": "Rader Jack",
+      "bio_slug": "rep-rader",
+      "display_name": "Jack Rader",
+      "party": "R"
     },
     "4525": {
       "img_id": "1914",
       "bio_id": "1914",
-      "name": "Nelson Napoleon J."
+      "name": "Nelson Napoleon J.",
+      "bio_slug": "rep-n-nelson",
+      "display_name": "Napoleon J. Nelson",
+      "party": "D"
     },
     "4526": {
       "img_id": "1742",
       "bio_id": "1742",
-      "name": "Bernstine Aaron"
+      "name": "Bernstine Aaron",
+      "bio_slug": "rep-bernstine",
+      "display_name": "Aaron Bernstine",
+      "party": "R"
     },
     "4528": {
       "img_id": "1173",
       "bio_id": "1173",
-      "name": "Matzie Robert F."
+      "name": "Matzie Robert F.",
+      "bio_slug": "rep-matzie",
+      "display_name": "Robert F. Matzie",
+      "party": "D"
     },
     "4529": {
       "img_id": "2063",
       "bio_id": "2063",
-      "name": "Mazzocco Jen"
+      "name": "Mazzocco Jen",
+      "bio_slug": "rep-mazzocco",
+      "display_name": "Jen Mazzocco",
+      "party": "D"
     },
     "4530": {
       "img_id": "1933",
       "bio_id": "1933",
-      "name": "Abney Aerion"
+      "name": "Abney Aerion",
+      "bio_slug": "rep-abney",
+      "display_name": "Aerion Abney",
+      "party": "D"
     },
     "4531": {
       "img_id": "2016",
       "bio_id": "2016",
-      "name": "Powell Lindsay"
+      "name": "Powell Lindsay",
+      "bio_slug": "rep-powell",
+      "display_name": "Lindsay Powell",
+      "party": "D"
     },
     "4532": {
       "img_id": "1945",
       "bio_id": "1945",
-      "name": "Steele Mandy"
+      "name": "Steele Mandy",
+      "bio_slug": "rep-steele",
+      "display_name": "Mandy Steele",
+      "party": "D"
     },
     "4533": {
       "img_id": "1926",
       "bio_id": "1926",
-      "name": "Major Abby"
+      "name": "Major Abby",
+      "bio_slug": "rep-major",
+      "display_name": "Abby Major",
+      "party": "R"
     },
     "4534": {
       "img_id": "1174",
       "bio_id": "1174",
-      "name": "Metzgar Carl WALKER"
+      "name": "Metzgar Carl WALKER",
+      "bio_slug": "rep-metzgar",
+      "display_name": "Carl Walker Metzgar",
+      "party": "R"
     },
     "4535": {
       "img_id": "1681",
       "bio_id": "1681",
-      "name": "Topper Jesse"
+      "name": "Topper Jesse",
+      "bio_slug": "rep-topper",
+      "display_name": "Jesse Topper",
+      "party": "R"
     },
     "4536": {
       "img_id": "2028",
       "bio_id": "2028",
-      "name": "Reichard Chad G."
+      "name": "Reichard Chad G.",
+      "bio_slug": "rep-reichard",
+      "display_name": "Chad G. Reichard",
+      "party": "R"
     },
     "4537": {
       "img_id": "1022",
       "bio_id": "1022",
-      "name": "Kauffman Rob W."
+      "name": "Kauffman Rob W.",
+      "bio_slug": "rep-kauffman",
+      "display_name": "Rob W. Kauffman",
+      "party": "R"
     },
     "4538": {
       "img_id": "1226",
       "bio_id": "1226",
-      "name": "Maloney David M."
+      "name": "Maloney David M.",
+      "bio_slug": "rep-maloney",
+      "display_name": "David M. Maloney",
+      "party": "R"
     },
     "4539": {
       "img_id": "1959",
       "bio_id": "1959",
-      "name": "Madsen Dave"
+      "name": "Madsen Dave",
+      "bio_slug": "rep-madsen",
+      "display_name": "Dave Madsen",
+      "party": "D"
     },
     "4540": {
       "img_id": "1112",
       "bio_id": "1112",
-      "name": "Pashinski Eddie DAY"
+      "name": "Pashinski Eddie DAY",
+      "bio_slug": "rep-pashinski",
+      "display_name": "Eddie Day Pashinski",
+      "party": "D"
     },
     "4541": {
       "img_id": "2032",
       "bio_id": "2032",
-      "name": "Walsh Jamie"
+      "name": "Walsh Jamie",
+      "bio_slug": "rep-walsh",
+      "display_name": "Jamie Walsh",
+      "party": "R"
     },
     "4542": {
       "img_id": "1958",
       "bio_id": "1958",
-      "name": "Schlegel John A."
+      "name": "Schlegel John A.",
+      "bio_slug": "rep-schlegel",
+      "display_name": "John A. Schlegel",
+      "party": "R"
     },
     "4543": {
       "img_id": "1907",
       "bio_id": "1907",
-      "name": "Kerwin Joe"
+      "name": "Kerwin Joe",
+      "bio_slug": "rep-kerwin",
+      "display_name": "Joe Kerwin",
+      "party": "R"
     },
     "4544": {
       "img_id": "1968",
       "bio_id": "1968",
-      "name": "Barton Jamie"
+      "name": "Barton Jamie",
+      "bio_slug": "rep-barton",
+      "display_name": "Jamie Barton",
+      "party": "R"
     },
     "4545": {
       "img_id": "1963",
       "bio_id": "1963",
-      "name": "Donahue Kyle"
+      "name": "Donahue Kyle",
+      "bio_slug": "rep-donahue",
+      "display_name": "Kyle Donahue",
+      "party": "D"
     },
     "4546": {
       "img_id": "1844",
       "bio_id": "1844",
-      "name": "Mullins Kyle J."
+      "name": "Mullins Kyle J.",
+      "bio_slug": "rep-mullins",
+      "display_name": "Kyle J. Mullins",
+      "party": "D"
     },
     "4547": {
       "img_id": "1966",
       "bio_id": "1966",
-      "name": "Haddock Jim"
+      "name": "Haddock Jim",
+      "bio_slug": "rep-haddock",
+      "display_name": "Jim Haddock",
+      "party": "D"
     },
     "4548": {
       "img_id": "1910",
       "bio_id": "1910",
-      "name": "Flood Ann"
+      "name": "Flood Ann",
+      "bio_slug": "rep-flood",
+      "display_name": "Ann Flood",
+      "party": "R"
     },
     "4549": {
       "img_id": "1975",
       "bio_id": "1975",
-      "name": "Pielli Chris"
+      "name": "Pielli Chris",
+      "bio_slug": "rep-pielli",
+      "display_name": "Chris Pielli",
+      "party": "D"
     },
     "4550": {
       "img_id": "1973",
       "bio_id": "1973",
-      "name": "Scheuren Donna"
+      "name": "Scheuren Donna",
+      "bio_slug": "rep-scheuren",
+      "display_name": "Donna Scheuren",
+      "party": "R"
     },
     "4551": {
       "img_id": "1832",
       "bio_id": "1832",
-      "name": "Malagari Steven R."
+      "name": "Malagari Steven R.",
+      "bio_slug": "rep-malagari",
+      "display_name": "Steven R. Malagari",
+      "party": "D"
     },
     "4552": {
       "img_id": "1701",
       "bio_id": "1701",
-      "name": "Ortitay Jason"
+      "name": "Ortitay Jason",
+      "bio_slug": "rep-ortitay",
+      "display_name": "Jason Ortitay",
+      "party": "R"
     },
     "4553": {
       "img_id": "1686",
       "bio_id": "1686",
-      "name": "Diamond Russ"
+      "name": "Diamond Russ",
+      "bio_slug": "rep-diamond",
+      "display_name": "Russ Diamond",
+      "party": "R"
     },
     "4554": {
       "img_id": "1834",
       "bio_id": "1834",
-      "name": "Hanbidge Liz"
+      "name": "Hanbidge Liz",
+      "bio_slug": "rep-hanbidge",
+      "display_name": "Liz Hanbidge",
+      "party": "D"
     },
     "4555": {
       "img_id": "97",
       "bio_id": "97",
-      "name": "Pickett Tina"
+      "name": "Pickett Tina",
+      "bio_slug": "rep-pickett",
+      "display_name": "Tina Pickett",
+      "party": "R"
     },
     "4556": {
       "img_id": "1706",
       "bio_id": "1706",
-      "name": "Schweyer Peter"
+      "name": "Schweyer Peter",
+      "bio_slug": "rep-schweyer",
+      "display_name": "Peter Schweyer",
+      "party": "D"
     },
     "4557": {
       "img_id": "2015",
       "bio_id": "2015",
-      "name": "Boyd Heather"
+      "name": "Boyd Heather",
+      "bio_slug": "rep-boyd",
+      "display_name": "Heather Boyd",
+      "party": "D"
     },
     "4558": {
       "img_id": "1932",
       "bio_id": "1932",
-      "name": "Curry Gina H."
+      "name": "Curry Gina H.",
+      "bio_slug": "rep-curry",
+      "display_name": "Gina H. Curry",
+      "party": "D"
     },
     "4559": {
       "img_id": "1917",
       "bio_id": "1917",
-      "name": "Young Regina G."
+      "name": "Young Regina G.",
+      "bio_slug": "rep-young",
+      "display_name": "Regina G. Young",
+      "party": "D"
     },
     "4560": {
       "img_id": "1858",
       "bio_id": "1858",
-      "name": "Hohenstein Joseph C."
+      "name": "Hohenstein Joseph C.",
+      "bio_slug": "rep-hohenstein",
+      "display_name": "Joseph C. Hohenstein",
+      "party": "D"
     },
     "4561": {
       "img_id": "1860",
       "bio_id": "1860",
-      "name": "Kenyatta Malcolm"
+      "name": "Kenyatta Malcolm",
+      "bio_slug": "rep-kenyatta",
+      "display_name": "Malcolm Kenyatta",
+      "party": "D"
     },
     "4562": {
       "img_id": "1919",
       "bio_id": "1919",
-      "name": "Brown Amen"
+      "name": "Brown Amen",
+      "bio_slug": "rep-a-brown",
+      "display_name": "Amen Brown",
+      "party": "D"
     },
     "4563": {
       "img_id": "1969",
       "bio_id": "1969",
-      "name": "Cepeda-Freytiz Johanny"
+      "name": "Cepeda-Freytiz Johanny",
+      "bio_slug": "rep-cepeda-freytiz",
+      "display_name": "Johanny Cepeda-Freytiz",
+      "party": "D"
     },
     "4564": {
       "img_id": "2034",
       "bio_id": "2034",
-      "name": "Rusnock Jacklyn"
+      "name": "Rusnock Jacklyn",
+      "bio_slug": "rep-rusnock",
+      "display_name": "Jacklyn Rusnock",
+      "party": "D"
     },
     "4565": {
       "img_id": "1857",
       "bio_id": "1857",
-      "name": "Isaacson MaryLouise"
+      "name": "Isaacson MaryLouise",
+      "bio_slug": "rep-isaacson",
+      "display_name": "MaryLouise Isaacson",
+      "party": "D"
     },
     "4566": {
       "img_id": "1096",
       "bio_id": "1096",
-      "name": "Conklin Scott"
+      "name": "Conklin Scott",
+      "bio_slug": "rep-conklin",
+      "display_name": "Scott Conklin",
+      "party": "D"
     },
     "4567": {
       "img_id": "1952",
       "bio_id": "1952",
-      "name": "Kephart Dallas"
+      "name": "Kephart Dallas",
+      "bio_slug": "rep-kephart",
+      "display_name": "Dallas Kephart",
+      "party": "R"
     },
     "4568": {
       "img_id": "1745",
       "bio_id": "1745",
-      "name": "Cook Bud"
+      "name": "Cook Bud",
+      "bio_slug": "rep-cook",
+      "display_name": "Bud Cook",
+      "party": "R"
     },
     "4569": {
       "img_id": "1947",
       "bio_id": "1947",
-      "name": "D&#x27;Orsie Joseph"
+      "name": "D&#x27;Orsie Joseph",
+      "bio_slug": "rep-d'orsie",
+      "display_name": "Joseph D'Orsie",
+      "party": "R"
     },
     "4570": {
       "img_id": "1797",
       "bio_id": "1797",
-      "name": "O&#x27;Neal Timothy J."
+      "name": "O&#x27;Neal Timothy J.",
+      "bio_slug": "rep-o'neal",
+      "display_name": "Timothy J. O'Neal",
+      "party": "R"
     },
     "4571": {
       "img_id": "1948",
       "bio_id": "1948",
-      "name": "Smith-Wade-El Ismail"
+      "name": "Smith-Wade-El Ismail",
+      "bio_slug": "rep-smith-wade-el",
+      "display_name": "Ismail Smith-Wade-El",
+      "party": "D"
     },
     "4572": {
       "img_id": "1927",
       "bio_id": "1927",
-      "name": "Rossi Leslie"
+      "name": "Rossi Leslie",
+      "bio_slug": "rep-rossi",
+      "display_name": "Leslie Rossi",
+      "party": "R"
     },
     "4573": {
       "img_id": "1949",
       "bio_id": "1949",
-      "name": "Krupa Charity GRIMM"
+      "name": "Krupa Charity GRIMM",
+      "bio_slug": "rep-krupa",
+      "display_name": "Charity Grimm Krupa",
+      "party": "R"
     },
     "4574": {
       "img_id": "1708",
       "bio_id": "1708",
-      "name": "Warner Ryan"
+      "name": "Warner Ryan",
+      "bio_slug": "rep-warner",
+      "display_name": "Ryan Warner",
+      "party": "R"
     },
     "4575": {
       "img_id": "1962",
       "bio_id": "1962",
-      "name": "Leadbeter Robert"
+      "name": "Leadbeter Robert",
+      "bio_slug": "rep-leadbeter",
+      "display_name": "Robert Leadbeter",
+      "party": "R"
     },
     "4576": {
       "img_id": "1967",
       "bio_id": "1967",
-      "name": "Ryncavage Alec J."
+      "name": "Ryncavage Alec J.",
+      "bio_slug": "rep-ryncavage",
+      "display_name": "Alec J. Ryncavage",
+      "party": "R"
     },
     "4577": {
       "img_id": "2033",
       "bio_id": "2033",
-      "name": "Pugh Brenda M."
+      "name": "Pugh Brenda M.",
+      "bio_slug": "rep-pugh",
+      "display_name": "Brenda M. Pugh",
+      "party": "R"
     },
     "4578": {
       "img_id": "2014",
       "bio_id": "2014",
-      "name": "Stender Michael"
+      "name": "Stender Michael",
+      "bio_slug": "rep-stender",
+      "display_name": "Michael Stender",
+      "party": "R"
     },
     "4579": {
       "img_id": "1838",
       "bio_id": "1838",
-      "name": "Borowicz Stephanie"
+      "name": "Borowicz Stephanie",
+      "bio_slug": "rep-borowicz",
+      "display_name": "Stephanie Borowicz",
+      "party": "R"
     },
     "4580": {
       "img_id": "1904",
       "bio_id": "1904",
-      "name": "Hamm Joe"
+      "name": "Hamm Joe",
+      "bio_slug": "rep-hamm",
+      "display_name": "Joe Hamm",
+      "party": "R"
     },
     "4581": {
       "img_id": "1634",
       "bio_id": "1634",
-      "name": "James R. Lee"
+      "name": "James R. Lee",
+      "bio_slug": "rep-james",
+      "display_name": "R. Lee James",
+      "party": "R"
     },
     "4582": {
       "img_id": "2021",
       "bio_id": "2021",
-      "name": "Weaknecht Eric J."
+      "name": "Weaknecht Eric J.",
+      "bio_slug": "rep-weaknecht",
+      "display_name": "Eric J. Weaknecht",
+      "party": "R"
     },
     "4583": {
       "img_id": "1083",
       "bio_id": "1083",
-      "name": "Roae Brad"
+      "name": "Roae Brad",
+      "bio_slug": "rep-roae",
+      "display_name": "Brad Roae",
+      "party": "R"
     }
   },
   "senate": {
     "1003": {
       "img_id": "1870",
       "bio_id": "1870",
-      "name": "Pittman Joe"
+      "name": "Pittman Joe",
+      "bio_slug": "sen-pittman",
+      "display_name": "Joe Pittman",
+      "party": "R"
     },
     "1004": {
       "img_id": "1186",
       "bio_id": "1186",
-      "name": "Yaw Gene"
+      "name": "Yaw Gene",
+      "bio_slug": "sen-yaw",
+      "display_name": "Gene Yaw",
+      "party": "R"
     },
     "1005": {
       "img_id": "1202",
       "bio_id": "1202",
-      "name": "Culver Lynda Schlegel"
+      "name": "Culver Lynda Schlegel",
+      "bio_slug": "sen-culver",
+      "display_name": "Lynda Schlegel Culver",
+      "party": "R"
     },
     "1006": {
       "img_id": "1636",
       "bio_id": "1636",
-      "name": "Kim Patty"
+      "name": "Kim Patty",
+      "bio_slug": "sen-kim",
+      "display_name": "Patty Kim",
+      "party": "D"
     },
     "1007": {
       "img_id": "1801",
       "bio_id": "1801",
-      "name": "Phillips-Hill Kristin"
+      "name": "Phillips-Hill Kristin",
+      "bio_slug": "sen-phillips-hill",
+      "display_name": "Kristin Phillips-Hill",
+      "party": "R"
     },
     "1008": {
       "img_id": "1763",
       "bio_id": "1763",
-      "name": "Martin Scott"
+      "name": "Martin Scott",
+      "bio_slug": "sen-martin",
+      "display_name": "Scott Martin",
+      "party": "R"
     },
     "1009": {
       "img_id": "1764",
       "bio_id": "1764",
-      "name": "Langerholc Wayne"
+      "name": "Langerholc Wayne",
+      "bio_slug": "sen-langerholc",
+      "display_name": "Wayne Langerholc",
+      "party": "R"
     },
     "1010": {
       "img_id": "1683",
       "bio_id": "1683",
-      "name": "Ward Judy"
+      "name": "Ward Judy",
+      "bio_slug": "sen-j-ward",
+      "display_name": "Judy Ward",
+      "party": "R"
     },
     "1011": {
       "img_id": "1869",
       "bio_id": "1869",
-      "name": "Mastriano Doug"
+      "name": "Mastriano Doug",
+      "bio_slug": "sen-mastriano",
+      "display_name": "Doug Mastriano",
+      "party": "R"
     },
     "1012": {
       "img_id": "1748",
       "bio_id": "1748",
-      "name": "Keefer Dawn W."
+      "name": "Keefer Dawn W.",
+      "bio_slug": "sen-keefer",
+      "display_name": "Dawn W. Keefer",
+      "party": "R"
     },
     "1013": {
       "img_id": "1697",
       "bio_id": "1697",
-      "name": "Stefano Patrick J."
+      "name": "Stefano Patrick J.",
+      "bio_slug": "sen-stefano",
+      "display_name": "Patrick J. Stefano",
+      "party": "R"
     },
     "1014": {
       "img_id": "1189",
       "bio_id": "1189",
-      "name": "Vogel Elder A."
+      "name": "Vogel Elder A.",
+      "bio_slug": "sen-vogel",
+      "display_name": "Elder A. Vogel",
+      "party": "R"
     },
     "1015": {
       "img_id": "1087",
       "bio_id": "1087",
-      "name": "Brooks Michele"
+      "name": "Brooks Michele",
+      "bio_slug": "sen-brooks",
+      "display_name": "Michele Brooks",
+      "party": "R"
     },
     "1016": {
       "img_id": "1766",
       "bio_id": "1766",
-      "name": "Laughlin Daniel"
+      "name": "Laughlin Daniel",
+      "bio_slug": "sen-laughlin",
+      "display_name": "Daniel Laughlin",
+      "party": "R"
     },
     "1017": {
       "img_id": "1629",
       "bio_id": "1629",
-      "name": "Hutchinson Scott"
+      "name": "Hutchinson Scott",
+      "bio_slug": "sen-hutchinson",
+      "display_name": "Scott E. Hutchinson",
+      "party": "R"
     },
     "1018": {
       "img_id": "1041",
       "bio_id": "1041",
-      "name": "Fontana Wayne D."
+      "name": "Fontana Wayne D.",
+      "bio_slug": "sen-fontana",
+      "display_name": "Wayne D. Fontana",
+      "party": "D"
     },
     "1019": {
       "img_id": "1924",
       "bio_id": "1924",
-      "name": "Robinson Devlin J."
+      "name": "Robinson Devlin J.",
+      "bio_slug": "sen-robinson",
+      "display_name": "Devlin J. Robinson",
+      "party": "R"
     },
     "1020": {
       "img_id": "1900",
       "bio_id": "1900",
-      "name": "Pisciottano Nick"
+      "name": "Pisciottano Nick",
+      "bio_slug": "sen-pisciottano",
+      "display_name": "Nick Pisciottano",
+      "party": "D"
     },
     "1021": {
       "img_id": "1803",
       "bio_id": "1803",
-      "name": "Williams Lindsey MARIE"
+      "name": "Williams Lindsey MARIE",
+      "bio_slug": "sen-l-williams",
+      "display_name": "Lindsey M. Williams",
+      "party": "D"
     },
     "1022": {
       "img_id": "179",
       "bio_id": "179",
-      "name": "Boscola Lisa M."
+      "name": "Boscola Lisa M.",
+      "bio_slug": "sen-boscola",
+      "display_name": "Lisa M. Boscola",
+      "party": "D"
     },
     "1023": {
       "img_id": "254",
       "bio_id": "254",
-      "name": "Costa Jay"
+      "name": "Costa Jay",
+      "bio_slug": "sen-costa",
+      "display_name": "Jay Costa",
+      "party": "D"
     },
     "1024": {
       "img_id": "152",
       "bio_id": "152",
-      "name": "Hughes Vincent J."
+      "name": "Hughes Vincent J.",
+      "bio_slug": "sen-hughes",
+      "display_name": "Vincent J. Hughes",
+      "party": "D"
     },
     "1025": {
       "img_id": "1689",
       "bio_id": "1689",
-      "name": "Haywood Art L"
+      "name": "Haywood Art L",
+      "bio_slug": "sen-haywood",
+      "display_name": "Art Haywood",
+      "party": "D"
     },
     "1026": {
       "img_id": "1767",
       "bio_id": "1767",
-      "name": "Street Sharif"
+      "name": "Street Sharif",
+      "bio_slug": "sen-street",
+      "display_name": "Sharif Street",
+      "party": "D"
     },
     "1027": {
       "img_id": "1928",
       "bio_id": "1928",
-      "name": "Gebhard Chris"
+      "name": "Gebhard Chris",
+      "bio_slug": "sen-gebhard",
+      "display_name": "Chris Gebhard",
+      "party": "R"
     },
     "1028": {
       "img_id": "1802",
       "bio_id": "1802",
-      "name": "Muth Katie J."
+      "name": "Muth Katie J.",
+      "bio_slug": "sen-muth",
+      "display_name": "Katie J. Muth",
+      "party": "D"
     },
     "1029": {
       "img_id": "1925",
       "bio_id": "1925",
-      "name": "Kane John I."
+      "name": "Kane John I.",
+      "bio_slug": "sen-kane",
+      "display_name": "John I. Kane",
+      "party": "D"
     },
     "1030": {
       "img_id": "1912",
       "bio_id": "1912",
-      "name": "Pennycuick Tracy"
+      "name": "Pennycuick Tracy",
+      "bio_slug": "sen-pennycuick",
+      "display_name": "Tracy Pennycuick",
+      "party": "R"
     },
     "1031": {
       "img_id": "1200",
       "bio_id": "1200",
-      "name": "Brown Rosemary M."
+      "name": "Brown Rosemary M.",
+      "bio_slug": "sen-brown",
+      "display_name": "Rosemary M. Brown",
+      "party": "R"
     },
     "1032": {
       "img_id": "1800",
       "bio_id": "1800",
-      "name": "Kearney Timothy P."
+      "name": "Kearney Timothy P.",
+      "bio_slug": "sen-kearney",
+      "display_name": "Timothy P. Kearney",
+      "party": "D"
     },
     "1033": {
       "img_id": "1179",
       "bio_id": "1179",
-      "name": "Santarsiero Steven J."
+      "name": "Santarsiero Steven J.",
+      "bio_slug": "sen-santarsiero",
+      "display_name": "Steven J. Santarsiero",
+      "party": "D"
     },
     "1034": {
       "img_id": "1799",
       "bio_id": "1799",
-      "name": "Collett Maria"
+      "name": "Collett Maria",
+      "bio_slug": "sen-collett",
+      "display_name": "Maria Collett",
+      "party": "D"
     },
     "1035": {
       "img_id": "2036",
       "bio_id": "2036",
-      "name": "Picozzi Joe"
+      "name": "Picozzi Joe",
+      "bio_slug": "sen-picozzi",
+      "display_name": "Joe Picozzi",
+      "party": "R"
     },
     "1036": {
       "img_id": "1169",
       "bio_id": "1169",
-      "name": "Farry Frank A."
+      "name": "Farry Frank A.",
+      "bio_slug": "sen-farry",
+      "display_name": "Frank A. Farry",
+      "party": "R"
     },
     "1037": {
       "img_id": "2061",
       "bio_id": "2061",
-      "name": "Malone James ANDREW"
+      "name": "Malone James ANDREW",
+      "bio_slug": "sen-malone",
+      "display_name": "James Andrew Malone",
+      "party": "D"
     },
     "1038": {
       "img_id": "69",
       "bio_id": "69",
-      "name": "Argall David G."
+      "name": "Argall David G.",
+      "bio_slug": "sen-argall",
+      "display_name": "David G. Argall",
+      "party": "R"
     },
     "1039": {
       "img_id": "1698",
       "bio_id": "1698",
-      "name": "Bartolotta Camera"
+      "name": "Bartolotta Camera",
+      "bio_slug": "sen-bartolotta",
+      "display_name": "Camera Bartolotta",
+      "party": "R"
     },
     "1040": {
       "img_id": "1188",
       "bio_id": "1188",
-      "name": "Ward Kim L."
+      "name": "Ward Kim L.",
+      "bio_slug": "sen-k-ward",
+      "display_name": "Kim L. Ward",
+      "party": "R"
     },
     "1041": {
       "img_id": "1687",
       "bio_id": "1687",
-      "name": "Dush Cris"
+      "name": "Dush Cris",
+      "bio_slug": "sen-dush",
+      "display_name": "Cris Dush",
+      "party": "R"
     },
     "1042": {
       "img_id": "1077",
       "bio_id": "1077",
-      "name": "Baker Lisa"
+      "name": "Baker Lisa",
+      "bio_slug": "sen-baker",
+      "display_name": "Lisa Baker",
+      "party": "R"
     },
     "1043": {
       "img_id": "2009",
       "bio_id": "2009",
-      "name": "Miller Nick"
+      "name": "Miller Nick",
+      "bio_slug": "sen-miller",
+      "display_name": "Nick Miller",
+      "party": "D"
     },
     "1044": {
       "img_id": "2008",
       "bio_id": "2008",
-      "name": "Coleman Jarrett"
+      "name": "Coleman Jarrett",
+      "bio_slug": "sen-coleman",
+      "display_name": "Jarrett Coleman",
+      "party": "R"
     },
     "1045": {
       "img_id": "1234",
       "bio_id": "1234",
-      "name": "Schwank Judith L."
+      "name": "Schwank Judith L.",
+      "bio_slug": "sen-schwank",
+      "display_name": "Judith L. Schwank",
+      "party": "D"
     },
     "1046": {
       "img_id": "1733",
       "bio_id": "1733",
-      "name": "Rothman Greg"
+      "name": "Rothman Greg",
+      "bio_slug": "sen-rothman",
+      "display_name": "Greg Rothman",
+      "party": "R"
     },
     "1047": {
       "img_id": "1790",
       "bio_id": "1790",
-      "name": "Comitta Carolyn T."
+      "name": "Comitta Carolyn T.",
+      "bio_slug": "sen-comitta",
+      "display_name": "Carolyn T. Comitta",
+      "party": "D"
     },
     "1048": {
       "img_id": "1923",
       "bio_id": "1923",
-      "name": "Cappelletti Amanda M."
+      "name": "Cappelletti Amanda M.",
+      "bio_slug": "sen-cappelletti",
+      "display_name": "Amanda M. Cappelletti",
+      "party": "D"
     },
     "1049": {
       "img_id": "153",
       "bio_id": "153",
-      "name": "Williams Anthony H."
+      "name": "Williams Anthony H.",
+      "bio_slug": "sen-a-williams",
+      "display_name": "Anthony H. Williams",
+      "party": "D"
     },
     "1050": {
       "img_id": "1921",
       "bio_id": "1921",
-      "name": "Saval Nikil"
+      "name": "Saval Nikil",
+      "bio_slug": "sen-saval",
+      "display_name": "Nikil Saval",
+      "party": "D"
     },
     "1051": {
       "img_id": "277",
       "bio_id": "277",
-      "name": "Tartaglione Christine M."
+      "name": "Tartaglione Christine M.",
+      "bio_slug": "sen-tartaglione",
+      "display_name": "Christine M. Tartaglione",
+      "party": "D"
     },
     "1052": {
       "img_id": "1626",
       "bio_id": "1626",
-      "name": "Flynn Marty"
+      "name": "Flynn Marty",
+      "bio_slug": "sen-flynn",
+      "display_name": "Marty Flynn",
+      "party": "D"
     }
   }
 }

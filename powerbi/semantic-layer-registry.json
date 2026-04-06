@@ -4,6 +4,7 @@
   "_lastReviewed": "2026-04-04",
   "_relatedDocs": [
     "docs/DATA-DICTIONARY.md",
+    "docs/MOBILE-POWERBI-ALIGNMENT-SUMMARY.md",
     "docs/POWER-BI-DATA-MODEL-MAPPING.md",
     "powerbi/metric-registry.json"
   ],
@@ -454,6 +455,32 @@
     "aiHelpers": {
       "summarizePolicyAlert": "modules/ai-helpers.js → AIHelpers.summarizePolicyAlert()",
       "pbiRelevance": "Optional text measure or dim_policy_alert narrative column"
+    }
+  },
+
+  "advocacyTools": {
+    "policyImpactSimulator": {
+      "displayContext": "340b.html (#policy-impact-simulator-root)",
+      "chartId": "policy-impact-simulator",
+      "modules": [
+        "modules/impact-data.js",
+        "modules/impact-simulator.js",
+        "modules/impact-ui.js"
+      ],
+      "currentSource": "HAP340B_IMPACT in modules/impact-data.js (SCENARIOS + SCENARIO_ESTIMATES)",
+      "validationStatus": "illustrative_only",
+      "goldTableTarget": "TBD with IT (e.g. dim_advocacy_scenario_illustrative) — not treated as HRSA fact data",
+      "dataLayerMethod": "none (static JS until warehouse supplies scenario copy/labels)",
+      "metricKeys": [],
+      "pbiReady": false,
+      "note": "CEO/briefing control: three scenario paths. Same semantics as desktop Policy simulator."
+    },
+    "mobilePwaShell": {
+      "displayContext": "Installable mobile web — manifest.json + sw.js + 340b-mobile.html",
+      "currentSource": "Static hosting; service worker caches shell files listed in sw.js",
+      "validationStatus": "infrastructure_only",
+      "pbiReady": false,
+      "note": "PWA installability does not change KPI sources; Power BI / warehouse remain future phase per docs/SUPERVISOR-SYSTEM.md roadmap."
     }
   }
 }

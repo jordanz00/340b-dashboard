@@ -1,0 +1,29 @@
+{
+  "_description": "Drift detection baseline — tracks expected shapes and minimum counts for key data files. The dashboard-audit.py script compares live data against these expectations to catch unexpected schema changes or data loss.",
+  "_lastUpdated": "2026-04-05",
+  "_version": "v1",
+  "files": {
+    "powerbi/metric-registry.json": {
+      "arrayCounts": {
+        "metrics": { "min": 11, "label": "registered MetricKeys" }
+      },
+      "requiredTopKeys": ["metrics", "staticReferences"]
+    },
+    "powerbi/semantic-layer-registry.json": {
+      "arrayCounts": {
+        "kpiCards": { "min": 4, "label": "KPI card placeholders" },
+        "paFocusStats": { "min": 4, "label": "PA focus stat placeholders" },
+        "oversightComparison": { "min": 2, "label": "oversight comparison entries" },
+        "charts": { "min": 3, "label": "chart definitions" }
+      },
+      "requiredTopKeys": ["kpiCards", "paFocusStats", "charts"]
+    },
+    "data/pa-member-photo-map.json": {
+      "arrayCounts": {
+        "house": { "min": 190, "label": "PA House photo entries" },
+        "senate": { "min": 45, "label": "PA Senate photo entries" }
+      },
+      "requiredTopKeys": ["house", "senate"]
+    }
+  }
+}

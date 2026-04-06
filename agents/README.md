@@ -41,3 +41,12 @@ node agents/run-100x.js
 - **data/archive/executive-summary-&lt;timestamp&gt;.txt** — Executive summary
 
 See [docs/MULTI_AGENT_SYSTEM.md](../docs/MULTI_AGENT_SYSTEM.md) for full documentation.
+
+## Cross-checks and “departments”
+
+- Agents **1–8** each contribute **proposals** from their specialty (data, UI, security, …).  
+- **Agent 9** compares **all** proposals, resolves conflicts, and approves by score — that is how one subagent’s output is checked against the rest.  
+- **Agent 10** scores CEO-facing quality.  
+- Re-run **`node agents/run-waves.js`** after substantive edits so feedback reflects the latest tree.
+
+Optional (unrelated to dashboard code review): **`python3 agents/orchestrator.py`** — HAP org-chart simulation / CSV export for leadership routing exercises, not a substitute for the Node agents above.
