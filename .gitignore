@@ -25,3 +25,6 @@ package-lock.json
 # Local env (if added later)
 .env
 .env.local
+
+# NEXUS Visualizer — standalone repo (publish from NEXUS/ only)
+NEXUS/
