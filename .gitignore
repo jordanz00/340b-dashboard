@@ -26,5 +26,5 @@ package-lock.json
 .env
 .env.local
 
-# NEXUS: tracked in this monorepo; ignore nested repo metadata if present
-NEXUS/.git/
+# NEXUS Engine — separate product/repo; do not track here (340B dashboard only)
+NEXUS/
