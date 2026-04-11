@@ -12,12 +12,9 @@
     "test:watch": "vitest --config vitest.config.mjs",
     "test:coverage": "vitest run --config vitest.config.mjs --coverage",
     "test:e2e": "python3 tests/e2e-smoke.py",
-    "test:nexus": "vitest run --config vitest.nexus.config.mjs",
-    "test:nexus:e2e": "playwright test --config playwright.nexus.config.mjs",
     "ci": "npm run typecheck && npm run audit && npm run test && npm run test:e2e"
   },
   "devDependencies": {
-    "@playwright/test": "^1.49.1",
     "@vitest/coverage-v8": "^3.0.5",
     "happy-dom": "^17.4.4",
     "typescript": "^5.7.0",
