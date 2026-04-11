@@ -27,3 +27,7 @@ package-lock.json
 .env
 .env.local
 
+# NEXUS is a nested git repository (separate origin: nexus-music-visualizer).
+# Do not `git add NEXUS` from this parent repo — work and commit inside NEXUS/.
+NEXUS/
+

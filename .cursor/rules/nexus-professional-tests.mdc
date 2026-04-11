@@ -1,0 +1,24 @@
+---
+description: NEXUS — professional test structure, Vitest/Playwright entrypoints, and no-WebGL-in-Node guardrails
+globs: NEXUS/**/*test*.{js,mjs}, NEXUS/**/*spec*.{js,mjs}, NEXUS/e2e/**, NEXUS/tests/**, NEXUS/vitest*.mjs, NEXUS/playwright*.mjs
+alwaysApply: false
+---
+
+# NEXUS — professional tests (scoped)
+
+## Canonical doc
+
+Follow **`NEXUS/docs/PROFESSIONAL-TEST-OUTLINE.md`** for file headers, test IDs (`NX-TEST-…`), and blast-radius notes.
+
+## Where tests live
+
+- **Vitest (pure logic):** `NEXUS/tests/**/*.test.mjs` via `NEXUS/vitest.nexus.config.mjs`.
+- **Playwright (smoke):** `NEXUS/e2e/**/*.spec.js` via `NEXUS/playwright.nexus.config.mjs`.
+
+Do not assume a bundler: tests must not import `engine.js` into Node unless you have explicitly mocked WebGL.
+
+## Discipline
+
+- Prefer **one focused assertion group** per test; avoid flaky timing — use `page.waitForSelector` with reasonable timeouts for E2E.
+- After security- or URL-related changes, extend **allowlist** unit tests in the same PR.
+- Keep **`QA-UPGRADE-MATRIX.md`** / **`docs/QA-MATRIX.md`** in sync when adding a new user-facing flow that needs manual coverage.
