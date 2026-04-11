@@ -26,8 +26,8 @@
   }
 
   w.NexusRelease = {
-    version: '1.0.1',
-    releaseTag: '1.0.1',
+    version: '1.0.2',
+    releaseTag: '1.0.2',
     changelogHref: 'CHANGELOG.md',
     /** Trailing slash — canonical GitHub Pages root for NEXUS */
     pagesBaseUrl: PAGES_BASE,

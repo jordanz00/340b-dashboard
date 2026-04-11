@@ -7,7 +7,9 @@ Browser-based live VJ suite: **WebGL** shader scenes, **Aurora Field** (Butterch
 | **Live (canonical)** | [https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/) |
 | **Source repo** | [github.com/jordanz00/nexus-music-visualizer](https://github.com/jordanz00/nexus-music-visualizer) |
 
-The canonical URL is also defined in `js/nexus-version.js` (`NexusRelease.pagesBaseUrl`) and used for **Copy link** (session seed) plus `<link rel="canonical">` in `index.html`. If you develop in a monorepo (e.g. `NEXUS/` inside another project), deploy by mirroring this folder to the **`nexus-music-visualizer`** repo root your GitHub Pages branch uses.
+The canonical URL is also defined in `js/nexus-version.js` (`NexusRelease.pagesBaseUrl`) and used for **Copy link** (session seed) plus `<link rel="canonical">` in `index.html`.
+
+**Deploy / fix 404:** see **[DEPLOY.md](DEPLOY.md)** — GitHub Actions sync from this monorepo (secret `NEXUS_MUSIC_VISUALIZER_DEPLOY_PAT`) plus Pages branch settings.
 
 ## Audience
 

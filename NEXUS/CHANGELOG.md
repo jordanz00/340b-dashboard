@@ -2,6 +2,15 @@
 
 All notable product changes are listed here. Version in UI matches `js/nexus-version.js` (`NexusRelease.version`).
 
+## 1.0.2 — 2026-04-10
+
+### Added
+
+- **`DEPLOY.md`** — GitHub Pages setup, PAT secret, and manual sync for **`jordanz00/nexus-music-visualizer`**.
+- **`.github/workflows/nexus-deploy-pages.yml`** (in `340b-dashboard`) — pushes `NEXUS/` to **`gh-pages`** on the visualizer repo when `NEXUS_MUSIC_VISUALIZER_DEPLOY_PAT` is set.
+- **`NEXUS/.nojekyll`** — disables Jekyll so `vendor/` and paths are not stripped on Pages.
+- **`NEXUS/404.html`** — redirects unknown paths to the canonical live URL.
+
 ## 1.0.1 — 2026-04-10
 
 ### Changed

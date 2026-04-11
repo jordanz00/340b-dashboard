@@ -10,7 +10,7 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 
 ### NEXUS Engine Pro (VJ / music visualizer)
 
-The **NEXUS** live app is maintained in this repo under [`NEXUS/`](NEXUS/). **Canonical public URL:** [https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/) · **Source:** [github.com/jordanz00/nexus-music-visualizer](https://github.com/jordanz00/nexus-music-visualizer). Product docs and version constants live in `NEXUS/README.md` and `NEXUS/js/nexus-version.js`.
+The **NEXUS** live app is maintained in this repo under [`NEXUS/`](NEXUS/). **Canonical public URL:** [https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/) · **Source:** [github.com/jordanz00/nexus-music-visualizer](https://github.com/jordanz00/nexus-music-visualizer). **Deploy / 404 fixes:** [NEXUS/DEPLOY.md](NEXUS/DEPLOY.md) (Actions + PAT). Product docs: `NEXUS/README.md`, `NEXUS/js/nexus-version.js`.
 
 ## Files
 
