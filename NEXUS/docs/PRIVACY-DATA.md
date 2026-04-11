@@ -2,6 +2,8 @@
 
 NEXUS Engine Pro is a **static web application**. There is **no NEXUS-operated backend** in this repository: audio and visuals run entirely in your browser unless you connect optional local services (for example OLA / DMX proxy as documented in-app).
 
+The **canonical public build** is hosted at [https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/) (see `js/nexus-version.js`). Your hosting provider (e.g. GitHub Pages) may still log normal HTTPS requests separately from application code.
+
 ## Microphone and audio
 
 - Audio from the **microphone** or **line input** is processed locally for analysis and visualization.

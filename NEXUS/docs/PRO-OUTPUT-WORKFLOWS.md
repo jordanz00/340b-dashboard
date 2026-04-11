@@ -4,8 +4,8 @@ NEXUS runs in the **browser**. It does **not** embed native macOS **Syphon** or 
 
 ## Recommended: OBS Studio (all platforms)
 
-1. Run NEXUS from `https://…` or `http://localhost` (mic requires a **secure context** except localhost).
-2. Add a **Browser Source**; set the URL to your hosted `index.html` (include the path that loads `js/` assets correctly—trailing slash on Pages sites).
+1. Run NEXUS from the **canonical live build** **[https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/)** (or `http://localhost` for dev — mic needs a **secure context** except localhost).
+2. Add a **Browser Source**; set the URL to that hosted root (trailing slash on GitHub Pages project sites helps asset resolution).
 3. Set the Browser Source resolution to **1920×1080** (or your show resolution).
 4. Inside NEXUS, press **`P`** or tap **Present** so chrome and panels hide for a clean program feed.
 5. Use **REC** inside NEXUS for a direct WebM capture, **or** use OBS **Start Recording / Streaming** to encode with your preferred codec/bitrate.

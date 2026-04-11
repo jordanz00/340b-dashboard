@@ -125,6 +125,9 @@
     try {
       var u = new URL(location.href);
       u.searchParams.set('seed', String(S.sessionSeed >>> 0));
+      if (typeof NexusRelease !== 'undefined' && NexusRelease && typeof NexusRelease.toCanonAppUrl === 'function') {
+        return NexusRelease.toCanonAppUrl(u.toString());
+      }
       return u.toString();
     } catch (e) {
       return '';

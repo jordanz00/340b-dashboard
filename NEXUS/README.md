@@ -2,6 +2,13 @@
 
 Browser-based live VJ suite: **WebGL** shader scenes, **Aurora Field** (Butterchurn / MilkDrop-class spectrum layer), **hybrid** compositing, **MIDI**, show clock (**LTC / MTC**), clips, **WebM recording**, and **Present** mode for clean output.
 
+| | Link |
+|---|------|
+| **Live (canonical)** | [https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/) |
+| **Source repo** | [github.com/jordanz00/nexus-music-visualizer](https://github.com/jordanz00/nexus-music-visualizer) |
+
+The canonical URL is also defined in `js/nexus-version.js` (`NexusRelease.pagesBaseUrl`) and used for **Copy link** (session seed) plus `<link rel="canonical">` in `index.html`. If you develop in a monorepo (e.g. `NEXUS/` inside another project), deploy by mirroring this folder to the **`nexus-music-visualizer`** repo root your GitHub Pages branch uses.
+
 ## Audience
 
 - DJs, VJs, and streamers who want a **single static page** (no install) with pro-grade visuals.
@@ -11,9 +18,9 @@ Browser-based live VJ suite: **WebGL** shader scenes, **Aurora Field** (Butterch
 
 | Surface | Notes |
 |--------|--------|
-| **GitHub Pages** | Use the project/site URL **with a trailing slash** or path that resolves assets under `NEXUS/` (see `<base>` fix in `index.html`). |
+| **GitHub Pages (production)** | **[nexus-music-visualizer](https://jordanz00.github.io/nexus-music-visualizer/)** — project site; keep a **trailing slash** on the folder URL so relative scripts resolve (see `<base>` in `index.html`). |
 | **Local** | `cd NEXUS && python3 -m http.server 4173` then open `http://127.0.0.1:4173/`. |
-| **OBS** | Browser Source → URL above; enable **Present** (or press `P`) to hide chrome. See `docs/PRO-OUTPUT-WORKFLOWS.md`. |
+| **OBS** | Browser Source → **live URL** above; enable **Present** (or press `P`) to hide chrome. See `docs/PRO-OUTPUT-WORKFLOWS.md`. |
 
 ## Browser support
 

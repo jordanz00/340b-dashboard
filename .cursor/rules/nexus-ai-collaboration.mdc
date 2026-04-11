@@ -31,6 +31,7 @@ When editing files under `NEXUS/`, follow this contract (human “director,” a
 
 ## NEXUS product rules
 
+- **Canonical live URL** for the shipped product: `https://jordanz00.github.io/nexus-music-visualizer/` — mirror `NexusRelease.pagesBaseUrl` / `index.html` canonical + OG tags when changing public links or share URLs.
 - Preserve **WebGL** failure handling (`webglcontextlost` / `restored`) and **performance** habits (avoid per-frame churn; respect adaptive quality).
 - **Vendor** (`vendor/`): bumping Butterchurn/preset bundles has license and size implications — note blast radius; keep `THIRD_PARTY_NOTICES.md` honest when shipping vendor changes.
 - **Security / UX:** mic and **localStorage** are user-sensitive surfaces; no secrets in repo; validate URL/query usage if adding features (`?seed=`, `?demo=`, etc.).

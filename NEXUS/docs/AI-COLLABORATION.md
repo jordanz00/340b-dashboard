@@ -1,5 +1,7 @@
 # AI collaboration playbook (NEXUS)
 
+**Canonical live build:** [https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/) — public URL constants live in `js/nexus-version.js` (`NexusRelease.pagesBaseUrl`).
+
 Guidance for working on **NEXUS** with an AI coding assistant: clear context, small edits, and guardrails. Inspired by common **prompt-engineering** practices (structured tasks, pair-programming tone, limits on retries and noise)—adapted to this repo’s **static WebGL / Butterchurn** stack.
 
 ## How to talk to the assistant

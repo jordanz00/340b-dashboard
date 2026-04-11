@@ -17,9 +17,14 @@
     var S = NX.S;
     var preset = NX.presets.capture();
     var rel = typeof NexusRelease !== 'undefined' && NexusRelease ? NexusRelease.version : '';
+    var live =
+      typeof NexusRelease !== 'undefined' && NexusRelease && NexusRelease.pagesBaseUrl
+        ? NexusRelease.pagesBaseUrl
+        : '';
     return {
       nxShowfile: SCHEMA,
       appVersion: rel,
+      canonicalLiveUrl: live,
       savedAt: new Date().toISOString(),
       preset: preset,
       showClockMode: getClockMode(),

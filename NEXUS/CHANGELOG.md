@@ -2,6 +2,12 @@
 
 All notable product changes are listed here. Version in UI matches `js/nexus-version.js` (`NexusRelease.version`).
 
+## 1.0.1 — 2026-04-10
+
+### Changed
+
+- Canonical public URL **[nexus-music-visualizer](https://jordanz00.github.io/nexus-music-visualizer/)** wired into `NexusRelease.pagesBaseUrl`, `<link rel="canonical">` / Open Graph in `index.html`, README/OBS docs, and **Copy link** (session seed) so shared URLs always target the live product site.
+
 ## 1.0.0 — 2026-04-10
 
 ### Added
