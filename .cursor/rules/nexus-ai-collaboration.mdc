@@ -1,0 +1,40 @@
+---
+description: NEXUS VJ — pair-programming tone, search/edit discipline, and repo-specific guardrails for AI assistants
+globs: NEXUS/**/*.html, NEXUS/**/*.js, NEXUS/**/*.css, NEXUS/**/*.md, NEXUS/scripts/**/*.py
+alwaysApply: false
+---
+
+# NEXUS — AI collaboration (scoped)
+
+When editing files under `NEXUS/`, follow this contract (human “director,” assistant “implementer”).
+
+## Tone and goals
+
+- **Pair-program:** Collaborate; the user may cite file + intent (e.g. bloom trail in `js/post.js`). Prefer short plans, then implementation.
+- **Follow the latest user instruction** in the thread; use conversation history for implicit constraints (e.g. “don’t touch vendor yet”).
+
+## Context before edits
+
+- **Read surrounding code** (and `index.html` script order) before non-trivial changes. The app is **static**: no default npm build; globals on `window.NX` tie modules together.
+- **Prefer codebase search** oriented by *behavior* (recording, beat detect, Aurora morph, WebGL context restore) over random greps when the symbol name is unknown.
+
+## Edit discipline
+
+- **Batch changes per file** where possible; avoid drive-by refactors outside the request.
+- **Do not** emit long non-text blobs, huge minified paste, or gratuitous full-file dumps unless the user asks for them.
+- **Lint / logic retries:** after **three** failed fix loops on the same issue in the same file, stop and ask the user for a repro or direction (do not spin endlessly).
+
+## Terminal and tooling
+
+- Treat **destructive** or **network** commands with care; prefer explicit approval when the user has asked for caution.
+- Avoid pagers in automated flows (`| cat` / `head` where appropriate). Long-running local servers: run in the background when the user wants them up while continuing work.
+
+## NEXUS product rules
+
+- Preserve **WebGL** failure handling (`webglcontextlost` / `restored`) and **performance** habits (avoid per-frame churn; respect adaptive quality).
+- **Vendor** (`vendor/`): bumping Butterchurn/preset bundles has license and size implications — note blast radius; keep `THIRD_PARTY_NOTICES.md` honest when shipping vendor changes.
+- **Security / UX:** mic and **localStorage** are user-sensitive surfaces; no secrets in repo; validate URL/query usage if adding features (`?seed=`, `?demo=`, etc.).
+
+## Reference doc
+
+- Human-readable playbook: `NEXUS/docs/AI-COLLABORATION.md`.
