@@ -2,8 +2,8 @@
  * HAP Regulatory Advocacy 2026 — mobile app shell (swipe + tabs).
  *
  * WHO THIS IS FOR: Policymakers and members opening the brief on a phone.
- * WHAT IT DOES: Renders a five-segment, Apple-style shell from window.HAP_REGULATORY_ADVOCACY_2026 (facts.js),
- *   with horizontal swipe between segments and a frosted tab bar (Start → Data → Map → Asks → More).
+ * WHAT IT DOES: Renders a four-tab shell from window.HAP_REGULATORY_ADVOCACY_2026 (facts.js), aligned with the
+ *   desktop dashboard (same data, matching section labels, map notes, impact filters, letter routing, sources).
  * HOW IT CONNECTS: facts.js (data), map-lookups.js (state names / FIPS), vendor D3/topojson/US atlas (map).
  *
  * POWER BI MAPPING: none (static advocacy brief).
@@ -13,13 +13,16 @@
 (function () {
   'use strict';
 
-  var TABS = ['overview', 'stats', 'benchmark', 'priorities', 'receipts'];
   var TAB_META = [
     { id: 'overview', label: 'Start' },
     { id: 'priorities', label: 'Asks' },
     { id: 'benchmark', label: 'Map' },
     { id: 'receipts', label: 'More' }
   ];
+  /** Tab order for swipe — must match TAB_META ids exactly (panels are keyed by these ids). */
+  var TABS = TAB_META.map(function (m) {
+    return m.id;
+  });
 
   var currentTab = 'overview';
   var previousTab = null;
@@ -28,7 +31,7 @@
   var touchStartTime = 0;
   var isSwiping = false;
   var mapDrawn = false;
-  var statsBanWired = false;
+  var mobBanWired = false;
 
   var dom = {};
 
@@ -424,6 +427,92 @@
     });
   }
 
+  /**
+   * Short host/path label for source links (matches desktop app.js for parity).
+   * @param {string} url
+   * @returns {string}
+   */
+  function sourceLinkLabel(url) {
+    if (!url) return 'Open link';
+    try {
+      var u = new URL(url);
+      var host = u.hostname.replace(/^www\./, '');
+      var path = u.pathname;
+      if (path.length > 1 && path.length > 28) path = path.slice(0, 26) + '…';
+      return host + (path && path !== '/' ? path : '');
+    } catch (e0) {
+      return 'Open link';
+    }
+  }
+
+  /**
+   * Map-band “Notes & sources” block (same citations as desktop renderStatesNote; data from facts.js only).
+   */
+  function renderMobStatesNote(el, block, sourceById) {
+    if (!el || !block) return;
+    while (el.firstChild) el.removeChild(el.firstChild);
+    var big = document.createElement('div');
+    big.className = 'hap-mob-states-big';
+    big.setAttribute('aria-hidden', 'true');
+    setText(big, block.big);
+    var col = document.createElement('div');
+    col.className = 'hap-mob-states-col';
+    var lead = document.createElement('p');
+    lead.className = 'hap-mob-states-lead';
+    var strong = document.createElement('strong');
+    setText(strong, block.lead);
+    lead.appendChild(strong);
+    var body = document.createElement('p');
+    body.className = 'hap-mob-states-body';
+    setText(body, block.body);
+    col.appendChild(lead);
+    col.appendChild(body);
+    var citeBlock = document.createElement('div');
+    citeBlock.className = 'hap-mob-states-cite-block';
+    var src = sourceById[block.sourceId];
+    if (src && src.url) {
+      var cite = document.createElement('p');
+      cite.className = 'hap-mob-states-cite';
+      var a = document.createElement('a');
+      a.href = src.url;
+      a.rel = 'noopener noreferrer';
+      setText(a, src.shortTitle);
+      cite.appendChild(document.createTextNode('Primary: '));
+      cite.appendChild(a);
+      citeBlock.appendChild(cite);
+    }
+    var act = block.act60SourceId ? sourceById[block.act60SourceId] : null;
+    if (act && act.url) {
+      var cite2 = document.createElement('p');
+      cite2.className = 'hap-mob-states-cite';
+      var a2 = document.createElement('a');
+      a2.href = act.url;
+      a2.rel = 'noopener noreferrer';
+      setText(a2, act.shortTitle);
+      cite2.appendChild(document.createTextNode('Act 60 (2013) reference: '));
+      cite2.appendChild(a2);
+      citeBlock.appendChild(cite2);
+    }
+    var letter = block.letterSourceId ? sourceById[block.letterSourceId] : null;
+    if (letter) {
+      var cite3 = document.createElement('p');
+      cite3.className = 'hap-mob-states-cite';
+      if (letter.url) {
+        var a3 = document.createElement('a');
+        a3.href = letter.url;
+        a3.rel = 'noopener noreferrer';
+        setText(a3, letter.shortTitle);
+        cite3.appendChild(a3);
+      } else {
+        setText(cite3, letter.shortTitle + ' — ' + (letter.accessedNote || ''));
+      }
+      citeBlock.appendChild(cite3);
+    }
+    col.appendChild(citeBlock);
+    el.appendChild(big);
+    el.appendChild(col);
+  }
+
   function renderSources(container, sources) {
     if (!container) return;
     while (container.firstChild) container.removeChild(container.firstChild);
@@ -435,17 +524,35 @@
       setText(summary, s.shortTitle || s.publisher || 'Source');
       var body = document.createElement('div');
       body.className = 'hap-mob-src-body';
-      if (s.accessedNote) {
-        var p = document.createElement('p');
-        setText(p, s.accessedNote);
-        body.appendChild(p);
+      if (s.publisher || s.accessedNote) {
+        var meta = document.createElement('p');
+        meta.className = 'hap-mob-src-meta';
+        if (s.publisher) {
+          var pub = document.createElement('span');
+          pub.className = 'hap-mob-src-publisher';
+          setText(pub, s.publisher);
+          meta.appendChild(pub);
+        }
+        if (s.accessedNote) {
+          var note = document.createElement('span');
+          note.className = 'hap-mob-src-note';
+          setText(note, s.accessedNote);
+          meta.appendChild(note);
+        }
+        body.appendChild(meta);
       }
       if (s.url) {
         var a = document.createElement('a');
         a.href = s.url;
         a.rel = 'noopener noreferrer';
-        setText(a, s.url);
+        a.setAttribute('title', s.url);
+        setText(a, sourceLinkLabel(s.url));
         body.appendChild(a);
+      } else {
+        var noUrl = document.createElement('span');
+        noUrl.className = 'hap-mob-src-missing';
+        setText(noUrl, 'URL not assigned.');
+        body.appendChild(noUrl);
       }
       details.appendChild(summary);
       details.appendChild(body);
@@ -989,7 +1096,7 @@
 
     if ((data.atAGlance || []).length) {
       var aagLabel = el('div', 'hap-mob-section-label hap-mob-anim');
-      setText(aagLabel, 'At a glance');
+      setText(aagLabel, 'The three themes');
       wrap.appendChild(aagLabel);
     }
     wrap.appendChild(aag);
@@ -1015,10 +1122,16 @@
 
   function elPriorities(data) {
     var wrap = el('div', '');
-    var h = el('h2', 'hap-mob-section-title');
-    setText(h, 'Three requests');
+    var pk = el('p', 'hap-mob-section-kicker');
+    setText(pk, 'Regulatory priorities');
+    wrap.appendChild(pk);
+    var pks = el('p', 'hap-mob-priority-subkicker');
+    setText(pks, 'April 16, 2026 letter to DOH · three asks, source-linked');
+    wrap.appendChild(pks);
+    var h = el('h2', 'hap-mob-section-title hap-mob-section-title--tight');
+    setText(h, 'Three requests to the Pennsylvania Department of Health');
     var lead = el('p', 'hap-mob-section-lead');
-    setText(lead, 'Three asks. Plain language. Sources inside.');
+    setText(lead, 'Clear guidance and better agency coordination first. Legislation only where state law requires it.');
     wrap.appendChild(h);
     wrap.appendChild(lead);
     (data.priorities || []).forEach(function (pr) {
@@ -1057,10 +1170,16 @@
 
   function elBenchmark(data, sourceById) {
     var wrap = el('div', '');
+    var secLab = el('p', 'hap-mob-section-kicker');
+    setText(secLab, 'National benchmark');
+    wrap.appendChild(secLab);
     var h = el('h2', 'hap-mob-section-title');
-    setText(h, 'National map · PA vs US');
+    setText(h, 'Joint Commission recognition');
     var lead = el('p', 'hap-mob-section-lead');
-    setText(lead, 'TJC ambulatory footprint, then PA vs Medicare.');
+    setText(
+      lead,
+      'Teal states appear on the compiled TJC Ambulatory payer list. Gray states do not. Confirm each state before testimony — see Sources in More.'
+    );
     wrap.appendChild(h);
     wrap.appendChild(lead);
 
@@ -1084,6 +1203,16 @@
     mapBox.appendChild(sel);
     wrap.appendChild(mapBox);
 
+    var noteDet = el('details', 'hap-mob-map-note-details hap-mob-anim');
+    var noteSum = el('summary', 'hap-mob-map-note-summary');
+    setText(noteSum, 'Notes & sources');
+    var noteInner = el('div', 'hap-mob-states-note');
+    noteInner.setAttribute('role', 'note');
+    renderMobStatesNote(noteInner, data.statesCallout || {}, sourceById);
+    noteDet.appendChild(noteSum);
+    noteDet.appendChild(noteInner);
+    wrap.appendChild(noteDet);
+
     var sc = data.statesCallout || {};
     var hero = el('div', 'hap-mob-map-hero hap-mob-anim');
     var big = el('div', 'hap-mob-map-hero-num');
@@ -1104,6 +1233,19 @@
       hero.appendChild(a);
     }
     wrap.appendChild(hero);
+
+    var cmpKicker = el('p', 'hap-mob-section-kicker');
+    setText(cmpKicker, 'PA · Medicare · US');
+    wrap.appendChild(cmpKicker);
+    var cmpH = el('h2', 'hap-mob-section-title hap-mob-section-title--tight');
+    setText(cmpH, 'Same topic, three answers');
+    wrap.appendChild(cmpH);
+    var cmpLead = el('p', 'hap-mob-section-lead');
+    setText(
+      cmpLead,
+      'What PA does, what Medicare usually does, what HAP asks DOH to clarify. Proof in Sources (More tab).'
+    );
+    wrap.appendChild(cmpLead);
 
     (data.compareRows || []).forEach(function (row) {
       var card = el('div', 'hap-mob-compare-card hap-mob-anim');
@@ -1141,30 +1283,97 @@
     return String(t.valueNumeric);
   }
 
-  function elReceipts(data, sourceById) {
-    var wrap = el('div', '');
-    var h = el('h2', 'hap-mob-section-title');
-    setText(h, 'Letter · Facts · Sources');
-    wrap.appendChild(h);
+  /**
+   * Impact tiles + category filter chips (parity with desktop renderImpactAnchors).
+   */
+  function appendMobImpactVerifiedSection(wrap, data) {
+    var tiles = data.impactTiles || [];
+    if (!tiles.length) return;
 
-    (data.letterQuotes || []).forEach(function (q) {
-      var box = el('blockquote', 'hap-mob-quote hap-mob-anim');
-      var p = el('p', '');
-      setText(p, q.text || '');
-      box.appendChild(p);
-      wrap.appendChild(box);
+    var labEyebrow = el('p', 'hap-mob-section-kicker');
+    setText(labEyebrow, 'Verified anchors');
+    wrap.appendChild(labEyebrow);
+
+    var h2imp = el('h2', 'hap-mob-section-title hap-mob-section-title--tight');
+    setText(h2imp, 'Verified Pennsylvania facts');
+    wrap.appendChild(h2imp);
+
+    var live = el('p', 'hap-mob-sr-only');
+    live.setAttribute('aria-live', 'polite');
+    live.id = 'hap-mob-impact-filter-live';
+    wrap.appendChild(live);
+
+    var cards = [];
+    function announceFilter(active, visibleCount) {
+      var label =
+        active === 'all'
+          ? 'Showing all ' + visibleCount + ' verified anchors.'
+          : 'Showing ' + visibleCount + ' cards in this category.';
+      setText(live, label);
+    }
+    function applyFilter(topic) {
+      var n = 0;
+      cards.forEach(function (rec) {
+        var show = topic === 'all' || rec.topic === topic;
+        rec.card.classList.toggle('hap-mob-impact-card--hidden', !show);
+        if (show) n += 1;
+      });
+      announceFilter(topic, n);
+    }
+
+    var tb = el('div', 'hap-mob-impact-toolbar');
+    var labShow = el('span', 'hap-mob-impact-toolbar-label');
+    setText(labShow, 'Show');
+    tb.appendChild(labShow);
+    var chipGroup = el('div', 'hap-mob-impact-chip-group');
+    chipGroup.setAttribute('role', 'tablist');
+    chipGroup.setAttribute('aria-label', 'Filter verified anchors by category');
+    var chipDefs = [
+      { topic: 'all', label: 'All', iconKind: 'chart', hint: 'Every verified anchor' },
+      { topic: 'brand', label: 'Bright spot', iconKind: 'givingLove', hint: 'HAP headline materials' },
+      { topic: 'policy', label: 'Policy / data', iconKind: 'lawBook', hint: 'Statute, report, or rule' },
+      { topic: 'finance', label: 'Efficiency & dollars', iconKind: 'renewal', hint: 'Fees, cycles, fiscal detail' }
+    ];
+    chipDefs.forEach(function (c, idx) {
+      var btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'hap-mob-impact-chip-btn' + (idx === 0 ? ' is-active' : '');
+      btn.setAttribute('role', 'tab');
+      btn.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+      btn.setAttribute('title', c.hint);
+      var icw = el('span', 'hap-mob-impact-chip-ic');
+      icw.setAttribute('aria-hidden', 'true');
+      icw.appendChild(createDataIconSvg(c.iconKind, 'hap-mob-impact-chip-svg'));
+      var tx = el('span', 'hap-mob-impact-chip-text');
+      setText(tx, c.label);
+      btn.appendChild(icw);
+      btn.appendChild(tx);
+      btn.addEventListener('click', function () {
+        chipGroup.querySelectorAll('.hap-mob-impact-chip-btn').forEach(function (b) {
+          b.classList.remove('is-active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        btn.classList.add('is-active');
+        btn.setAttribute('aria-selected', 'true');
+        applyFilter(c.topic);
+      });
+      chipGroup.appendChild(btn);
     });
+    tb.appendChild(chipGroup);
+    wrap.appendChild(tb);
 
-    var ih = el('h3', 'hap-mob-section-title');
-    ih.style.fontSize = '17px';
-    ih.style.marginTop = '8px';
-    setText(ih, 'Verified anchors');
-    wrap.appendChild(ih);
+    var grid = el('div', 'hap-mob-impact-grid');
+    wrap.appendChild(grid);
 
-    (data.impactTiles || []).forEach(function (t) {
+    tiles.forEach(function (t) {
+      var topic = t.iconTopic || 'access';
+      if (topic !== 'brand' && topic !== 'policy' && topic !== 'access' && topic !== 'finance') {
+        topic = 'policy';
+      }
       var allowedDots = { brand: 1, policy: 1, access: 1, finance: 1 };
       var topicDot = allowedDots[t.iconTopic] ? t.iconTopic : 'policy';
-      var row = el('div', 'hap-mob-impact-card hap-mob-anim hap-mob-impact-card--' + topicDot);
+      var row = el('article', 'hap-mob-impact-card hap-mob-anim hap-mob-impact-card--' + topicDot);
+      row.setAttribute('data-mob-impact-topic', topic);
       var top = el('div', 'hap-mob-impact-card-top');
       var icWrap = el(
         'div',
@@ -1212,15 +1421,87 @@
         });
         row.appendChild(chips);
       }
-      wrap.appendChild(row);
+      grid.appendChild(row);
+      cards.push({ card: row, topic: topic });
     });
 
-    var sh = el('h3', 'hap-mob-section-title');
-    sh.style.fontSize = '17px';
-    sh.style.marginTop = '12px';
+    applyFilter('all');
+  }
+
+  function elReceipts(data, sourceById) {
+    var wrap = el('div', '');
+    var lc = data.letterContext || {};
+    var h = el('h2', 'hap-mob-section-title');
+    setText(h, 'Letter · Facts · Sources');
+    wrap.appendChild(h);
+
+    var routeDet = el('details', 'hap-mob-routing-details hap-mob-anim');
+    var routeSum = el('summary', 'hap-mob-routing-summary');
+    setText(routeSum, 'Routing / recipients');
+    var routeBody = el('div', 'hap-mob-routing-body');
+    var lines =
+      lc.recipientLines && lc.recipientLines.length ? lc.recipientLines : lc.recipient ? [lc.recipient] : [];
+    if (lines.length) {
+      var toBlock = el('p', 'hap-mob-routing-line');
+      var toStrong = el('strong', '');
+      setText(toStrong, 'To: ');
+      toBlock.appendChild(toStrong);
+      lines.forEach(function (line, i) {
+        if (i) toBlock.appendChild(document.createElement('br'));
+        toBlock.appendChild(document.createTextNode(line || ''));
+      });
+      routeBody.appendChild(toBlock);
+    }
+    if (lc.dateDisplay) {
+      var pDate = el('p', 'hap-mob-routing-line');
+      var sDate = el('strong', '');
+      setText(sDate, 'Date: ');
+      pDate.appendChild(sDate);
+      pDate.appendChild(document.createTextNode(lc.dateDisplay));
+      routeBody.appendChild(pDate);
+    }
+    if (lc.sender) {
+      var pFrom = el('p', 'hap-mob-routing-line');
+      var sFrom = el('strong', '');
+      setText(sFrom, 'From: ');
+      pFrom.appendChild(sFrom);
+      pFrom.appendChild(document.createTextNode(lc.sender));
+      routeBody.appendChild(pFrom);
+    }
+    if (lc.note) {
+      var pNote = el('p', 'hap-mob-routing-line');
+      var sNote = el('strong', '');
+      setText(sNote, 'Note: ');
+      pNote.appendChild(sNote);
+      pNote.appendChild(document.createTextNode(lc.note));
+      routeBody.appendChild(pNote);
+    }
+    var foot = el('p', 'hap-mob-routing-foot');
+    var cabLink = document.createElement('a');
+    cabLink.href = 'https://www.pa.gov/governor/meet-governor-shapiro-s-cabinet/dr--debra-l--bogen.html';
+    cabLink.rel = 'noopener noreferrer';
+    setText(cabLink, 'Dr. Debra L. Bogen (Commonwealth biography)');
+    foot.appendChild(document.createTextNode('Secretary biography: '));
+    foot.appendChild(cabLink);
+    routeBody.appendChild(foot);
+    routeDet.appendChild(routeSum);
+    routeDet.appendChild(routeBody);
+    wrap.appendChild(routeDet);
+
+    (data.letterQuotes || []).forEach(function (q) {
+      var box = el('blockquote', 'hap-mob-quote hap-mob-anim');
+      var p = el('p', '');
+      setText(p, q.text || '');
+      box.appendChild(p);
+      wrap.appendChild(box);
+    });
+
+    appendMobImpactVerifiedSection(wrap, data);
+
+    var sh = el('h3', 'hap-mob-section-title hap-mob-section-title--sub');
     setText(sh, 'Sources');
     wrap.appendChild(sh);
-    var srcList = el('div', '');
+    var srcList = el('div', 'hap-mob-src-list');
     renderSources(srcList, data.sources || []);
     wrap.appendChild(srcList);
 
@@ -1275,13 +1556,8 @@
       window.requestAnimationFrame(function () {
         window.setTimeout(initMobRegulatoryMap, 80);
       });
-    } else if (tab === 'benchmark' && mapDrawn) {
+    } else     if (tab === 'benchmark' && mapDrawn) {
       scheduleMobMapRedraw();
-    }
-
-    if (tab === 'stats' && !statsBanWired) {
-      statsBanWired = true;
-      attachMobBanObservers();
     }
   }
 
@@ -1391,6 +1667,13 @@
     cacheDom();
     dom.panels = dom.content.querySelectorAll('.hap-mob-panel');
     dom.tabBtns = dom.tabBar.querySelectorAll('.hap-mob-tab');
+
+    if (!mobBanWired) {
+      mobBanWired = true;
+      window.requestAnimationFrame(function () {
+        attachMobBanObservers();
+      });
+    }
 
     initTabs();
     initSwipe();
