@@ -9,7 +9,7 @@ html {
 body.hap-reg-mobile-page {
   overflow: hidden;
   overscroll-behavior: none;
-  background: var(--hap-bg-page, #f2f2f7);
+  background: var(--bg-page, var(--hap-bg-page, #f2f2f7));
 }
 button {
   font: inherit;
@@ -26,33 +26,73 @@ a {
 img, svg { display: block; max-width: 100%; }
 
 :root {
-  --mob-brand: var(--hap-brand-primary, #0072bc);
+  /* Aligned with 340b-mobile.css + hap-design-tokens.css */
+  --brand-primary: var(--hap-brand-primary, #0072bc);
+  --brand-deep: var(--hap-brand-deep, #003087);
+  --topic-finance: var(--hap-topic-finance, #3a8b7f);
+  --topic-access: var(--hap-topic-access, var(--hap-brand-primary));
+  --topic-policy: var(--hap-topic-policy, #2d4d7a);
+  --topic-risk: var(--hap-topic-risk, #c45a3c);
+  --bg-page: #f2f2f7;
+  --bg-card: #ffffff;
+  --text-primary: #1c1c1e;
+  --text-secondary: #3a3a3c;
+  --text-muted: #8e8e93;
+  --text-on-brand: #ffffff;
+  --separator: rgba(60, 60, 67, 0.1);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06), 0 1px 3px rgba(0, 0, 0, 0.03);
+  --shadow-brand: 0 4px 20px rgba(0, 114, 188, 0.18);
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+  --ease-out: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --dur-fast: 0.18s;
+  --dur-normal: 0.3s;
+  --dur-slow: 0.45s;
+  --header-h: 52px;
+  --tab-bar-h: 80px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --tap-min: 44px;
+
+  /* Legacy aliases (existing rules) */
+  --mob-brand: var(--brand-primary);
   --mob-brand-soft: var(--hap-brand-primary-muted, rgba(0, 114, 188, 0.12));
-  --mob-page: #f2f2f7;
-  --mob-card: #ffffff;
-  --mob-text: #1c1c1e;
-  --mob-text2: #3a3a3c;
-  --mob-muted: #8e8e93;
-  --mob-sep: rgba(60, 60, 67, 0.1);
-  --mob-font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --mob-font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
-  --mob-header-h: 52px;
-  --mob-tab-h: 76px;
-  --mob-tap: 44px;
-  --mob-safe-t: env(safe-area-inset-top, 0px);
-  --mob-safe-b: env(safe-area-inset-bottom, 0px);
-  --mob-ease: cubic-bezier(0.25, 1, 0.5, 1);
-  --mob-ease-spring: cubic-bezier(0.22, 1, 0.36, 1);
-  --mob-dur: 0.38s;
+  --mob-page: var(--bg-page);
+  --mob-card: var(--bg-card);
+  --mob-text: var(--text-primary);
+  --mob-text2: var(--text-secondary);
+  --mob-muted: var(--text-muted);
+  --mob-sep: var(--separator);
+  --mob-font: var(--font-body);
+  --mob-font-display: var(--font-display);
+  --mob-header-h: var(--header-h);
+  --mob-tab-h: var(--tab-bar-h);
+  --mob-tap: var(--tap-min);
+  --mob-impact-danger: #b42318;
+  --mob-safe-t: var(--safe-top);
+  --mob-safe-b: var(--safe-bottom);
+  --mob-ease: var(--ease-out);
+  --mob-ease-spring: var(--ease-spring);
+  --mob-dur: var(--dur-slow);
   --mob-teal: #2d7d72;
   --mob-teal-soft: rgba(45, 125, 114, 0.12);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :root { --mob-dur: 0.01ms; }
+  :root {
+    --mob-dur: 0.01ms;
+    --dur-fast: 0.01ms;
+    --dur-normal: 0.01ms;
+    --dur-slow: 0.01ms;
+  }
 }
 
-.hap-mob-app {
+.hap-app.hap-mob-app {
   position: fixed;
   inset: 0;
   display: flex;
@@ -62,21 +102,29 @@ img, svg { display: block; max-width: 100%; }
   background: var(--mob-page);
 }
 
+.hap-mob-app .hap-mob-tab-bar,
+.hap-mob-app .hap-mob-header,
+.hap-mob-app .hap-mob-tab {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
 .hap-mob-header {
   position: relative;
-  z-index: 50;
+  z-index: 100;
   flex-shrink: 0;
   padding-top: var(--mob-safe-t);
   min-height: calc(var(--mob-header-h) + var(--mob-safe-t));
+  background: rgba(242, 242, 247, 0.72);
+  border-bottom: 0.5px solid var(--mob-sep);
 }
 
 .hap-mob-header-blur {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
-  border-bottom: 0.5px solid var(--mob-sep);
+  z-index: -1;
 }
 
 .hap-mob-header-inner {
@@ -85,18 +133,28 @@ img, svg { display: block; max-width: 100%; }
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 8px 14px 10px;
-  min-height: var(--mob-header-h);
+  height: var(--mob-header-h);
+  padding: 0 20px;
 }
 
 .hap-mob-brand {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   min-width: 0;
 }
 
+.hap-mob-logo {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: block;
+}
+
 .hap-mob-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   border-radius: 10px;
   flex-shrink: 0;
 }
@@ -104,16 +162,17 @@ img, svg { display: block; max-width: 100%; }
 .hap-mob-title-group {
   display: flex;
   flex-direction: column;
+  gap: 0;
   min-width: 0;
 }
 
 .hap-mob-title {
   font-family: var(--mob-font-display);
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 600;
   letter-spacing: -0.02em;
   color: var(--mob-text);
-  line-height: 1.15;
+  line-height: 1.2;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -139,21 +198,22 @@ img, svg { display: block; max-width: 100%; }
   min-width: var(--mob-tap);
   min-height: var(--mob-tap);
   padding: 0 10px;
-  border-radius: 999px;
+  border-radius: 50%;
   color: var(--mob-brand);
   font-size: 14px;
   font-weight: 600;
-  transition: background 0.18s ease;
+  transition: background var(--dur-fast) ease;
 }
 
 .hap-mob-header-btn--text {
   font-size: 13px;
   font-weight: 600;
   color: var(--mob-text2);
+  border-radius: 999px;
 }
 
 .hap-mob-header-btn:active {
-  background: rgba(0, 0, 0, 0.05);
+  background: rgba(0, 0, 0, 0.04);
 }
 
 .hap-mob-hint {
@@ -198,13 +258,13 @@ img, svg { display: block; max-width: 100%; }
 .hap-mob-panel.is-exit-left {
   z-index: 1;
   opacity: 0;
-  transform: translate3d(-24px, 0, 0);
+  transform: translate3d(-28px, 0, 0);
 }
 
 .hap-mob-panel.is-exit-right {
   z-index: 1;
   opacity: 0;
-  transform: translate3d(24px, 0, 0);
+  transform: translate3d(28px, 0, 0);
 }
 
 .hap-mob-scroll {
@@ -213,7 +273,10 @@ img, svg { display: block; max-width: 100%; }
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior-y: contain;
-  padding: 16px 18px calc(20px + var(--mob-safe-b));
+  padding: 20px 20px calc(24px + var(--mob-safe-b));
+  scroll-behavior: smooth;
+  -webkit-user-select: text;
+  user-select: text;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -225,55 +288,133 @@ img, svg { display: block; max-width: 100%; }
   }
 }
 
-/* —— Overview —— */
-.hap-mob-eyebrow {
+/* —— Start tab hero (340b-mobile home-hero parity) —— */
+.hap-mob-home-hero {
+  background: linear-gradient(145deg, var(--brand-deep) 0%, var(--brand-primary) 48%, #0088d4 100%);
+  border-radius: var(--radius-xl);
+  padding: 28px 24px 24px;
+  color: var(--text-on-brand);
+  position: relative;
+  overflow: hidden;
+  box-shadow: var(--shadow-brand);
+  margin-bottom: 4px;
+}
+
+.hap-mob-home-hero::before {
+  content: '';
+  position: absolute;
+  top: -60%;
+  right: -30%;
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.08) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hap-mob-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--mob-font-display);
   font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--mob-brand);
-  margin-bottom: 8px;
+  letter-spacing: 0.04em;
+  color: rgba(255, 255, 255, 0.72);
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
 }
 
-.hap-mob-hero-date {
+.hap-mob-eyebrow-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .hap-mob-eyebrow-dot {
+    animation: hap-mob-pulse-dot 3s ease-in-out infinite;
+  }
+}
+
+@keyframes hap-mob-pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.2);
+  }
+}
+
+.hap-mob-home-hero .hap-mob-hero-date {
   font-size: 13px;
-  color: var(--mob-muted);
+  color: rgba(255, 255, 255, 0.78);
   margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 
-.hap-mob-h1 {
+.hap-mob-hero-title {
   font-family: var(--mob-font-display);
-  font-size: clamp(1.45rem, 5vw, 1.65rem);
+  font-size: clamp(26px, 7vw, 32px);
   font-weight: 700;
   letter-spacing: -0.03em;
   line-height: 1.12;
-  color: var(--mob-text);
-  margin-bottom: 14px;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
 }
 
-.hap-mob-lead {
+.hap-mob-hero-lead {
   font-size: 15px;
-  line-height: 1.45;
-  color: var(--mob-text2);
-  margin-bottom: 20px;
+  line-height: 1.5;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.78);
+  max-width: 340px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Section labels — same scale as 340b-mobile .section-label */
+.hap-mob-section-label {
+  font-family: var(--mob-font-display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--mob-text);
+  letter-spacing: -0.02em;
+  margin: 28px 0 10px;
 }
 
 .hap-mob-aag {
   display: flex;
   flex-direction: column;
-  gap: 10px;
-  margin-bottom: 22px;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .hap-mob-aag-card {
   display: flex;
   gap: 12px;
   align-items: flex-start;
-  padding: 14px 14px 14px 12px;
+  padding: 18px;
   background: var(--mob-card);
-  border-radius: 16px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 4px 14px rgba(0, 114, 188, 0.06);
-  border: 0.5px solid rgba(0, 114, 188, 0.08);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: none;
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-normal) var(--ease-spring);
+}
+
+.hap-mob-aag-card:active {
+  transform: scale(0.97);
 }
 
 .hap-mob-aag-ic-wrap {
@@ -309,8 +450,9 @@ img, svg { display: block; max-width: 100%; }
 .hap-mob-kpi-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 12px;
+  padding: 4px 0 16px;
+  align-items: stretch;
 }
 
 @media (min-width: 380px) {
@@ -321,24 +463,46 @@ img, svg { display: block; max-width: 100%; }
 
 .hap-mob-kpi {
   background: var(--mob-card);
-  border-radius: 16px;
-  padding: 14px 12px;
-  border: 0.5px solid var(--mob-sep);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border-radius: var(--radius-lg);
+  padding: 18px;
+  border: none;
+  box-shadow: var(--shadow-sm);
+  position: relative;
+  overflow: hidden;
+  transition: transform var(--dur-normal) var(--ease-spring);
 }
 
-.hap-mob-kpi--finance { border-color: rgba(58, 139, 127, 0.25); }
-.hap-mob-kpi--risk { border-color: rgba(200, 90, 60, 0.2); }
-.hap-mob-kpi--access { border-color: rgba(0, 114, 188, 0.2); }
+.hap-mob-kpi:active {
+  transform: scale(0.97);
+}
+
+.hap-mob-kpi--finance {
+  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(58, 139, 127, 0.2);
+}
+.hap-mob-kpi--risk {
+  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(200, 90, 60, 0.18);
+}
+.hap-mob-kpi--access {
+  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(0, 114, 188, 0.12);
+}
+
+.hap-mob-kpi--policy {
+  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(45, 77, 122, 0.2);
+}
+
+.hap-mob-kpi--policy .hap-mob-kpi-value {
+  color: var(--topic-policy);
+}
 
 .hap-mob-kpi-value {
   font-family: var(--mob-font-display);
-  font-size: clamp(1.5rem, 6vw, 1.85rem);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.1;
-  color: var(--mob-brand);
-  margin-bottom: 4px;
+  font-size: clamp(2rem, 8.5vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  color: var(--mob-text);
+  margin-bottom: 6px;
 }
 
 .hap-mob-kpi--risk .hap-mob-kpi-value {
@@ -350,17 +514,19 @@ img, svg { display: block; max-width: 100%; }
 }
 
 .hap-mob-kpi-label {
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--mob-text2);
   line-height: 1.25;
-  margin-bottom: 6px;
+  margin-bottom: 3px;
+  letter-spacing: -0.01em;
 }
 
 .hap-mob-kpi-glance {
   font-size: 12px;
   color: var(--mob-muted);
-  line-height: 1.3;
+  line-height: 1.4;
+  font-weight: 400;
 }
 
 .hap-mob-kpi-src {
@@ -377,8 +543,8 @@ img, svg { display: block; max-width: 100%; }
 
 .hap-mob-anim {
   opacity: 0;
-  transform: translate3d(0, 10px, 0);
-  transition: opacity 0.45s var(--mob-ease), transform 0.45s var(--mob-ease);
+  transform: translate3d(0, 12px, 0);
+  transition: opacity 0.55s var(--mob-ease), transform 0.55s var(--mob-ease);
 }
 
 .hap-mob-anim.is-visible {
@@ -834,8 +1000,8 @@ img, svg { display: block; max-width: 100%; }
 }
 
 .hap-mob-impact-card--brand .hap-mob-impact-ic-wrap {
-  color: #8a5200;
-  background: rgba(251, 176, 64, 0.12);
+  color: #e8940a;
+  background: rgba(251, 176, 64, 0.16);
 }
 
 .hap-mob-impact-svg {
@@ -850,6 +1016,20 @@ img, svg { display: block; max-width: 100%; }
   letter-spacing: -0.03em;
   color: var(--mob-text);
   line-height: 1;
+}
+
+.hap-mob-impact-card--brand .hap-mob-impact-stat {
+  color: #f5a623;
+}
+
+.hap-mob-impact-stat--danger {
+  color: var(--mob-impact-danger) !important;
+}
+
+.hap-mob-impact-ic-wrap--danger {
+  color: var(--mob-impact-danger);
+  background: rgba(180, 35, 24, 0.1);
+  border-color: rgba(180, 35, 24, 0.38);
 }
 
 .hap-mob-impact-badge {
@@ -891,13 +1071,9 @@ img, svg { display: block; max-width: 100%; }
   color: var(--mob-brand);
 }
 
-.hap-mob-impact-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 10px;
-  border-top: 0.5px solid var(--mob-sep);
+.hap-mob-impact-chip--danger {
+  background: rgba(180, 35, 24, 0.1);
+  color: #8f1f18;
 }
 
 .hap-mob-impact-btn {
@@ -978,18 +1154,18 @@ img, svg { display: block; max-width: 100%; }
   word-break: break-word;
 }
 
-/* —— Tab bar —— */
+/* —— Tab bar (340b-mobile .app-tab-bar parity) —— */
 .hap-mob-tab-bar {
   flex-shrink: 0;
   display: flex;
   align-items: stretch;
   justify-content: space-around;
-  min-height: var(--mob-tab-h);
+  height: var(--mob-tab-h);
   padding-bottom: var(--mob-safe-b);
-  background: rgba(249, 249, 249, 0.88);
+  background: rgba(249, 249, 249, 0.78);
   border-top: 0.5px solid var(--mob-sep);
   position: relative;
-  z-index: 60;
+  z-index: 100;
 }
 
 .hap-mob-tab-bar::before {
@@ -1007,14 +1183,16 @@ img, svg { display: block; max-width: 100%; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 2px;
-  padding: 6px 2px;
+  gap: 3px;
+  padding: 6px 0;
   min-height: var(--mob-tap);
   color: var(--mob-muted);
   font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  transition: color 0.2s ease;
+  font-weight: 500;
+  letter-spacing: 0;
+  transition:
+    color var(--dur-normal) var(--ease-standard),
+    transform 0.1s var(--ease-spring);
 }
 
 .hap-mob-tab svg {
@@ -1029,6 +1207,20 @@ img, svg { display: block; max-width: 100%; }
 
 .hap-mob-tab.is-active svg {
   opacity: 1;
+}
+
+.hap-mob-tab:active {
+  transform: scale(0.9);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hap-mob-tab:active {
+    transform: none;
+  }
+  .hap-mob-aag-card:active,
+  .hap-mob-kpi:active {
+    transform: none;
+  }
 }
 
 .hap-mob-data-ic {

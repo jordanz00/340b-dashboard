@@ -177,6 +177,8 @@
       path(
         'M11 2.05V13h10.95c-.5-5.05-4.54-9.09-9.6-9.95zM13.83 2.05C17.45 2.56 20.5 5.71 21 9.33h-7.11V2.05zm-1.66 0.02C8.04 2.55 4.55 6.04 4.07 10.17 3.59 14.3 5.71 18.3 9.33 20.5c3.62 2.2 8.16 1.75 11.25-1.09L13 11 13 2.07c-.41-.01-.82-.01-1.24 0z'
       );
+    } else if (k === 'chart') {
+      path('M5 19h2v-6H5v6zm6 0h2v-9h-2v9zm6 0h2v-3h-2v3z');
     } else if (k === 'checkDouble') {
       path('M18 7l-8 8-4-4-1.41 1.41L10 18l9.59-9.59L18 7zm-1.41-1.41L10 14.17l-2.59-2.58L6 13l4 4 8.59-8.59L16.59 5.59z');
     } else if (k === 'community') {
@@ -193,6 +195,37 @@
       path(
         'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-9-8h2v2H9v-2zm0 4h6v2H9v-2zm0-8h6v2H9V8z'
       );
+    } else if (k === 'givingLove') {
+      path(
+        'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
+      );
+    } else if (k === 'marketDown') {
+      var axis = document.createElementNS(ns, 'path');
+      axis.setAttribute('d', 'M3 19.5h18');
+      axis.setAttribute('fill', 'none');
+      axis.setAttribute('stroke', 'currentColor');
+      axis.setAttribute('stroke-width', '1.1');
+      axis.setAttribute('stroke-linecap', 'round');
+      axis.setAttribute('opacity', '0.3');
+      svg.appendChild(axis);
+      var trend = document.createElementNS(ns, 'path');
+      trend.setAttribute('d', 'M3 6L8 9l5 2l5 3l3 3');
+      trend.setAttribute('fill', 'none');
+      trend.setAttribute('stroke', 'currentColor');
+      trend.setAttribute('stroke-width', '2.35');
+      trend.setAttribute('stroke-linecap', 'round');
+      trend.setAttribute('stroke-linejoin', 'round');
+      svg.appendChild(trend);
+      return svg;
+    } else if (k === 'lawBook') {
+      path(
+        'M18 2H8a2 2 0 0 0-2 2v16h12V4a2 2 0 0 0-2-2zm-1 16H9V4h8v14zM11 7h4v1.5h-4V7zm0 3h4v1.5h-4V10zm0 3h3v1.5h-3V13zM4 4h2v16H4V4z'
+      );
+    } else if (k === 'renewal') {
+      path(
+        'M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z'
+      );
+      path('M17 3v3h3M18.5 4.5L21 2M18.5 4.5L16 2');
     } else if (k === 'medical') {
       path(
         'M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2zm-1 11h-4v4h-4v-4H6v-4h4V6h4v4h4v4z'
@@ -303,6 +336,7 @@
     var t = topic || 'access';
     if (t === 'finance') return 'hap-mob-kpi--finance';
     if (t === 'risk') return 'hap-mob-kpi--risk';
+    if (t === 'policy') return 'hap-mob-kpi--policy';
     return 'hap-mob-kpi--access';
   }
 
@@ -869,16 +903,31 @@
     return e;
   }
 
-  function elOverview(data, lc) {
+  function elOverview(data, lc, sourceById) {
+    var srcMap = sourceById || getRegAdvSourcesById();
     var frag = document.createDocumentFragment();
     var wrap = el('div', '');
-    var eyebrow = el('p', 'hap-mob-eyebrow');
-    setText(eyebrow, 'April 16, 2026 · DOH letter');
+    /* Start tab: same visual rhythm as 340b-mobile (gradient hero → section labels → cards / KPI grid). */
+    var hero = el('div', 'hap-mob-home-hero hap-mob-anim');
+    var eyebrow = el('p', 'hap-mob-hero-eyebrow');
+    var dot = el('span', 'hap-mob-eyebrow-dot');
+    dot.setAttribute('aria-hidden', 'true');
+    eyebrow.appendChild(dot);
+    eyebrow.appendChild(document.createTextNode('April 16, 2026 · DOH letter'));
     var date = el('p', 'hap-mob-hero-date');
     setText(date, (lc.dateDisplay || '') + ' · Pennsylvania hospitals');
-    var h1 = el('h1', 'hap-mob-h1');
+    var h1 = el('h1', 'hap-mob-hero-title');
     setText(h1, (data.hero && data.hero.headline) || 'Regulatory advocacy');
     var leadText = heroSubShort(data.hero && data.hero.sub);
+    hero.appendChild(eyebrow);
+    hero.appendChild(date);
+    hero.appendChild(h1);
+    if (leadText) {
+      var lead = el('p', 'hap-mob-hero-lead');
+      setText(lead, leadText);
+      hero.appendChild(lead);
+    }
+    wrap.appendChild(hero);
 
     var aag = el('div', 'hap-mob-aag');
     (data.atAGlance || []).forEach(function (it) {
@@ -900,13 +949,15 @@
     var kpiGrid = el('div', 'hap-mob-kpi-grid');
     (data.heroKpis || []).forEach(function (k) {
       var card = el('article', 'hap-mob-kpi hap-mob-anim ' + topicKpiClass(k.topic, k.sentiment));
+      var topic = (k && k.topic) || 'access';
+      card.setAttribute('data-topic', topic);
       var val = el('div', 'hap-mob-kpi-value');
       setText(val, k.value || '');
       var lab = el('div', 'hap-mob-kpi-label');
       setText(lab, k.label || '');
       var g = el('p', 'hap-mob-kpi-glance');
       setText(g, k.glance || '');
-      var src = sourceById[k.sourceId];
+      var src = srcMap[k.sourceId];
       var sn = el('div', 'hap-mob-kpi-src');
       if (src && src.url) {
         var a = document.createElement('a');
@@ -922,15 +973,17 @@
       kpiGrid.appendChild(card);
     });
 
-    wrap.appendChild(eyebrow);
-    wrap.appendChild(date);
-    wrap.appendChild(h1);
-    if (leadText) {
-      var lead = el('p', 'hap-mob-lead');
-      setText(lead, leadText);
-      wrap.appendChild(lead);
+    if ((data.atAGlance || []).length) {
+      var aagLabel = el('div', 'hap-mob-section-label hap-mob-anim');
+      setText(aagLabel, 'At a glance');
+      wrap.appendChild(aagLabel);
     }
     wrap.appendChild(aag);
+    if ((data.heroKpis || []).length) {
+      var kpiLabel = el('div', 'hap-mob-section-label hap-mob-anim');
+      setText(kpiLabel, 'Key metrics');
+      wrap.appendChild(kpiLabel);
+    }
     wrap.appendChild(kpiGrid);
     frag.appendChild(wrap);
     return frag;
@@ -1106,12 +1159,18 @@
       var topicDot = allowedDots[t.iconTopic] ? t.iconTopic : 'policy';
       var row = el('div', 'hap-mob-impact-card hap-mob-anim hap-mob-impact-card--' + topicDot);
       var top = el('div', 'hap-mob-impact-card-top');
-      var icWrap = el('div', 'hap-mob-impact-ic-wrap');
+      var icWrap = el(
+        'div',
+        'hap-mob-impact-ic-wrap' + (t.impactStatTone === 'negative' ? ' hap-mob-impact-ic-wrap--danger' : '')
+      );
       icWrap.appendChild(createDataIconSvg(t.rowIcon || 'chart', 'hap-mob-impact-svg'));
       top.appendChild(icWrap);
       var statStr = formatMobImpactStat(t);
       if (statStr) {
         var stEl = el('div', 'hap-mob-impact-stat');
+        if (t.impactStatTone === 'negative') {
+          stEl.classList.add('hap-mob-impact-stat--danger');
+        }
         setText(stEl, statStr);
         top.appendChild(stEl);
       }
@@ -1129,6 +1188,9 @@
         var chips = el('div', 'hap-mob-impact-chips');
         t.supplementalMetrics.forEach(function (sm) {
           var ch = el('span', 'hap-mob-impact-chip');
+          if (t.impactStatTone === 'negative') {
+            ch.classList.add('hap-mob-impact-chip--danger');
+          }
           var line = '';
           if (typeof sm.valueNumeric === 'number' && sm.valueUnit === 'PERCENT') {
             line = sm.valueNumeric + '%';
@@ -1143,37 +1205,6 @@
         });
         row.appendChild(chips);
       }
-      var act = el('div', 'hap-mob-impact-actions');
-      var src = sourceById[t.sourceId];
-      if (src && src.url) {
-        var ext = document.createElement('a');
-        ext.href = src.url;
-        ext.rel = 'noopener noreferrer';
-        ext.className = 'hap-mob-impact-btn hap-mob-impact-btn--primary';
-        setText(ext, 'Open');
-        act.appendChild(ext);
-      }
-      if (t.sourceId) {
-        var jump = document.createElement('a');
-        jump.href = '#mob-src-' + t.sourceId;
-        jump.className = 'hap-mob-impact-btn hap-mob-impact-btn--ghost';
-        setText(jump, 'Sources');
-        act.appendChild(jump);
-      }
-      if (src && src.url) {
-        var copyBtn = document.createElement('button');
-        copyBtn.type = 'button';
-        copyBtn.className = 'hap-mob-impact-btn hap-mob-impact-btn--quiet';
-        setText(copyBtn, 'Copy');
-        copyBtn.addEventListener('click', function () {
-          var line = (src.shortTitle || '') + '\n' + src.url;
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(line).catch(function () {});
-          }
-        });
-        act.appendChild(copyBtn);
-      }
-      row.appendChild(act);
       wrap.appendChild(row);
     });
 

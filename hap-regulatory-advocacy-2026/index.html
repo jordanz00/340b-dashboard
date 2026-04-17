@@ -6,9 +6,9 @@
     (function () {
       try {
         if (/\bfull=1\b/.test(window.location.search || '')) return;
+        /* Narrow viewport only: many phones report pointer:fine (Bluetooth mouse / WebView), so do not require coarse. */
         var narrow = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
-        var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
-        if (!narrow || !coarse) return;
+        if (!narrow) return;
         var path = window.location.pathname || '';
         var i = path.lastIndexOf('/');
         var base = i >= 0 ? path.slice(0, i + 1) : '/';
