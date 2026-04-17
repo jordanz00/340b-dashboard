@@ -1051,46 +1051,50 @@
       aag.appendChild(card);
     });
 
-    var kpiGrid = el('div', 'hap-mob-kpi-grid');
+    var kpiGrid = el('div', 'hap-mob-kpi-grid hap-mob-kpi-grid--rows');
     (data.heroKpis || []).forEach(function (k) {
-      var card = el('article', 'hap-mob-kpi hap-mob-anim ' + topicKpiClass(k.topic, k.sentiment));
+      var card = el('article', 'hap-mob-kpi hap-mob-kpi--row hap-mob-anim ' + topicKpiClass(k.topic, k.sentiment));
       var topic = (k && k.topic) || 'access';
       card.setAttribute('data-topic', topic);
       if (k.id === 'hk-phc4') {
         card.classList.add('hap-mob-kpi--operating-loss');
       }
-      var topRow = el('div', 'hap-mob-kpi-top');
+      var row = el('div', 'hap-mob-kpi-row');
       var icWrapKpi = el('div', 'hap-mob-kpi-icon-wrap');
       icWrapKpi.setAttribute('aria-hidden', 'true');
       icWrapKpi.appendChild(createDataIconSvg(k.iconKind || 'chart', 'hap-mob-kpi-svg'));
-      topRow.appendChild(icWrapKpi);
-      var glanceTop = el('p', 'hap-mob-kpi-glance hap-mob-kpi-glance--inline');
-      setText(glanceTop, k.glance || '');
-      topRow.appendChild(glanceTop);
-      card.appendChild(topRow);
+      row.appendChild(icWrapKpi);
 
+      var main = el('div', 'hap-mob-kpi-main');
       var val = el('div', 'hap-mob-kpi-value');
       setText(val, k.value || '');
       var lab = el('div', 'hap-mob-kpi-label');
       setText(lab, k.label || '');
+      main.appendChild(val);
+      main.appendChild(lab);
+      if (k.glance) {
+        var glanceLine = el('p', 'hap-mob-kpi-glance');
+        setText(glanceLine, k.glance);
+        main.appendChild(glanceLine);
+      }
       var subK = heroSubShort(k.sub);
+      if (subK) {
+        var subEl = el('p', 'hap-mob-kpi-sub');
+        setText(subEl, subK);
+        main.appendChild(subEl);
+      }
       var src = srcMap[k.sourceId];
       var sn = el('div', 'hap-mob-kpi-src');
       if (src && src.url) {
         var a = document.createElement('a');
         a.href = src.url;
         a.rel = 'noopener noreferrer';
-        setText(a, 'Open source');
+        setText(a, 'Source');
         sn.appendChild(a);
       }
-      card.appendChild(val);
-      card.appendChild(lab);
-      if (subK) {
-        var subEl = el('p', 'hap-mob-kpi-sub');
-        setText(subEl, subK);
-        card.appendChild(subEl);
-      }
-      if (sn.firstChild) card.appendChild(sn);
+      if (sn.firstChild) main.appendChild(sn);
+      row.appendChild(main);
+      card.appendChild(row);
       kpiGrid.appendChild(card);
     });
 

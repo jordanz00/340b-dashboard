@@ -661,24 +661,34 @@ img, svg { display: block; max-width: 100%; }
   color: var(--mob-text2);
 }
 
-.hap-mob-kpi-top {
+/* Key metrics: one full-width row per KPI (icon | value + label + context) — calmer than grid tiles */
+.hap-mob-kpi-row {
   display: flex;
+  flex-direction: row;
   align-items: flex-start;
-  gap: 10px;
-  margin-bottom: 8px;
+  gap: 14px;
+}
+
+.hap-mob-kpi-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .hap-mob-kpi-icon-wrap {
   flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 11px;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: grid;
   place-items: center;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1px solid rgba(35, 31, 32, 0.08);
+  background: rgba(255, 255, 255, 0.98);
+  border: 0.5px solid rgba(35, 31, 32, 0.1);
   color: var(--mob-brand);
-  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.9) inset, 0 4px 10px rgba(0, 57, 99, 0.06);
+  box-shadow: none;
+  margin-top: 2px;
 }
 
 .hap-mob-kpi[data-topic='finance'] .hap-mob-kpi-icon-wrap {
@@ -706,69 +716,54 @@ img, svg { display: block; max-width: 100%; }
 }
 
 .hap-mob-kpi-svg {
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   display: block;
 }
 
-.hap-mob-kpi-glance--inline {
-  margin: 0;
-  flex: 1;
-  min-width: 0;
-  font-size: 12px;
-  line-height: 1.35;
-  font-weight: 600;
-  color: var(--mob-text2);
-}
-
 .hap-mob-kpi-sub {
-  margin: 0 0 8px;
+  margin: 4px 0 0;
   font-size: 11px;
-  line-height: 1.45;
+  line-height: 1.4;
   color: var(--mob-muted);
 }
 
 .hap-mob-kpi-grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 12px;
-  padding: 4px 0 16px;
-  align-items: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 2px 0 12px;
 }
 
-@media (min-width: 380px) {
-  .hap-mob-kpi-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-}
-
-.hap-mob-kpi {
+.hap-mob-kpi.hap-mob-kpi--row {
   background: var(--mob-card);
-  border-radius: var(--radius-lg);
-  padding: 18px;
-  border: none;
-  box-shadow: var(--shadow-sm);
+  border-radius: 14px;
+  padding: 12px 14px;
+  border: 0.5px solid var(--mob-sep);
+  box-shadow: none;
   position: relative;
   overflow: hidden;
-  transition: transform var(--dur-normal) var(--ease-spring);
+  transition: background var(--dur-fast) var(--ease-standard);
 }
 
-.hap-mob-kpi:active {
-  transform: scale(0.97);
+.hap-mob-kpi.hap-mob-kpi--row:active {
+  background: rgba(0, 0, 0, 0.02);
 }
 
-.hap-mob-kpi--finance {
-  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(58, 139, 127, 0.2);
-}
-.hap-mob-kpi--risk {
-  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(200, 90, 60, 0.18);
-}
-.hap-mob-kpi--access {
-  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(0, 114, 188, 0.12);
+.hap-mob-kpi--finance.hap-mob-kpi--row {
+  border-left: 3px solid var(--hap-topic-finance, #3a8b7f);
 }
 
-.hap-mob-kpi--policy {
-  box-shadow: var(--shadow-sm), inset 0 0 0 0.5px rgba(45, 77, 122, 0.2);
+.hap-mob-kpi--risk.hap-mob-kpi--row {
+  border-left: 3px solid var(--hap-topic-risk, #c45a3c);
+}
+
+.hap-mob-kpi--access.hap-mob-kpi--row {
+  border-left: 3px solid var(--mob-brand);
+}
+
+.hap-mob-kpi--policy.hap-mob-kpi--row {
+  border-left: 3px solid var(--hap-topic-policy, #2d4d7a);
 }
 
 .hap-mob-kpi--policy .hap-mob-kpi-value {
@@ -776,11 +771,11 @@ img, svg { display: block; max-width: 100%; }
 }
 
 /* PHC4 negative operating margin — match desktop .hap-reg-hero-kpi--operating-loss */
-.hap-mob-kpi.hap-mob-kpi--operating-loss {
-  border-top: 3px solid var(--mob-impact-danger);
-  background: linear-gradient(180deg, #fff5f5 0%, #ffffff 52%);
-  border: 1px solid rgba(180, 35, 24, 0.14);
-  box-shadow: var(--shadow-sm), 0 8px 20px rgba(120, 24, 16, 0.06);
+.hap-mob-kpi.hap-mob-kpi--operating-loss.hap-mob-kpi--row {
+  border: 0.5px solid rgba(180, 35, 24, 0.2);
+  border-left: 4px solid var(--mob-impact-danger);
+  background: #fffbfb;
+  box-shadow: none;
 }
 
 .hap-mob-kpi.hap-mob-kpi--operating-loss .hap-mob-kpi-value {
@@ -795,15 +790,15 @@ img, svg { display: block; max-width: 100%; }
   color: #9f1239;
 }
 
-.hap-mob-kpi-value {
+.hap-mob-kpi--row .hap-mob-kpi-value {
   font-family: var(--mob-font-display);
-  font-size: clamp(2rem, 8.5vw, 2.5rem);
+  font-size: clamp(1.45rem, 5.2vw, 1.85rem);
   font-weight: 800;
-  letter-spacing: -0.035em;
-  line-height: 1;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
   font-variant-numeric: tabular-nums;
   color: var(--mob-text);
-  margin-bottom: 6px;
+  margin: 0 0 2px;
 }
 
 .hap-mob-kpi--risk .hap-mob-kpi-value {
@@ -814,32 +809,34 @@ img, svg { display: block; max-width: 100%; }
   color: var(--hap-topic-finance, #3a8b7f);
 }
 
-.hap-mob-kpi-label {
+.hap-mob-kpi--row .hap-mob-kpi-label {
   font-size: 13px;
   font-weight: 600;
   color: var(--mob-text2);
-  line-height: 1.25;
-  margin-bottom: 3px;
+  line-height: 1.3;
+  margin: 0 0 6px;
   letter-spacing: -0.01em;
 }
 
-.hap-mob-kpi-glance {
+.hap-mob-kpi--row .hap-mob-kpi-glance {
+  margin: 0;
   font-size: 12px;
   color: var(--mob-muted);
   line-height: 1.4;
   font-weight: 400;
 }
 
-.hap-mob-kpi-src {
-  margin-top: 8px;
-  font-size: 12px;
+.hap-mob-kpi--row .hap-mob-kpi-src {
+  margin-top: 6px;
+  font-size: 11px;
   font-weight: 600;
 }
 
-.hap-mob-kpi-src a {
+.hap-mob-kpi--row .hap-mob-kpi-src a {
   color: var(--mob-brand);
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(0, 114, 188, 0.35);
+  padding-bottom: 1px;
 }
 
 .hap-mob-anim {
@@ -1682,8 +1679,7 @@ img, svg { display: block; max-width: 100%; }
   .hap-mob-tab:active {
     transform: none;
   }
-  .hap-mob-aag-card:active,
-  .hap-mob-kpi:active {
+  .hap-mob-aag-card:active {
     transform: none;
   }
 }
