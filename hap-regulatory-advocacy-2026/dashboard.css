@@ -1419,7 +1419,7 @@
 
 .hap-reg-sources {
   margin-top: 0;
-  padding: 1.25rem 1.15rem 1.35rem;
+  padding: 1rem 1rem 1.1rem;
   border-radius: var(--hap-reg-radius);
   background: #ffffff;
   border: 1px solid var(--hap-reg-border-strong);
@@ -1429,35 +1429,48 @@
 
 .hap-reg-sources-title {
   margin: 0 0 8px;
-  font-size: clamp(1.1rem, 1rem + 0.4vw, 1.35rem);
+  font-size: clamp(1rem, 0.95rem + 0.3vw, 1.2rem);
   font-weight: 800;
   color: var(--hap-brandguide-blue);
 }
 
+/* Compact, 2-column source grid on wider screens — was a tall single column. */
 .hap-reg-source-list {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2px 14px;
+}
+
+@media (min-width: 720px) {
+  .hap-reg-source-list {
+    grid-template-columns: 1fr 1fr;
+  }
 }
 
 .hap-reg-source-details {
-  border: 1px solid rgba(35, 31, 32, 0.1);
-  border-radius: 8px;
-  overflow: hidden;
-  background: var(--hap-bg-subtle);
+  border: 0;
+  border-top: 1px solid rgba(35, 31, 32, 0.06);
+  border-radius: 0;
+  background: transparent;
+}
+
+.hap-reg-source-details:first-child,
+.hap-reg-source-details:nth-child(2) {
+  border-top: 0;
 }
 
 .hap-reg-source-summary {
   cursor: pointer;
-  padding: 8px 10px 8px 12px;
-  min-height: 40px;
+  padding: 6px 22px 6px 2px;
+  min-height: 36px;
   display: flex;
   align-items: center;
-  font-weight: 700;
-  font-size: 0.8rem;
-  line-height: 1.25;
+  font-weight: 600;
+  font-size: 0.78rem;
+  line-height: 1.3;
   color: var(--hap-brandguide-blue);
   list-style: none;
+  position: relative;
 }
 
 .hap-reg-source-summary::-webkit-details-marker {
@@ -1466,11 +1479,12 @@
 
 .hap-reg-source-summary::after {
   content: '+';
-  margin-left: auto;
-  padding-left: 8px;
-  flex-shrink: 0;
+  position: absolute;
+  right: 4px;
+  top: 50%;
+  transform: translateY(-50%);
   color: var(--hap-text-muted);
-  font-weight: 800;
+  font-weight: 700;
   font-size: 0.95rem;
 }
 
@@ -1479,47 +1493,42 @@
 }
 
 .hap-reg-source-body {
-  padding: 0 10px 8px 12px;
-  border-top: 1px solid var(--hap-border-default);
-  background: #ffffff;
+  padding: 0 2px 8px;
+  font-size: 0.72rem;
+  line-height: 1.35;
+  color: var(--hap-text-secondary);
 }
 
 .hap-reg-source-publisher {
-  font-size: 0.72rem;
+  display: inline;
   font-weight: 600;
-  margin-top: 6px;
   color: var(--hap-text-secondary);
-  line-height: 1.3;
 }
 
 .hap-reg-source-note {
-  margin-top: 4px;
-  font-size: 0.72rem;
+  display: inline;
+  margin-left: 4px;
   color: var(--hap-text-muted);
-  line-height: 1.35;
-  max-width: 100%;
+}
+
+.hap-reg-source-note::before {
+  content: '· ';
 }
 
 .hap-reg-source-url {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 6px;
-  margin-bottom: 2px;
+  display: inline-block;
+  margin-top: 4px;
   word-break: break-word;
   color: var(--hap-brandguide-blue);
-  font-size: 0.72rem;
   font-weight: 600;
   text-decoration: underline;
   text-underline-offset: 2px;
 }
 
 .hap-reg-source-missing-url {
-  margin-top: 6px;
-  margin-bottom: 2px;
-  font-size: 0.72rem;
+  display: inline-block;
+  margin-top: 4px;
   color: var(--hap-reg-topic-risk);
-  line-height: 1.3;
 }
 
 .hap-reg-footer {

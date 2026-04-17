@@ -1807,14 +1807,19 @@
       details.appendChild(summary);
       var body = document.createElement('div');
       body.className = 'hap-reg-source-body';
-      var pub = document.createElement('div');
+      var meta = document.createElement('p');
+      meta.style.margin = '0';
+      var pub = document.createElement('span');
       pub.className = 'hap-reg-source-publisher';
-      setText(pub, s.publisher);
-      var note = document.createElement('div');
-      note.className = 'hap-reg-source-note';
-      setText(note, s.accessedNote);
-      body.appendChild(pub);
-      body.appendChild(note);
+      setText(pub, s.publisher || '');
+      meta.appendChild(pub);
+      if (s.accessedNote) {
+        var note = document.createElement('span');
+        note.className = 'hap-reg-source-note';
+        setText(note, s.accessedNote);
+        meta.appendChild(note);
+      }
+      body.appendChild(meta);
       if (s.url) {
         var a = document.createElement('a');
         a.href = s.url;
@@ -1824,7 +1829,7 @@
         setText(a, sourceLinkLabel(s.url));
         body.appendChild(a);
       } else {
-        var noUrl = document.createElement('div');
+        var noUrl = document.createElement('span');
         noUrl.className = 'hap-reg-source-missing-url';
         setText(noUrl, 'URL not assigned.');
         body.appendChild(noUrl);
