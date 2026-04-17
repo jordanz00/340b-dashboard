@@ -216,14 +216,6 @@ img, svg { display: block; max-width: 100%; }
   background: rgba(0, 0, 0, 0.04);
 }
 
-.hap-mob-hint {
-  text-align: center;
-  font-size: 11px;
-  color: var(--mob-muted);
-  padding: 4px 16px 2px;
-  letter-spacing: 0.02em;
-}
-
 .hap-mob-content {
   flex: 1;
   position: relative;

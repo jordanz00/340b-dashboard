@@ -431,34 +431,6 @@
     var data = window.HAP_REGULATORY_ADVOCACY_2026;
     if (!data || !data.hero) return;
     setText(document.getElementById('overview-title'), data.hero.headline);
-    var row = document.getElementById('js-hero-ctas');
-    // Hero CTA row was retired in favor of a single primary CTA in the hero itself.
-    // Keep the builder as a no-op when the legacy container is absent so older markup still works.
-    if (!row) return;
-    while (row.firstChild) row.removeChild(row.firstChild);
-    data.hero.ctas.forEach(function (c, i) {
-      var a = document.createElement('a');
-      a.href = c.href;
-      a.className = 'hap-reg-pill';
-      var num = document.createElement('span');
-      num.className = 'hap-reg-pill-num';
-      num.setAttribute('aria-hidden', 'true');
-      setText(num, String(i + 1));
-      var lab = document.createElement('span');
-      lab.className = 'hap-reg-pill-label';
-      setText(lab, c.label);
-      a.appendChild(num);
-      if (c.pillIcon) {
-        var pic = document.createElement('span');
-        pic.className = 'hap-reg-pill-icon';
-        pic.setAttribute('aria-hidden', 'true');
-        pic.appendChild(createDataIconSvg(c.pillIcon, 'hap-reg-pill-ic'));
-        a.appendChild(pic);
-      }
-      a.appendChild(lab);
-      a.setAttribute('aria-label', 'Jump to priority: ' + c.label);
-      row.appendChild(a);
-    });
   }
 
   function renderAtAGlance(container, items) {
@@ -466,7 +438,7 @@
     while (container.firstChild) container.removeChild(container.firstChild);
     var head = document.createElement('p');
     head.className = 'hap-reg-aag-kicker';
-    setText(head, 'At a glance — three letter themes for DOH');
+    setText(head, 'The three themes');
     container.appendChild(head);
     var grid = document.createElement('div');
     grid.className = 'hap-reg-aag-grid';
@@ -550,7 +522,7 @@
       setText(line, p.deckLine);
       var go = document.createElement('span');
       go.className = 'hap-reg-deck-go';
-      setText(go, 'Open brief + sources');
+      setText(go, 'Open brief');
       a.appendChild(line);
       a.appendChild(go);
       container.appendChild(a);

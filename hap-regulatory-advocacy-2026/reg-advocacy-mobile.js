@@ -1013,29 +1013,12 @@
     return frag;
   }
 
-  function elStats(data, sourceById) {
-    var wrap = el('div', '');
-    var h = el('h2', 'hap-mob-section-title');
-    setText(h, 'Pennsylvania context');
-    var lead = el('p', 'hap-mob-section-lead');
-    setText(
-      lead,
-      'Public figures from HAP releases, PHC4, Pa. Code, and membership—each card links out. Not the three letter “asks”; those are on Asks.'
-    );
-    var list = el('div', 'hap-mob-stat-list');
-    renderMobStatBand(list, data.statBand || [], sourceById);
-    wrap.appendChild(h);
-    wrap.appendChild(lead);
-    wrap.appendChild(list);
-    return wrap;
-  }
-
   function elPriorities(data) {
     var wrap = el('div', '');
     var h = el('h2', 'hap-mob-section-title');
     setText(h, 'Three requests');
     var lead = el('p', 'hap-mob-section-lead');
-    setText(lead, 'What HAP asked DOH to fix this year—in plain language.');
+    setText(lead, 'Three asks. Plain language. Sources inside.');
     wrap.appendChild(h);
     wrap.appendChild(lead);
     (data.priorities || []).forEach(function (pr) {
@@ -1077,7 +1060,7 @@
     var h = el('h2', 'hap-mob-section-title');
     setText(h, 'National map · PA vs US');
     var lead = el('p', 'hap-mob-section-lead');
-    setText(lead, 'TJC ambulatory footprint first—then context, then PA vs Medicare rows.');
+    setText(lead, 'TJC ambulatory footprint, then PA vs Medicare.');
     wrap.appendChild(h);
     wrap.appendChild(lead);
 
@@ -1418,13 +1401,6 @@
       triggerPanelAnim('overview');
     });
 
-    var hint = document.getElementById('hap-mob-swipe-hint');
-    if (hint && !prefersReducedMotion()) {
-      window.setTimeout(function () {
-        hint.style.opacity = '0';
-        hint.style.transition = 'opacity 0.6s ease';
-      }, 4200);
-    }
   }
 
   if (document.readyState === 'loading') {
