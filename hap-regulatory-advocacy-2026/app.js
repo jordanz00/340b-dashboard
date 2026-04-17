@@ -336,7 +336,7 @@
     if (id === 'sb-econ') return 'hap-reg-stat-item--finance';
     if (id === 'sb-jobs') return 'hap-reg-stat-item--jobs';
     if (id === 'sb-red') return 'hap-reg-stat-item--danger';
-    if (id === 'sb-phc4') return 'hap-reg-stat-item--policy';
+    if (id === 'sb-phc4') return 'hap-reg-stat-item--danger';
     if (id === 'sb-members') return 'hap-reg-stat-item--members';
     if (id === 'sb-1982') return 'hap-reg-stat-item--code';
     return 'hap-reg-stat-item--default';

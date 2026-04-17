@@ -320,7 +320,7 @@
     if (id === 'sb-econ') return 'hap-mob-stat-item--finance';
     if (id === 'sb-jobs') return 'hap-mob-stat-item--jobs';
     if (id === 'sb-red') return 'hap-mob-stat-item--danger';
-    if (id === 'sb-phc4') return 'hap-mob-stat-item--policy';
+    if (id === 'sb-phc4') return 'hap-mob-stat-item--danger';
     if (id === 'sb-members') return 'hap-mob-stat-item--members';
     if (id === 'sb-1982') return 'hap-mob-stat-item--code';
     return '';

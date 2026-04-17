@@ -205,7 +205,7 @@
       },
       {
         id: 'sb-phc4',
-        iconKind: 'pie',
+        iconKind: 'trendDown',
         value: '51%',
         label: 'PHC4: negative operating margin (general acute care)',
         caption:
