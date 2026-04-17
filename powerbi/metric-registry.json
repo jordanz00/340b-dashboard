@@ -1,6 +1,12 @@
 {
   "description": "Suggested MetricKey and provenance mapping for Gold fact_dashboard_kpi and static dashboard parity. IT may rename keys; keep a stable crosswalk in the warehouse or data catalog.",
   "dashboardKey": "340B_ADVOCACY",
+  "regAdvocacyDashboardKey": "REG_ADVOCACY_2026",
+  "regAdvocacyStaticBundle": {
+    "global": "HAP_REGULATORY_ADVOCACY_2026",
+    "file": "hap-regulatory-advocacy-2026/facts.js",
+    "dataLayerModule": "hap-regulatory-advocacy-2026/reg-advocacy-data-layer.js"
+  },
   "staticReferences": {
     "stateLaw": { "file": "state-data.js", "symbol": "STATE_340B" },
     "stateNames": { "file": "state-data.js", "symbol": "STATE_NAMES" },
@@ -136,6 +142,126 @@
         { "label": "HRSA Program Integrity — FY 2024 audit results", "url": "https://www.hrsa.gov/opa/program-integrity/fy-24-audit-results" }
       ],
       "notes": "Manufacturer-specific audit count (5 in FY 2024). Split from aggregate HRSA_AUDIT_COUNT. Paired with HRSA_HOSPITAL_AUDIT_COUNT for the oversight disparity visual."
+    },
+    {
+      "metricKey": "REG_ADV_PA_HOSPITAL_ECONOMIC_CONTRIBUTION_USD_BILLIONS",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "hapEconomicReleaseFy2024",
+      "staticProvenanceDisplay": "April 2025 (HAP FY 2024 hospital model)",
+      "unit": "USD_BILLIONS",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP — Economic & community benefit news release (FY 2024)", "url": "https://www.haponline.org/News/Media/News-Releases/pennsylvanians-see-billions-in-economic-community-benefits-from-hospitals-in-their-communities-1" }
+      ],
+      "notes": "Regulatory advocacy 2026 dashboard only; matches facts.js hero/stat band; not a 340B program statistic."
+    },
+    {
+      "metricKey": "REG_ADV_PA_HOSPITAL_JOBS_FROM_HAP_MODEL",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "hapEconomicReleaseFy2024",
+      "staticProvenanceDisplay": "April 2025 (HAP FY 2024)",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP — Economic & community benefit news release (FY 2024)", "url": "https://www.haponline.org/News/Media/News-Releases/pennsylvanians-see-billions-in-economic-community-benefits-from-hospitals-in-their-communities-1" }
+      ],
+      "notes": "Jobs tied to hospitals statewide from HAP’s FY 2024 model in public April 2025 release."
+    },
+    {
+      "metricKey": "REG_ADV_PA_HOSPITAL_COMMUNITY_BENEFIT_USD_BILLIONS",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "hapEconomicReleaseFy2024",
+      "staticProvenanceDisplay": "April 2025 (HAP FY 2024)",
+      "unit": "USD_BILLIONS",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP — Community benefit figure in FY 2024 release", "url": "https://www.haponline.org/News/Media/News-Releases/pennsylvanians-see-billions-in-economic-community-benefits-from-hospitals-in-their-communities-1" }
+      ],
+      "notes": "Community benefit total cited on advocacy dashboard impact tile; warehouse should store same definition as HAP release."
+    },
+    {
+      "metricKey": "REG_ADV_PA_ACUTE_HOSPITALS_OPERATING_IN_RED_PCT",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "hapEconomicReleaseFy2024",
+      "staticProvenanceDisplay": "April 2025 (HAP FY 2024 acute tally)",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP — FY 2024 acute-care hospital finances (public release)", "url": "https://www.haponline.org/News/Media/News-Releases/pennsylvanians-see-billions-in-economic-community-benefits-from-hospitals-in-their-communities-1" }
+      ],
+      "notes": "Distinct from PHC4 operating-margin share; HAP acute-care definition in April 2025 materials."
+    },
+    {
+      "metricKey": "REG_ADV_PA_ACUTE_HOSPITALS_MULTI_YEAR_LOSS_PCT",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "hapEconomicReleaseFy2024",
+      "staticProvenanceDisplay": "April 2025 (HAP FY 2024)",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP — FY 2024 release (multi-year losses)", "url": "https://www.haponline.org/News/Media/News-Releases/pennsylvanians-see-billions-in-economic-community-benefits-from-hospitals-in-their-communities-1" }
+      ],
+      "notes": "Paired with in-the-red percent on same HAP release; SME confirms exact numerators/denominators for Gold."
+    },
+    {
+      "metricKey": "REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "phc4FinancialAnalysisFy2023",
+      "staticProvenanceDisplay": "PHC4 FY 2023 Volume One",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "PHC4 — Financial Analysis Fiscal Year 2023", "url": "https://phc4.org/news-and-press-releases/financial-analysis-fiscal-year-2023" }
+      ],
+      "notes": "General acute care hospitals with negative operating margin; different year/metric than HAP FY 2024 acute figures."
+    },
+    {
+      "metricKey": "REG_ADV_PA_WORKFORCE_TURNOVER_REDUCTION_PCT",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "phcaWorkforceSurvey2025",
+      "staticProvenanceDisplay": "April 2025 (PHCA press; survey Nov 2024–Jan 2025)",
+      "unit": "PERCENT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "PHCA — Workforce survey press release", "url": "https://phca.org/news-post/health-care-workforce-shortages-strain-access-to-care/" }
+      ],
+      "notes": "Joint HAP / LeadingAge PA / PHCA survey context per PHCA public summary."
+    },
+    {
+      "metricKey": "REG_ADV_HAP_MEMBER_HOSPITALS_MIN_COUNT",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "hapMembershipPage",
+      "staticProvenanceDisplay": "Public membership page (as cited on dashboard)",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "HAP — Membership in HAP", "url": "https://www.haponline.org/About-HAP/Membership-in-HAP" }
+      ],
+      "notes": "UI shows 235+; warehouse may store floor 235 with ValueText for plus display."
+    },
+    {
+      "metricKey": "REG_ADV_PA_CODE_HOSPITAL_REG_ANCHOR_YEAR",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "paCode10156",
+      "staticProvenanceDisplay": "28 Pa. Code § 101.56 authority note",
+      "unit": "YEAR",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "Pennsylvania Code — 28 Pa. Code § 101.56", "url": "https://www.pacodeandbulletin.gov/Display/pacode?file=/secure/pacode/data/028/chapter101/s101.56.html&d=reduce" }
+      ],
+      "notes": "Contextual anchor year from Code authority section; not a hospital performance KPI."
+    },
+    {
+      "metricKey": "REG_ADV_JC_AMBULATORY_COMPILED_STATE_COUNT",
+      "dashboardScope": "REG_ADVOCACY_2026",
+      "provenanceLabel": "jcAmbulatoryCompiledList",
+      "staticProvenanceDisplay": "April 2026 (dashboard methodology)",
+      "unit": "COUNT",
+      "goldColumns": { "value": "ValueNumeric", "asOf": "AsOfDate", "citation": "SourceCitation" },
+      "authoritativeSourceUrls": [
+        { "label": "Joint Commission — Ambulatory State & Payer Recognitions", "url": "https://www.jointcommission.org/en-us/accreditation/ambulatory-health-care/state-payer-recognitions" }
+      ],
+      "notes": "Compiled deduplicated state count from TJC public payer blocks; informational per TJC; see facts.js methodology note."
     }
   ],
   "derivedInModel": [
@@ -151,6 +277,7 @@
     }
   ],
   "nonWarehouseContent": {
+    "regAdvocacyNarrative": "hap-regulatory-advocacy-2026/facts.js — priorities, compareRows, letterQuotes, glossary; warehouse optional via dim_report_copy; KPIs use REG_ADV_* MetricKeys.",
     "configCopy": "CONFIG.copy in state-data.js — advocacy narrative; not loaded as facts unless IT maintains dim_report_copy.",
     "trendSparklines": "TREND_DATA in 340b.js — illustrative unless fact_metric_trend exists in Gold.",
     "delegationTracker": "PA_DELEGATION_MEMBERS in 340b.js — separate legislative tracker table if modeled in PBI."

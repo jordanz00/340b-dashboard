@@ -458,6 +458,97 @@
     }
   },
 
+  "regAdvocacy2026": {
+    "_description": "HAP Regulatory Advocacy 2026 (PA DOH letter brief) — numeric KPIs mapped to fact_dashboard_kpi; narrative in facts.js until dim_report_copy exists.",
+    "dashboardKey": "REG_ADVOCACY_2026",
+    "staticBundle": "window.HAP_REGULATORY_ADVOCACY_2026",
+    "dataLayerModule": "hap-regulatory-advocacy-2026/reg-advocacy-data-layer.js",
+    "kpiCards": [
+      {
+        "placeholderId": "reg_adv_economic_contribution_bn",
+        "displayContext": "Hero KPI + stat band — PA hospital economic contribution",
+        "htmlLocation": "hap-regulatory-advocacy-2026/facts.js → heroKpis/statBand (hap-economic-fy2024)",
+        "currentSource": "facts.js value + HAP April 2025 FY 2024 release",
+        "staticValue": 195.4,
+        "metricKey": "REG_ADV_PA_HOSPITAL_ECONOMIC_CONTRIBUTION_USD_BILLIONS",
+        "goldTable": "fact_dashboard_kpi",
+        "goldColumn": "ValueNumeric",
+        "unit": "USD_BILLIONS",
+        "dataLayerMethod": "RegAdvocacyDataLayer.getKpiRows()",
+        "updateFrequency": "When HAP publishes refreshed statewide economic model",
+        "owner": "HAP Research / Advocacy",
+        "pbiReady": true
+      },
+      {
+        "placeholderId": "reg_adv_jobs_model",
+        "displayContext": "Stat band — jobs from HAP FY 2024 model",
+        "metricKey": "REG_ADV_PA_HOSPITAL_JOBS_FROM_HAP_MODEL",
+        "goldTable": "fact_dashboard_kpi",
+        "goldColumn": "ValueNumeric",
+        "unit": "COUNT",
+        "dataLayerMethod": "RegAdvocacyDataLayer.getKpiRows()",
+        "pbiReady": true
+      },
+      {
+        "placeholderId": "reg_adv_community_benefit_bn",
+        "displayContext": "Impact tile — community benefit",
+        "metricKey": "REG_ADV_PA_HOSPITAL_COMMUNITY_BENEFIT_USD_BILLIONS",
+        "goldTable": "fact_dashboard_kpi",
+        "goldColumn": "ValueNumeric",
+        "unit": "USD_BILLIONS",
+        "dataLayerMethod": "RegAdvocacyDataLayer.getKpiRows()",
+        "pbiReady": true
+      },
+      {
+        "placeholderId": "reg_adv_phc4_neg_margin_pct",
+        "displayContext": "Hero KPI + stat band + impact tile — PHC4 GAC negative operating margin",
+        "metricKey": "REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT",
+        "goldTable": "fact_dashboard_kpi",
+        "goldColumn": "ValueNumeric",
+        "unit": "PERCENT",
+        "dataLayerMethod": "RegAdvocacyDataLayer.getKpiRows()",
+        "pbiReady": true
+      },
+      {
+        "placeholderId": "reg_adv_workforce_turnover_reduction",
+        "displayContext": "Hero KPI — PHCA-cited turnover reduction",
+        "metricKey": "REG_ADV_PA_WORKFORCE_TURNOVER_REDUCTION_PCT",
+        "goldTable": "fact_dashboard_kpi",
+        "goldColumn": "ValueNumeric",
+        "unit": "PERCENT",
+        "dataLayerMethod": "RegAdvocacyDataLayer.getKpiRows()",
+        "pbiReady": true
+      },
+      {
+        "placeholderId": "reg_adv_jc_state_count",
+        "displayContext": "Map callout — compiled TJC ambulatory state count",
+        "metricKey": "REG_ADV_JC_AMBULATORY_COMPILED_STATE_COUNT",
+        "goldTable": "fact_dashboard_kpi",
+        "goldColumn": "ValueNumeric",
+        "unit": "COUNT",
+        "dataLayerMethod": "RegAdvocacyDataLayer.getKpiRows()",
+        "pbiReady": true
+      }
+    ],
+    "semanticExport": {
+      "method": "RegAdvocacyDataLayer.getSemanticEnvelope()",
+      "envelopeShape": "powerbi/semantic-envelope-sample.json",
+      "validationStatus": "verified_static"
+    },
+    "registryMetricKeys": [
+      "REG_ADV_PA_HOSPITAL_ECONOMIC_CONTRIBUTION_USD_BILLIONS",
+      "REG_ADV_PA_HOSPITAL_JOBS_FROM_HAP_MODEL",
+      "REG_ADV_PA_HOSPITAL_COMMUNITY_BENEFIT_USD_BILLIONS",
+      "REG_ADV_PA_ACUTE_HOSPITALS_OPERATING_IN_RED_PCT",
+      "REG_ADV_PA_ACUTE_HOSPITALS_MULTI_YEAR_LOSS_PCT",
+      "REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT",
+      "REG_ADV_PA_WORKFORCE_TURNOVER_REDUCTION_PCT",
+      "REG_ADV_HAP_MEMBER_HOSPITALS_MIN_COUNT",
+      "REG_ADV_PA_CODE_HOSPITAL_REG_ANCHOR_YEAR",
+      "REG_ADV_JC_AMBULATORY_COMPILED_STATE_COUNT"
+    ]
+  },
+
   "advocacyTools": {
     "policyImpactSimulator": {
       "displayContext": "340b.html (#policy-impact-simulator-root)",

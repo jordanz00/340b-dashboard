@@ -389,6 +389,32 @@ Legacy keys `hospital`, `story`, `email`, `timestamp`, `version` are duplicated 
 
 ---
 
+## HAP Regulatory Advocacy 2026 (PA DOH brief)
+
+**What you see:** The standalone advocacy brief at `hap-regulatory-advocacy-2026/index.html` (desktop) and `reg-advocacy-mobile.html` (mobile)—hero KPIs, executive stat band, impact tiles, map callout, and sources.
+
+**What it means:** Verified figures and citations for Pennsylvania hospital context around HAP’s April 16, 2026 regulatory letter narrative. Same accuracy rules as the 340B dashboard: numbers must match cited public materials; do not invent policy or statistics.
+
+**Where the data lives today:** `hap-regulatory-advocacy-2026/facts.js` defines `window.HAP_REGULATORY_ADVOCACY_2026`. Quantified rows include optional **`metricKey`**, **`valueNumeric`**, and **`valueUnit`** for Power BI alignment.
+
+**Data access (semantic / warehouse prep):** `hap-regulatory-advocacy-2026/reg-advocacy-data-layer.js` exposes **`RegAdvocacyDataLayer`**:
+
+| Method | Purpose |
+|--------|---------|
+| `getDashboardData()` | Promise of the full static bundle (same object the UI uses). |
+| `getKpiRows()` | Promise of deduplicated rows: `metricKey`, `valueNumeric`, `valueText`, `valueUnit`, source citation fields—ready to map to `gold_fact_dashboard_kpi`. |
+| `getSemanticEnvelope()` | Promise of a JSON envelope with `_meta`, `dashboardKey`, and `kpiFacts[]` for API or export pipelines. |
+
+**Power BI column:** `fact_dashboard_kpi.ValueNumeric` (and `SourceCitation`, `AsOfDate`, `Unit`) where `MetricKey` matches entries in `powerbi/metric-registry.json` with **`dashboardScope`: `REG_ADVOCACY_2026`**.
+
+**Registry:** `powerbi/semantic-layer-registry.json` → section **`regAdvocacy2026`** lists placeholder IDs and Gold targets for IT.
+
+**MetricKey literals (registry parity):** `REG_ADV_PA_HOSPITAL_ECONOMIC_CONTRIBUTION_USD_BILLIONS`, `REG_ADV_PA_HOSPITAL_JOBS_FROM_HAP_MODEL`, `REG_ADV_PA_HOSPITAL_COMMUNITY_BENEFIT_USD_BILLIONS`, `REG_ADV_PA_ACUTE_HOSPITALS_OPERATING_IN_RED_PCT`, `REG_ADV_PA_ACUTE_HOSPITALS_MULTI_YEAR_LOSS_PCT`, `REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT`, `REG_ADV_PA_WORKFORCE_TURNOVER_REDUCTION_PCT`, `REG_ADV_HAP_MEMBER_HOSPITALS_MIN_COUNT`, `REG_ADV_PA_CODE_HOSPITAL_REG_ANCHOR_YEAR`, `REG_ADV_JC_AMBULATORY_COMPILED_STATE_COUNT`.
+
+**How to update:** Edit `facts.js` only after SME sign-off; keep `metric-registry.json` and `semantic-layer-registry.json` in sync when adding or renaming a `metricKey`.
+
+---
+
 ## How data flows today vs. in the future
 
 ```

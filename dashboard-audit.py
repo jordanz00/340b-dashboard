@@ -518,7 +518,7 @@ def check_metric_keys_in_html(results: list[dict]) -> bool:
 
 
 def check_metric_keys_in_datalayer(results: list[dict]) -> bool:
-    """MetricKeys referenced in the registry should appear somewhere in data-layer.js."""
+    """MetricKeys referenced in the registry should appear in DataLayer or advocacy bundle sources."""
     registry_keys = _load_metric_registry()
     dl_path = ROOT / "modules" / "data-layer.js"
     if not registry_keys or not dl_path.exists():
@@ -526,6 +526,12 @@ def check_metric_keys_in_datalayer(results: list[dict]) -> bool:
         return True
 
     dl_text = read_text(dl_path)
+    # Regulatory advocacy 2026 uses its own facts + thin data layer (not modules/data-layer.js).
+    _adv_dir = ROOT / "hap-regulatory-advocacy-2026"
+    for _name in ("facts.js", "reg-advocacy-data-layer.js"):
+        _p = _adv_dir / _name
+        if _p.exists():
+            dl_text += "\n" + read_text(_p)
     missing = [k for k in registry_keys if k not in dl_text]
     if missing:
         for k in missing:

@@ -2,6 +2,10 @@
  * HAP Regulatory Advocacy 2026 — content + verified sources.
  * Brand colors: HAP Corporate Branding Guidelines (April 2025 PDF) via branding-hap-2025.css
  * Do not add statistics without a primary public citation (or explicit HAP-letter attribution for quotes).
+ *
+ * Power BI / semantic layer: quantified rows include metricKey, valueNumeric, valueUnit (and optional
+ * valueDisplay, supplementalMetrics) aligned with powerbi/metric-registry.json (dashboardScope REG_ADVOCACY_2026).
+ * RegAdvocacyDataLayer (reg-advocacy-data-layer.js) flattens these for Gold-shaped exports.
  */
 (function () {
   'use strict';
@@ -51,7 +55,10 @@
           'HAP’s April 2025 statewide release reports this total from FY 2024 hospital fiscal-year data—direct hospital activity plus estimated ripple effects on suppliers and communities (same figure and methodology summarized on HAP’s Community Impact materials).',
         topic: 'finance',
         sentiment: 'positive',
-        sourceId: 'hap-economic-fy2024'
+        sourceId: 'hap-economic-fy2024',
+        metricKey: 'REG_ADV_PA_HOSPITAL_ECONOMIC_CONTRIBUTION_USD_BILLIONS',
+        valueNumeric: 195.4,
+        valueUnit: 'USD_BILLIONS'
       },
       {
         id: 'hk-phc4',
@@ -62,7 +69,10 @@
         sub: 'PHC4 (Pennsylvania Health Care Cost Containment Council), FY 2023: share of Pennsylvania general acute-care hospitals that lost money on operations. Different report and year than HAP’s FY 2024 “in the red” count in the blue band.',
         topic: 'risk',
         sentiment: 'negative',
-        sourceId: 'phc4-fy23-margin'
+        sourceId: 'phc4-fy23-margin',
+        metricKey: 'REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT',
+        valueNumeric: 51,
+        valueUnit: 'PERCENT'
       },
       {
         id: 'hk-turn',
@@ -74,7 +84,10 @@
           '2024 vs. prior year — hospitals in a joint survey (HAP, LeadingAge PA, PHCA) reported about one-fifth less turnover after steps like pay, training, and scheduling flexibility. PHCA’s April 2, 2025 summary cites the survey fielded November 2024–January 2025.',
         topic: 'access',
         sentiment: 'positive',
-        sourceId: 'phca-workforce-2025'
+        sourceId: 'phca-workforce-2025',
+        metricKey: 'REG_ADV_PA_WORKFORCE_TURNOVER_REDUCTION_PCT',
+        valueNumeric: 19,
+        valueUnit: 'PERCENT'
       }
     ],
     glossary: [
@@ -160,7 +173,10 @@
           'Hospital spending plus estimated ripple effects across suppliers and communities. HAP’s statewide model uses FY 2024 hospital fiscal data, published in its April 2025 public release.',
         sourceNote: 'Open HAP economic release',
         sourceId: 'hap-economic-fy2024',
-        ban: { mode: 'none' }
+        ban: { mode: 'none' },
+        metricKey: 'REG_ADV_PA_HOSPITAL_ECONOMIC_CONTRIBUTION_USD_BILLIONS',
+        valueNumeric: 195.4,
+        valueUnit: 'USD_BILLIONS'
       },
       {
         id: 'sb-jobs',
@@ -170,7 +186,10 @@
         caption: 'Roughly one in eight Pennsylvania jobs—same HAP FY 2024 analysis and April 2025 release as the figure above.',
         sourceNote: 'Open same HAP release',
         sourceId: 'hap-economic-fy2024',
-        ban: { mode: 'int', end: 785715, suffix: '', prefix: '' }
+        ban: { mode: 'int', end: 785715, suffix: '', prefix: '' },
+        metricKey: 'REG_ADV_PA_HOSPITAL_JOBS_FROM_HAP_MODEL',
+        valueNumeric: 785715,
+        valueUnit: 'COUNT'
       },
       {
         id: 'sb-red',
@@ -181,7 +200,10 @@
           'HAP’s FY 2024 acute-care hospital tally (April 2025 release). This is not the same definition or year as PHC4’s operating-margin share in the next card.',
         sourceNote: 'Open HAP release',
         sourceId: 'hap-economic-fy2024',
-        ban: { mode: 'int', end: 37, suffix: '%', prefix: '' }
+        ban: { mode: 'int', end: 37, suffix: '%', prefix: '' },
+        metricKey: 'REG_ADV_PA_ACUTE_HOSPITALS_OPERATING_IN_RED_PCT',
+        valueNumeric: 37,
+        valueUnit: 'PERCENT'
       },
       {
         id: 'sb-phc4',
@@ -192,7 +214,10 @@
           'Pennsylvania Health Care Cost Containment Council, FY 2023 (Volume One). Different agency, metric, and year than HAP’s 37% “in the red” count.',
         sourceNote: 'Open PHC4 FY 2023 release',
         sourceId: 'phc4-fy23-margin',
-        ban: { mode: 'int', end: 51, suffix: '%', prefix: '' }
+        ban: { mode: 'int', end: 51, suffix: '%', prefix: '' },
+        metricKey: 'REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT',
+        valueNumeric: 51,
+        valueUnit: 'PERCENT'
       },
       {
         id: 'sb-members',
@@ -203,7 +228,11 @@
           'Public membership scale for the association. The April 16, 2026 letter to DOH cites 235 hospitals in that membership context.',
         sourceNote: 'Open HAP membership page',
         sourceId: 'hap-membership',
-        ban: { mode: 'int', end: 235, suffix: '+', prefix: '' }
+        ban: { mode: 'int', end: 235, suffix: '+', prefix: '' },
+        metricKey: 'REG_ADV_HAP_MEMBER_HOSPITALS_MIN_COUNT',
+        valueNumeric: 235,
+        valueUnit: 'COUNT',
+        valueDisplay: '235+'
       },
       {
         id: 'sb-1982',
@@ -214,7 +243,10 @@
           '28 Pa. Code § 101.56 includes a December 1982 adoption note in the authority section—context for how long some rules have been on the books; read the Code for the operative text.',
         sourceNote: 'Open Pa. Code § 101.56',
         sourceId: 'pa-code-101-56',
-        ban: { mode: 'int', end: 1982, suffix: '', prefix: '' }
+        ban: { mode: 'int', end: 1982, suffix: '', prefix: '' },
+        metricKey: 'REG_ADV_PA_CODE_HOSPITAL_REG_ANCHOR_YEAR',
+        valueNumeric: 1982,
+        valueUnit: 'YEAR'
       }
     ],
     compareRows: [
@@ -294,7 +326,10 @@
       body:
         'HAP’s letter notes other states already lean on The Joint Commission’s ambulatory program to cut duplicate surveys. This map shows 21 states on one transparent compiled list from TJC’s public payer blocks—it is a snapshot for context, not a substitute for checking each state yourself.',
       sourceId: 'jc-ambulatory-compiled-21',
-      act60SourceId: 'pa-act-60'
+      act60SourceId: 'pa-act-60',
+      metricKey: 'REG_ADV_JC_AMBULATORY_COMPILED_STATE_COUNT',
+      valueNumeric: 21,
+      valueUnit: 'COUNT'
     },
     impactTiles: [
       {
@@ -303,7 +338,10 @@
         dotLabel: 'Bright spot',
         title: '$10.8B in community benefit',
         body: 'HAP’s April 2025 public release on FY 2024 hospital data reports hospitals invested nearly $10.8 billion in strengthening community health (charity care, training, research, and more).',
-        sourceId: 'hap-economic-fy2024'
+        sourceId: 'hap-economic-fy2024',
+        metricKey: 'REG_ADV_PA_HOSPITAL_COMMUNITY_BENEFIT_USD_BILLIONS',
+        valueNumeric: 10.8,
+        valueUnit: 'USD_BILLIONS'
       },
       {
         iconTopic: 'policy',
@@ -311,7 +349,18 @@
         dotLabel: 'Cited report',
         title: 'Fewer than half with sustainable margins',
         body: 'HAP’s April 2025 release summarizing FY 2024 acute-care hospital finances: fewer than half operated with margins necessary for long-term stability; 37% operated in the red; 39% faced multi-year losses.',
-        sourceId: 'hap-economic-fy2024'
+        sourceId: 'hap-economic-fy2024',
+        metricKey: 'REG_ADV_PA_ACUTE_HOSPITALS_OPERATING_IN_RED_PCT',
+        valueNumeric: 37,
+        valueUnit: 'PERCENT',
+        supplementalMetrics: [
+          {
+            metricKey: 'REG_ADV_PA_ACUTE_HOSPITALS_MULTI_YEAR_LOSS_PCT',
+            valueNumeric: 39,
+            valueUnit: 'PERCENT',
+            sourceId: 'hap-economic-fy2024'
+          }
+        ]
       },
       {
         iconTopic: 'policy',
@@ -319,7 +368,10 @@
         dotLabel: 'PHC4 data',
         title: '51% negative operating margin (GAC, FY23)',
         body: 'PHC4 Volume One (FY 2023): 51% of Pennsylvania’s general acute care hospitals posted a negative operating margin—distinct metric and year from HAP’s FY 2024 acute-care figures.',
-        sourceId: 'phc4-fy23-margin'
+        sourceId: 'phc4-fy23-margin',
+        metricKey: 'REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT',
+        valueNumeric: 51,
+        valueUnit: 'PERCENT'
       },
       {
         iconTopic: 'access',
@@ -327,7 +379,11 @@
         dotLabel: 'Membership',
         title: '235+ hospital & health system members',
         body: 'HAP’s public membership description reflects statewide representation for advocacy and technical support.',
-        sourceId: 'hap-membership'
+        sourceId: 'hap-membership',
+        metricKey: 'REG_ADV_HAP_MEMBER_HOSPITALS_MIN_COUNT',
+        valueNumeric: 235,
+        valueUnit: 'COUNT',
+        valueDisplay: '235+'
       },
       {
         iconTopic: 'policy',

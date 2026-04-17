@@ -24,6 +24,13 @@ CREATE TABLE dbo.gold_dim_state_law (
     CONSTRAINT PK_gold_dim_state_law PRIMARY KEY (StateCode)
 );
 
+/*
+  REG_ADV_* MetricKey values (dashboard REG_ADVOCACY_2026) share this table with 340B KPIs.
+  Power BI / warehouse: filter by DashboardKey if a future migration adds that column;
+  until then, distinct MetricKey prefixes separate products. See powerbi/metric-registry.json
+  (dashboardScope REG_ADVOCACY_2026) and hap-regulatory-advocacy-2026/reg-advocacy-data-layer.js.
+*/
+
 /* --- Fact: headline KPIs (maps from fact_dashboard_kpi in spec) --- */
 CREATE TABLE dbo.gold_fact_dashboard_kpi (
     MetricKey       NVARCHAR(100) NOT NULL,
