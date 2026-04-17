@@ -299,8 +299,49 @@
       addPath('M22 21v-2a4 4 0 0 0-3-3.87');
       addPath('M16 3.13a4 4 0 0 1 0 7.75');
     } else if (k === 'trendDown' || k === 'trend-down') {
-      addPolyline('22 17 13.5 8.5 8.5 13.5 2 7');
-      addPolyline('16 17 22 17 22 23');
+      /* Detailed “negative stock market” glyph: L-axes + dashed gridlines + declining price bars + jagged trendline + markers + arrow. */
+      function dashedGrid(d) {
+        var g = document.createElementNS(ns, 'path');
+        g.setAttribute('d', d);
+        g.setAttribute('fill', 'none');
+        g.setAttribute('stroke', 'currentColor');
+        g.setAttribute('stroke-width', '0.8');
+        g.setAttribute('stroke-linecap', 'round');
+        g.setAttribute('stroke-dasharray', '1.4 2');
+        g.setAttribute('opacity', '0.28');
+        svg.appendChild(g);
+      }
+      function priceBar(x, y) {
+        var r = document.createElementNS(ns, 'rect');
+        r.setAttribute('x', String(x));
+        r.setAttribute('y', String(y));
+        r.setAttribute('width', '2.2');
+        r.setAttribute('height', String(20 - y));
+        r.setAttribute('rx', '0.4');
+        r.setAttribute('fill', 'currentColor');
+        r.setAttribute('opacity', '0.18');
+        svg.appendChild(r);
+      }
+      addPath('M3.8 3.8 L3.8 20.2 L22 20.2');
+      dashedGrid('M4.2 9 L21.8 9');
+      dashedGrid('M4.2 14 L21.8 14');
+      priceBar(5.1, 7.2);
+      priceBar(9.1, 9.8);
+      priceBar(13.1, 11.8);
+      priceBar(17.1, 14.4);
+      addPolyline('6.2 6.6 8.2 8.6 10.2 7.8 12.2 10.8 14.2 10.2 16.2 13.2 18.2 14.2 20 16.8');
+      addCircle(6.2, 6.6, 1.05);
+      addCircle(10.2, 7.8, 1.05);
+      addCircle(14.2, 10.2, 1.05);
+      addCircle(18.2, 14.2, 1.05);
+      var arrow = document.createElementNS(ns, 'path');
+      arrow.setAttribute('d', 'M20 16.8 L20 14.3 M20 16.8 L17.5 16.8');
+      arrow.setAttribute('fill', 'none');
+      arrow.setAttribute('stroke', 'currentColor');
+      arrow.setAttribute('stroke-width', '1.9');
+      arrow.setAttribute('stroke-linecap', 'round');
+      arrow.setAttribute('stroke-linejoin', 'round');
+      svg.appendChild(arrow);
     } else if (k === 'pie') {
       addPath('M21.21 15.89A10 10 0 1 1 8 2.83');
       addPath('M22 12A10 10 0 0 0 12 2v10z');
