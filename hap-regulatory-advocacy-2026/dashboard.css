@@ -23,8 +23,8 @@
   /* Verified anchors: operating pressure / margins (must match icon + stat) */
   --hap-reg-impact-danger: #b42318;
   --hap-reg-section-gap: clamp(2rem, 4.5vw, 3rem);
-  /* Sticky header is two rows (org + nav), now with a 4-item nav — shorter overall. */
-  --hap-reg-sticky-offset: clamp(104px, 14vw, 128px);
+  /* Sticky header is one row (brand + nav side-by-side). */
+  --hap-reg-sticky-offset: clamp(72px, 9vw, 88px);
 }
 
 .hap-reg-page {
@@ -162,22 +162,21 @@
 .hap-reg-header-inner {
   max-width: 1120px;
   margin: 0 auto;
-  padding: 12px 18px 14px;
+  padding: 10px 18px;
   display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  justify-content: flex-start;
-  gap: 12px;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
   min-width: 0;
 }
 
 .hap-reg-brand {
   display: flex;
   gap: 10px;
-  align-items: flex-start;
+  align-items: center;
   min-width: 0;
-  flex: none;
-  width: 100%;
+  flex: 1 1 auto;
   max-width: 100%;
   padding-right: 0;
 }
@@ -255,18 +254,25 @@
   color: var(--hap-text-secondary);
   border: 1px solid var(--hap-reg-hairline);
   background: rgba(255, 255, 255, 0.92);
-  padding: 7px 10px;
+  padding: 6px 12px;
   border-radius: 999px;
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  min-height: 44px;
+  min-height: 32px;
   display: inline-flex;
   align-items: center;
   gap: 5px;
   flex-shrink: 0;
   transition: border-color 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), background 0.2s cubic-bezier(0.25, 0.1, 0.25, 1),
     color 0.2s cubic-bezier(0.25, 0.1, 0.25, 1), transform 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+@media (pointer: coarse) {
+  .hap-reg-nav-link {
+    min-height: 44px;
+    padding: 8px 14px;
+  }
 }
 
 .hap-reg-nav-link:hover {
@@ -290,17 +296,29 @@
   outline-offset: 2px;
 }
 
-/* Full-width row under org title. 4 pills, centered, no scroll, no icons. */
+/* 4 pills, right-aligned next to the brand on the same row. Wraps under on narrow screens. */
 .hap-reg-nav--bar {
-  flex: none;
-  width: 100%;
-  max-width: 100%;
+  flex: 0 0 auto;
   min-width: 0;
   flex-wrap: wrap;
   overflow: visible;
-  padding: 2px 2px 6px;
-  justify-content: center;
-  gap: 8px;
+  padding: 0;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+@media (max-width: 640px) {
+  .hap-reg-header-inner {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    padding: 10px 16px 12px;
+  }
+
+  .hap-reg-nav--bar {
+    justify-content: center;
+    width: 100%;
+  }
 }
 
 .hap-reg-main {
