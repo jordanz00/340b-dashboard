@@ -432,6 +432,8 @@
     if (!data || !data.hero) return;
     setText(document.getElementById('overview-title'), data.hero.headline);
     var row = document.getElementById('js-hero-ctas');
+    // Hero CTA row was retired in favor of a single primary CTA in the hero itself.
+    // Keep the builder as a no-op when the legacy container is absent so older markup still works.
     if (!row) return;
     while (row.firstChild) row.removeChild(row.firstChild);
     data.hero.ctas.forEach(function (c, i) {

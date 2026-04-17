@@ -23,8 +23,8 @@
   /* Verified anchors: operating pressure / margins (must match icon + stat) */
   --hap-reg-impact-danger: #b42318;
   --hap-reg-section-gap: clamp(2rem, 4.5vw, 3rem);
-  /* Sticky header is two rows (org + nav); keep hash / in-page targets clear of overlap */
-  --hap-reg-sticky-offset: clamp(132px, 20vw, 168px);
+  /* Sticky header is two rows (org + nav), now with a 4-item nav — shorter overall. */
+  --hap-reg-sticky-offset: clamp(104px, 14vw, 128px);
 }
 
 .hap-reg-page {
@@ -35,15 +35,61 @@
   background-image: none;
 }
 
-/* Page shell — near-white canvas; one quiet wash (focus stays on content) */
+/* Page shell — one flat, near-white canvas (no decorative gradient). */
 .hap-reg-page--showcase {
-  background-color: #f3f4f6;
-  background-image: linear-gradient(180deg, #fafafa 0%, #f0f1f3 100%);
+  background-color: #fafafa;
+  background-image: none;
 }
 
 .hap-reg-page--showcase .hap-reg-hero-card {
-  border-color: rgba(35, 31, 32, 0.08);
-  box-shadow: var(--hap-reg-elev-card);
+  border-color: rgba(35, 31, 32, 0.06);
+  box-shadow: 0 1px 2px rgba(35, 31, 32, 0.04);
+}
+
+/* Hero "quiet" variant — one sentence + one CTA, no competing chrome. */
+.hap-reg-hero-card--quiet .hap-reg-hero-card-body {
+  padding: 2rem 1.5rem 1.75rem;
+}
+
+@media (min-width: 720px) {
+  .hap-reg-hero-card--quiet .hap-reg-hero-card-body {
+    padding: 2.75rem 2.75rem 2.25rem;
+  }
+}
+
+.hap-reg-hero-cta-row {
+  margin-top: 1.25rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hap-reg-hero-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 18px;
+  min-height: 44px;
+  border-radius: 999px;
+  background: var(--hap-brandguide-blue);
+  color: #ffffff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.005em;
+  box-shadow: 0 6px 20px rgba(0, 114, 188, 0.22);
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.hap-reg-hero-cta:hover {
+  background: #005c99;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgba(0, 114, 188, 0.28);
+}
+
+.hap-reg-hero-cta:focus-visible {
+  outline: 3px solid rgba(0, 114, 188, 0.35);
+  outline-offset: 2px;
 }
 
 .hap-reg-page--showcase .hap-reg-h1.hap-reg-h1-hero {
@@ -255,25 +301,17 @@
   outline-offset: 2px;
 }
 
-/* Full-width row under org title; horizontal scroll — no overlap with brand */
+/* Full-width row under org title. 4 pills, centered, no scroll, no icons. */
 .hap-reg-nav--bar {
   flex: none;
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  flex-wrap: nowrap;
-  overflow-x: auto;
-  overflow-y: hidden;
+  flex-wrap: wrap;
+  overflow: visible;
   padding: 2px 2px 6px;
-  justify-content: flex-start;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.hap-reg-nav--bar::-webkit-scrollbar {
-  display: none;
-  height: 0;
+  justify-content: center;
+  gap: 8px;
 }
 
 .hap-reg-main {

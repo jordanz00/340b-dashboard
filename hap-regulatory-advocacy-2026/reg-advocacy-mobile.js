@@ -16,9 +16,8 @@
   var TABS = ['overview', 'stats', 'benchmark', 'priorities', 'receipts'];
   var TAB_META = [
     { id: 'overview', label: 'Start' },
-    { id: 'stats', label: 'Data' },
-    { id: 'benchmark', label: 'Map' },
     { id: 'priorities', label: 'Asks' },
+    { id: 'benchmark', label: 'Map' },
     { id: 'receipts', label: 'More' }
   ];
 
@@ -880,8 +879,6 @@
       if (meta.id === 'overview') {
         var lc = data.letterContext || {};
         scroll.appendChild(elOverview(data, lc, sourceById));
-      } else if (meta.id === 'stats') {
-        scroll.appendChild(elStats(data, sourceById));
       } else if (meta.id === 'priorities') {
         scroll.appendChild(elPriorities(data));
       } else if (meta.id === 'benchmark') {
@@ -1002,6 +999,16 @@
       wrap.appendChild(kpiLabel);
     }
     wrap.appendChild(kpiGrid);
+
+    if ((data.statBand || []).length) {
+      var statLabel = el('div', 'hap-mob-section-label hap-mob-anim');
+      setText(statLabel, 'Pennsylvania context');
+      wrap.appendChild(statLabel);
+      var statList = el('div', 'hap-mob-stat-list');
+      renderMobStatBand(statList, data.statBand || [], srcMap);
+      wrap.appendChild(statList);
+    }
+
     frag.appendChild(wrap);
     return frag;
   }

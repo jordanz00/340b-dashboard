@@ -72,73 +72,42 @@
         </div>
       </a>
       <nav class="hap-reg-nav hap-reg-nav--bar" aria-label="Page sections">
-        <a class="hap-reg-nav-link is-active" href="#overview" aria-current="page">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 10.5 12 4l8 6.5V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1z"/></svg>
-          Start
-        </a>
-        <a class="hap-reg-nav-link" href="#stat-band">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M5 19h2v-8H5zm6 0h2V5h-2zm6 0h2v-5h-2z"/></svg>
-          Data
-        </a>
-        <a class="hap-reg-nav-link" href="#states">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2C8 2 5 5 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-4-3-7-7-7m0 9.5A2.5 2.5 0 1 1 12 6a2.5 2.5 0 0 1 0 5.5"/></svg>
-          Map
-        </a>
-        <a class="hap-reg-nav-link" href="#priorities-deck">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 3h10v2H7zm0 6h10v2H7zm0 6h10v2H7zm0 6h10v2H7z"/></svg>
-          Priorities
-        </a>
-        <a class="hap-reg-nav-link" href="#context">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v2H4zm0 5h10v2H4zm0 5h16v2H4z"/></svg>
-          PA vs US
-        </a>
-        <a class="hap-reg-nav-link" href="#impact">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 21 3 10h5V3h8v7h5z"/></svg>
-          Impact
-        </a>
-        <a class="hap-reg-nav-link" href="#letter">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M4 6h16v12H4zm2 2v8h12V8zm2 2h8v2H8zm0 3h5v2H8z"/></svg>
-          Letter
-        </a>
-        <a class="hap-reg-nav-link" href="#sources">
-          <svg class="hap-reg-nav-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M6 3h12v18H6zm2 2v14h8V5zm2 2h4v2h-4zm0 4h4v2h-4zm0 4h2v2h-2z"/></svg>
-          Sources
-        </a>
+        <a class="hap-reg-nav-link is-active" href="#priorities-deck" aria-current="page">Asks</a>
+        <a class="hap-reg-nav-link" href="#context-band">Context</a>
+        <a class="hap-reg-nav-link" href="#letter">Letter</a>
+        <a class="hap-reg-nav-link" href="#sources">Sources</a>
       </nav>
     </div>
   </header>
 
   <main id="main" class="hap-reg-main">
     <section id="overview" class="hap-reg-scroll-target" aria-labelledby="overview-title">
-      <div class="hap-reg-hero-card hap-reg-hero-card--focus">
+      <div class="hap-reg-hero-card hap-reg-hero-card--focus hap-reg-hero-card--quiet">
         <div class="hap-reg-hero-card-body">
           <p class="hap-reg-hero-eyebrow">April 16, 2026 · Letter to the Pennsylvania Department of Health</p>
           <h1 id="overview-title" class="hap-reg-h1 hap-reg-h1-hero"></h1>
-          <div id="js-at-a-glance" class="hap-reg-aag" role="region" aria-label="At a glance: three topics from the letter for discussion with DOH"></div>
-          <div id="js-hero-kpis" class="hap-reg-hero-kpis" role="region" aria-label="Pennsylvania hospital context (verified public sources)"></div>
-          <div id="js-hero-ctas" class="hap-reg-pill-row" role="group" aria-label="Jump to each priority"></div>
-          <details class="hap-reg-details hap-reg-details--compact">
-            <summary class="hap-reg-details-sum--compact">Topic colors (cards below)</summary>
-            <div class="hap-reg-legend hap-reg-legend--compact" role="note" aria-label="Color key for topic styling">
-              <span class="hap-reg-legend-item hap-reg-topic-access"><span class="hap-reg-dot"></span> Access / operations</span>
-              <span class="hap-reg-legend-item hap-reg-topic-policy"><span class="hap-reg-dot"></span> Policy / licensure</span>
-              <span class="hap-reg-legend-item hap-reg-topic-finance"><span class="hap-reg-dot"></span> Efficiency (PDF teal)</span>
-              <span class="hap-reg-legend-item hap-reg-topic-brand"><span class="hap-reg-dot"></span> HAP highlight (PDF orange)</span>
-            </div>
-          </details>
-          <div id="js-glossary"></div>
-          <details class="hap-reg-details">
-            <summary>Routing / recipients (letter)</summary>
-            <div class="hap-reg-details-body">
-              <p><strong>Date:</strong> <span id="js-letter-date"></span></p>
-              <p><strong>To:</strong> <span id="js-letter-recipient"></span></p>
-              <p><strong>From:</strong> <span id="js-letter-sender"></span></p>
-              <p id="js-letter-note"></p>
-              <p class="hap-reg-details-foot">Secretary biography (Commonwealth): <a href="https://www.pa.gov/governor/meet-governor-shapiro-s-cabinet/dr--debra-l--bogen.html">Dr. Debra L. Bogen</a></p>
-            </div>
-          </details>
+          <div class="hap-reg-hero-cta-row">
+            <a class="hap-reg-hero-cta" href="#priorities-deck">
+              Read the three asks
+              <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="currentColor" d="M13.3 5.3 11.9 6.7 16.2 11H4v2h12.2l-4.3 4.3 1.4 1.4L20 12z"/></svg>
+            </a>
+          </div>
         </div>
       </div>
+    </section>
+
+    <section id="asks-overview" class="hap-reg-scroll-target" aria-labelledby="asks-overview-title">
+      <p class="hap-reg-section-label">What we are asking</p>
+      <h2 id="asks-overview-title" class="hap-reg-h2">The three asks</h2>
+      <div id="js-at-a-glance" class="hap-reg-aag" role="region" aria-label="At a glance: three topics from the letter for discussion with DOH"></div>
+    </section>
+
+    <section id="context-band" class="hap-reg-scroll-target" aria-labelledby="context-band-title">
+      <p class="hap-reg-section-label">Verified public context</p>
+      <h2 id="context-band-title" class="hap-reg-h2">Pennsylvania hospital context</h2>
+      <p class="hap-reg-lead hap-reg-lead-tight">Figures verified on the pages cited — not from the April 2026 letter.</p>
+      <div id="js-hero-kpis" class="hap-reg-hero-kpis" role="region" aria-label="Pennsylvania hospital context (verified public sources)"></div>
+      <div id="js-glossary"></div>
     </section>
 
     <section
@@ -231,6 +200,16 @@
       <p class="hap-reg-section-label">Executive correspondence</p>
       <h2 id="letter-title" class="hap-reg-h2 hap-reg-h2-letter">Correspondence to the Department of Health</h2>
       <p class="hap-reg-lead hap-reg-lead-tight hap-reg-letter-intro">April 16, 2026 · Formal excerpts below · Full citations in <a href="#sources">Sources</a>.</p>
+      <details class="hap-reg-details hap-reg-details--compact">
+        <summary class="hap-reg-details-sum--compact">Routing / recipients</summary>
+        <div class="hap-reg-details-body">
+          <p><strong>Date:</strong> <span id="js-letter-date"></span></p>
+          <p><strong>To:</strong> <span id="js-letter-recipient"></span></p>
+          <p><strong>From:</strong> <span id="js-letter-sender"></span></p>
+          <p id="js-letter-note"></p>
+          <p class="hap-reg-details-foot">Secretary biography (Commonwealth): <a href="https://www.pa.gov/governor/meet-governor-shapiro-s-cabinet/dr--debra-l--bogen.html">Dr. Debra L. Bogen</a></p>
+        </div>
+      </details>
       <div class="hap-reg-letter-card">
         <div id="js-letter-quotes"></div>
       </div>
