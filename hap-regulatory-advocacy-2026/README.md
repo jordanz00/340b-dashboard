@@ -1,8 +1,10 @@
 # HAP Regulatory Advocacy 2026
 
-Static executive brief: April 16, 2026 Pennsylvania DOH letter context, priorities, PA vs Medicare comparison, TJC ambulatory map snapshot, verified sources. **No build step** — open `index.html` locally or host on **GitHub Pages**.
+Static executive brief for **Pennsylvania Department of Health** engagement: April 16, 2026 letter context, verified hospital statistics, national TJC ambulatory map snapshot, **three regulatory priorities**, PA vs Medicare/US comparison, and source-linked citations. **Not** the 340B dashboard product—this is its own advocacy brief. **No build step** — open `index.html` locally or host on **GitHub Pages**.
 
 **Repository:** [https://github.com/jordanz00/hap-regulatory-advocacy-2026](https://github.com/jordanz00/hap-regulatory-advocacy-2026)
+
+**GitHub “About” description:** copy the single line from [.github/ABOUT-DESCRIPTION.txt](.github/ABOUT-DESCRIPTION.txt) into **Settings → General** (Repository description), or run `gh repo edit jordanz00/hap-regulatory-advocacy-2026 --description "$(tr '\n' ' ' < .github/ABOUT-DESCRIPTION.txt)"` if you use the GitHub CLI.
 
 ---
 
@@ -55,9 +57,9 @@ bash publish-standalone.sh https://github.com/jordanz00/hap-regulatory-advocacy-
 
 2. After the first successful deploy, wait a minute and open the live URLs above.
 
-## Monorepo copy
+## Monorepo copy (340b-dashboard workspace)
 
-This project may also live inside a larger workspace; keep **this folder’s contents** as the **root** of this GitHub repo so asset paths (`vendor/…`, etc.) stay valid.
+The same files may live under **`340b-dashboard/hap-regulatory-advocacy-2026/`** for editing. That path is **not** the public product URL unless you deliberately publish the whole monorepo and accept a long path. For the **dedicated** regulatory-advocacy site, always mirror **this folder’s contents to the root** of **this** repo (`hap-regulatory-advocacy-2026` or your org’s equivalent) so `index.html`, `vendor/`, and `facts.js` paths match GitHub Pages.
 
 ## LICENSE
 

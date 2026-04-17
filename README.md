@@ -12,11 +12,13 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 
 **NEXUS** is no longer in this repository. It lives in **[jordanz00/nexus-music-visualizer](https://github.com/jordanz00/nexus-music-visualizer)** — **live:** [https://jordanz00.github.io/nexus-music-visualizer/](https://jordanz00.github.io/nexus-music-visualizer/). Use that repo for issues, PRs, and Pages deploys.
 
-### HAP Regulatory Advocacy 2026 (sibling microsite in this repo)
+### HAP Regulatory Advocacy 2026 (separate product; source lives here too)
 
-**`hap-regulatory-advocacy-2026/`** is a separate static advocacy brief (PA DOH letter context, map, priorities, sources). It uses its own `facts.js` and styles; it does **not** replace **340b-BASIC.html**. Start at **[hap-regulatory-advocacy-2026/README.md](hap-regulatory-advocacy-2026/README.md)**. Data dictionary notes: [docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md) (search for “Regulatory advocacy”).
+**`hap-regulatory-advocacy-2026/`** is a **different product** from 340B: its own `facts.js`, styles, and (intended) **own GitHub repository** for public hosting. It does **not** replace **340b-BASIC.html**.
 
-**Operational note:** This repository ships **trust-critical** static sites. “Enterprise-ready” here means verifiable releases: run **`python3 dashboard-audit.py`**, run **`python3 tests/e2e-smoke.py`** (HTTP smoke + BASIC IT-safe check), keep print/PDF and source review as human gates, and treat **340B** vs **regulatory advocacy** as separate products so data and messaging do not drift together by accident.
+**Canonical public repo:** [https://github.com/jordanz00/hap-regulatory-advocacy-2026](https://github.com/jordanz00/hap-regulatory-advocacy-2026) — keep **`hap-regulatory-advocacy-2026/`** folder contents as that repo’s **root** (`index.html` at top level). **Live (GitHub Pages on that repo):** [https://jordanz00.github.io/hap-regulatory-advocacy-2026/](https://jordanz00.github.io/hap-regulatory-advocacy-2026/) and [mobile shell](https://jordanz00.github.io/hap-regulatory-advocacy-2026/reg-advocacy-mobile.html). If you see **404**, enable Pages under that repo’s **Settings → Pages** (Actions or `main` / root). Do not rely on `340b-dashboard` for this product’s public URL. Clone/publish script details: **[hap-regulatory-advocacy-2026/README.md](hap-regulatory-advocacy-2026/README.md)**. Data dictionary: [docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md) (search for “Regulatory advocacy”).
+
+**Operational note:** Run **`python3 dashboard-audit.py`** and **`python3 tests/e2e-smoke.py`** before merge. Keep **340B** vs **regulatory advocacy** separate so data and messaging do not drift.
 
 ## Files
 
@@ -46,7 +48,7 @@ A single-page dashboard for lawmakers and hospital CEOs on the 340B Drug Pricing
 | `EXECUTIVE-READY-UPGRADE.md` | Executive-ready improvements and implementation log |
 | `assets/vendor/` | Local map libraries and U.S. atlas data |
 | `340b-advocacy-lab.html` | **Developer / PBI reference:** PA hospital map (verified points), KPI bar chart via `DataLayer`, story JSON, print export — `modules/advocacy-lab.js`, `advocacy-lab.css` |
-| `hap-regulatory-advocacy-2026/` | **Regulatory advocacy 2026** microsite (`index.html`, `reg-advocacy-mobile.html`, `facts.js`, `dashboard.css`) — see [hap-regulatory-advocacy-2026/README.md](hap-regulatory-advocacy-2026/README.md) |
+| `hap-regulatory-advocacy-2026/` | **Regulatory advocacy 2026** (non-340B); **ship from its own GitHub repo** — see [hap-regulatory-advocacy-2026/README.md](hap-regulatory-advocacy-2026/README.md) |
 | `SECURITY.md` | Static-host security and audit notes |
 | `config.json` | Multi-agent and self-upgrade config: archive_path, daily_update, ultra_prompt_wave_size, rules_per_wave, security_checks |
 | `ultra_prompts.json` | Self-improvement waves (root copy; also in self_upgrade/). 10 waves, agent file names. |

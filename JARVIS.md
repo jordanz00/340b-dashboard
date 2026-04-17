@@ -24,7 +24,7 @@ Jarvis does not have a separate memory outside this workspace: it stays current 
 | **Mobile app** | [340b-mobile.html](340b-mobile.html), [340b-mobile.js](340b-mobile.js) |
 | **Desktop 340B** | [340b.html](340b.html), [340b.js](340b.js) |
 | **IT-safe BASIC** | [340b-BASIC.html](340b-BASIC.html) — local scripts only |
-| **Regulatory advocacy 2026 (PA DOH brief)** | [hap-regulatory-advocacy-2026/](hap-regulatory-advocacy-2026/) — `facts.js` + [README](hap-regulatory-advocacy-2026/README.md) (separate from `state-data.js`) |
+| **Regulatory advocacy 2026 (PA DOH brief)** | [hap-regulatory-advocacy-2026/](hap-regulatory-advocacy-2026/) — `facts.js` + [README](hap-regulatory-advocacy-2026/README.md); **public deploy = its own repo/Pages**, not the 340B site |
 | **Static data truth** | [state-data.js](state-data.js) |
 
 ---

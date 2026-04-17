@@ -27,6 +27,9 @@ package-lock.json
 .env
 .env.local
 
+# Local clone used to push hap-regulatory-advocacy-2026 standalone repo only.
+.tmp-reg-push/
+
 # NEXUS is a nested git repository (separate origin: nexus-music-visualizer).
 # Do not `git add NEXUS` from this parent repo — work and commit inside NEXUS/.
 NEXUS/
