@@ -1,0 +1,266 @@
+/**
+ * HAP Dashboard Suite — Design tokens (shared)
+ * =============================================
+ * Load before page CSS (340b.css, styles.css, OW inline overrides).
+ * Single source for brand, type scale, spacing, motion, a11y, and interactive patterns.
+ * Do not put secrets or runtime data here.
+ */
+
+:root {
+  /* —— Brand (canonical HAP blue — aligned across OW, index, 340B) —— */
+  --hap-brand-primary: #0072bc;
+  --hap-brand-primary-hover: #005a94;
+  --hap-brand-primary-muted: rgba(0, 114, 188, 0.08);
+  --hap-brand-deep: #003087;
+  /* Orange: reserve for the single strongest number or alert per section (do not sprinkle). */
+  --hap-accent-warm: #fbb040;
+  --hap-accent-warm-alt: #fbb040;
+  --hap-accent-soft: rgba(251, 176, 64, 0.14);
+  /* Rare urgency / risk callouts (legislative “watch” moments) — use sparingly */
+  --hap-accent-urgency: #ee2b7b;
+  --hap-accent-urgency-soft: rgba(238, 43, 123, 0.12);
+  --hap-accent-urgency-border: rgba(238, 43, 123, 0.35);
+
+  /* —— Semantic topics (Oliver Wyman–style system — use these, avoid one-off hex) —— */
+  /* Green = financial / savings / funding */
+  --hap-topic-finance: #00a9a4;
+  --hap-topic-finance-soft: rgba(0, 169, 164, 0.1);
+  --hap-topic-finance-border: rgba(0, 169, 164, 0.28);
+  /* Blue = coverage / insurance / access (aligns with HAP brand) */
+  --hap-topic-access: var(--hap-brand-primary);
+  --hap-topic-access-soft: var(--hap-brand-primary-muted);
+  --hap-topic-access-border: var(--hap-border-strong);
+  /* Purple = policy / regulation / legal context */
+  --hap-topic-policy: #00aeef;
+  --hap-topic-policy-soft: rgba(0, 174, 239, 0.1);
+  --hap-topic-policy-border: rgba(0, 174, 239, 0.28);
+  /* Orange = risk / pressure / constraints */
+  --hap-topic-risk: var(--hap-accent-warm);
+  --hap-topic-risk-soft: var(--hap-accent-soft);
+  --hap-topic-risk-border: rgba(245, 158, 11, 0.35);
+  /* Neutral = supporting info */
+  --hap-topic-neutral-fg: var(--hap-text-muted);
+  --hap-topic-neutral-soft: var(--hap-bg-subtle);
+
+  /* Performance / direction (cool = positive; warm = negative — use with care for color-only a11y) */
+  --hap-sentiment-positive: #00a9a4;
+  --hap-sentiment-positive-soft: rgba(0, 169, 164, 0.12);
+  --hap-sentiment-negative: #fbb040;
+  --hap-sentiment-negative-soft: rgba(251, 176, 64, 0.12);
+
+  /* Executive KPI row: dominant number + short label + one-line meaning (see .hap-kpi-executive) */
+  --hap-kpi-value-size: clamp(1.85rem, 1.2rem + 2.2vw, 2.85rem);
+  --hap-kpi-value-weight: 800;
+  --hap-kpi-label-size: var(--hap-type-small);
+  --hap-kpi-meaning-size: var(--hap-type-small);
+  --hap-kpi-meaning-color: var(--hap-text-muted);
+
+  /* Legacy aliases (maps older 340B token names to suite primary) */
+  --hap-ow-blue: var(--hap-brand-primary);
+  --hap-ow-soft: #8ed8f8;
+
+  /* —— Text (WCAG-friendly on light surfaces) —— */
+  --hap-text-primary: #1a1a1a;
+  --hap-text-secondary: #424245;
+  --hap-text-muted: #64748b;
+  --hap-text-on-brand: #ffffff;
+
+  /* —— Surfaces —— */
+  --hap-bg-page: #fafafa;
+  --hap-bg-card: #ffffff;
+  --hap-bg-subtle: #f5f5f7;
+  --hap-border-default: rgba(0, 0, 0, 0.06);
+  --hap-border-strong: rgba(0, 114, 188, 0.14);
+
+  /* Neutral ramp + label steps (pair with semantic brand colors; avoid one-off grays in components) */
+  --hap-surface-page: #f5f5f7;
+  --hap-surface-subtle: #ebebef;
+  --hap-surface-raised: #ffffff;
+  --hap-label-primary: var(--hap-text-primary);
+  --hap-label-secondary: var(--hap-text-secondary);
+  --hap-label-tertiary: var(--hap-text-muted);
+  --hap-separator: rgba(60, 60, 67, 0.12);
+
+  /* —— HIG-inspired UI primitives (web analogy only; HAP brand + contrast still govern; no Apple affiliation in copy) —— */
+  --hap-ui-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --hap-ui-page-wash: #f5f5f7;
+  --hap-ui-card-radius: 14px;
+  --hap-ui-card-radius-lg: 18px;
+  --hap-ui-card-shadow: 0 1px 2px rgba(0, 0, 0, 0.04), 0 4px 16px rgba(0, 0, 0, 0.05);
+  --hap-ui-card-shadow-hover: 0 2px 8px rgba(0, 0, 0, 0.06), 0 12px 28px rgba(0, 0, 0, 0.06);
+
+  /* —— Typography: UI/data = sans; print/PDF headings = serif (HAP memo standard) —— */
+  --hap-font-sans: Tahoma, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --hap-font-display: "Montserrat", var(--hap-font-sans);
+  --hap-font-print-serif: Georgia, "Times New Roman", Times, serif;
+  --hap-font-mono: ui-monospace, "SFMono-Regular", "SF Mono", Menlo, Consolas, monospace;
+
+  /* Scale: H1 ~32–36px, H2 ~24–28px, H3 ~18–22px, labels ~14–16px (fluid clamp) */
+  --hap-type-h1: clamp(1.75rem, 1.35rem + 1.5vw, 2.25rem);
+  --hap-type-h2: clamp(1.375rem, 1.15rem + 1vw, 1.75rem);
+  --hap-type-h3: clamp(1.125rem, 1.02rem + 0.45vw, 1.375rem);
+  --hap-type-h4: clamp(0.875rem, 0.82rem + 0.2vw, 1rem);
+  --hap-type-body: 1rem;
+  --hap-type-small: 0.875rem;
+  --hap-type-eyebrow: 0.6875rem;
+
+  --hap-leading-tight: 1.25;
+  --hap-leading-snug: 1.35;
+  --hap-leading-body: 1.55;
+  --hap-leading-relaxed: 1.6;
+  /* Tighter deks next to dense KPIs (opt-in per surface, e.g. .dashboard) */
+  --hap-leading-dek: 1.52;
+
+  /* —— Spacing: 8px base —— */
+  --hap-space-1: 0.25rem;
+  --hap-space-2: 0.5rem;
+  --hap-space-3: 0.75rem;
+  --hap-space-4: 1rem;
+  --hap-space-5: 1.25rem;
+  --hap-space-6: 1.5rem;
+  --hap-space-8: 2rem;
+  --hap-space-10: 2.5rem;
+  --hap-space-12: 3rem;
+
+  /* —— Radius & elevation —— */
+  --hap-radius-sm: 8px;
+  --hap-radius-md: 12px;
+  --hap-radius-lg: 16px;
+  --hap-radius-pill: 999px;
+
+  --hap-shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --hap-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --hap-shadow-md: 0 4px 12px rgba(0, 0, 0, 0.06);
+  --hap-shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.07);
+  --hap-shadow-brand: 0 4px 14px rgba(0, 114, 188, 0.22);
+
+  /* —— Motion —— */
+  --hap-ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --hap-ease-standard: cubic-bezier(0.25, 0.1, 0.25, 1);
+  /* Slight overshoot for card lift (not a bouncy loop) */
+  --hap-ease-spring: cubic-bezier(0.34, 1.45, 0.64, 1);
+  --hap-duration-fast: 0.15s;
+  --hap-duration-normal: 0.22s;
+
+  /* —— Accessibility —— */
+  --hap-tap-min: 44px;
+  --hap-focus-ring: 2px solid var(--hap-brand-primary);
+  --hap-focus-offset: 2px;
+
+  /* —— Iconography —— */
+  --hap-icon-sm: 20px;
+  --hap-icon-md: 24px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --hap-duration-fast: 0.01ms;
+    --hap-duration-normal: 0.01ms;
+  }
+}
+
+/* —— Reusable interactive affordances (opt-in classes) —— */
+.hap-focus-ring:focus-visible {
+  outline: var(--hap-focus-ring);
+  outline-offset: var(--hap-focus-offset);
+}
+
+.hap-tap-target {
+  min-height: var(--hap-tap-min);
+  min-width: var(--hap-tap-min);
+}
+
+/* Primary CTA — HAP blue, pill, keyboard-safe */
+.hap-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--hap-space-2);
+  padding: 0.65rem 1.25rem;
+  min-height: var(--hap-tap-min);
+  font-family: var(--hap-font-display);
+  font-size: var(--hap-type-small);
+  font-weight: 600;
+  color: var(--hap-text-on-brand);
+  text-decoration: none;
+  background: linear-gradient(135deg, var(--hap-brand-primary) 0%, #0088e0 100%);
+  border: none;
+  border-radius: var(--hap-radius-pill);
+  box-shadow: var(--hap-shadow-brand);
+  cursor: pointer;
+  transition: transform var(--hap-duration-normal) var(--hap-ease-out),
+    box-shadow var(--hap-duration-normal) var(--hap-ease-out),
+    filter var(--hap-duration-fast) var(--hap-ease-out);
+}
+
+.hap-btn-primary:hover {
+  filter: brightness(1.05);
+  box-shadow: 0 6px 20px rgba(0, 114, 188, 0.35);
+}
+
+.hap-btn-primary:focus-visible {
+  outline: var(--hap-focus-ring);
+  outline-offset: var(--hap-focus-offset);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hap-btn-primary {
+    transition: none;
+  }
+  .hap-btn-primary:hover {
+    transform: none;
+  }
+}
+
+/* Flagship / metric card hover — GPU-friendly */
+.hap-card-interactive {
+  transition: box-shadow var(--hap-duration-normal) var(--hap-ease-standard),
+    border-color var(--hap-duration-normal) var(--hap-ease-standard),
+    transform 0.32s var(--hap-ease-spring);
+}
+
+.hap-card-interactive:hover {
+  box-shadow: var(--hap-shadow-md);
+  transform: translateY(-2px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hap-card-interactive:hover {
+    transform: none;
+  }
+}
+
+/* —— Executive KPI block (big number + label + one-line impact) —— opt-in wrapper */
+.hap-kpi-executive {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--hap-space-2);
+  text-align: left;
+}
+
+.hap-kpi-executive .hap-kpi-value {
+  font-family: var(--hap-font-display);
+  font-size: var(--hap-kpi-value-size);
+  font-weight: var(--hap-kpi-value-weight);
+  line-height: var(--hap-leading-tight);
+  letter-spacing: -0.02em;
+  color: var(--hap-text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.hap-kpi-executive .hap-kpi-label {
+  font-size: var(--hap-kpi-label-size);
+  font-weight: 600;
+  color: var(--hap-text-secondary);
+  line-height: var(--hap-leading-snug);
+  max-width: 42ch;
+}
+
+.hap-kpi-executive .hap-kpi-meaning {
+  font-size: var(--hap-kpi-meaning-size);
+  font-weight: 500;
+  color: var(--hap-kpi-meaning-color);
+  line-height: var(--hap-leading-relaxed);
+  max-width: 52ch;
+}

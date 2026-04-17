@@ -1,0 +1,52 @@
+/**
+ * HAP Corporate Branding Guidelines — April 2025 (PDF) → CSS custom properties
+ * Source file: HAP-Branding-Guidelines-April-2025-updated.pdf (Colors section)
+ * Use with hap-design-tokens.css; dashboard maps topics to these where noted.
+ */
+:root {
+  /* PDF “Primary” */
+  --hap-brandguide-orange: #fbb040;
+  --hap-brandguide-blue: #0072bc;
+  --hap-brandguide-sky: #8ed8f8;
+  /* PDF “Complimentary” */
+  --hap-brandguide-teal: #3a8b7f;
+  --hap-brandguide-slate: #6d8b8c;
+  --hap-brandguide-mist: #d3d9d4;
+  /* PDF “Black” */
+  --hap-brandguide-black: #231f20;
+
+  /* Topic roles (suite semantics + brandguide anchors) */
+  --hap-reg-topic-finance: var(--hap-brandguide-teal);
+  --hap-reg-topic-finance-soft: rgba(58, 139, 127, 0.12);
+  --hap-reg-topic-finance-border: rgba(58, 139, 127, 0.45);
+
+  --hap-reg-topic-access: var(--hap-brandguide-blue);
+  --hap-reg-topic-access-soft: rgba(0, 114, 188, 0.1);
+  --hap-reg-topic-access-border: rgba(0, 114, 188, 0.35);
+
+  --hap-reg-topic-policy: #006199;
+  --hap-reg-topic-policy-soft: rgba(0, 97, 153, 0.1);
+  --hap-reg-topic-policy-border: rgba(0, 97, 153, 0.32);
+
+  --hap-reg-topic-risk: var(--hap-brandguide-orange);
+  --hap-reg-topic-risk-soft: rgba(251, 176, 64, 0.14);
+  --hap-reg-topic-risk-border: rgba(251, 176, 64, 0.55);
+
+  /* PDF primary orange — use for positive HAP headline moments (not “burden”) */
+  --hap-reg-topic-brand: var(--hap-brandguide-orange);
+  --hap-reg-topic-brand-soft: rgba(251, 176, 64, 0.14);
+  --hap-reg-topic-brand-border: rgba(251, 176, 64, 0.45);
+
+  --hap-reg-topic-neutral: var(--hap-brandguide-slate);
+  --hap-reg-topic-neutral-soft: rgba(109, 139, 140, 0.12);
+  --hap-reg-topic-neutral-border: rgba(109, 139, 140, 0.35);
+
+  /* Performance / direction (cool = relief, efficiency; warm = friction — not tied to brand orange) */
+  --hap-reg-sentiment-positive: var(--hap-brandguide-teal);
+  --hap-reg-sentiment-positive-soft: rgba(58, 139, 127, 0.14);
+  --hap-reg-sentiment-negative: #b45309;
+  --hap-reg-sentiment-negative-soft: rgba(180, 83, 9, 0.12);
+
+  --hap-reg-ban-size: clamp(2.75rem, 1.5rem + 5vw, 4.25rem);
+  --hap-reg-ban-weight: 800;
+}

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#0072bc">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="HAP Regulatory 2026">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <title>HAP Regulatory Advocacy 2026</title>
+  <meta name="description" content="Mobile executive brief: HAP’s April 16, 2026 Pennsylvania DOH letter—priorities, verified context, and sources.">
+  <link rel="stylesheet" href="hap-design-tokens.css">
+  <link rel="stylesheet" href="branding-hap-2025.css">
+  <link rel="stylesheet" href="reg-advocacy-mobile.css">
+</head>
+<body class="hap-reg-mobile-page">
+  <div id="hap-mob-app" class="hap-mob-app">
+    <header class="hap-mob-header" id="hap-mob-header">
+      <div class="hap-mob-header-blur" aria-hidden="true"></div>
+      <div class="hap-mob-header-inner">
+        <a class="hap-mob-brand" href="index.html?full=1" id="hap-mob-brand-link">
+          <picture class="hap-mob-logo">
+            <source srcset="hap_logo.avif" type="image/avif">
+            <img src="haplogo_box_blue.jpeg" alt="HAP" width="40" height="40" loading="eager" decoding="async">
+          </picture>
+          <div class="hap-mob-title-group">
+            <span class="hap-mob-title">Regulatory advocacy</span>
+            <span class="hap-mob-subtitle">Pennsylvania · 2026</span>
+          </div>
+        </a>
+        <div class="hap-mob-header-actions">
+          <a class="hap-mob-header-btn hap-mob-header-btn--text" href="index.html?full=1">Full site</a>
+          <button type="button" class="hap-mob-header-btn" id="hap-mob-btn-share" aria-label="Share this brief">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 12v8a2 2 0 002 2h12a2 2 0 002-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <p class="hap-mob-hint" id="hap-mob-swipe-hint" aria-hidden="true">Swipe or use the bar below</p>
+
+    <main class="hap-mob-content" id="hap-mob-content" aria-label="Brief sections"></main>
+
+    <nav class="hap-mob-tab-bar" id="hap-mob-tab-bar" role="tablist" aria-label="Brief sections"></nav>
+  </div>
+
+  <script src="facts.js"></script>
+  <script src="map-lookups.js"></script>
+  <script src="../assets/vendor/d3.min.js"></script>
+  <script src="../assets/vendor/topojson-client.min.js"></script>
+  <script src="../assets/vendor/states-10m.js"></script>
+  <script src="reg-advocacy-mobile.js"></script>
+</body>
+</html>
