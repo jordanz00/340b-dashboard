@@ -14,8 +14,6 @@
     hero: {
       headline:
         'Three near-term opportunities to reduce regulatory burden for Pennsylvania hospitals',
-      sub:
-        'Your regulatory runway—in one scroll. This dashboard accompanies HAP’s April 16, 2026 letter to the Pennsylvania Department of Health (DOH): the three priorities in the letter, Pennsylvania hospital context, a Pennsylvania-versus-federal comparison, a national snapshot map, and one curated Sources list. On-screen figures and quoted language point to HAP’s public releases or to linked primary materials—PHC4, the Pennsylvania Code, Medicare citations where used, and The Joint Commission’s public ambulatory references for the map—so you can open the matching source in one click.\n\nIt is intended for executives, service-line leaders, government affairs teams, and members who need the narrative and citations together for briefings and packets. It is not legal advice and not a substitute for DOH instructions or your counsel.',
       ctas: [
         { label: 'Construction & plan review', href: '#construction', pillIcon: 'facilities' },
         { label: 'Credential across a system', href: '#credentialing', pillIcon: 'workforce' },
@@ -94,7 +92,7 @@
       {
         term: 'HAP',
         iconKind: 'hapMark',
-        text: 'The Hospital and Health System Association of Pennsylvania—the group that speaks for Pennsylvania hospitals and sent the April 16, 2026 letter to DOH.'
+        text: 'The Hospital and Healthsystem Association of Pennsylvania—the group that speaks for Pennsylvania hospitals and sent the April 16, 2026 letter to DOH.'
       },
       {
         term: 'DOH',
@@ -134,7 +132,7 @@
     ],
     letterContext: {
       dateDisplay: 'April 16, 2026',
-      letterhead: 'The Hospital and Health System Association of Pennsylvania (HAP)',
+      letterhead: 'The Hospital and Healthsystem Association of Pennsylvania (HAP)',
       recipient:
         'The Honorable Dr. Debra Bogen, Secretary of Health, Pennsylvania Department of Health, Health and Welfare Building, 625 Forster Street, 8th Floor West, Harrisburg, PA 17120',
       recipientLines: [
@@ -145,8 +143,8 @@
         '625 Forster Street, 8th Floor West',
         'Harrisburg, PA 17120'
       ],
-      sender: 'Nicole Stallings, President & CEO, The Hospital and Health System Association of Pennsylvania',
-      signatureOrgLine: 'The Hospital and Health System Association of Pennsylvania',
+      sender: 'Nicole Stallings, President & CEO, The Hospital and Healthsystem Association of Pennsylvania',
+      signatureOrgLine: 'The Hospital and Healthsystem Association of Pennsylvania',
       subject: 'Three near-term opportunities to reduce regulatory burden (April 16, 2026 letter)',
       salutation: 'Dear Secretary Bogen:',
       note:
@@ -252,38 +250,38 @@
     compareRows: [
       {
         issueIcon: 'calendar',
-        issue: 'How often doctors must be re-approved',
-        pa: 'Pennsylvania says hospitals must re-approve doctors on staff at least every two years.',
-        federal: 'Medicare and many accreditors often use up to three years unless state law is stricter.',
-        hap: 'HAP asks DOH to match the longer, simpler cycle when it is still safe for patients.'
+        issue: 'Doctor re-checks',
+        pa: 'PA: re-approve doctors on staff at least every 2 years.',
+        federal: 'Medicare / accreditors: often up to 3 years when state law allows.',
+        hap: 'HAP: match the longer cycle when it is still safe for patients.'
       },
       {
         issueIcon: 'workforce',
-        issue: 'Credentialing inside one hospital system',
-        pa: 'Each licensed hospital often repeats the same paperwork even when hospitals share one owner.',
-        federal: 'Medicare allows one shared process for related hospitals when state and local rules allow it.',
-        hap: 'HAP asks DOH to spell out how Pennsylvania systems can use one centralized process.'
+        issue: 'One credentialing path',
+        pa: 'PA: each licensed hospital may repeat paperwork—even under one owner.',
+        federal: 'Medicare: one shared process for related hospitals when state and local rules allow.',
+        hap: 'HAP: tell PA clearly how systems may centralize credentialing.'
       },
       {
         issueIcon: 'surgery',
-        issue: 'Outpatient surgery center surveys',
-        pa: 'Pennsylvania ASFs renew every year and get a yearly DOH licensing visit.',
-        federal: 'Medicare looks at surgery centers on a multi-year cycle with different survey rules.',
-        hap: 'HAP asks DOH to let strong accreditation count for part of the state renewal when law allows.'
+        issue: 'Surgery center visits',
+        pa: 'PA: ASFs renew yearly with a yearly DOH on-site visit.',
+        federal: 'Medicare: outpatient surgery centers on a multi-year check rhythm.',
+        hap: 'HAP: let strong accreditation count for part of state renewal when law allows.'
       },
       {
-        issueIcon: 'checkDouble',
-        issue: '“Deemed status” for surgery centers',
-        pa: 'Act 60 already helps hospitals avoid some double surveys; ASFs follow different rules today.',
-        federal: 'Many states point to accreditors in their rules; lists change—verify each state.',
-        hap: 'HAP asks for policy or a law change so ASFs can benefit the same way when it is safe.'
+        issueIcon: 'policydoc',
+        issue: 'Survey “double duty”',
+        pa: 'PA: Act 60 cut some duplicate hospital surveys; ASFs stay on a stricter track.',
+        federal: 'Other states: many cite accreditors in rules; lists change—verify each state.',
+        hap: 'HAP: policy or law so ASFs get the same flex when it is safe.'
       },
       {
-        issueIcon: 'facilities',
-        issue: 'Construction reviews (DSI and DAAC)',
-        pa: 'Hospitals can be unsure which DOH team reviews what, and small repairs can trigger big plan costs.',
-        federal: 'National building and fire codes still apply; the question is when full architect plans are needed.',
-        hap: 'HAP asks DOH for clear written rules and better communication between DSI and DAAC.'
+        issueIcon: 'blueprint',
+        issue: 'Building plan reviews',
+        pa: 'PA: DSI (plans / fire) and DAAC (licensing)—when full plans are needed can feel fuzzy.',
+        federal: 'US: building and fire codes still apply; question is when full architect plans are required.',
+        hap: 'HAP: written rules plus DSI–DAAC coordination so sites are not ping-ponged.'
       }
     ],
     /**
@@ -358,6 +356,7 @@
             metricKey: 'REG_ADV_PA_ACUTE_HOSPITALS_MULTI_YEAR_LOSS_PCT',
             valueNumeric: 39,
             valueUnit: 'PERCENT',
+            chipLabel: 'multi-year losses (same HAP FY24 release)',
             sourceId: 'hap-economic-fy2024'
           }
         ]
@@ -408,16 +407,16 @@
         deckIcon: 'facilities',
         topic: 'access',
         cardNum: '01',
-        badge: 'Buildings & plans',
+        badge: 'Facilities',
         badgeTone: 'teal',
-        stripLabel: 'The problem',
-        factsBandLabel: 'Proof row',
-        recLabel: 'What HAP wants DOH to do',
-        title: 'Two DOH teams—one clear playbook for hospital projects',
+        stripLabel: 'Friction',
+        factsBandLabel: 'Evidence',
+        recLabel: 'HAP request to DOH',
+        title: 'One playbook for DSI and DAAC',
         tagline:
-          'Two different DOH offices check buildings and licenses. Hospitals need one simple rulebook so small fixes are not treated like giant construction jobs.',
+          'Safety inspection and acute/ambulatory licensing are separate DOH lanes—without written thresholds and a single coordination path, hospitals get routed twice for the same project.',
         priorityStrip:
-          'Even small repairs can trigger expensive drawings when the rules are fuzzy—money and time that could go to patient care.',
+          'Minor work can still trigger full plan packages when criteria are unclear—adding cost and slowing beds, equipment, and renovation timelines.',
         letterExcerpt:
           'Pennsylvania is home to some of the nation’s leaders in health care innovation.',
         paragraphs: [
@@ -425,23 +424,23 @@
         ],
         miniFacts: [
           {
-            value: '2',
-            unit: 'teams',
-            label: 'DSI checks plans and fire safety. DAAC handles licensing visits. Hospitals should hear one story.',
+            value: 'Two',
+            unit: 'divisions',
+            label: 'DSI: plans and fire safety. DAAC: licensing and on-site inspections. One patient-safety story should not require two incompatible answers.',
             linkLabel: 'HAP letter',
             sourceId: 'hap-letter-2026'
           },
           {
             value: 'Ch. 151/153',
             unit: 'Pa. Code',
-            label: 'State code already talks about hospital buildings—HAP wants guidance that matches real repairs.',
+            label: 'Hospital construction and safety are already in the Code—HAP is asking for operational guidance that matches how facilities actually maintain buildings.',
             linkLabel: 'Pa. Code TOC',
             sourceId: 'pa-code-151-toc'
           },
           {
             value: 'Guidance',
             unit: 'first',
-            label: 'Put the rules in writing before asking for new laws—same safety, less guesswork.',
+            label: 'Written criteria and coordination before new legislation—same safety expectations, less ambiguity.',
             linkLabel: 'HAP letter',
             sourceId: 'hap-letter-2026'
           }
@@ -451,11 +450,12 @@
         eyebrow: 'Priority 1',
         deckTitle: 'Construction & facility projects',
         deckKicker: 'Priority 1',
-        deckBan: 'DSI + DAAC',
-        deckHandleSub: 'DSI = plan & fire-safety review · DAAC = acute & ambulatory licensing visits',
+        deckBan: 'Plan review · Licensing',
+        deckHandleSub:
+          'DSI (Division of Safety Inspection): plans and fire-safety review. DAAC (Division of Acute & Ambulatory Care): licensing and on-site inspections.',
         deckPlainAsk:
-          'Publish clear written thresholds for when full plan review is required, when work is routine maintenance, and how DSI and DAAC coordinate so hospitals are not stuck relaying between two DOH teams.',
-        deckLine: 'Who checks what—and how they talk.',
+          'Publish written criteria for when full plan review is required versus routine maintenance, and define how DSI and DAAC coordinate so hospitals are not passed between two DOH teams.',
+        deckLine: 'Clearer rules and one coordinated path reduce delays to care.',
         summary: '',
         bullets: [],
         callout: {
@@ -469,16 +469,16 @@
         deckIcon: 'workforce',
         topic: 'policy',
         cardNum: '02',
-        badge: 'People & paperwork',
+        badge: 'Credentialing',
         badgeTone: 'blue',
-        stripLabel: 'The problem',
-        factsBandLabel: 'Proof row',
-        recLabel: 'What HAP wants DOH to do',
-        title: 'One hospital family should not mean the same forms ten times',
+        stripLabel: 'Friction',
+        factsBandLabel: 'Evidence',
+        recLabel: 'HAP request to DOH',
+        title: 'One medical-staff process across a system',
         tagline:
-          'If hospitals share one owner, great doctors should not refill the same giant packet at every site when Medicare already allows one shared process where state law fits.',
+          'Related hospitals under common control still repeat credentialing packets site-by-site even when Medicare contemplates a unified path where state law permits.',
         priorityStrip:
-          'Pennsylvania still treats each hospital license like its own island. Extra paperwork does not make patients safer—it burns staff time.',
+          'Pennsylvania’s two-year physician reappointment floor can be tighter than common federal and accreditor cadence—multiplying committee work without a proportional safety gain.',
         letterExcerpt:
           'Improvements to the regulatory landscape would enable hospitals to reallocate resources currently tied to managing outdated systems to efforts aimed at leveraging cutting edge technologies, improving patient care, and better utilizing our health care workforce.',
         paragraphs: [
@@ -487,22 +487,22 @@
         miniFacts: [
           {
             value: '2 years',
-            unit: 'PA rule',
-            label: 'Pa. Code requires hospitals to reappoint physicians at least every two years (§ 107.5).',
+            unit: 'minimum',
+            label: 'Pa. Code § 107.5: hospitals must reappoint physicians to the medical staff at least every two years.',
             linkLabel: '§ 107.5',
             sourceId: 'pa-code-107-5'
           },
           {
-            value: 'Medicare',
-            unit: 'path',
-            label: 'Federal rules allow one shared medical staff for related hospitals when state and local law allow (42 CFR § 482.22).',
-            linkLabel: '42 CFR § 482.22',
+            value: '42 CFR',
+            unit: '§ 482.22',
+            label: 'Medicare: optional unified or integrated medical staff for related hospitals when state and local requirements allow.',
+            linkLabel: 'e-CFR',
             sourceId: 'cfr-482-22'
           },
           {
-            value: 'Often',
-            unit: '3 yr',
-            label: 'Accreditors often use three-year cycles; Pennsylvania stays in charge if its law is stricter.',
+            value: '≈3 years',
+            unit: 'typical',
+            label: 'Many accreditors use longer re-privileging cycles where regulation permits; Pennsylvania remains the backstop when its law is stricter.',
             linkLabel: 'Joint Commission FAQ',
             sourceId: 'jc-ms-faq'
           }
@@ -512,11 +512,12 @@
         eyebrow: 'Priority 2',
         deckTitle: 'Medical staff across a system',
         deckKicker: 'Priority 2',
-        deckBan: '1 process',
-        deckHandleSub: 'One credentialing path for hospitals under the same corporate umbrella when law and Medicare already allow it',
+        deckBan: 'System credentialing',
+        deckHandleSub:
+          'One credentialing process for related hospitals under common control when Medicare and Pennsylvania law permit.',
         deckPlainAsk:
-          'Issue policy or a structured exception so a health system can centralize medical-staff credentialing and align Pennsylvania’s two-year reappointment floor with the longer federal cycle where it is still safe.',
-        deckLine: 'Same safety—far less repeat paperwork.',
+          'Issue policy or a structured exception so a health system may centralize medical-staff credentialing and, where appropriate for patient safety, align Pennsylvania’s two-year reappointment minimum with longer federal and accreditor cycles.',
+        deckLine: 'Fewer redundant files; standards for privileging stay intact.',
         summary: '',
         bullets: [],
         callout: {
@@ -531,16 +532,16 @@
         deckIcon: 'policydoc',
         topic: 'finance',
         cardNum: '03',
-        badge: 'Outpatient surgery',
+        badge: 'Outpatient ASFs',
         badgeTone: 'orange',
-        stripLabel: 'The problem',
-        factsBandLabel: 'Proof row',
-        recLabel: 'What HAP wants DOH to do',
-        title: 'Surgery centers: do not double-check the same good work every year',
+        stripLabel: 'Friction',
+        factsBandLabel: 'Evidence',
+        recLabel: 'HAP request to DOH',
+        title: 'ASF surveys aligned with accreditation',
         tagline:
-          'If a trusted national survey already says a center is excellent, Pennsylvania should not automatically pile on a second full DOH survey every year when the law can allow a smarter path.',
+          'National accreditation already demonstrates quality; an automatic full DOH on-site survey every year can duplicate that work when statute and patient safety allow a blended approach.',
         priorityStrip:
-          'Act 60 already helped hospitals avoid some double surveys in 2013. Outpatient surgery centers still renew every year with a separate DOH visit—HAP wants the same common sense.',
+          'Act 60 gave hospitals more flexibility in 2013; ASFs still operate on an annual renewal and visit cadence that can outpace how peer states use deemed-status concepts.',
         letterExcerpt:
           'The financial and administrative burden of the outdated hospital licensure regulations continues to impede the ability of hospitals to efficiently deliver care.',
         paragraphs: [
@@ -550,21 +551,21 @@
           {
             value: 'Act 60',
             unit: '2013',
-            label: 'State law already lets hospitals lean on accreditation in some cases; ASFs still follow a stricter rhythm.',
+            label: 'Pennsylvania already used accreditation-aware flex for hospitals in limited contexts; ASFs have not received the same design space.',
             linkLabel: 'Act 60',
             sourceId: 'pa-act-60'
           },
           {
             value: 'Annual',
-            unit: 'ASF',
-            label: 'Pa. Code still describes yearly renewals and a yearly on-site DOH visit.',
+            unit: 'cadence',
+            label: 'Pa. Code still ties ASF renewal to yearly paperwork and a yearly on-site DOH visit.',
             linkLabel: '§ 551.53',
             sourceId: 'pa-code-551-53'
           },
           {
             value: '$250',
             unit: 'fee',
-            label: 'Published renewal filing fee for ASFs in Pa. Code.',
+            label: 'Published ASF renewal filing fee (context for annual administrative load).',
             linkLabel: '§ 551.34',
             sourceId: 'pa-code-551-34'
           }
@@ -574,11 +575,11 @@
         eyebrow: 'Priority 3',
         deckTitle: 'Ambulatory surgery centers',
         deckKicker: 'Priority 3',
-        deckBan: 'One path',
-        deckHandleSub: 'ASFs = Pennsylvania-licensed outpatient surgery centers',
+        deckBan: 'ASF renewal · Surveys',
+        deckHandleSub: 'Ambulatory surgical facilities (ASFs): Pennsylvania-licensed outpatient surgery centers.',
         deckPlainAsk:
-          'Where national accreditation already proves quality, avoid an automatic duplicate DOH survey every year—through policy or legislation that mirrors “deemed status” flex hospitals use when law allows.',
-        deckLine: 'Trust good surveys—skip duplicate ones when safe.',
+          'Where national accreditation demonstrates quality, avoid an automatic duplicate DOH on-site survey each year—through policy or legislation comparable to hospital deemed-status flex when state law allows.',
+        deckLine: 'Let accreditation inform renewal; align state surveys with demonstrated risk.',
         summary: '',
         bullets: [],
         callout: {
@@ -593,7 +594,7 @@
       {
         id: 'hap-economic-fy2024',
         shortTitle: 'HAP — Economic & community benefit news release (FY 2024 data; April 2025)',
-        publisher: 'The Hospital and Health System Association of Pennsylvania',
+        publisher: 'The Hospital and Healthsystem Association of Pennsylvania',
         url: 'https://www.haponline.org/News/Media/News-Releases/pennsylvanians-see-billions-in-economic-community-benefits-from-hospitals-in-their-communities-1',
         accessedNote:
           'HAP’s public release describes analysis of fiscal year (FY) 2024 hospital data (not FY 2025). Figures quoted there include $195.4B economic contribution; 785,715 jobs; $62.8B wages; $10.8B community benefit; 37% in the red; 39% multi-year losses; fewer than half with sustainable margins. Deep analysis landing: About PA Hospitals → Community Impact.'
@@ -601,7 +602,7 @@
       {
         id: 'hap-community-impact',
         shortTitle: 'HAP — Community Impact (FY 2024 data; analysis landing)',
-        publisher: 'The Hospital and Health System Association of Pennsylvania',
+        publisher: 'The Hospital and Healthsystem Association of Pennsylvania',
         url: 'https://www.haponline.org/About-PA-Hospitals/Community-Impact',
         accessedNote: 'Companion landing page linked from HAP’s April 2025 news release on FY 2024 hospital economic and community benefit figures.'
       },
@@ -623,14 +624,14 @@
       {
         id: 'hap-membership',
         shortTitle: 'HAP — Membership in HAP',
-        publisher: 'The Hospital and Health System Association of Pennsylvania',
+        publisher: 'The Hospital and Healthsystem Association of Pennsylvania',
         url: 'https://www.haponline.org/About-HAP/Membership-in-HAP',
         accessedNote: 'Public membership description (hospital/health system member scale).'
       },
       {
         id: 'hap-letter-2026',
         shortTitle: 'HAP — April 16, 2026 regulatory priorities letter (correspondence)',
-        publisher: 'The Hospital and Health System Association of Pennsylvania',
+        publisher: 'The Hospital and Healthsystem Association of Pennsylvania',
         url: '',
         accessedNote:
           'Letter excerpts and narrative on this dashboard track the April 16, 2026 HAP letter to Secretary Bogen (construction DSI/DAAC, system credentialing, ASF deemed status). Add a public URL here when posted.'
@@ -702,7 +703,7 @@
       {
         id: 'jc-ambulatory-compiled-21',
         shortTitle: 'HAP dashboard — 21-state ambulatory footprint (compiled methodology)',
-        publisher: 'The Hospital and Health System Association of Pennsylvania (dashboard methodology note)',
+        publisher: 'The Hospital and Healthsystem Association of Pennsylvania (dashboard methodology note)',
         url: 'https://www.jointcommission.org/en-us/accreditation/ambulatory-health-care/state-payer-recognitions',
         accessedNote:
           'April 16, 2026: jcAmbulatoryRecognizedAbbr lists the deduplicated union of state names on the TJC Ambulatory State and Payer page for (1) Anthem/IngenioRX medical-group recognition — CA, CO, CT, GA, IN, KY, ME, MO, NV, NH, NY, OH, VA, WI; (2) Highmark ambulatory — DE, NY, PA, WV; (3) Centene PCMH incentives — AZ, CA, IL, IN, IA, LA, MD, MS, MO, NE, NH, NM, OH, OR, SC, TX, WA. Deduplicated list used on map: AZ, CA, CO, CT, DE, GA, IL, IN, IA, KY, LA, ME, MD, MS, MO, NE, NV, NH, NM, NY, OH (21). TJC states these materials are informational, not definitive regulatory authority; verify each jurisdiction.'
@@ -739,7 +740,7 @@
       {
         id: 'hap-branding-pdf',
         shortTitle: 'HAP Corporate Branding Guidelines (April 2025)',
-        publisher: 'The Hospital and Health System Association of Pennsylvania',
+        publisher: 'The Hospital and Healthsystem Association of Pennsylvania',
         url: '',
         accessedNote:
           'Internal PDF palette: #0072bc, #fbb040, #8ed8f8, #3a8b7f, #6d8b8c, #d3d9d4, #231f20 — implemented in branding-hap-2025.css.'

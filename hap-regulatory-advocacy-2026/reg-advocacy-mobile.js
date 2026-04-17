@@ -3,7 +3,7 @@
  *
  * WHO THIS IS FOR: Policymakers and members opening the brief on a phone.
  * WHAT IT DOES: Renders a five-segment, Apple-style shell from window.HAP_REGULATORY_ADVOCACY_2026 (facts.js),
- *   with horizontal swipe between segments and a frosted tab bar.
+ *   with horizontal swipe between segments and a frosted tab bar (Start → Data → Map → Asks → More).
  * HOW IT CONNECTS: facts.js (data), map-lookups.js (state names / FIPS), vendor D3/topojson/US atlas (map).
  *
  * POWER BI MAPPING: none (static advocacy brief).
@@ -13,12 +13,12 @@
 (function () {
   'use strict';
 
-  var TABS = ['overview', 'stats', 'priorities', 'benchmark', 'receipts'];
+  var TABS = ['overview', 'stats', 'benchmark', 'priorities', 'receipts'];
   var TAB_META = [
     { id: 'overview', label: 'Start' },
     { id: 'stats', label: 'Data' },
-    { id: 'priorities', label: 'Asks' },
     { id: 'benchmark', label: 'Map' },
+    { id: 'priorities', label: 'Asks' },
     { id: 'receipts', label: 'More' }
   ];
 
@@ -680,16 +680,23 @@
         }
       });
 
+    var easeMob = typeof d3.easeCubicOut === 'function' ? d3.easeCubicOut : null;
     if (prefersReducedMotion()) {
       pathSel.style('opacity', 1);
     } else {
       pathSel
         .style('opacity', 0)
         .transition()
+        .ease(
+          easeMob ||
+            function (t) {
+              return 1 - Math.pow(1 - t, 3);
+            }
+        )
         .delay(function (d, i) {
-          return Math.min(i * 6, 700);
+          return Math.min(i * 5, 720);
         })
-        .duration(280)
+        .duration(360)
         .style('opacity', 1);
     }
 
@@ -703,7 +710,7 @@
       updateMobMapSelection(null, rec, names);
     }
 
-    svg
+    var meshMob = svg
       .append('path')
       .datum(topojson.mesh(usData, usData.objects.states, function (a, b) {
         return a !== b;
@@ -715,6 +722,23 @@
       .attr('stroke-width', 0.55)
       .attr('stroke-linejoin', 'round')
       .attr('d', path);
+    if (prefersReducedMotion()) {
+      meshMob.style('opacity', 0.94);
+    } else {
+      var easeMesh = typeof d3.easeCubicOut === 'function' ? d3.easeCubicOut : null;
+      meshMob
+        .style('opacity', 0)
+        .transition()
+        .delay(140)
+        .duration(400)
+        .ease(
+          easeMesh ||
+            function (t) {
+              return 1 - Math.pow(1 - t, 3);
+            }
+        )
+        .style('opacity', 0.94);
+    }
 
     mapDrawn = true;
   }
@@ -854,8 +878,7 @@
     setText(date, (lc.dateDisplay || '') + ' · Pennsylvania hospitals');
     var h1 = el('h1', 'hap-mob-h1');
     setText(h1, (data.hero && data.hero.headline) || 'Regulatory advocacy');
-    var lead = el('p', 'hap-mob-lead');
-    setText(lead, heroSubShort(data.hero && data.hero.sub));
+    var leadText = heroSubShort(data.hero && data.hero.sub);
 
     var aag = el('div', 'hap-mob-aag');
     (data.atAGlance || []).forEach(function (it) {
@@ -902,7 +925,11 @@
     wrap.appendChild(eyebrow);
     wrap.appendChild(date);
     wrap.appendChild(h1);
-    wrap.appendChild(lead);
+    if (leadText) {
+      var lead = el('p', 'hap-mob-lead');
+      setText(lead, leadText);
+      wrap.appendChild(lead);
+    }
     wrap.appendChild(aag);
     wrap.appendChild(kpiGrid);
     frag.appendChild(wrap);
@@ -971,33 +998,31 @@
   function elBenchmark(data, sourceById) {
     var wrap = el('div', '');
     var h = el('h2', 'hap-mob-section-title');
-    setText(h, 'PA vs US · Map');
+    setText(h, 'National map · PA vs US');
     var lead = el('p', 'hap-mob-section-lead');
-    setText(lead, 'State rules compared to Medicare-style practice, then the national snapshot.');
+    setText(lead, 'TJC ambulatory footprint first—then context, then PA vs Medicare rows.');
     wrap.appendChild(h);
     wrap.appendChild(lead);
 
-    (data.compareRows || []).forEach(function (row) {
-      var card = el('div', 'hap-mob-compare-card hap-mob-anim');
-      var issue = el('div', 'hap-mob-compare-issue');
-      issue.appendChild(createDataIconSvg(row.issueIcon, 'hap-mob-compare-ic'));
-      var it = el('span', '');
-      setText(it, row.issue || '');
-      issue.appendChild(it);
-      card.appendChild(issue);
-      ['pa', 'federal', 'hap'].forEach(function (key) {
-        var lab = key === 'pa' ? 'Pennsylvania' : key === 'federal' ? 'Federal / national' : 'HAP ask';
-        var r = el('div', 'hap-mob-compare-row');
-        var k = el('div', 'hap-mob-compare-k');
-        setText(k, lab);
-        var v = document.createElement('div');
-        setText(v, row[key] || '');
-        r.appendChild(k);
-        r.appendChild(v);
-        card.appendChild(r);
-      });
-      wrap.appendChild(card);
-    });
+    var mapBox = el('div', 'hap-mob-map-wrap hap-mob-anim');
+    var tip = el('div', 'hap-mob-map-tooltip');
+    tip.id = 'hap-mob-map-tooltip';
+    tip.setAttribute('role', 'status');
+    var sw = el('div', 'hap-mob-map-stage-wrap');
+    sw.id = 'hap-mob-map-stage-wrap';
+    var stage = el('div', '');
+    stage.id = 'hap-mob-map-stage';
+    sw.appendChild(stage);
+    var leg = el('div', 'hap-mob-map-legend');
+    leg.id = 'hap-mob-map-legend';
+    var sel = el('div', 'hap-mob-map-selection');
+    sel.id = 'hap-mob-map-selection';
+    sel.hidden = true;
+    mapBox.appendChild(tip);
+    mapBox.appendChild(sw);
+    mapBox.appendChild(leg);
+    mapBox.appendChild(sel);
+    wrap.appendChild(mapBox);
 
     var sc = data.statesCallout || {};
     var hero = el('div', 'hap-mob-map-hero hap-mob-anim');
@@ -1020,27 +1045,40 @@
     }
     wrap.appendChild(hero);
 
-    var mapBox = el('div', 'hap-mob-map-wrap hap-mob-anim');
-    var tip = el('div', 'hap-mob-map-tooltip');
-    tip.id = 'hap-mob-map-tooltip';
-    tip.setAttribute('role', 'status');
-    var sw = el('div', 'hap-mob-map-stage-wrap');
-    sw.id = 'hap-mob-map-stage-wrap';
-    var stage = el('div', '');
-    stage.id = 'hap-mob-map-stage';
-    sw.appendChild(stage);
-    var leg = el('div', 'hap-mob-map-legend');
-    leg.id = 'hap-mob-map-legend';
-    var sel = el('div', 'hap-mob-map-selection');
-    sel.id = 'hap-mob-map-selection';
-    sel.hidden = true;
-    mapBox.appendChild(tip);
-    mapBox.appendChild(sw);
-    mapBox.appendChild(leg);
-    mapBox.appendChild(sel);
-    wrap.appendChild(mapBox);
+    (data.compareRows || []).forEach(function (row) {
+      var card = el('div', 'hap-mob-compare-card hap-mob-anim');
+      var issue = el('div', 'hap-mob-compare-issue');
+      issue.appendChild(createDataIconSvg(row.issueIcon, 'hap-mob-compare-ic'));
+      var it = el('span', '');
+      setText(it, row.issue || '');
+      issue.appendChild(it);
+      card.appendChild(issue);
+      ['pa', 'federal', 'hap'].forEach(function (key) {
+        var lab = key === 'pa' ? 'PA' : key === 'federal' ? 'Medicare / US' : 'HAP';
+        var r = el('div', 'hap-mob-compare-row hap-mob-compare-row--' + key);
+        var k = el('div', 'hap-mob-compare-k');
+        setText(k, lab);
+        var v = document.createElement('div');
+        setText(v, row[key] || '');
+        r.appendChild(k);
+        r.appendChild(v);
+        card.appendChild(r);
+      });
+      wrap.appendChild(card);
+    });
 
     return wrap;
+  }
+
+  function formatMobImpactStat(t) {
+    if (!t) return '';
+    if (t.valueDisplay) return String(t.valueDisplay);
+    if (typeof t.valueNumeric !== 'number') return '';
+    var u = t.valueUnit || '';
+    if (u === 'USD_BILLIONS') return '$' + t.valueNumeric + 'B';
+    if (u === 'PERCENT') return t.valueNumeric + '%';
+    if (u === 'COUNT') return t.valueNumeric >= 200 ? t.valueNumeric + '+' : String(t.valueNumeric);
+    return String(t.valueNumeric);
   }
 
   function elReceipts(data, sourceById) {
@@ -1064,28 +1102,78 @@
     wrap.appendChild(ih);
 
     (data.impactTiles || []).forEach(function (t) {
-      var row = el('div', 'hap-mob-impact-row hap-mob-anim');
       var allowedDots = { brand: 1, policy: 1, access: 1, finance: 1 };
       var topicDot = allowedDots[t.iconTopic] ? t.iconTopic : 'policy';
-      var dot = el('span', 'hap-mob-impact-dot hap-mob-impact-dot--' + topicDot);
-      var txt = el('div', '');
+      var row = el('div', 'hap-mob-impact-card hap-mob-anim hap-mob-impact-card--' + topicDot);
+      var top = el('div', 'hap-mob-impact-card-top');
+      var icWrap = el('div', 'hap-mob-impact-ic-wrap');
+      icWrap.appendChild(createDataIconSvg(t.rowIcon || 'chart', 'hap-mob-impact-svg'));
+      top.appendChild(icWrap);
+      var statStr = formatMobImpactStat(t);
+      if (statStr) {
+        var stEl = el('div', 'hap-mob-impact-stat');
+        setText(stEl, statStr);
+        top.appendChild(stEl);
+      }
+      row.appendChild(top);
+      var badge = el('div', 'hap-mob-impact-badge');
+      setText(badge, t.dotLabel || 'Fact');
+      row.appendChild(badge);
       var title = el('div', 'hap-mob-impact-title');
       setText(title, t.title || '');
+      row.appendChild(title);
       var body = el('div', 'hap-mob-impact-body');
       setText(body, t.body || '');
+      row.appendChild(body);
+      if (t.supplementalMetrics && t.supplementalMetrics.length) {
+        var chips = el('div', 'hap-mob-impact-chips');
+        t.supplementalMetrics.forEach(function (sm) {
+          var ch = el('span', 'hap-mob-impact-chip');
+          var line = '';
+          if (typeof sm.valueNumeric === 'number' && sm.valueUnit === 'PERCENT') {
+            line = sm.valueNumeric + '%';
+          } else if (sm.valueDisplay) {
+            line = String(sm.valueDisplay);
+          }
+          if (sm.chipLabel) {
+            line = line ? line + ' · ' + sm.chipLabel : sm.chipLabel;
+          }
+          setText(ch, line || '');
+          chips.appendChild(ch);
+        });
+        row.appendChild(chips);
+      }
+      var act = el('div', 'hap-mob-impact-actions');
       var src = sourceById[t.sourceId];
       if (src && src.url) {
-        var a = document.createElement('a');
-        a.href = src.url;
-        a.rel = 'noopener noreferrer';
-        a.style.cssText = 'display:block;margin-top:6px;font-weight:600;font-size:12px;color:var(--hap-brand-primary,#0072bc);';
-        setText(a, 'Source');
-        body.appendChild(a);
+        var ext = document.createElement('a');
+        ext.href = src.url;
+        ext.rel = 'noopener noreferrer';
+        ext.className = 'hap-mob-impact-btn hap-mob-impact-btn--primary';
+        setText(ext, 'Open');
+        act.appendChild(ext);
       }
-      txt.appendChild(title);
-      txt.appendChild(body);
-      row.appendChild(dot);
-      row.appendChild(txt);
+      if (t.sourceId) {
+        var jump = document.createElement('a');
+        jump.href = '#mob-src-' + t.sourceId;
+        jump.className = 'hap-mob-impact-btn hap-mob-impact-btn--ghost';
+        setText(jump, 'Sources');
+        act.appendChild(jump);
+      }
+      if (src && src.url) {
+        var copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'hap-mob-impact-btn hap-mob-impact-btn--quiet';
+        setText(copyBtn, 'Copy');
+        copyBtn.addEventListener('click', function () {
+          var line = (src.shortTitle || '') + '\n' + src.url;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(line).catch(function () {});
+          }
+        });
+        act.appendChild(copyBtn);
+      }
+      row.appendChild(act);
       wrap.appendChild(row);
     });
 

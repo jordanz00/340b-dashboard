@@ -28,6 +28,7 @@
 | **modules/** | PA Impact + Policy Simulator | Scenario data in `pa-impact-data.js`, `impact-data.js` | [modules/README.md](modules/README.md) |
 | **config/settings.js**, **config/chart-configs.js** | Feature flags, chart formats | Tooltip timing, KPI formatting | [CONFIG-INDEX.md](CONFIG-INDEX.md) |
 | **data/dataset-metadata.js** | Provenance, version | Sync with CONFIG when publishing data refresh | [CONFIG-INDEX.md](CONFIG-INDEX.md) |
+| **hap-regulatory-advocacy-2026/** | PA DOH regulatory advocacy 2026 brief (own `facts.js`, map, print-friendly CSS) | Letter dates, KPI copy, sources, mobile shell — **not** `state-data.js` | [hap-regulatory-advocacy-2026/README.md](hap-regulatory-advocacy-2026/README.md), [docs/DATA-DICTIONARY.md](docs/DATA-DICTIONARY.md) |
 
 **IT-safe hosting:** Use **340b-BASIC.html** when CDN or PDF tooling is not allowed. Local D3 + TopoJSON only; no unpkg. See [SECURITY.md](SECURITY.md) and [SECURE-FORCE.md](SECURE-FORCE.md).
 
@@ -45,6 +46,7 @@
 | **Fix share link or URL hash** | `340b.js` → `buildShareUrl`, `getHashState`, `updateUrlHash` |
 | **Change simulator numbers (full dashboard)** | `modules/impact-data.js` or `modules/pa-impact-data.js` |
 | **Edit only the Basic page** | `340b-BASIC.html` — [docs/BASIC-UPDATE-GUIDE.md](docs/BASIC-UPDATE-GUIDE.md) |
+| **Edit the regulatory advocacy 2026 microsite** | `hap-regulatory-advocacy-2026/` — [hap-regulatory-advocacy-2026/README.md](hap-regulatory-advocacy-2026/README.md); facts in **`facts.js`** (separate from 340B `state-data.js`) |
 | **Find where a setting lives** | [CONFIG-INDEX.md](CONFIG-INDEX.md) |
 | **Understand a term** | [GLOSSARY.md](GLOSSARY.md) |
 | **Refactor labels / learn daily** | [REFACTORING-CODEBASE-MANUAL.md](REFACTORING-CODEBASE-MANUAL.md), [ULTRA-prompts.md](ULTRA-prompts.md) (v13–v22) |
@@ -98,7 +100,7 @@ Follow this order after meaningful changes:
 2. Update the content, style, or behavior in the correct file.
 3. Open the page through a **local server** and test the exact feature you changed.
 4. **Print gate:** Open `Print / PDF` and `Download PDF (image)` and confirm: (a) map fully visible in both outputs, (b) **Print/PDF:** first page shows header + Overview block (no blank first page), no page break in the middle of content or map, tight spacing; (c) **PDF image:** layout matches expectations (see `QA-CHECKLIST.md`). If layout or print CSS changed, this is mandatory.
-5. Run **`python3 dashboard-audit.py`**.
+5. Run **`python3 dashboard-audit.py`** and **`python3 tests/e2e-smoke.py`** (HTTP + BASIC IT-safe + regulatory advocacy shells).
 6. Use **`QA-CHECKLIST.md`**.
 7. Run Semgrep if you changed security-sensitive code.
 8. Publish only after the print preview and source checks look correct to a human reviewer.

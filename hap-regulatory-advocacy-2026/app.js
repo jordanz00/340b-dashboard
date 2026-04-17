@@ -400,7 +400,6 @@
     var data = window.HAP_REGULATORY_ADVOCACY_2026;
     if (!data || !data.hero) return;
     setText(document.getElementById('overview-title'), data.hero.headline);
-    setText(document.getElementById('js-hero-sub'), data.hero.sub);
     var row = document.getElementById('js-hero-ctas');
     if (!row) return;
     while (row.firstChild) row.removeChild(row.firstChild);
@@ -434,7 +433,7 @@
     while (container.firstChild) container.removeChild(container.firstChild);
     var head = document.createElement('p');
     head.className = 'hap-reg-aag-kicker';
-    setText(head, 'At a glance — three topics HAP raised for discussion with DOH');
+    setText(head, 'At a glance — three letter themes for DOH');
     container.appendChild(head);
     var grid = document.createElement('div');
     grid.className = 'hap-reg-aag-grid';
@@ -474,7 +473,7 @@
         (p.cardNum || p.deckKicker || 'Priority') + ': ' + (p.deckTitle || ''),
         p.deckPlainAsk || p.deckLine || ''
       ];
-      a.setAttribute('aria-label', ariaParts.join('. ') + ' Opens the policy brief below.');
+      a.setAttribute('aria-label', ariaParts.join('. ') + ' Opens the full brief with sources below.');
 
       var topRow = document.createElement('div');
       topRow.className = 'hap-reg-deck-top';
@@ -518,7 +517,7 @@
       setText(line, p.deckLine);
       var go = document.createElement('span');
       go.className = 'hap-reg-deck-go';
-      setText(go, 'View brief & citations');
+      setText(go, 'Open brief + sources');
       a.appendChild(line);
       a.appendChild(go);
       container.appendChild(a);
@@ -557,8 +556,8 @@
   }
 
   /**
-   * Priority “brief” cards: headline + simple problem + one-line ask + proof row;
-   * letter excerpt, full DOH ask, and callouts live inside a native disclosure for a calmer first screen.
+   * Priority brief cards: badge + title, lede (deckPlainAsk), optional context (tagline),
+   * friction block, outcome strip, evidence tiles, then disclosure for letter + full ask.
    */
   function renderPriorityArticles(container, priorities, sourceById) {
     if (!container) return;
@@ -566,7 +565,8 @@
     priorities.forEach(function (p) {
       var topic = p.topic || 'policy';
       var art = document.createElement('article');
-      art.className = 'hap-reg-priority-card hap-reg-pc-showcase hap-reg-topic-' + topic;
+      art.className =
+        'hap-reg-priority-card hap-reg-pc-showcase hap-reg-pc-article hap-reg-topic-' + topic;
       art.setAttribute('aria-labelledby', p.id + '-title');
 
       var head = document.createElement('div');
@@ -589,12 +589,20 @@
       h3.className = 'hap-reg-pc-h3';
       h3.id = p.id + '-title';
       setText(h3, p.title);
-      var tag = document.createElement('p');
-      tag.className = 'hap-reg-pc-tagline hap-reg-pc-tagline--showcase';
-      setText(tag, p.tagline);
+      var ledeText = (p.deckPlainAsk && String(p.deckPlainAsk).trim()) || (p.tagline && String(p.tagline).trim()) || '';
+      var lede = document.createElement('p');
+      lede.className = 'hap-reg-pc-lede';
+      setText(lede, ledeText);
       headMain.appendChild(badge);
       headMain.appendChild(h3);
-      headMain.appendChild(tag);
+      headMain.appendChild(lede);
+      var tagT = p.tagline ? String(p.tagline).trim() : '';
+      if (tagT && tagT !== String(ledeText).trim()) {
+        var ctx = document.createElement('p');
+        ctx.className = 'hap-reg-pc-context';
+        setText(ctx, tagT);
+        headMain.appendChild(ctx);
+      }
       head.appendChild(num);
       head.appendChild(iconWrap);
       head.appendChild(headMain);
@@ -604,10 +612,10 @@
 
       if (p.priorityStrip) {
         var prob = document.createElement('div');
-        prob.className = 'hap-reg-pc-problem hap-reg-pc-problem--' + topic;
+        prob.className = 'hap-reg-pc-friction hap-reg-pc-problem hap-reg-pc-problem--' + topic;
         var plab = document.createElement('span');
         plab.className = 'hap-reg-pc-problem-label';
-        setText(plab, p.stripLabel || 'The problem');
+        setText(plab, p.stripLabel || 'Context');
         var ptxt = document.createElement('p');
         ptxt.className = 'hap-reg-pc-problem-text';
         setText(ptxt, p.priorityStrip);
@@ -617,10 +625,17 @@
       }
 
       if (p.deckLine) {
-        var askline = document.createElement('p');
-        askline.className = 'hap-reg-pc-askline hap-reg-pc-askline--' + topic;
-        setText(askline, p.deckLine);
-        core.appendChild(askline);
+        var out = document.createElement('div');
+        out.className = 'hap-reg-pc-outcome hap-reg-pc-outcome--' + topic;
+        var oLab = document.createElement('span');
+        oLab.className = 'hap-reg-pc-outcome-label';
+        setText(oLab, 'Outcome');
+        var oTxt = document.createElement('p');
+        oTxt.className = 'hap-reg-pc-outcome-text';
+        setText(oTxt, p.deckLine);
+        out.appendChild(oLab);
+        out.appendChild(oTxt);
+        core.appendChild(out);
       }
 
       if (p.miniFacts && p.miniFacts.length) {
@@ -628,7 +643,7 @@
         proof.className = 'hap-reg-pc-proof hap-reg-pc-proof--showcase';
         var proofLab = document.createElement('div');
         proofLab.className = 'hap-reg-pc-proof-label';
-        setText(proofLab, p.factsBandLabel || 'Proof row');
+        setText(proofLab, p.factsBandLabel || 'Evidence');
         proof.appendChild(proofLab);
         var facts = document.createElement('div');
         facts.className = 'hap-reg-pc-facts hap-reg-pc-facts--showcase';
@@ -659,7 +674,7 @@
       det.className = 'hap-reg-pc-details';
       var sum = document.createElement('summary');
       sum.className = 'hap-reg-pc-details-sum';
-      setText(sum, 'Letter excerpt, full ask & citations');
+      setText(sum, 'Letter excerpt · full ask · sources');
       det.appendChild(sum);
 
       var inner = document.createElement('div');
@@ -690,7 +705,7 @@
       rec.className = 'hap-reg-pc-rec hap-reg-pc-rec--full hap-reg-pc-rec--' + topic;
       var rl = document.createElement('div');
       rl.className = 'hap-reg-pc-rec-label';
-      setText(rl, p.recLabel || 'What HAP wants DOH to do');
+      setText(rl, p.recLabel || 'HAP request to DOH');
       var rp = document.createElement('p');
       rp.className = 'hap-reg-pc-rec-text';
       setText(rp, p.recommendation);
@@ -730,6 +745,34 @@
     wirePriorityBriefReveal(container);
   }
 
+  /**
+   * Build a compare table header cell with optional topic icon (safe DOM).
+   *
+   * @param {string} label
+   * @param {string|null} iconKind — createDataIconSvg kind, or null
+   * @param {string} thClass — extra class on th
+   * @returns {HTMLTableCellElement}
+   */
+  function makeCompareTh(label, iconKind, thClass) {
+    var th = document.createElement('th');
+    th.className = 'hap-reg-compare-th ' + (thClass || '');
+    var inner = document.createElement('div');
+    inner.className = 'hap-reg-compare-th-inner';
+    if (iconKind) {
+      var icw = document.createElement('span');
+      icw.className = 'hap-reg-compare-th-ic-wrap';
+      icw.setAttribute('aria-hidden', 'true');
+      icw.appendChild(createDataIconSvg(iconKind, 'hap-reg-compare-th-ic'));
+      inner.appendChild(icw);
+    }
+    var lab = document.createElement('span');
+    lab.className = 'hap-reg-compare-th-label';
+    setText(lab, label);
+    inner.appendChild(lab);
+    th.appendChild(inner);
+    return th;
+  }
+
   function renderCompareSection(container, rows) {
     if (!container) return;
     while (container.firstChild) container.removeChild(container.firstChild);
@@ -737,14 +780,13 @@
     wrap.className = 'hap-reg-compare-scroll';
     var table = document.createElement('table');
     table.className = 'hap-reg-compare-table';
-    table.setAttribute('aria-label', 'Pennsylvania and federal comparison');
+    table.setAttribute('aria-label', 'Pennsylvania compared to Medicare and US patterns, with HAP asks');
     var thead = document.createElement('thead');
     var hr = document.createElement('tr');
-    ['Issue', 'Pennsylvania', 'Federal / national reference', 'HAP proposed direction'].forEach(function (h) {
-      var th = document.createElement('th');
-      setText(th, h);
-      hr.appendChild(th);
-    });
+    hr.appendChild(makeCompareTh('Topic', 'scale', 'hap-reg-compare-th--issue'));
+    hr.appendChild(makeCompareTh('Pennsylvania', 'shield', 'hap-reg-compare-th--pa'));
+    hr.appendChild(makeCompareTh('Medicare / US', 'scroll', 'hap-reg-compare-th--fed'));
+    hr.appendChild(makeCompareTh('HAP ask', 'checkDouble', 'hap-reg-compare-th--hap'));
     thead.appendChild(hr);
     var tb = document.createElement('tbody');
     rows.forEach(function (r) {
@@ -763,7 +805,10 @@
             iw.appendChild(createDataIconSvg(r.issueIcon, 'hap-reg-compare-issue-ic'));
             issueWrap.appendChild(iw);
           }
-          issueWrap.appendChild(document.createTextNode(cell));
+          var issueTxt = document.createElement('span');
+          issueTxt.className = 'hap-reg-compare-issue-text';
+          setText(issueTxt, cell);
+          issueWrap.appendChild(issueTxt);
           td.appendChild(issueWrap);
         } else if (idx === 1) {
           td.className = 'hap-reg-compare-pa';
@@ -947,54 +992,242 @@
     container.appendChild(wrap);
   }
 
-  function renderImpact(el, tiles, sourceById) {
-    if (!el) return;
-    while (el.firstChild) el.removeChild(el.firstChild);
+  /**
+   * Primary stat line for impact showcase cards (from facts.js metric fields; no invented numbers).
+   * @param {{ valueDisplay?: string, valueNumeric?: number, valueUnit?: string }} t
+   * @returns {string}
+   */
+  function formatImpactPrimaryStat(t) {
+    if (!t) return '';
+    if (t.valueDisplay) return String(t.valueDisplay);
+    if (typeof t.valueNumeric !== 'number') return '';
+    var u = t.valueUnit || '';
+    if (u === 'USD_BILLIONS') return '$' + t.valueNumeric + 'B';
+    if (u === 'PERCENT') return t.valueNumeric + '%';
+    if (u === 'COUNT') return t.valueNumeric >= 200 ? t.valueNumeric + '+' : String(t.valueNumeric);
+    return String(t.valueNumeric);
+  }
+
+  /**
+   * Renders interactive filter chips + showcase cards for Verified anchors (safe DOM only).
+   *
+   * @param {HTMLElement|null} keyEl — toolbar container (cleared and rebuilt)
+   * @param {HTMLElement|null} gridEl — card list container
+   * @param {Array<object>} tiles — impactTiles from facts.js
+   * @param {Record<string, object>} sourceById — sources by id
+   */
+  function renderImpactAnchors(keyEl, gridEl, tiles, sourceById) {
+    if (!gridEl || !tiles || !tiles.length) return;
+    while (gridEl.firstChild) gridEl.removeChild(gridEl.firstChild);
+    if (keyEl) {
+      while (keyEl.firstChild) keyEl.removeChild(keyEl.firstChild);
+    }
+
+    var live = document.getElementById('js-impact-filter-live');
+    var cards = [];
+
+    function announceFilter(active, visibleCount) {
+      if (!live) return;
+      var label =
+        active === 'all'
+          ? 'Showing all ' + visibleCount + ' verified anchors.'
+          : 'Showing ' + visibleCount + ' cards in this category.';
+      setText(live, label);
+    }
+
+    function applyFilter(topic) {
+      var n = 0;
+      cards.forEach(function (rec) {
+        var show = topic === 'all' || rec.topic === topic;
+        rec.card.classList.toggle('hap-reg-impact-card--hidden', !show);
+        if (show) n += 1;
+      });
+      announceFilter(topic, n);
+    }
+
+    if (keyEl) {
+      var tb = document.createElement('div');
+      tb.className = 'hap-reg-impact-toolbar';
+      var lab = document.createElement('span');
+      lab.className = 'hap-reg-impact-toolbar-label';
+      setText(lab, 'Show');
+      tb.appendChild(lab);
+
+      var chips = [
+        { id: 'all', topic: 'all', label: 'All', iconKind: 'chart', hint: 'Every verified anchor' },
+        { id: 'brand', topic: 'brand', label: 'Bright spot', iconKind: 'community', hint: 'HAP headline materials' },
+        { id: 'policy', topic: 'policy', label: 'Policy / data', iconKind: 'policydoc', hint: 'Statute, report, or rule' },
+        { id: 'access', topic: 'access', label: 'Access & reach', iconKind: 'hospital', hint: 'Representation and operations' },
+        { id: 'finance', topic: 'finance', label: 'Efficiency & dollars', iconKind: 'invoice', hint: 'Fees, cycles, fiscal detail' }
+      ];
+
+      var group = document.createElement('div');
+      group.className = 'hap-reg-impact-chip-group';
+      group.setAttribute('role', 'tablist');
+      group.setAttribute('aria-label', 'Filter verified anchors by category');
+
+      chips.forEach(function (c, idx) {
+        var btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'hap-reg-impact-chip' + (idx === 0 ? ' is-active' : '');
+        btn.setAttribute('role', 'tab');
+        btn.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+        btn.setAttribute('data-impact-filter', c.topic);
+        btn.setAttribute('title', c.hint);
+        var icw = document.createElement('span');
+        icw.className = 'hap-reg-impact-chip-ic';
+        icw.setAttribute('aria-hidden', 'true');
+        icw.appendChild(createDataIconSvg(c.iconKind, 'hap-reg-impact-chip-svg'));
+        var tx = document.createElement('span');
+        tx.className = 'hap-reg-impact-chip-text';
+        setText(tx, c.label);
+        btn.appendChild(icw);
+        btn.appendChild(tx);
+        btn.addEventListener('click', function () {
+          group.querySelectorAll('.hap-reg-impact-chip').forEach(function (b) {
+            b.classList.remove('is-active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('is-active');
+          btn.setAttribute('aria-selected', 'true');
+          applyFilter(c.topic);
+        });
+        group.appendChild(btn);
+      });
+      tb.appendChild(group);
+      keyEl.appendChild(tb);
+    }
+
     tiles.forEach(function (t) {
       var topic = t.iconTopic || 'access';
-      var row = document.createElement('div');
-      row.className = 'hap-reg-impact-row hap-reg-topic-' + topic + ' hap-reg-hover-lift';
-      row.setAttribute('role', 'listitem');
+      if (topic !== 'brand' && topic !== 'policy' && topic !== 'access' && topic !== 'finance') {
+        topic = 'policy';
+      }
 
-      var lead = document.createElement('div');
-      lead.className = 'hap-reg-impact-row-lead';
-      var icBox = document.createElement('span');
+      var card = document.createElement('article');
+      card.className = 'hap-reg-impact-card hap-reg-topic-' + topic + ' hap-reg-hover-lift';
+      card.setAttribute('role', 'listitem');
+      card.setAttribute('data-impact-topic', topic);
+
+      var inner = document.createElement('div');
+      inner.className = 'hap-reg-impact-card-inner';
+
+      var art = document.createElement('div');
+      art.className = 'hap-reg-impact-card-art';
+      var statStr = formatImpactPrimaryStat(t);
+      if (statStr) {
+        var statEl = document.createElement('div');
+        statEl.className = 'hap-reg-impact-stat';
+        statEl.setAttribute('aria-hidden', 'true');
+        setText(statEl, statStr);
+        art.appendChild(statEl);
+      }
+      var icBox = document.createElement('div');
       icBox.className = 'hap-reg-impact-ic-wrap hap-reg-topic-' + topic;
       icBox.setAttribute('aria-hidden', 'true');
       icBox.appendChild(createDataIconSvg(t.rowIcon || 'chart', 'hap-reg-impact-ic'));
-      var dotLab = document.createElement('span');
-      dotLab.className = 'hap-reg-impact-dot-label';
-      setText(dotLab, t.dotLabel || 'Fact');
-      lead.appendChild(icBox);
-      lead.appendChild(dotLab);
+      art.appendChild(icBox);
 
-      var main = document.createElement('div');
-      main.className = 'hap-reg-impact-row-main';
-      var h4 = document.createElement('h4');
-      setText(h4, t.title);
+      var body = document.createElement('div');
+      body.className = 'hap-reg-impact-card-body';
+      var badge = document.createElement('span');
+      badge.className = 'hap-reg-impact-badge';
+      setText(badge, t.dotLabel || 'Fact');
+      var h3 = document.createElement('h3');
+      h3.className = 'hap-reg-impact-card-title';
+      setText(h3, t.title || '');
       var p = document.createElement('p');
-      setText(p, t.body);
-      main.appendChild(h4);
-      main.appendChild(p);
+      p.className = 'hap-reg-impact-card-desc';
+      setText(p, t.body || '');
+      body.appendChild(badge);
+      body.appendChild(h3);
+      body.appendChild(p);
 
-      var citeWrap = document.createElement('div');
-      citeWrap.className = 'hap-reg-impact-row-cite';
-      var src = sourceById[t.sourceId];
-      if (src && src.url) {
-        var a = document.createElement('a');
-        a.href = src.url;
-        a.rel = 'noopener noreferrer';
-        setText(a, src.shortTitle);
-        citeWrap.appendChild(a);
-      } else if (src) {
-        setText(citeWrap, src.shortTitle);
+      if (t.supplementalMetrics && t.supplementalMetrics.length) {
+        var chipsRow = document.createElement('div');
+        chipsRow.className = 'hap-reg-impact-metric-chips';
+        t.supplementalMetrics.forEach(function (sm) {
+          var ch = document.createElement('span');
+          ch.className = 'hap-reg-impact-metric-chip';
+          var line = '';
+          if (typeof sm.valueNumeric === 'number' && sm.valueUnit === 'PERCENT') {
+            line = sm.valueNumeric + '%';
+          } else if (sm.valueDisplay) {
+            line = String(sm.valueDisplay);
+          } else if (typeof sm.valueNumeric === 'number') {
+            line = String(sm.valueNumeric);
+          }
+          if (sm.chipLabel) {
+            line = line ? line + ' · ' + sm.chipLabel : sm.chipLabel;
+          }
+          setText(ch, line || 'Related metric');
+          if (sm.metricKey) {
+            ch.setAttribute('title', sm.metricKey);
+          }
+          chipsRow.appendChild(ch);
+        });
+        body.appendChild(chipsRow);
       }
 
-      row.appendChild(lead);
-      row.appendChild(main);
-      row.appendChild(citeWrap);
-      el.appendChild(row);
+      var actions = document.createElement('div');
+      actions.className = 'hap-reg-impact-card-actions';
+      var src = sourceById[t.sourceId];
+
+      if (src && src.url) {
+        var ext = document.createElement('a');
+        ext.className = 'hap-reg-impact-action hap-reg-impact-action--primary';
+        ext.href = src.url;
+        ext.rel = 'noopener noreferrer';
+        ext.setAttribute('title', src.shortTitle || 'Open primary source');
+        setText(ext, 'Open report');
+        actions.appendChild(ext);
+      }
+
+      if (t.sourceId) {
+        var jump = document.createElement('a');
+        jump.className = 'hap-reg-impact-action hap-reg-impact-action--ghost';
+        jump.href = '#hap-reg-source-' + t.sourceId;
+        setText(jump, 'Sources list');
+        actions.appendChild(jump);
+      }
+
+      if (src && src.url) {
+        var copyBtn = document.createElement('button');
+        copyBtn.type = 'button';
+        copyBtn.className = 'hap-reg-impact-action hap-reg-impact-action--quiet';
+        var citeLine = (src.shortTitle || 'Source') + '\n' + src.url;
+        copyBtn.setAttribute('data-citation', citeLine);
+        setText(copyBtn, 'Copy link');
+        copyBtn.addEventListener('click', function () {
+          var line = copyBtn.getAttribute('data-citation') || '';
+          function done(ok) {
+            setText(copyBtn, ok ? 'Copied' : 'Copy link');
+            window.setTimeout(function () {
+              setText(copyBtn, 'Copy link');
+            }, 2000);
+          }
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(line).then(function () {
+              done(true);
+            }).catch(function () {
+              done(false);
+            });
+          } else {
+            done(false);
+          }
+        });
+        actions.appendChild(copyBtn);
+      }
+
+      inner.appendChild(art);
+      inner.appendChild(body);
+      card.appendChild(inner);
+      card.appendChild(actions);
+      gridEl.appendChild(card);
+      cards.push({ card: card, topic: topic });
     });
+
+    applyFilter('all');
   }
 
   function renderLetter(el, quotes, meta, sourceById) {
@@ -1010,7 +1243,7 @@
     headRow.className = 'hap-reg-letter-head-row';
     var head = document.createElement('div');
     head.className = 'hap-reg-letter-head';
-    setText(head, meta.letterhead || 'The Hospital and Health System Association of Pennsylvania (HAP)');
+    setText(head, meta.letterhead || 'The Hospital and Healthsystem Association of Pennsylvania (HAP)');
     var dateEl = document.createElement('div');
     dateEl.className = 'hap-reg-letter-date';
     setText(dateEl, meta.dateDisplay);
@@ -1098,7 +1331,7 @@
       byline.appendChild(
         document.createTextNode(
           ', President & Chief Executive Officer, ' +
-            (meta.signatureOrgLine || 'The Hospital and Health System Association of Pennsylvania')
+            (meta.signatureOrgLine || 'The Hospital and Healthsystem Association of Pennsylvania')
         )
       );
       primary.appendChild(byline);
@@ -1140,7 +1373,7 @@
     setText(t, 'President & Chief Executive Officer');
     var orgLine = document.createElement('div');
     orgLine.className = 'hap-reg-sig-title hap-reg-sig-title--org';
-    setText(orgLine, meta.signatureOrgLine || 'The Hospital and Health System Association of Pennsylvania');
+    setText(orgLine, meta.signatureOrgLine || 'The Hospital and Healthsystem Association of Pennsylvania');
     sig.appendChild(n);
     sig.appendChild(t);
     sig.appendChild(orgLine);
@@ -1493,16 +1726,22 @@
         }
       });
 
+    var easeOut = typeof d3.easeCubicOut === 'function' ? d3.easeCubicOut : null;
     if (prefersReducedMotion()) {
       pathSel.style('opacity', 1);
     } else {
-      pathSel
-        .style('opacity', 0)
-        .transition()
+      var tStates = pathSel.style('opacity', 0).transition();
+      tStates.ease(
+        easeOut ||
+          function (t) {
+            return 1 - Math.pow(1 - t, 3);
+          }
+      );
+      tStates
         .delay(function (d, i) {
-          return Math.min(i * 8, 900);
+          return Math.min(i * 5, 780);
         })
-        .duration(320)
+        .duration(380)
         .style('opacity', 1);
     }
 
@@ -1516,7 +1755,7 @@
       updateMapSelectionPanel(null, rec, names);
     }
 
-    svg
+    var meshSel = svg
       .append('path')
       .datum(topojson.mesh(usData, usData.objects.states, function (a, b) {
         return a !== b;
@@ -1528,6 +1767,23 @@
       .attr('stroke-width', 0.55)
       .attr('stroke-linejoin', 'round')
       .attr('d', path);
+    if (prefersReducedMotion()) {
+      meshSel.style('opacity', 0.94);
+    } else {
+      var easeM = typeof d3.easeCubicOut === 'function' ? d3.easeCubicOut : null;
+      meshSel
+        .style('opacity', 0)
+        .transition()
+        .delay(160)
+        .duration(420)
+        .ease(
+          easeM ||
+            function (t) {
+              return 1 - Math.pow(1 - t, 3);
+            }
+        )
+        .style('opacity', 0.94);
+    }
   }
 
   function initRegulatoryUsMap() {
@@ -1614,6 +1870,34 @@
    * Highlights the nav item for the section most in view. Maps hash targets that sit inside
    * a larger section (e.g. #priorities-deck → #priorities) so the bar stays accurate while reading briefs.
    */
+  /**
+   * When the national map band scrolls into view, add a class for CSS polish (shadow lift).
+   * Map paths already animate in drawRegulatoryUsMap; this keeps layout stable (no opacity tricks on copy).
+   */
+  function wireStatesBandInView() {
+    var sec = document.getElementById('states');
+    if (!sec || !sec.classList.contains('hap-reg-states-wrap--band')) return;
+    function mark() {
+      sec.classList.add('is-inview');
+    }
+    if (typeof IntersectionObserver === 'undefined') {
+      mark();
+      return;
+    }
+    var io = new IntersectionObserver(
+      function (entries) {
+        entries.forEach(function (en) {
+          if (en.isIntersecting) {
+            mark();
+            io.disconnect();
+          }
+        });
+      },
+      { threshold: 0.08, rootMargin: '0px 0px -6% 0px' }
+    );
+    io.observe(sec);
+  }
+
   function wireNavSpy() {
     var links = Array.prototype.slice.call(document.querySelectorAll('.hap-reg-nav [href^="#"]'));
     var spyTargetByHash = { 'priorities-deck': 'priorities' };
@@ -1650,7 +1934,7 @@
         link.classList.add('is-active');
         link.setAttribute('aria-current', 'page');
       },
-      { root: null, threshold: [0.1, 0.2, 0.35], rootMargin: '-72px 0px -52% 0px' }
+      { root: null, threshold: [0.1, 0.2, 0.35], rootMargin: '-110px 0px -52% 0px' }
     );
     sections.forEach(function (sec) {
       io.observe(sec);
@@ -1686,7 +1970,12 @@
     renderPriorityArticles(document.getElementById('js-priority-articles'), data.priorities, sourceById);
     renderCompareSection(document.getElementById('js-compare-table'), data.compareRows);
     renderStatesNote(document.getElementById('js-states-note'), data.statesCallout, sourceById);
-    renderImpact(document.getElementById('js-impact-grid'), data.impactTiles, sourceById);
+    renderImpactAnchors(
+      document.getElementById('js-impact-key'),
+      document.getElementById('js-impact-grid'),
+      data.impactTiles,
+      sourceById
+    );
     renderSources(document.getElementById('js-sources'), data.sources);
     renderLetter(
       document.getElementById('js-letter-quotes'),
@@ -1699,6 +1988,7 @@
       initRegulatoryUsMap();
     }, 0);
 
+    wireStatesBandInView();
     attachBanObservers();
     wireNavSpy();
   }

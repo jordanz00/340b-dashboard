@@ -568,10 +568,11 @@ img, svg { display: block; max-width: 100%; }
 /* —— Benchmark (compare + map) —— */
 .hap-mob-compare-card {
   background: var(--mob-card);
-  border-radius: 16px;
-  padding: 14px;
+  border-radius: 18px;
+  padding: 14px 14px 12px;
   margin-bottom: 12px;
   border: 0.5px solid var(--mob-sep);
+  box-shadow: 0 10px 28px rgba(0, 57, 99, 0.04);
 }
 
 .hap-mob-compare-issue {
@@ -580,17 +581,40 @@ img, svg { display: block; max-width: 100%; }
   margin-bottom: 10px;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  letter-spacing: -0.02em;
+  color: var(--mob-text);
+  padding-bottom: 2px;
+  border-bottom: 1px solid rgba(35, 31, 32, 0.06);
 }
 
 .hap-mob-compare-row {
   font-size: 13px;
-  line-height: 1.4;
+  line-height: 1.42;
   margin-bottom: 8px;
   color: var(--mob-text2);
+  padding: 8px 10px 8px 11px;
+  border-radius: 12px;
+  border: 0.5px solid rgba(35, 31, 32, 0.06);
+  background: rgba(255, 255, 255, 0.45);
 }
 
 .hap-mob-compare-row:last-child { margin-bottom: 0; }
+
+.hap-mob-compare-row--pa {
+  border-left: 3px solid rgba(251, 176, 64, 0.75);
+  background: rgba(251, 176, 64, 0.08);
+}
+
+.hap-mob-compare-row--federal {
+  border-left: 3px solid rgba(0, 114, 188, 0.55);
+  background: rgba(0, 114, 188, 0.06);
+}
+
+.hap-mob-compare-row--hap {
+  border-left: 3px solid rgba(58, 139, 127, 0.65);
+  background: rgba(58, 139, 127, 0.07);
+}
 
 .hap-mob-compare-k {
   font-size: 11px;
@@ -775,39 +799,136 @@ img, svg { display: block; max-width: 100%; }
   color: var(--mob-text);
 }
 
-.hap-mob-impact-row {
-  display: flex;
-  gap: 12px;
-  padding: 14px;
+.hap-mob-impact-card {
+  padding: 14px 14px 12px;
   background: var(--mob-card);
-  border-radius: 14px;
-  margin-bottom: 10px;
+  border-radius: 18px;
+  margin-bottom: 12px;
   border: 0.5px solid var(--mob-sep);
+  box-shadow: 0 10px 26px rgba(0, 57, 99, 0.05);
 }
 
-.hap-mob-impact-dot {
-  width: 10px;
-  height: 10px;
-  border-radius: 50%;
-  margin-top: 5px;
+.hap-mob-impact-card--brand { border-left: 4px solid var(--hap-accent-warm, #fbb040); }
+.hap-mob-impact-card--policy { border-left: 4px solid var(--hap-topic-policy, #2d4d7a); }
+.hap-mob-impact-card--access { border-left: 4px solid var(--mob-brand); }
+.hap-mob-impact-card--finance { border-left: 4px solid var(--hap-topic-finance, #3a8b7f); }
+
+.hap-mob-impact-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.hap-mob-impact-ic-wrap {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  background: rgba(255, 255, 255, 0.9);
+  border: 0.5px solid var(--mob-sep);
+  color: var(--mob-brand);
   flex-shrink: 0;
 }
 
-.hap-mob-impact-dot--brand { background: var(--hap-accent-warm, #fbb040); }
-.hap-mob-impact-dot--policy { background: var(--hap-topic-policy, #2d4d7a); }
-.hap-mob-impact-dot--access { background: var(--mob-brand); }
-.hap-mob-impact-dot--finance { background: var(--hap-topic-finance, #3a8b7f); }
+.hap-mob-impact-card--brand .hap-mob-impact-ic-wrap {
+  color: #8a5200;
+  background: rgba(251, 176, 64, 0.12);
+}
 
-.hap-mob-impact-title {
-  font-size: 14px;
+.hap-mob-impact-svg {
+  width: 26px;
+  height: 26px;
+}
+
+.hap-mob-impact-stat {
+  font-family: var(--mob-font-display);
+  font-size: 26px;
   font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--mob-text);
+  line-height: 1;
+}
+
+.hap-mob-impact-badge {
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--mob-muted);
   margin-bottom: 4px;
 }
 
+.hap-mob-impact-title {
+  font-size: 15px;
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+
 .hap-mob-impact-body {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--mob-text2);
+}
+
+.hap-mob-impact-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.hap-mob-impact-chip {
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 8px;
+  background: rgba(0, 114, 188, 0.08);
+  color: var(--mob-brand);
+}
+
+.hap-mob-impact-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 0.5px solid var(--mob-sep);
+}
+
+.hap-mob-impact-btn {
+  min-height: 40px;
+  padding: 0 12px;
+  border-radius: 10px;
   font-size: 12px;
-  line-height: 1.4;
+  font-weight: 700;
+  text-decoration: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.hap-mob-impact-btn--primary {
+  background: var(--mob-brand);
+  color: #fff;
+}
+
+.hap-mob-impact-btn--ghost {
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--mob-brand);
+  border: 0.5px solid rgba(0, 114, 188, 0.28);
+}
+
+.hap-mob-impact-btn--quiet {
+  background: transparent;
   color: var(--mob-muted);
+  border: 0.5px solid var(--mob-sep);
 }
 
 .hap-mob-src {

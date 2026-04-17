@@ -6,8 +6,9 @@ Run with:
 
     python3 tests/e2e-smoke.py
 
-Starts a local HTTP server, loads all dashboard pages (desktop + mobile),
-and checks that critical content renders correctly. Exits non-zero on failure.
+Starts a local HTTP server, loads core dashboard pages plus the
+`hap-regulatory-advocacy-2026/` desktop and mobile shells, and checks that
+critical content renders correctly. Exits non-zero on failure.
 
 Tests are read-only — they never modify pages or data.
 """
@@ -31,6 +32,8 @@ PAGES_TO_CHECK = [
     ("340b-mobile.html", "Mobile dashboard"),
     ("340b-BASIC.html", "IT-safe BASIC dashboard"),
     ("index.html", "Landing / PA report"),
+    ("hap-regulatory-advocacy-2026/index.html", "Regulatory advocacy 2026 desktop"),
+    ("hap-regulatory-advocacy-2026/reg-advocacy-mobile.html", "Regulatory advocacy 2026 mobile"),
 ]
 
 CRITICAL_METRIC_KEYS = [
@@ -146,6 +149,22 @@ def main() -> int:
                 results.append((True, "Mobile: viewport meta tag present"))
             else:
                 results.append((False, "Mobile: missing viewport meta tag"))
+
+        # ── Test 7: Regulatory advocacy microsite — loads facts bundle (separate from 340B state-data.js) ──
+        reg_desktop = page_bodies.get("hap-regulatory-advocacy-2026/index.html", "")
+        if reg_desktop:
+            if 'facts.js' in reg_desktop and "HAP Regulatory" in reg_desktop:
+                results.append((True, "Regulatory advocacy desktop: facts.js linked and page branded"))
+            else:
+                results.append(
+                    (False, "Regulatory advocacy desktop: expected facts.js reference or title content missing")
+                )
+        reg_mobile = page_bodies.get("hap-regulatory-advocacy-2026/reg-advocacy-mobile.html", "")
+        if reg_mobile:
+            if 'name="viewport"' in reg_mobile.lower() and "facts.js" in reg_mobile:
+                results.append((True, "Regulatory advocacy mobile: viewport + facts.js present"))
+            else:
+                results.append((False, "Regulatory advocacy mobile: viewport or facts.js missing"))
 
     finally:
         server.shutdown()

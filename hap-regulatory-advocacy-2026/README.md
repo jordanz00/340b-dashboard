@@ -1,33 +1,64 @@
-# HAP Regulatory Advocacy 2026 (standalone microsite)
+# HAP Regulatory Advocacy 2026
 
-This folder is **self-contained** (local `vendor/` copies of D3, TopoJSON, and U.S. states topology). You can publish it as **its own GitHub repository** so GitHub Pages serves it **without** `340b-dashboard` in the URL.
+Static executive brief: April 16, 2026 Pennsylvania DOH letter context, priorities, PA vs Medicare comparison, TJC ambulatory map snapshot, verified sources. **No build step** — open `index.html` locally or host on **GitHub Pages**.
 
-## Live URL pattern
+**Repository:** [https://github.com/jordanz00/hap-regulatory-advocacy-2026](https://github.com/jordanz00/hap-regulatory-advocacy-2026)
 
-After you create a public repo (example name `hap-regulatory-advocacy-2026`) and turn on **GitHub Pages** from `main` / **root**:
+---
 
-- **Desktop:** `https://<your-username>.github.io/hap-regulatory-advocacy-2026/index.html`
-- **Mobile:** `https://<your-username>.github.io/hap-regulatory-advocacy-2026/reg-advocacy-mobile.html`
+## Quick setup (if you’ve done this before)
 
-Replace `<your-username>` with your GitHub username or org.
-
-## One-time setup on GitHub
-
-1. **New repository** on GitHub (empty, no README) — e.g. `hap-regulatory-advocacy-2026`.
-2. From your machine, push **only the contents of this folder** as the repo root (see `publish-standalone.sh` below).
-3. **Settings → Pages → Build and deployment:** Source **Deploy from a branch**, Branch **main**, folder **/ (root)**.
-4. Wait a minute, then open the URLs above.
-
-## Push script (optional)
-
-From the **monorepo root** (`340b-dashboard`):
+**Clone**
 
 ```bash
-bash hap-regulatory-advocacy-2026/publish-standalone.sh git@github.com:YOUR_USER/hap-regulatory-advocacy-2026.git
+git clone https://github.com/jordanz00/hap-regulatory-advocacy-2026.git
+cd hap-regulatory-advocacy-2026
 ```
 
-Or create the repo on github.com, add the remote URL shown there, and push this directory’s files manually.
+**Run locally** — double-click `index.html`, or from this directory:
 
-## Copy inside the 340B monorepo
+```bash
+python3 -m http.server 8080
+```
 
-This same folder still lives under `340b-dashboard` for development. Paths use `vendor/…` so nothing points at `../assets/vendor/`.
+Then open [http://localhost:8080](http://localhost:8080) (desktop) or [http://localhost:8080/reg-advocacy-mobile.html](http://localhost:8080/reg-advocacy-mobile.html) (mobile shell).
+
+**First push to an empty GitHub repo** (makes the “Quick setup / create a new file” page go away):
+
+```bash
+git clone https://github.com/jordanz00/hap-regulatory-advocacy-2026.git
+cd hap-regulatory-advocacy-2026
+# copy site files into this folder (repo root = site root: index.html, facts.js, vendor/, …)
+git add -A
+git commit -m "Add HAP Regulatory Advocacy 2026 site"
+git push -u origin main
+```
+
+Or, from a machine that has the site folder elsewhere, use the included script (creates a clean repo and pushes). If GitHub already has a `main` branch (for example you clicked “Add README” on the empty-repo page), the script **replaces `main`** with this folder so the boilerplate screen goes away:
+
+```bash
+bash publish-standalone.sh https://github.com/jordanz00/hap-regulatory-advocacy-2026.git
+```
+
+---
+
+## Live site (after Pages is enabled)
+
+- **Desktop:** [https://jordanz00.github.io/hap-regulatory-advocacy-2026/](https://jordanz00.github.io/hap-regulatory-advocacy-2026/)  
+- **Mobile shell:** [https://jordanz00.github.io/hap-regulatory-advocacy-2026/reg-advocacy-mobile.html](https://jordanz00.github.io/hap-regulatory-advocacy-2026/reg-advocacy-mobile.html)
+
+## GitHub Pages
+
+1. Repo **Settings → Pages → Build and deployment**  
+   - **GitHub Actions** (uses `.github/workflows/deploy-pages.yml`), **or**  
+   - **Deploy from a branch** → `main` → `/ (root)` — use one source only.
+
+2. After the first successful deploy, wait a minute and open the live URLs above.
+
+## Monorepo copy
+
+This project may also live inside a larger workspace; keep **this folder’s contents** as the **root** of this GitHub repo so asset paths (`vendor/…`, etc.) stay valid.
+
+## LICENSE
+
+Add a `LICENSE` file when HAP legal/comms approves distribution terms (GitHub’s template reminder is optional for internal or pre-release repos).

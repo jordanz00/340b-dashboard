@@ -57,6 +57,7 @@ When touching shared assets, **name every affected surface**:
 | 340B mobile | `340b-mobile.html`, `340b-mobile.js`, `340b-mobile.css` |
 | 340B BASIC (IT-safe) | `340b-BASIC.html`, `340b-basic-map.js` — **no CDN, no localStorage, local scripts only** |
 | OW / PA report | `OW_report_dashboard.html`, `index.html` shell |
+| Regulatory advocacy 2026 | `hap-regulatory-advocacy-2026/` (`index.html`, `facts.js`, `dashboard.css`, mobile shell) — own data in `facts.js`, not `state-data.js` |
 | Print / PDF | `print.html`, `print-view.css`, `print/` |
 | Shared chrome | `hap-nav-shared.js`, `hap-design-tokens.css`, `main.js`, `styles.css` |
 

@@ -47,3 +47,4 @@ This is the **navigation hub** for the 340B Advocacy Dashboard. For day-to-day e
 | [data/](../data/) | Dataset metadata and provenance |
 | [assets/vendor/](../assets/vendor/) | D3, TopoJSON, map data |
 | [powerbi/](../powerbi/) | Power BI theme, DAX samples, Gold DDL reference |
+| [hap-regulatory-advocacy-2026/](../hap-regulatory-advocacy-2026/) | **Regulatory advocacy 2026** static microsite (PA DOH letter brief); [README](../hap-regulatory-advocacy-2026/README.md), `facts.js` + `reg-advocacy-data-layer.js` |
