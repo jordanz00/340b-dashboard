@@ -198,6 +198,37 @@
       path(
         'M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm4 18H6V4h7v5h5v11zm-9-8h2v2H9v-2zm0 4h6v2H9v-2zm0-8h6v2H9V8z'
       );
+    } else if (k === 'givingLove') {
+      path(
+        'M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'
+      );
+    } else if (k === 'marketDown') {
+      var axis = document.createElementNS(ns, 'path');
+      axis.setAttribute('d', 'M3 19.5h18');
+      axis.setAttribute('fill', 'none');
+      axis.setAttribute('stroke', 'currentColor');
+      axis.setAttribute('stroke-width', '1.1');
+      axis.setAttribute('stroke-linecap', 'round');
+      axis.setAttribute('opacity', '0.3');
+      svg.appendChild(axis);
+      var trend = document.createElementNS(ns, 'path');
+      trend.setAttribute('d', 'M3 6L8 9l5 2l5 3l3 3');
+      trend.setAttribute('fill', 'none');
+      trend.setAttribute('stroke', 'currentColor');
+      trend.setAttribute('stroke-width', '2.35');
+      trend.setAttribute('stroke-linecap', 'round');
+      trend.setAttribute('stroke-linejoin', 'round');
+      svg.appendChild(trend);
+      return svg;
+    } else if (k === 'lawBook') {
+      path(
+        'M18 2H8a2 2 0 0 0-2 2v16h12V4a2 2 0 0 0-2-2zm-1 16H9V4h8v14zM11 7h4v1.5h-4V7zm0 3h4v1.5h-4V10zm0 3h3v1.5h-3V13zM4 4h2v16H4V4z'
+      );
+    } else if (k === 'renewal') {
+      path(
+        'M19 4h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2zm0 16H5V10h14v10zM5 8V6h14v2H5z'
+      );
+      path('M17 3v3h3M18.5 4.5L21 2M18.5 4.5L16 2');
     } else if (k === 'hapMark') {
       path(
         'M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z'
@@ -304,7 +335,7 @@
   function statBandAccentClass(id) {
     if (id === 'sb-econ') return 'hap-reg-stat-item--finance';
     if (id === 'sb-jobs') return 'hap-reg-stat-item--jobs';
-    if (id === 'sb-red') return 'hap-reg-stat-item--risk';
+    if (id === 'sb-red') return 'hap-reg-stat-item--danger';
     if (id === 'sb-phc4') return 'hap-reg-stat-item--policy';
     if (id === 'sb-members') return 'hap-reg-stat-item--members';
     if (id === 'sb-1982') return 'hap-reg-stat-item--code';
@@ -963,9 +994,12 @@
     while (container.firstChild) container.removeChild(container.firstChild);
     var wrap = document.createElement('div');
     wrap.className = 'hap-reg-glossary';
+    wrap.setAttribute('role', 'region');
     var h = document.createElement('div');
     h.className = 'hap-reg-glossary-title';
-    setText(h, 'Plain-language terms');
+    h.id = 'hap-reg-glossary-heading';
+    wrap.setAttribute('aria-labelledby', 'hap-reg-glossary-heading');
+    setText(h, 'Glossary');
     wrap.appendChild(h);
     var dl = document.createElement('dl');
     dl.className = 'hap-reg-glossary-dl';
@@ -1055,10 +1089,9 @@
 
       var chips = [
         { id: 'all', topic: 'all', label: 'All', iconKind: 'chart', hint: 'Every verified anchor' },
-        { id: 'brand', topic: 'brand', label: 'Bright spot', iconKind: 'community', hint: 'HAP headline materials' },
-        { id: 'policy', topic: 'policy', label: 'Policy / data', iconKind: 'policydoc', hint: 'Statute, report, or rule' },
-        { id: 'access', topic: 'access', label: 'Access & reach', iconKind: 'hospital', hint: 'Representation and operations' },
-        { id: 'finance', topic: 'finance', label: 'Efficiency & dollars', iconKind: 'invoice', hint: 'Fees, cycles, fiscal detail' }
+        { id: 'brand', topic: 'brand', label: 'Bright spot', iconKind: 'givingLove', hint: 'HAP headline materials' },
+        { id: 'policy', topic: 'policy', label: 'Policy / data', iconKind: 'lawBook', hint: 'Statute, report, or rule' },
+        { id: 'finance', topic: 'finance', label: 'Efficiency & dollars', iconKind: 'renewal', hint: 'Fees, cycles, fiscal detail' }
       ];
 
       var group = document.createElement('div');
@@ -1106,6 +1139,9 @@
 
       var card = document.createElement('article');
       card.className = 'hap-reg-impact-card hap-reg-topic-' + topic + ' hap-reg-hover-lift';
+      if (t.impactStatTone === 'negative') {
+        card.classList.add('hap-reg-impact-card--danger');
+      }
       card.setAttribute('role', 'listitem');
       card.setAttribute('data-impact-topic', topic);
 
@@ -1118,12 +1154,18 @@
       if (statStr) {
         var statEl = document.createElement('div');
         statEl.className = 'hap-reg-impact-stat';
+        if (t.impactStatTone === 'negative') {
+          statEl.classList.add('hap-reg-impact-stat--danger');
+        }
         statEl.setAttribute('aria-hidden', 'true');
         setText(statEl, statStr);
         art.appendChild(statEl);
       }
       var icBox = document.createElement('div');
       icBox.className = 'hap-reg-impact-ic-wrap hap-reg-topic-' + topic;
+      if (t.impactStatTone === 'negative') {
+        icBox.className += ' hap-reg-impact-ic-wrap--danger';
+      }
       icBox.setAttribute('aria-hidden', 'true');
       icBox.appendChild(createDataIconSvg(t.rowIcon || 'chart', 'hap-reg-impact-ic'));
       art.appendChild(icBox);
@@ -1149,6 +1191,9 @@
         t.supplementalMetrics.forEach(function (sm) {
           var ch = document.createElement('span');
           ch.className = 'hap-reg-impact-metric-chip';
+          if (t.impactStatTone === 'negative') {
+            ch.classList.add('hap-reg-impact-metric-chip--danger');
+          }
           var line = '';
           if (typeof sm.valueNumeric === 'number' && sm.valueUnit === 'PERCENT') {
             line = sm.valueNumeric + '%';
@@ -1169,60 +1214,9 @@
         body.appendChild(chipsRow);
       }
 
-      var actions = document.createElement('div');
-      actions.className = 'hap-reg-impact-card-actions';
-      var src = sourceById[t.sourceId];
-
-      if (src && src.url) {
-        var ext = document.createElement('a');
-        ext.className = 'hap-reg-impact-action hap-reg-impact-action--primary';
-        ext.href = src.url;
-        ext.rel = 'noopener noreferrer';
-        ext.setAttribute('title', src.shortTitle || 'Open primary source');
-        setText(ext, 'Open report');
-        actions.appendChild(ext);
-      }
-
-      if (t.sourceId) {
-        var jump = document.createElement('a');
-        jump.className = 'hap-reg-impact-action hap-reg-impact-action--ghost';
-        jump.href = '#hap-reg-source-' + t.sourceId;
-        setText(jump, 'Sources list');
-        actions.appendChild(jump);
-      }
-
-      if (src && src.url) {
-        var copyBtn = document.createElement('button');
-        copyBtn.type = 'button';
-        copyBtn.className = 'hap-reg-impact-action hap-reg-impact-action--quiet';
-        var citeLine = (src.shortTitle || 'Source') + '\n' + src.url;
-        copyBtn.setAttribute('data-citation', citeLine);
-        setText(copyBtn, 'Copy link');
-        copyBtn.addEventListener('click', function () {
-          var line = copyBtn.getAttribute('data-citation') || '';
-          function done(ok) {
-            setText(copyBtn, ok ? 'Copied' : 'Copy link');
-            window.setTimeout(function () {
-              setText(copyBtn, 'Copy link');
-            }, 2000);
-          }
-          if (navigator.clipboard && navigator.clipboard.writeText) {
-            navigator.clipboard.writeText(line).then(function () {
-              done(true);
-            }).catch(function () {
-              done(false);
-            });
-          } else {
-            done(false);
-          }
-        });
-        actions.appendChild(copyBtn);
-      }
-
       inner.appendChild(art);
       inner.appendChild(body);
       card.appendChild(inner);
-      card.appendChild(actions);
       gridEl.appendChild(card);
       cards.push({ card: card, topic: topic });
     });

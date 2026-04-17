@@ -20,6 +20,8 @@
   /* Hairline + quiet fills — one material language */
   --hap-reg-hairline: rgba(35, 31, 32, 0.07);
   --hap-reg-fill-quiet: rgba(0, 114, 188, 0.06);
+  /* Verified anchors: operating pressure / margins (must match icon + stat) */
+  --hap-reg-impact-danger: #b42318;
   --hap-reg-section-gap: clamp(2rem, 4.5vw, 3rem);
   /* Sticky header is two rows (org + nav); keep hash / in-page targets clear of overlap */
   --hap-reg-sticky-offset: clamp(132px, 20vw, 168px);
@@ -639,7 +641,7 @@
   text-underline-offset: 2px;
 }
 
-/* Plain-language glossary */
+/* Glossary (hero) */
 .hap-reg-glossary {
   margin: 0 0 14px;
   padding: 12px 14px 14px;
@@ -1735,8 +1737,14 @@
   border-left-color: var(--hap-brandguide-sky);
 }
 
-.hap-reg-stat-item--risk {
-  border-left-color: var(--hap-reg-topic-brand);
+/* HAP FY24 “in the red” — same red system as hero operating-loss + impact danger cards */
+.hap-reg-stat-item--danger {
+  border-left-color: var(--hap-reg-impact-danger);
+  background: linear-gradient(165deg, #fff8f7 0%, rgba(255, 255, 255, 0.96) 55%, #ffffff 100%);
+  border-color: rgba(180, 35, 24, 0.12);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.95) inset,
+    0 8px 22px rgba(120, 20, 10, 0.08);
 }
 
 .hap-reg-stat-item--policy {
@@ -1832,10 +1840,15 @@
   border-color: rgba(255, 255, 255, 0.78);
 }
 
-.hap-reg-stat-item--risk .hap-reg-stat-icon-wrap {
-  color: #c2410c;
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.65) 0%, rgba(251, 176, 64, 0.2) 45%, rgba(251, 176, 64, 0.08) 100%);
-  border-color: rgba(255, 255, 255, 0.78);
+.hap-reg-stat-item--danger .hap-reg-stat-icon-wrap {
+  color: var(--hap-reg-impact-danger);
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.7) 0%, rgba(180, 35, 24, 0.14) 48%, rgba(180, 35, 24, 0.06) 100%);
+  border-color: rgba(180, 35, 24, 0.22);
+  box-shadow:
+    0 0 0 0.5px rgba(180, 35, 24, 0.06),
+    0 1px 1px rgba(255, 255, 255, 0.95) inset,
+    0 6px 14px rgba(180, 35, 24, 0.12),
+    0 14px 28px rgba(90, 18, 12, 0.06);
 }
 
 .hap-reg-stat-item--policy .hap-reg-stat-icon-wrap {
@@ -1900,8 +1913,8 @@
   color: var(--hap-reg-topic-finance);
 }
 
-.hap-reg-stat-item--risk .hap-reg-stat-value {
-  color: #b45309;
+.hap-reg-stat-item--danger .hap-reg-stat-value {
+  color: var(--hap-reg-impact-danger);
 }
 
 .hap-reg-stat-item--policy .hap-reg-stat-value {
@@ -3431,6 +3444,30 @@
   border-left: 4px solid var(--hap-reg-topic-finance);
 }
 
+/* Margins / FY24 “in the red” verified anchor — full red emphasis; icon matches hero trendDown treatment */
+.hap-reg-impact-card.hap-reg-impact-card--danger {
+  border-left-color: var(--hap-reg-impact-danger) !important;
+  background: linear-gradient(165deg, #fff5f5 0%, rgba(255, 255, 255, 0.97) 50%, #ffffff 100%);
+  border-color: rgba(180, 35, 24, 0.14);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 10px 28px rgba(120, 24, 16, 0.07);
+}
+
+.hap-reg-impact-card.hap-reg-impact-card--danger .hap-reg-impact-badge {
+  color: #7f1d1d;
+  background: rgba(180, 35, 24, 0.1);
+  border: 1px solid rgba(180, 35, 24, 0.2);
+}
+
+.hap-reg-impact-card.hap-reg-impact-card--danger .hap-reg-impact-card-title {
+  color: #450a0a;
+}
+
+.hap-reg-impact-card.hap-reg-impact-card--danger .hap-reg-impact-card-desc {
+  color: #57534e;
+}
+
 .hap-reg-impact-card--hidden {
   display: none !important;
 }
@@ -3439,7 +3476,7 @@
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
   gap: 1rem 1.1rem;
-  padding: 1.15rem 1.1rem 0.85rem;
+  padding: 1.15rem 1.1rem 1.1rem;
   align-items: start;
 }
 
@@ -3473,8 +3510,11 @@
   text-align: center;
 }
 
+/* Bright spot — HAP brand orange + warm gold (brand guidelines PDF orange family) */
 .hap-reg-impact-card.hap-reg-topic-brand .hap-reg-impact-stat {
-  color: #6b3f00;
+  color: #f5a623;
+  text-shadow: 0 0 1px rgba(255, 214, 120, 0.55);
+  filter: saturate(1.12);
 }
 
 .hap-reg-impact-card.hap-reg-topic-policy .hap-reg-impact-stat {
@@ -3487,6 +3527,12 @@
 
 .hap-reg-impact-card.hap-reg-topic-finance .hap-reg-impact-stat {
   color: #1d5c52;
+}
+
+.hap-reg-impact-stat--danger {
+  color: var(--hap-reg-impact-danger) !important;
+  text-shadow: none;
+  filter: none;
 }
 
 .hap-reg-impact-ic-wrap {
@@ -3524,6 +3570,16 @@
   color: var(--hap-reg-topic-finance);
   background: var(--hap-reg-topic-finance-soft);
   border-color: rgba(58, 139, 127, 0.28);
+}
+
+/* Margins / “in the red” card — icon uses same red as .hap-reg-impact-stat--danger (wins over topic-* icon wells) */
+.hap-reg-impact-card .hap-reg-impact-ic-wrap.hap-reg-impact-ic-wrap--danger {
+  color: var(--hap-reg-impact-danger) !important;
+  background: rgba(180, 35, 24, 0.12) !important;
+  border-color: rgba(180, 35, 24, 0.38) !important;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.75) inset,
+    0 4px 14px rgba(180, 35, 24, 0.14);
 }
 
 .hap-reg-impact-ic {
@@ -3580,6 +3636,12 @@
   background: rgba(0, 114, 188, 0.07);
   border: 1px solid rgba(0, 114, 188, 0.14);
   color: #0a4f7a;
+}
+
+.hap-reg-impact-metric-chip--danger {
+  background: rgba(180, 35, 24, 0.08);
+  border-color: rgba(180, 35, 24, 0.28);
+  color: #8f1f18;
 }
 
 .hap-reg-impact-card-actions {

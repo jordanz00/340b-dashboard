@@ -125,7 +125,7 @@
         text: 'Pennsylvania Code — the official publication of Pennsylvania’s regulations. “28 Pa. Code” is the chapter that covers health care facility rules.'
       },
       {
-        term: '“Deemed status” (plain English)',
+        term: '“Deemed status”',
         iconKind: 'checkDouble',
         text: 'When a trusted national survey can stand in for part of a state survey, so a good facility is not checked twice the same way when the law allows.'
       }
@@ -332,7 +332,7 @@
     impactTiles: [
       {
         iconTopic: 'brand',
-        rowIcon: 'community',
+        rowIcon: 'givingLove',
         dotLabel: 'Bright spot',
         title: '$10.8B in community benefit',
         body: 'HAP’s April 2025 public release on FY 2024 hospital data reports hospitals invested nearly $10.8 billion in strengthening community health (charity care, training, research, and more).',
@@ -343,7 +343,8 @@
       },
       {
         iconTopic: 'policy',
-        rowIcon: 'scale',
+        rowIcon: 'trendDown',
+        impactStatTone: 'negative',
         dotLabel: 'Cited report',
         title: 'Fewer than half with sustainable margins',
         body: 'HAP’s April 2025 release summarizing FY 2024 acute-care hospital finances: fewer than half operated with margins necessary for long-term stability; 37% operated in the red; 39% faced multi-year losses.',
@@ -363,30 +364,7 @@
       },
       {
         iconTopic: 'policy',
-        rowIcon: 'pie',
-        dotLabel: 'PHC4 data',
-        title: '51% negative operating margin (GAC, FY23)',
-        body: 'PHC4 Volume One (FY 2023): 51% of Pennsylvania’s general acute care hospitals posted a negative operating margin—distinct metric and year from HAP’s FY 2024 acute-care figures.',
-        sourceId: 'phc4-fy23-margin',
-        metricKey: 'REG_ADV_PHC4_GAC_NEGATIVE_OPERATING_MARGIN_PCT',
-        valueNumeric: 51,
-        valueUnit: 'PERCENT'
-      },
-      {
-        iconTopic: 'access',
-        rowIcon: 'hospital',
-        dotLabel: 'Membership',
-        title: '235+ hospital & health system members',
-        body: 'HAP’s public membership description reflects statewide representation for advocacy and technical support.',
-        sourceId: 'hap-membership',
-        metricKey: 'REG_ADV_HAP_MEMBER_HOSPITALS_MIN_COUNT',
-        valueNumeric: 235,
-        valueUnit: 'COUNT',
-        valueDisplay: '235+'
-      },
-      {
-        iconTopic: 'policy',
-        rowIcon: 'clipboard',
+        rowIcon: 'lawBook',
         dotLabel: 'Pa. Code',
         title: 'Two-year limit on physician reapproval',
         body: 'Pennsylvania regulations say hospitals must formally re-approve physicians on the medical staff at least every two years—more often than many national accreditor defaults, which adds committee burden.',
@@ -394,7 +372,7 @@
       },
       {
         iconTopic: 'finance',
-        rowIcon: 'invoice',
+        rowIcon: 'renewal',
         dotLabel: 'Licensing cycle',
         title: 'Outpatient surgery centers: yearly paperwork',
         body: 'Ambulatory surgical facilities file a renewal every year, pay a published state fee, and must be ready for an annual licensing visit under Pennsylvania’s rules.',

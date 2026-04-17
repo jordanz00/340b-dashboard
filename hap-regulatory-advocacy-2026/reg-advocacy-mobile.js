@@ -317,7 +317,7 @@
   function statBandAccentClass(id) {
     if (id === 'sb-econ') return 'hap-mob-stat-item--finance';
     if (id === 'sb-jobs') return 'hap-mob-stat-item--jobs';
-    if (id === 'sb-red') return 'hap-mob-stat-item--risk';
+    if (id === 'sb-red') return 'hap-mob-stat-item--danger';
     if (id === 'sb-phc4') return 'hap-mob-stat-item--policy';
     if (id === 'sb-members') return 'hap-mob-stat-item--members';
     if (id === 'sb-1982') return 'hap-mob-stat-item--code';
@@ -347,6 +347,7 @@
       var src = sourceById[k.sourceId];
       var wrap = document.createElement('div');
       wrap.className = 'hap-mob-stat-item ' + statBandAccentClass(k.id);
+      if (k.id) wrap.setAttribute('data-stat-band', k.id);
 
       var icWrap = document.createElement('div');
       icWrap.className = 'hap-mob-stat-icon-wrap';
@@ -951,12 +952,24 @@
       var card = el('article', 'hap-mob-kpi hap-mob-anim ' + topicKpiClass(k.topic, k.sentiment));
       var topic = (k && k.topic) || 'access';
       card.setAttribute('data-topic', topic);
+      if (k.id === 'hk-phc4') {
+        card.classList.add('hap-mob-kpi--operating-loss');
+      }
+      var topRow = el('div', 'hap-mob-kpi-top');
+      var icWrapKpi = el('div', 'hap-mob-kpi-icon-wrap');
+      icWrapKpi.setAttribute('aria-hidden', 'true');
+      icWrapKpi.appendChild(createDataIconSvg(k.iconKind || 'chart', 'hap-mob-kpi-svg'));
+      topRow.appendChild(icWrapKpi);
+      var glanceTop = el('p', 'hap-mob-kpi-glance hap-mob-kpi-glance--inline');
+      setText(glanceTop, k.glance || '');
+      topRow.appendChild(glanceTop);
+      card.appendChild(topRow);
+
       var val = el('div', 'hap-mob-kpi-value');
       setText(val, k.value || '');
       var lab = el('div', 'hap-mob-kpi-label');
       setText(lab, k.label || '');
-      var g = el('p', 'hap-mob-kpi-glance');
-      setText(g, k.glance || '');
+      var subK = heroSubShort(k.sub);
       var src = srcMap[k.sourceId];
       var sn = el('div', 'hap-mob-kpi-src');
       if (src && src.url) {
@@ -968,7 +981,11 @@
       }
       card.appendChild(val);
       card.appendChild(lab);
-      card.appendChild(g);
+      if (subK) {
+        var subEl = el('p', 'hap-mob-kpi-sub');
+        setText(subEl, subK);
+        card.appendChild(subEl);
+      }
       if (sn.firstChild) card.appendChild(sn);
       kpiGrid.appendChild(card);
     });
