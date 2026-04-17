@@ -9,13 +9,22 @@
         /* Narrow viewport only: many phones report pointer:fine (Bluetooth mouse / WebView), so do not require coarse. */
         var narrow = window.matchMedia && window.matchMedia('(max-width: 768px)').matches;
         if (!narrow) return;
+        /*
+         * Build directory base for reg-advocacy-mobile.html (GitHub Pages project URLs, file://, and /folder vs /folder/).
+         * Bugfix: pathname "/hap-regulatory-advocacy-2026" (no trailing slash) made lastIndexOf("/") === 0 → base "/" → wrong mobile URL.
+         */
         var path = window.location.pathname || '';
-        var i = path.lastIndexOf('/');
-        var base = i >= 0 ? path.slice(0, i + 1) : '/';
+        var base;
+        if (/index\.html$/i.test(path)) {
+          base = path.slice(0, path.length - 10);
+        } else {
+          base = path.endsWith('/') ? path : path + '/';
+        }
         window.location.replace(base + 'reg-advocacy-mobile.html' + (window.location.search || '') + (window.location.hash || ''));
       } catch (e) { /* stay on desktop shell */ }
     })();
   </script>
+  <link rel="canonical" href="https://jordanz00.github.io/hap-regulatory-advocacy-2026/">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="color-scheme" content="light">
   <meta name="theme-color" content="#0072bc">
