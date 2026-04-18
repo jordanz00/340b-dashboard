@@ -12,8 +12,9 @@
 
   var DATA = {
     hero: {
-      headline:
-        'Three near-term opportunities to reduce regulatory burden for Pennsylvania hospitals',
+      headline: 'Three Priorities. One Year. Pennsylvania Hospitals.',
+      /** Line-broken version rendered in the deep hero; each line lands on its own visual row. */
+      headlineLines: ['Three Priorities.', 'One Year.', 'Pennsylvania Hospitals.'],
       ctas: [
         { label: 'Construction & plan review', href: '#construction', pillIcon: 'facilities' },
         { label: 'Credential across a system', href: '#credentialing', pillIcon: 'workforce' },

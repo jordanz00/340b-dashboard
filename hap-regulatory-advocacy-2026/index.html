@@ -39,6 +39,7 @@
   <link rel="stylesheet" href="hap-design-tokens.css">
   <link rel="stylesheet" href="branding-hap-2025.css">
   <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="reg-advocacy-modern.css">
   <script src="vendor/d3.min.js" defer></script>
   <script src="vendor/topojson-client.min.js" defer></script>
   <script src="vendor/states-10m.js" defer></script>
@@ -81,18 +82,44 @@
   </header>
 
   <main id="main" class="hap-reg-main">
-    <section id="overview" class="hap-reg-scroll-target" aria-labelledby="overview-title">
-      <div class="hap-reg-hero-card hap-reg-hero-card--focus hap-reg-hero-card--quiet">
-        <div class="hap-reg-hero-card-body">
-          <p class="hap-reg-hero-eyebrow">April 16, 2026 · Letter to the Pennsylvania Department of Health</p>
-          <h1 id="overview-title" class="hap-reg-h1 hap-reg-h1-hero"></h1>
-          <div class="hap-reg-hero-cta-row">
-            <a class="hap-reg-hero-cta" href="#priorities-deck">
-              Read the three asks
-              <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="currentColor" d="M13.3 5.3 11.9 6.7 16.2 11H4v2h12.2l-4.3 4.3 1.4 1.4L20 12z"/></svg>
-            </a>
+    <section id="overview" class="hap-reg-scroll-target hap-mod-hero-deep" aria-labelledby="overview-title">
+      <div class="hap-mod-hero-grid" aria-hidden="true"></div>
+      <div class="hap-mod-hero-glow1" aria-hidden="true"></div>
+      <div class="hap-mod-hero-glow2" aria-hidden="true"></div>
+      <div class="hap-mod-hero-inner">
+        <div class="hap-reg-hero-card hap-reg-hero-card--focus hap-reg-hero-card--quiet">
+          <div class="hap-reg-hero-card-body">
+            <p class="hap-mod-hero-eyebrow">April 16, 2026 · Letter to the Pennsylvania Department of Health</p>
+            <h1 id="overview-title" class="hap-reg-h1 hap-reg-h1-hero"></h1>
+            <p class="hap-mod-hero-lead">HAP's <strong>235 member hospitals</strong> serve every county in Pennsylvania. Core hospital licensure rules trace back to <strong>1982</strong>, and full modernization is not expected before <strong>2029</strong>. Three targeted, administratively feasible steps can ease burden on patients, workforce, and capital projects <strong>this year</strong>.</p>
+            <div class="hap-reg-hero-cta-row">
+              <a class="hap-reg-hero-cta" href="#priorities-deck">
+                Read the three asks
+                <svg viewBox="0 0 24 24" aria-hidden="true" width="18" height="18"><path fill="currentColor" d="M13.3 5.3 11.9 6.7 16.2 11H4v2h12.2l-4.3 4.3 1.4 1.4L20 12z"/></svg>
+              </a>
+            </div>
           </div>
         </div>
+        <aside class="hap-mod-urgency" aria-label="Why act now">
+          <div class="hap-mod-urgency-label">Why act now</div>
+          <div class="hap-mod-urgency-row">
+            <div class="hap-mod-u-num">44</div>
+            <div class="hap-mod-u-txt"><strong>Years since the last major licensure update</strong><span>28 Pa. Code § 101.56 — adoption noted December 3, 1982 — still anchors hospital regulation today.</span></div>
+          </div>
+          <div class="hap-mod-urgency-row">
+            <div class="hap-mod-u-num">2029</div>
+            <div class="hap-mod-u-txt"><strong>Earliest full modernization under current timelines</strong><span>HAP's April 16, 2026 letter to Secretary Bogen notes the comprehensive package may not arrive for roughly three more years.</span></div>
+          </div>
+          <div class="hap-mod-urgency-row">
+            <div class="hap-mod-u-num">51%</div>
+            <div class="hap-mod-u-txt"><strong>General acute-care hospitals in negative operating margin</strong><span>PHC4 FY 2023 Financial Analysis — regulatory burden compounds an already fragile operating environment.</span></div>
+          </div>
+        </aside>
+      </div>
+      <div class="hap-mod-hero-wave" aria-hidden="true">
+        <svg viewBox="0 0 1280 52" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0,52 L0,26 Q160,4 320,22 Q480,40 640,18 Q800,-4 960,20 Q1120,44 1280,22 L1280,52 Z" fill="#f4f6f9"/>
+        </svg>
       </div>
     </section>
 
@@ -107,6 +134,60 @@
       <h2 id="context-band-title" class="hap-reg-h2">Pennsylvania hospital context</h2>
       <div id="js-hero-kpis" class="hap-reg-hero-kpis" role="region" aria-label="Pennsylvania hospital context (verified public sources)"></div>
       <div id="js-glossary"></div>
+    </section>
+
+    <section id="timeline-band" class="hap-reg-scroll-target" aria-labelledby="timeline-band-title">
+      <p class="hap-reg-section-label">Regulatory timeline</p>
+      <h2 id="timeline-band-title" class="hap-reg-h2">44 years of hospital licensure — and counting</h2>
+      <p class="hap-reg-lead hap-reg-lead-tight">Pennsylvania's hospital licensure framework was last substantially modernized in 1982. Full package relief is not expected before 2029. HAP is asking DOH for three administratively feasible fixes this year — through guidance, policy statements, or coordination — so hospitals and patients do not wait the full runway.</p>
+      <div class="hap-mod-timeline-wrap">
+        <div class="hap-mod-timeline-grid">
+          <div>
+            <div class="hap-mod-tl-track" role="img" aria-label="Timeline: 1982 last major licensure update, 2013 Act 60 hospital deemed status, 2024 through 2025 modernization package delayed, 2026 HAP advocacy for three targeted fixes, 2029 earliest full modernization">
+              <div class="hap-mod-tl-base" aria-hidden="true"></div>
+              <div class="hap-mod-tl-fill" aria-hidden="true"></div>
+              <div class="hap-mod-tl-nodes">
+                <div class="hap-mod-tn">
+                  <div class="hap-mod-tn-dot is-past" aria-hidden="true"></div>
+                  <div class="hap-mod-tn-yr is-past">1982</div>
+                  <div class="hap-mod-tn-desc">Last major licensure update</div>
+                </div>
+                <div class="hap-mod-tn">
+                  <div class="hap-mod-tn-dot is-past" aria-hidden="true"></div>
+                  <div class="hap-mod-tn-yr is-past">2013</div>
+                  <div class="hap-mod-tn-desc">Act 60 — hospital deemed status</div>
+                </div>
+                <div class="hap-mod-tn">
+                  <div class="hap-mod-tn-dot is-past" aria-hidden="true"></div>
+                  <div class="hap-mod-tn-yr is-past">2024–25</div>
+                  <div class="hap-mod-tn-desc">Modernization package delayed</div>
+                </div>
+                <div class="hap-mod-tn">
+                  <div class="hap-mod-tn-dot is-now" aria-hidden="true"></div>
+                  <div class="hap-mod-tn-yr is-now">2026</div>
+                  <div class="hap-mod-tn-desc">HAP advocacy — three targeted asks</div>
+                </div>
+                <div class="hap-mod-tn">
+                  <div class="hap-mod-tn-dot is-warn" aria-hidden="true"></div>
+                  <div class="hap-mod-tn-yr is-warn">2029</div>
+                  <div class="hap-mod-tn-desc">Earliest full modernization</div>
+                </div>
+              </div>
+            </div>
+            <p class="hap-mod-tl-source">Source: HAP April 16, 2026 letter to Secretary Bogen; 28 Pa. Code § 101.56 (authority section notes adoption December 3, 1982).</p>
+          </div>
+          <div class="hap-mod-tl-aside">
+            <div class="hap-mod-tl-note hap-mod-tl-note--blue">
+              <div class="hap-mod-tl-note-label">What HAP is asking for</div>
+              <p>Written <strong>guidance, statements of policy, or interpretive letters</strong> — within DOH's existing authority — without waiting on the full rulemaking package.</p>
+            </div>
+            <div class="hap-mod-tl-note hap-mod-tl-note--orange">
+              <div class="hap-mod-tl-note-label">The cost of waiting</div>
+              <p>Every month of delay means repeated architectural engagements, duplicative surveys, and per-facility credentialing — <strong>administrative effort diverted from patient care</strong>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <section
@@ -170,6 +251,23 @@
         <span class="hap-reg-h3-sub">Ask · friction · outcome · evidence</span>
       </h3>
       <div id="js-priority-articles" class="hap-reg-pc-stack"></div>
+    </section>
+
+    <section id="quote-band" aria-labelledby="quote-band-title">
+      <h2 id="quote-band-title" class="hap-reg-sr-only">Statement from HAP leadership</h2>
+      <div class="hap-mod-quote-band">
+        <div class="hap-mod-quote-grid" aria-hidden="true"></div>
+        <div class="hap-mod-q-mark" aria-hidden="true">&ldquo;</div>
+        <p class="hap-mod-q-text">Pennsylvania is home to some of the nation's leaders in health care innovation. Improvements to the regulatory landscape would enable hospitals to reallocate resources currently tied to managing outdated systems to efforts aimed at <em>leveraging cutting-edge technologies, improving patient care, and better utilizing our health care workforce.</em></p>
+        <div class="hap-mod-q-sig">
+          <div class="hap-mod-q-av" aria-hidden="true">NS</div>
+          <div>
+            <div class="hap-mod-q-name">Nicole Stallings</div>
+            <div class="hap-mod-q-role">President &amp; CEO, The Hospital and Healthsystem Association of Pennsylvania</div>
+          </div>
+        </div>
+        <p class="hap-mod-q-date">Letter to Dr. Debra Bogen, Secretary of Health, Pennsylvania Department of Health · April 16, 2026</p>
+      </div>
     </section>
 
     <section id="context" class="hap-reg-compare-wrap hap-reg-compare-wrap--elevated hap-reg-scroll-target" aria-labelledby="compare-title">

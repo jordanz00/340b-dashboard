@@ -471,7 +471,17 @@
   function initHero() {
     var data = window.HAP_REGULATORY_ADVOCACY_2026;
     if (!data || !data.hero) return;
-    setText(document.getElementById('overview-title'), data.hero.headline);
+    var el = document.getElementById('overview-title');
+    /*
+     * Prefer the line-broken array (`headlineLines`) when present — renders each
+     * phrase on its own row via real <br> elements inserted by setMultilineText.
+     * Falls back to the plain string for any data shape that predates the array.
+     */
+    if (Array.isArray(data.hero.headlineLines) && data.hero.headlineLines.length) {
+      setMultilineText(el, data.hero.headlineLines);
+    } else {
+      setText(el, data.hero.headline);
+    }
   }
 
   function renderAtAGlance(container, items) {

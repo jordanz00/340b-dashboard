@@ -1,0 +1,943 @@
+/**
+ * HAP Regulatory Advocacy 2026 — Modern Overhaul Layer
+ * =====================================================
+ * WHO THIS IS FOR: Hospital CEOs, lawmakers, health-system leadership, HAP membership.
+ * WHAT IT DOES: Selective design evolution atop dashboard.css — deep hero, executive
+ *   KPI band, timeline, quote band, refined deck + compare + sources. HAP brand
+ *   colors only (April 2025 guidelines); Montserrat typography throughout.
+ * HOW IT CONNECTS: Loaded AFTER dashboard.css in index.html. Adds new structural
+ *   pieces (hero-deep wrap, timeline band, quote band) via static HTML in index.html
+ *   and styles them here. Does not depend on app.js.
+ *
+ * POWER BI MAPPING: none (presentation only; data still flows from facts.js via app.js).
+ *
+ * Design patterns drawn from Oliver Wyman–style executive dashboards and modern
+ * healthcare policy briefings: dense dark-on-light contrast, disciplined accent use,
+ * serif-free sans hierarchy (Montserrat), airy spacing, one elevation language.
+ */
+
+/* =============================================================
+ * 0 — Local tokens (scoped to this page)
+ * ============================================================= */
+:root {
+  --hap-mod-deep: #003f72;
+  --hap-mod-deep-2: #002b54;
+  --hap-mod-ink: #001e38;
+  --hap-mod-blue: var(--hap-brandguide-blue, #0072bc);
+  --hap-mod-blue-mid: #005fa3;
+  --hap-mod-blue-pale: #deeef8;
+  --hap-mod-sky: var(--hap-brandguide-sky, #8ed8f8);
+  --hap-mod-orange: var(--hap-brandguide-orange, #fbb040);
+  --hap-mod-orange-dk: #b87208;
+  --hap-mod-orange-lt: #fff8eb;
+  --hap-mod-teal: var(--hap-brandguide-teal, #3a8b7f);
+  --hap-mod-teal-lt: #e3f2f0;
+  --hap-mod-slate: var(--hap-brandguide-slate, #6d8b8c);
+  --hap-mod-mist: var(--hap-brandguide-mist, #d3d9d4);
+  --hap-mod-ink-900: #0d1117;
+  --hap-mod-ink-800: #1c2431;
+  --hap-mod-ink-700: #2e3a4e;
+  --hap-mod-ink-600: #445162;
+  --hap-mod-ink-400: #697a8d;
+  --hap-mod-ink-300: #94a3b4;
+  --hap-mod-ink-200: #c8d2dd;
+  --hap-mod-ink-100: #e8edf3;
+  --hap-mod-ink-50: #f4f6f9;
+  --hap-mod-ink-20: #fafbfc;
+  --hap-mod-rad-sm: 6px;
+  --hap-mod-rad-md: 10px;
+  --hap-mod-rad-lg: 16px;
+  --hap-mod-rad-xl: 24px;
+  --hap-mod-ease: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* =============================================================
+ * 1 — Page canvas + sticky header brand stripe
+ * ============================================================= */
+.hap-reg-page {
+  background: var(--hap-mod-ink-50);
+}
+
+.hap-reg-header {
+  border-bottom: 1px solid var(--hap-mod-ink-200);
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+/* Brand accent stripe: HAP blue → orange → sky (April 2025 palette) */
+.hap-reg-header::before {
+  content: "";
+  display: block;
+  height: 3px;
+  background: linear-gradient(
+    90deg,
+    var(--hap-mod-blue) 0%,
+    var(--hap-mod-blue) 62%,
+    var(--hap-mod-orange) 62%,
+    var(--hap-mod-orange) 79%,
+    var(--hap-mod-sky) 79%,
+    var(--hap-mod-sky) 100%
+  );
+}
+
+.hap-reg-header-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.hap-reg-nav-link {
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.hap-reg-nav-link.is-active,
+.hap-reg-nav-link:hover {
+  color: var(--hap-mod-blue);
+}
+
+/* =============================================================
+ * 2 — DEEP HERO (wraps the #overview section via .hap-mod-hero-deep)
+ * ============================================================= */
+.hap-mod-hero-deep {
+  position: relative;
+  background: var(--hap-mod-deep);
+  overflow: hidden;
+  margin-top: 0;
+}
+
+.hap-mod-hero-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.hap-mod-hero-glow1 {
+  position: absolute;
+  top: -120px;
+  right: -80px;
+  width: 560px;
+  height: 560px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 114, 188, 0.3) 0%, transparent 68%);
+  pointer-events: none;
+}
+
+.hap-mod-hero-glow2 {
+  position: absolute;
+  bottom: -60px;
+  left: 38%;
+  width: 420px;
+  height: 320px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(142, 216, 248, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hap-mod-hero-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 4.5rem 2rem 0;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 4rem;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .hap-mod-hero-inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+    padding: 3.5rem 1.5rem 0;
+  }
+}
+
+/* Override existing hero-card when inside deep wrap — turn it transparent so
+   the dynamically-populated H1 and CTA float on the dark ground. */
+.hap-mod-hero-deep .hap-reg-hero-card,
+.hap-mod-hero-deep .hap-reg-hero-card--focus,
+.hap-mod-hero-deep .hap-reg-hero-card--quiet {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+}
+
+.hap-mod-hero-deep .hap-reg-hero-card-body {
+  padding: 0;
+}
+
+.hap-mod-hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hap-mod-sky);
+  margin-bottom: 1.5rem;
+}
+
+.hap-mod-hero-eyebrow::before {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 2px;
+  background: var(--hap-mod-orange);
+}
+
+.hap-mod-hero-deep .hap-reg-h1.hap-reg-h1-hero,
+.hap-mod-hero-deep #overview-title {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 1.1;
+  color: #ffffff;
+  letter-spacing: -0.015em;
+  margin: 0 0 1.5rem;
+  max-width: 22ch;
+}
+
+.hap-mod-hero-lead {
+  font-size: 1.0625rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.72;
+  max-width: 580px;
+  margin: 0 0 2.25rem;
+}
+
+.hap-mod-hero-lead strong {
+  color: #ffffff;
+  font-weight: 600;
+}
+
+.hap-mod-hero-deep .hap-reg-hero-cta {
+  background: var(--hap-mod-orange);
+  color: var(--hap-mod-ink);
+  box-shadow: 0 6px 20px rgba(251, 176, 64, 0.28);
+  font-weight: 700;
+}
+
+.hap-mod-hero-deep .hap-reg-hero-cta:hover {
+  background: #ffc166;
+  box-shadow: 0 10px 24px rgba(251, 176, 64, 0.38);
+}
+
+.hap-mod-hero-deep .hap-reg-hero-cta svg path {
+  fill: var(--hap-mod-ink);
+}
+
+/* Urgency card (right column) */
+.hap-mod-urgency {
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: var(--hap-mod-rad-lg);
+  padding: 1.75rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.hap-mod-urgency-label {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--hap-mod-orange);
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hap-mod-urgency-label::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.hap-mod-urgency-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 0.875rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.hap-mod-urgency-row:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.hap-mod-u-num {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--hap-mod-orange);
+  line-height: 1;
+  flex-shrink: 0;
+  min-width: 58px;
+  letter-spacing: -0.02em;
+}
+
+.hap-mod-u-txt strong {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 3px;
+}
+
+.hap-mod-u-txt span {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.5;
+}
+
+/* Decorative wave transitioning into light canvas */
+.hap-mod-hero-wave {
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+  height: 52px;
+  margin-top: 3rem;
+}
+
+.hap-mod-hero-wave svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* =============================================================
+ * 3 — Section chrome (kicker, title, lead)
+ * ============================================================= */
+.hap-reg-section-label {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--hap-mod-blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hap-reg-section-label::before {
+  content: "";
+  width: 16px;
+  height: 2px;
+  background: var(--hap-mod-orange);
+  display: inline-block;
+}
+
+.hap-reg-h2 {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--hap-mod-ink-900);
+}
+
+/* =============================================================
+ * 4 — EXECUTIVE KPI BAND (dark treatment on existing stat-band)
+ * ============================================================= */
+.hap-reg-stat-band-wrap {
+  background: transparent;
+  padding-inline: 0;
+}
+
+.hap-reg-stat-vis-title {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-weight: 700;
+  color: var(--hap-mod-ink-900);
+  letter-spacing: -0.01em;
+}
+
+.hap-reg-stat-band {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0;
+  background: var(--hap-mod-ink);
+  border-radius: var(--hap-mod-rad-lg);
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 30, 56, 0.18);
+  padding: 0;
+}
+
+@media (max-width: 1100px) {
+  .hap-reg-stat-band {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 720px) {
+  .hap-reg-stat-band {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.hap-reg-stat-band .hap-reg-stat-item {
+  background: transparent;
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.07);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  border-radius: 0;
+  padding: 1.75rem 1.25rem 1.875rem;
+  min-height: 0;
+  min-width: 0;
+  box-shadow: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  transition: background 0.22s ease;
+}
+
+.hap-reg-stat-band .hap-reg-stat-item:hover {
+  background: rgba(255, 255, 255, 0.035);
+  transform: none;
+  box-shadow: none;
+}
+
+.hap-reg-stat-band .hap-reg-stat-item::before {
+  content: "";
+  position: absolute;
+  left: 1.25rem;
+  right: 1.25rem;
+  bottom: 0;
+  height: 3px;
+  border-radius: 2px 2px 0 0;
+  background: var(--hap-mod-blue);
+}
+
+.hap-reg-stat-band .hap-reg-stat-item--finance::before { background: var(--hap-mod-teal); }
+.hap-reg-stat-band .hap-reg-stat-item--jobs::before { background: var(--hap-mod-sky); }
+.hap-reg-stat-band .hap-reg-stat-item--danger::before { background: var(--hap-mod-orange); }
+.hap-reg-stat-band .hap-reg-stat-item--policy::before { background: #d9534f; }
+.hap-reg-stat-band .hap-reg-stat-item--members::before { background: var(--hap-mod-blue); }
+.hap-reg-stat-band .hap-reg-stat-item--code::before { background: var(--hap-mod-slate); }
+
+.hap-reg-stat-band .hap-reg-stat-icon-wrap {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--hap-mod-sky);
+  margin: 0 0 0.25rem;
+}
+
+.hap-reg-stat-band .hap-reg-stat-icon-wrap .hap-reg-stat-ic,
+.hap-reg-stat-band .hap-reg-stat-icon-wrap svg {
+  width: 16px;
+  height: 16px;
+  color: inherit;
+}
+
+.hap-reg-stat-band .hap-reg-stat-value,
+.hap-reg-stat-band .hap-reg-stat-item--finance .hap-reg-stat-value,
+.hap-reg-stat-band .hap-reg-stat-item--danger .hap-reg-stat-value,
+.hap-reg-stat-band .hap-reg-stat-item--policy .hap-reg-stat-value,
+.hap-reg-stat-band .hap-reg-stat-item--members .hap-reg-stat-value,
+.hap-reg-stat-band .hap-reg-stat-item--code .hap-reg-stat-value {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  /* Scale: ~22px (narrow) → ~30px (wide). 6-up grid leaves ~150px/cell at 1280px,
+     so values like "$195.4B" and "785,715" must never wrap. */
+  font-size: clamp(1.375rem, 0.8rem + 1.1vw, 1.875rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+/* Tighten further when the band collapses to 3-up and cells get a bit wider:
+   we can afford a slightly larger number. */
+@media (min-width: 721px) and (max-width: 1100px) {
+  .hap-reg-stat-band .hap-reg-stat-value {
+    font-size: clamp(1.5rem, 0.9rem + 1.5vw, 2.1rem);
+  }
+}
+
+/* Mobile (2-up grid): keep numbers prominent and still on one line. */
+@media (max-width: 720px) {
+  .hap-reg-stat-band .hap-reg-stat-value {
+    font-size: clamp(1.375rem, 1rem + 2vw, 1.875rem);
+  }
+}
+
+.hap-reg-stat-band .hap-reg-stat-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.66);
+  line-height: 1.45;
+  margin: 0;
+}
+
+.hap-reg-stat-band .hap-reg-stat-caption {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.42);
+  line-height: 1.55;
+  margin: 0.25rem 0 0;
+}
+
+.hap-reg-stat-band .hap-reg-stat-source,
+.hap-reg-stat-band .hap-reg-stat-source a {
+  font-size: 10.5px;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.hap-reg-stat-band .hap-reg-stat-source a:hover {
+  color: var(--hap-mod-sky);
+}
+
+/* =============================================================
+ * 5 — TIMELINE BAND (new static section)
+ * ============================================================= */
+.hap-mod-timeline-wrap {
+  background: #ffffff;
+  border: 1px solid var(--hap-mod-ink-200);
+  border-radius: var(--hap-mod-rad-lg);
+  padding: 2rem 2.5rem;
+  box-shadow: var(--hap-reg-shadow-sm, 0 1px 2px rgba(35, 31, 32, 0.04));
+}
+
+.hap-mod-timeline-grid {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 2.5rem;
+  /* Center the timeline column vertically against the taller right-side notes
+     so equal white space sits above and below the rail + source line. */
+  align-items: center;
+}
+
+@media (max-width: 1000px) {
+  .hap-mod-timeline-grid {
+    grid-template-columns: 1fr;
+    gap: 1.75rem;
+  }
+}
+
+.hap-mod-tl-track {
+  position: relative;
+  padding: 2rem 0 0.5rem;
+}
+
+.hap-mod-tl-base {
+  position: absolute;
+  top: 2.75rem;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--hap-mod-ink-100);
+  border-radius: 2px;
+}
+
+.hap-mod-tl-fill {
+  position: absolute;
+  top: 2.75rem;
+  left: 0;
+  width: 66%;
+  height: 3px;
+  background: linear-gradient(90deg, var(--hap-mod-blue) 0%, var(--hap-mod-orange) 100%);
+  border-radius: 2px;
+}
+
+.hap-mod-tl-nodes {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  z-index: 1;
+  gap: 0.5rem;
+}
+
+.hap-mod-tn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  flex: 1 0 0;
+}
+
+.hap-mod-tn-dot {
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 3px solid var(--hap-mod-ink-200);
+  background: #ffffff;
+  flex-shrink: 0;
+}
+
+.hap-mod-tn-dot.is-past {
+  border-color: var(--hap-mod-blue);
+  background: var(--hap-mod-blue);
+}
+
+.hap-mod-tn-dot.is-now {
+  border-color: var(--hap-mod-orange);
+  background: var(--hap-mod-orange);
+  box-shadow: 0 0 0 4px rgba(251, 176, 64, 0.25);
+}
+
+.hap-mod-tn-dot.is-warn {
+  border-color: #b94a3d;
+  background: #b94a3d;
+}
+
+.hap-mod-tn-yr {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--hap-mod-ink-400);
+  white-space: nowrap;
+  letter-spacing: 0.01em;
+}
+
+.hap-mod-tn-yr.is-past {
+  color: var(--hap-mod-blue);
+}
+
+.hap-mod-tn-yr.is-now {
+  color: var(--hap-mod-orange-dk);
+  font-weight: 700;
+}
+
+.hap-mod-tn-yr.is-warn {
+  color: #b94a3d;
+  font-weight: 700;
+}
+
+.hap-mod-tn-desc {
+  font-size: 10.5px;
+  color: var(--hap-mod-ink-400);
+  text-align: center;
+  max-width: 100px;
+  line-height: 1.4;
+}
+
+.hap-mod-tl-source {
+  font-size: 11px;
+  color: var(--hap-mod-ink-400);
+  margin-top: 1rem;
+}
+
+.hap-mod-tl-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+.hap-mod-tl-note {
+  border-radius: var(--hap-mod-rad-md);
+  padding: 1rem 1.25rem;
+}
+
+.hap-mod-tl-note--blue {
+  background: var(--hap-mod-blue-pale);
+  border: 1px solid rgba(0, 114, 188, 0.18);
+}
+
+.hap-mod-tl-note--orange {
+  background: var(--hap-mod-orange-lt);
+  border: 1px solid #fde8b4;
+}
+
+.hap-mod-tl-note-label {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  margin-bottom: 0.4rem;
+}
+
+.hap-mod-tl-note--blue .hap-mod-tl-note-label {
+  color: var(--hap-mod-blue);
+}
+
+.hap-mod-tl-note--orange .hap-mod-tl-note-label {
+  color: var(--hap-mod-orange-dk);
+}
+
+.hap-mod-tl-note p {
+  font-size: 0.875rem;
+  color: var(--hap-mod-ink-700);
+  line-height: 1.65;
+  margin: 0;
+}
+
+.hap-mod-tl-note p strong {
+  color: var(--hap-mod-ink-900);
+  font-weight: 600;
+}
+
+@media (max-width: 720px) {
+  .hap-mod-timeline-wrap {
+    padding: 1.5rem 1.25rem;
+  }
+
+  .hap-mod-tl-nodes {
+    overflow-x: auto;
+    gap: 12px;
+    padding-bottom: 0.25rem;
+  }
+
+  .hap-mod-tn {
+    flex: 0 0 110px;
+  }
+}
+
+/* =============================================================
+ * 6 — PRIORITY DECK (subtle executive refinement)
+ * ============================================================= */
+.hap-reg-deck-card {
+  border-radius: var(--hap-mod-rad-lg) !important;
+  transition: box-shadow 0.25s var(--hap-mod-ease), transform 0.25s var(--hap-mod-ease),
+    border-color 0.25s var(--hap-mod-ease);
+}
+
+.hap-reg-deck-card:hover,
+.hap-reg-deck-card:focus-visible {
+  transform: translateY(-3px);
+  box-shadow: 0 18px 40px rgba(0, 57, 99, 0.1);
+  border-color: rgba(0, 114, 188, 0.28);
+}
+
+.hap-reg-deck-num {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+/* =============================================================
+ * 7 — COMPARE TABLE chips polish (clearer vis for lawmakers)
+ * ============================================================= */
+.hap-reg-compare-table thead th {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--hap-mod-ink-600);
+  background: var(--hap-mod-ink-50);
+  border-bottom: 2px solid var(--hap-mod-ink-200);
+}
+
+.hap-reg-compare-table tbody tr:hover td {
+  background: var(--hap-mod-ink-20);
+}
+
+.hap-reg-compare-issue-text {
+  font-weight: 600;
+  color: var(--hap-mod-ink-900);
+}
+
+/* =============================================================
+ * 8 — QUOTE BAND (new static section: dark blue w/ grid)
+ * ============================================================= */
+.hap-mod-quote-band {
+  position: relative;
+  background: var(--hap-mod-deep);
+  border-radius: var(--hap-mod-rad-xl);
+  padding: 3.5rem;
+  overflow: hidden;
+  box-shadow: 0 24px 60px rgba(0, 30, 56, 0.2);
+}
+
+.hap-mod-quote-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+.hap-mod-q-mark {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 7rem;
+  line-height: 0.65;
+  color: var(--hap-mod-orange);
+  opacity: 0.8;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.hap-mod-q-text {
+  position: relative;
+  z-index: 1;
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: clamp(1.2rem, 2.1vw, 1.625rem);
+  font-weight: 500;
+  line-height: 1.55;
+  color: #ffffff;
+  max-width: 860px;
+  margin: 0 0 2rem;
+  letter-spacing: -0.005em;
+}
+
+.hap-mod-q-text em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--hap-mod-sky);
+}
+
+.hap-mod-q-sig {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.hap-mod-q-av {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.11);
+  border: 2px solid rgba(255, 255, 255, 0.24);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-size: 14px;
+  font-weight: 700;
+  color: #ffffff;
+  flex-shrink: 0;
+  letter-spacing: 0.04em;
+}
+
+.hap-mod-q-name {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.hap-mod-q-role {
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+.hap-mod-q-date {
+  position: relative;
+  z-index: 1;
+  font-size: 0.8125rem;
+  color: rgba(255, 255, 255, 0.4);
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 720px) {
+  .hap-mod-quote-band {
+    padding: 2.25rem 1.5rem;
+    border-radius: var(--hap-mod-rad-lg);
+  }
+
+  .hap-mod-q-mark {
+    font-size: 5rem;
+  }
+}
+
+/* =============================================================
+ * 9 — SOURCES (numbered badges, hover highlight)
+ * ============================================================= */
+.hap-reg-sources {
+  background: #ffffff;
+  border: 1px solid var(--hap-mod-ink-200);
+  border-radius: var(--hap-mod-rad-lg);
+  padding-top: 1.75rem;
+}
+
+.hap-reg-sources-title {
+  padding: 0 2rem;
+}
+
+.hap-reg-source-list {
+  margin-top: 1rem;
+}
+
+/* =============================================================
+ * 10 — AT-A-GLANCE cards (slightly more editorial)
+ * ============================================================= */
+.hap-reg-aag-kicker {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+}
+
+.hap-reg-aag-cell {
+  transition: transform 0.25s var(--hap-mod-ease), box-shadow 0.25s var(--hap-mod-ease),
+    border-color 0.25s var(--hap-mod-ease);
+}
+
+.hap-reg-aag-cell:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 57, 99, 0.08);
+  border-color: rgba(0, 114, 188, 0.22);
+}
+
+/* =============================================================
+ * 11 — IMPACT GRID (top accent stripes)
+ * ============================================================= */
+.hap-reg-impact-grid {
+  border-radius: var(--hap-mod-rad-lg);
+  overflow: hidden;
+}
+
+/* =============================================================
+ * 12 — FOOTER polish
+ * ============================================================= */
+.hap-reg-footer {
+  margin-top: 4rem;
+  padding-top: 2rem;
+  border-top: 1px solid var(--hap-mod-ink-200);
+}
+
+.hap-reg-footer-brand strong {
+  font-family: var(--hap-font-display, "Montserrat", sans-serif);
+  font-weight: 700;
+  color: var(--hap-mod-ink-800);
+}
+
+.hap-reg-footer-line {
+  color: var(--hap-mod-ink-400);
+  font-size: 0.8125rem;
+}
+
+/* =============================================================
+ * 13 — Reduced motion
+ * ============================================================= */
+@media (prefers-reduced-motion: reduce) {
+  .hap-reg-deck-card,
+  .hap-reg-aag-cell,
+  .hap-reg-stat-band .hap-reg-stat-item,
+  .hap-mod-hero-deep .hap-reg-hero-cta {
+    transition: none !important;
+  }
+
+  .hap-reg-deck-card:hover,
+  .hap-reg-aag-cell:hover {
+    transform: none;
+  }
+}
