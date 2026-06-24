@@ -530,10 +530,6 @@ class PA_Booking_Frontend {
                 </p>
                 <div class="pa-booking-credential-strip" role="list" aria-label="Credentials">
                     <span class="pa-credential-item" role="listitem">
-                        <span class="pa-credential-icon" aria-hidden="true">★</span>
-                        2026 CPMA Best Videography Nominee
-                    </span>
-                    <span class="pa-credential-item" role="listitem">
                         <span class="pa-credential-icon" aria-hidden="true">✓</span>
                         Confirmation within one business day
                     </span>

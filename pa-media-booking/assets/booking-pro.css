@@ -594,6 +594,13 @@
   text-transform: uppercase;
 }
 
+/* Selected package uses dark fill — invert badge so “Most popular” stays readable */
+.pa-booking-v4 .pa-service-option.is-selected .pa-service-recommended {
+  background: #fff;
+  color: var(--pa-color-ink);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.35);
+}
+
 /* Calendar lead-time legend */
 .pa-booking-v4 .pa-cal-legend-swatch.is-lead {
   background: repeating-linear-gradient(
