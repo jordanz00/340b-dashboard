@@ -79,16 +79,6 @@ class PA_Booking_REST {
                 'permission_callback' => '__return_true',
             )
         );
-
-        register_rest_route(
-            'pa-booking/v1',
-            '/status',
-            array(
-                'methods'             => 'GET',
-                'callback'            => array($this, 'booking_status'),
-                'permission_callback' => '__return_true',
-            )
-        );
     }
 
     public function session() {
@@ -490,49 +480,5 @@ class PA_Booking_REST {
      */
     public static function notify_admin_deposit_paid($booking_id) {
         self::notify_admin_request($booking_id, true);
-    }
-
-    /**
-     * Lightweight client status lookup (email + booking ID).
-     */
-    public function booking_status(WP_REST_Request $request) {
-        $booking_id = (int) $request->get_param('booking_id');
-        $email = sanitize_email($request->get_param('email') ?? '');
-        if ($booking_id < 1 || !is_email($email)) {
-            return new WP_Error('invalid_request', 'Enter your booking ID and email.', array('status' => 400));
-        }
-
-        $post = get_post($booking_id);
-        if (!$post || $post->post_type !== PA_Booking::CPT) {
-            return new WP_Error('not_found', 'No booking found with that ID.', array('status' => 404));
-        }
-
-        $stored_email = get_post_meta($booking_id, 'customer_email', true);
-        if (strcasecmp($stored_email, $email) !== 0) {
-            return new WP_Error('forbidden', 'Email does not match this booking.', array('status' => 403));
-        }
-
-        $status = get_post_meta($booking_id, 'status', true) ?: 'pending_approval';
-        $event_dates = PA_Booking::get_booking_event_dates($booking_id);
-        $labels = array(
-            'pending_payment'  => 'Awaiting deposit',
-            'pending_approval' => 'Under review',
-            'approved'         => 'Confirmed',
-            'rejected'         => 'Not available',
-            'payment_failed'   => 'Payment issue',
-        );
-
-        return rest_ensure_response(
-            array(
-                'booking_id'   => $booking_id,
-                'status'       => $status,
-                'status_label' => $labels[$status] ?? ucfirst(str_replace('_', ' ', $status)),
-                'service'      => get_post_meta($booking_id, 'service', true),
-                'dates_label'  => PA_Booking::format_dates_label($event_dates),
-                'time_window'  => get_post_meta($booking_id, 'time_window', true),
-                'venue'        => get_post_meta($booking_id, 'venue', true),
-                'deposit_usd'  => round(((int) get_post_meta($booking_id, 'deposit_cents', true)) / 100, 2),
-            )
-        );
     }
 }

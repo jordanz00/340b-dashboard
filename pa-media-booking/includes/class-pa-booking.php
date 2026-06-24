@@ -72,7 +72,6 @@ class PA_Booking {
     public function register_page_rewrites() {
         add_rewrite_rule('^book/?$', 'index.php?pagename=book', 'top');
         add_rewrite_rule('^booking-confirmed/?$', 'index.php?pagename=booking-confirmed', 'top');
-        add_rewrite_rule('^booking-status/?$', 'index.php?pagename=booking-status', 'top');
     }
 
     public static function on_activate() {

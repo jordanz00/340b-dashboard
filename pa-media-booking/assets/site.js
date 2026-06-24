@@ -344,7 +344,7 @@
     }
     var label = document.createElement('div');
     label.id = 'pa-portfolio-label';
-    label.className = 'pa-section-head';
+    label.className = 'pa-section-head pa-portfolio-head';
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-section-eyebrow';
     eyebrow.textContent = 'Selected work';

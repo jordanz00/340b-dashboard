@@ -10,7 +10,6 @@ if (!defined('ABSPATH')) {
 class PA_Booking_Setup {
     public static function run() {
         self::ensure_success_page();
-        self::ensure_status_page();
         self::ensure_home_shortcode();
         self::ensure_defaults();
         flush_rewrite_rules();
@@ -44,34 +43,6 @@ class PA_Booking_Setup {
         $settings = PA_Booking::get_settings();
         $settings['success_page'] = (int) $page_id;
         update_option(PA_Booking::OPTION_SETTINGS, $settings);
-    }
-
-    private static function ensure_status_page() {
-        $existing = get_page_by_path('booking-status');
-        if ($existing) {
-            return;
-        }
-        self::create_status_page();
-    }
-
-    /**
-     * Public hook for version upgrades.
-     */
-    public static function ensure_status_page_public() {
-        self::ensure_status_page();
-    }
-
-    private static function create_status_page() {
-        wp_insert_post(
-            array(
-                'post_title'   => 'Booking Status',
-                'post_name'    => 'booking-status',
-                'post_status'  => 'publish',
-                'post_type'    => 'page',
-                'post_content' => "<!-- wp:shortcode -->\n[pa_booking_status]\n<!-- /wp:shortcode -->",
-            ),
-            true
-        );
     }
 
     private static function ensure_home_shortcode() {

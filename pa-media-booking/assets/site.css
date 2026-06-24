@@ -1430,6 +1430,32 @@ body.home #pa-portfolio-label {
   margin-bottom: 0.5rem;
 }
 
+body.pa-has-portfolio-showcase .pa-portfolio-head,
+body.home .pa-portfolio-head,
+#pa-portfolio-label.pa-portfolio-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
+  max-width: var(--pa-site-max, 1100px);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-head .pa-section-eyebrow,
+body.pa-has-portfolio-showcase .pa-portfolio-head .pa-section-title,
+body.home .pa-portfolio-head .pa-section-eyebrow,
+body.home .pa-portfolio-head .pa-section-title,
+#pa-portfolio-label .pa-section-eyebrow,
+#pa-portfolio-label .pa-section-title {
+  text-align: center !important;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 @media (max-width: 900px) {
   body.pa-has-portfolio-showcase .pa-portfolio-grid,
   body.home .pa-portfolio-grid {

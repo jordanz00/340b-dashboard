@@ -90,7 +90,7 @@ class PA_Booking_Cache {
         if ($front > 0) {
             $ids[] = $front;
         }
-        foreach (array('book', 'services', 'about', 'booking-status') as $slug) {
+        foreach (array('book', 'services', 'about') as $slug) {
             $page = get_page_by_path($slug);
             if ($page && $page->post_status === 'publish') {
                 $ids[] = (int) $page->ID;

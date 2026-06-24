@@ -14,12 +14,10 @@ class PA_Booking_Frontend {
     public function __construct() {
         add_shortcode('pa_booking', array($this, 'render_booking'));
         add_shortcode('pa_booking_success', array($this, 'render_success'));
-        add_shortcode('pa_booking_status', array($this, 'render_status'));
         add_filter('body_class', array($this, 'body_class'));
         add_filter('pre_render_block', array($this, 'note_template_part'), 5, 2);
         add_filter('render_block', array($this, 'filter_site_logo_block'), 12, 2);
         add_action('wp_enqueue_scripts', array($this, 'maybe_assets'), 100);
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_status_assets'), 101);
         add_action('wp_head', array($this, 'inject_logo_critical_css'), 4);
         add_action('wp_head', array($this, 'inject_site_icon'), 5);
         add_action('wp_head', array($this, 'remove_wp_site_icon'), 0);
@@ -27,6 +25,7 @@ class PA_Booking_Frontend {
         add_filter('wp_resource_hints', array($this, 'resource_hints'), 10, 2);
         add_action('template_redirect', array($this, 'handle_success_query'));
         add_action('template_redirect', array($this, 'redirect_contact_page'), 1);
+        add_action('template_redirect', array($this, 'redirect_status_page'), 2);
     }
 
     /**
@@ -419,7 +418,6 @@ class PA_Booking_Frontend {
                     'notifyEmail' => sanitize_email($s['notify_email'] ?? 'jordan@pamedia.art'),
                     'paymentsEnabled' => PA_Booking::accepts_deposit_payments(),
                     'services' => $site_service_lines,
-                    'statusUrl' => esc_url_raw(home_url('/booking-status/')),
                     'legalName' => 'Pennsylvania Media Arts LLC',
                     'businessLocation' => 'New Cumberland, Pennsylvania',
                     'privacyUrl' => esc_url_raw(home_url('/privacy-policy/')),
@@ -458,7 +456,6 @@ class PA_Booking_Frontend {
                 ),
                 'servicePackages' => PA_Booking_Service_Catalog::packages_for_services(array_values($service_lines)),
                 'addons'          => PA_Booking_Service_Catalog::addons(),
-                'statusUrl'       => esc_url_raw(home_url('/booking-status/')),
                 'notifyEmail'     => sanitize_email($s['notify_email'] ?? 'jordan@pamedia.art'),
                 'legal' => array(
                     'privacyUrl' => esc_url_raw(home_url('/privacy-policy/')),
@@ -478,7 +475,7 @@ class PA_Booking_Frontend {
         if (is_front_page() || is_page('book')) {
             return true;
         }
-        return $this->page_has_shortcode('pa_booking') || $this->page_has_shortcode('pa_booking_success') || $this->page_has_shortcode('pa_booking_status');
+        return $this->page_has_shortcode('pa_booking') || $this->page_has_shortcode('pa_booking_success');
     }
 
     private function page_has_shortcode($tag) {
@@ -498,6 +495,17 @@ class PA_Booking_Frontend {
     /**
      * Contact page is retired — send visitors straight to booking.
      */
+    public function redirect_status_page() {
+        if (is_admin() || wp_doing_ajax()) {
+            return;
+        }
+        if (!is_page('booking-status')) {
+            return;
+        }
+        wp_safe_redirect(home_url('/#pa-booking-app'), 301);
+        exit;
+    }
+
     public function redirect_contact_page() {
         if (is_admin() || wp_doing_ajax()) {
             return;
@@ -550,9 +558,6 @@ class PA_Booking_Frontend {
                 <?php else : ?>
                 <p class="pa-booking-value-prop">Choose your package and an open date — we confirm by email within one business day.</p>
                 <?php endif; ?>
-                <p class="pa-booking-status-link">
-                    <a href="<?php echo esc_url(home_url('/booking-status/')); ?>">Already booked? Check your status</a>
-                </p>
             </header>
 
             <div id="pa-booking-app" class="pa-booking-app" data-deposit="<?php echo esc_attr($deposit); ?>">
@@ -661,7 +666,6 @@ class PA_Booking_Frontend {
                 </div>
                 <div class="pa-done-actions">
                     <button type="button" class="pa-ics-btn pa-ics-btn--primary" id="pa-success-ics-btn">Add to calendar</button>
-                    <a class="pa-booking-cta pa-booking-cta-secondary" href="<?php echo esc_url(home_url('/booking-status/')); ?>">Check booking status</a>
                     <a class="pa-booking-cta pa-booking-cta-secondary" href="<?php echo esc_url(home_url('/')); ?>">Back to site</a>
                 </div>
             <?php elseif ($requested) : ?>
@@ -681,7 +685,6 @@ class PA_Booking_Frontend {
                 </div>
                 <div class="pa-done-actions">
                     <button type="button" class="pa-ics-btn pa-ics-btn--primary" id="pa-success-ics-btn">Add to calendar</button>
-                    <a class="pa-booking-cta pa-booking-cta-secondary" href="<?php echo esc_url(home_url('/booking-status/')); ?>">Check booking status</a>
                     <a class="pa-booking-cta pa-booking-cta-secondary" href="<?php echo esc_url(home_url('/')); ?>">Back to site</a>
                 </div>
             <?php else : ?>
@@ -732,59 +735,5 @@ class PA_Booking_Frontend {
         </script>
         <?php
         return ob_get_clean();
-    }
-
-    /**
-     * Client booking status lookup (email + booking ID).
-     */
-    public function render_status() {
-        ob_start();
-        ?>
-        <div id="pa-booking-status" class="pa-booking-root pa-booking-v4 pa-booking-status-page alignwide" aria-label="Booking status">
-            <header class="pa-booking-hero pa-booking-hero--compact">
-                <p class="pa-booking-eyebrow">Client portal</p>
-                <h2 class="pa-booking-title">Check your booking</h2>
-                <p class="pa-booking-value-prop">Enter the booking ID from your confirmation email and the email address you used when booking.</p>
-            </header>
-            <div id="pa-status-app" class="pa-status-app">
-                <form id="pa-status-form" class="pa-status-form" novalidate>
-                    <label class="pa-field">
-                        <span class="pa-field-label">Booking ID</span>
-                        <input type="text" id="pa-status-id" class="pa-text-input" inputmode="numeric" autocomplete="off" placeholder="e.g. 1234" required>
-                    </label>
-                    <label class="pa-field">
-                        <span class="pa-field-label">Email</span>
-                        <input type="email" id="pa-status-email" class="pa-text-input" autocomplete="email" placeholder="you@example.com" required>
-                    </label>
-                    <button type="submit" class="pa-submit pa-btn">Look up status</button>
-                </form>
-                <div id="pa-status-result" class="pa-status-result" hidden></div>
-            </div>
-        </div>
-        <?php
-        return ob_get_clean();
-    }
-
-    public function enqueue_status_assets() {
-        if (!is_page('booking-status') && !$this->page_has_shortcode('pa_booking_status')) {
-            return;
-        }
-        wp_enqueue_script(
-            'pa-booking-status',
-            PA_BOOKING_URL . 'assets/booking-status.js',
-            array(),
-            PA_BOOKING_VERSION,
-            true
-        );
-        wp_localize_script(
-            'pa-booking-status',
-            'PAStatus',
-            array(
-                'restUrl' => esc_url_raw(rest_url('pa-booking/v1/')),
-                'bookUrl' => esc_url_raw(self::book_url()),
-            )
-        );
-        wp_enqueue_style('pa-booking-tokens', PA_BOOKING_URL . 'assets/booking-tokens.css', array(), PA_BOOKING_VERSION);
-        wp_enqueue_style('pa-booking-pro', PA_BOOKING_URL . 'assets/booking-pro.css', array('pa-booking-tokens'), PA_BOOKING_VERSION);
     }
 }
