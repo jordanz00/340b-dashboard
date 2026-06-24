@@ -1,0 +1,50 @@
+/**
+ * PA Media Booking — design tokens (8px spacing scale, type scale).
+ * Stripe / Linear / Calendly-inspired neutral SaaS palette.
+ */
+
+.pa-booking-root {
+  --pa-space-1: 0.25rem;   /* 4px */
+  --pa-space-2: 0.5rem;    /* 8px */
+  --pa-space-3: 0.75rem;   /* 12px */
+  --pa-space-4: 1rem;      /* 16px */
+  --pa-space-5: 1.25rem;   /* 20px */
+  --pa-space-6: 1.5rem;    /* 24px */
+  --pa-space-8: 2rem;      /* 32px */
+  --pa-space-10: 2.5rem;   /* 40px */
+  --pa-space-12: 3rem;     /* 48px */
+
+  --pa-text-xs: 0.8125rem;  /* 13px */
+  --pa-text-sm: 0.875rem;   /* 14px */
+  --pa-text-base: 1rem;     /* 16px */
+  --pa-text-md: 1.0625rem;  /* 17px */
+  --pa-text-lg: 1.125rem;   /* 18px */
+  --pa-text-xl: 1.5rem;     /* 24px */
+  --pa-text-2xl: 2rem;      /* 32px */
+
+  --pa-color-ink: #0f0f0f;
+  --pa-color-muted: #525252;
+  --pa-color-subtle: #737373;
+  --pa-color-border: rgba(15, 15, 15, 0.1);
+  --pa-color-surface: #ffffff;
+  --pa-color-surface-2: #f7f7f5;
+  --pa-color-accent: #111111;
+  --pa-color-accent-hover: #000000;
+  --pa-color-success: #166534;
+  --pa-color-success-bg: rgba(22, 101, 52, 0.08);
+  --pa-color-danger: #b91c1c;
+  --pa-color-danger-bg: rgba(185, 28, 28, 0.08);
+  --pa-color-focus: #2563eb;
+
+  --pa-radius-sm: 8px;
+  --pa-radius-md: 12px;
+  --pa-radius-lg: 16px;
+  --pa-radius-xl: 20px;
+
+  --pa-shadow-sm: 0 1px 2px rgba(15, 15, 15, 0.06);
+  --pa-shadow-md: 0 8px 24px rgba(15, 15, 15, 0.08);
+  --pa-shadow-lg: 0 16px 48px rgba(15, 15, 15, 0.1);
+
+  --pa-cal-cell-size: 52px;
+  --pa-touch-min: 44px;
+}

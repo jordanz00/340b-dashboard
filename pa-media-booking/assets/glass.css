@@ -1,0 +1,489 @@
+/**
+ * PA Media Arts — iOS liquid glass design system.
+ * Loaded after site.css; tokens live on :root from site.css.
+ */
+
+/* —— iOS-grade blur stack —— */
+body.wp-theme-gutenify-photography , body.pa-glass-site {
+  --pa-ios-blur: blur(40px) saturate(185%);
+  --pa-ios-blur-light: blur(28px) saturate(170%);
+  --pa-ios-fill: rgba(255, 255, 255, 0.68);
+  --pa-ios-fill-raised: rgba(255, 255, 255, 0.78);
+  --pa-ios-fill-solid: rgba(255, 255, 255, 0.9);
+  --pa-ios-stroke: rgba(255, 255, 255, 0.82);
+  --pa-ios-stroke-subtle: rgba(20, 20, 20, 0.07);
+  --pa-ios-specular: inset 0 1px 0 rgba(255, 255, 255, 0.85);
+  --pa-ios-shadow: 0 16px 48px rgba(17, 17, 17, 0.1), var(--pa-ios-specular);
+  --pa-ios-shadow-sm: 0 6px 24px rgba(17, 17, 17, 0.07), var(--pa-ios-specular);
+  --pa-ios-radius-xl: 28px;
+  --pa-ios-radius-lg: 20px;
+  --pa-ios-radius-md: 14px;
+  --pa-ios-radius-sm: 10px;
+  font-family: system-ui, -apple-system, "SF Pro Text", "Segoe UI", Roboto, sans-serif;
+}
+
+/* Reusable glass surfaces */
+body.wp-theme-gutenify-photography .pa-ios-glass,
+body.pa-glass-site .pa-ios-glass,
+body.wp-theme-gutenify-photography .pa-glass-card,
+body.pa-glass-site .pa-glass-card {
+  background: var(--pa-ios-fill-raised) !important;
+  backdrop-filter: var(--pa-ios-blur);
+  -webkit-backdrop-filter: var(--pa-ios-blur);
+  border: 1px solid var(--pa-ios-stroke);
+  border-radius: var(--pa-ios-radius-lg);
+  box-shadow: var(--pa-ios-shadow-sm);
+}
+
+/* —— Header: floating frosted bar —— */
+body.wp-theme-gutenify-photography header.wp-block-template-part.pa-site-header , body.pa-glass-site header.wp-block-template-part.pa-site-header {
+  margin: 0.65rem 0.85rem 0;
+  border-radius: var(--pa-ios-radius-xl);
+  border: 1px solid var(--pa-ios-stroke) !important;
+  background: var(--pa-ios-fill) !important;
+  backdrop-filter: var(--pa-ios-blur);
+  -webkit-backdrop-filter: var(--pa-ios-blur);
+  box-shadow: var(--pa-ios-shadow-sm);
+  overflow: hidden;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header > .wp-block-group , body.pa-glass-site header.pa-site-header > .wp-block-group {
+  background: transparent !important;
+}
+
+/* Header nav uses .pa-site-nav-pill — see site.css */
+/* —— Hero cover: glass frame —— */
+body.wp-theme-gutenify-photography .pa-glass-hero-wrap , body.pa-glass-site .pa-glass-hero-wrap {
+  max-width: var(--pa-site-max);
+  margin: 0.85rem auto 0;
+  padding: 0 0.85rem;
+}
+
+body.wp-theme-gutenify-photography .pa-glass-hero-wrap .wp-block-cover.alignfull , body.pa-glass-site .pa-glass-hero-wrap .wp-block-cover.alignfull {
+  border-radius: var(--pa-ios-radius-xl) !important;
+  border: 1px solid var(--pa-ios-stroke);
+  box-shadow: var(--pa-ios-shadow);
+  overflow: hidden;
+  max-width: 100%;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-cover.alignfull .wp-block-cover__background , body.pa-glass-site .wp-block-cover.alignfull .wp-block-cover__background {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.08) 0%,
+    rgba(20, 20, 20, 0.35) 100%
+  ) !important;
+}
+
+/* —— Main content rhythm —— */
+body.wp-theme-gutenify-photography main.wp-block-group , body.pa-glass-site main.wp-block-group {
+  padding-top: 0.75rem !important;
+}
+
+body.wp-theme-gutenify-photography .entry-content , body.pa-glass-site .entry-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* Standalone images in content */
+body.wp-theme-gutenify-photography .entry-content > .wp-block-image , body.pa-glass-site .entry-content > .wp-block-image {
+  max-width: 960px;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: var(--pa-ios-radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--pa-ios-stroke);
+  box-shadow: var(--pa-ios-shadow-sm);
+}
+
+/* —— BOOKING: iOS layered glass sheet —— */
+body.wp-theme-gutenify-photography .pa-booking-root , body.pa-glass-site .pa-booking-root {
+  width: 100% !important;
+  max-width: var(--pa-booking-max) !important;
+  margin: 0.35rem auto 1.5rem !important;
+  padding: 0 !important;
+  border-radius: var(--pa-ios-radius-xl) !important;
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  background: rgba(255, 255, 255, 0.58) !important;
+  backdrop-filter: blur(56px) saturate(210%);
+  -webkit-backdrop-filter: blur(56px) saturate(210%);
+  box-shadow:
+    0 20px 56px rgba(17, 17, 17, 0.11),
+    0 1px 0 rgba(255, 255, 255, 0.72) inset,
+    0 0 0 1px rgba(255, 255, 255, 0.35) inset !important;
+  overflow: hidden;
+  scroll-margin-top: 96px;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-hero,
+body.pa-glass-site .pa-booking-v4 .pa-booking-hero {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  text-align: center !important;
+  padding: 1.35rem 1.25rem 1.1rem !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.65);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.48) 0%, rgba(255, 255, 255, 0.12) 100%),
+    linear-gradient(135deg, rgba(176, 188, 202, 0.3) 0%, rgba(158, 210, 188, 0.24) 50%, rgba(148, 188, 218, 0.2) 100%) !important;
+  backdrop-filter: blur(28px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(180%) !important;
+  box-shadow: inset 0 -1px 0 rgba(255, 255, 255, 0.35);
+}
+
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-hero .pa-booking-eyebrow,
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-hero .pa-booking-title,
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-hero .pa-booking-lead,
+body.pa-glass-site .pa-booking-v4 .pa-booking-hero .pa-booking-eyebrow,
+body.pa-glass-site .pa-booking-v4 .pa-booking-hero .pa-booking-title,
+body.pa-glass-site .pa-booking-v4 .pa-booking-hero .pa-booking-lead {
+  width: 100% !important;
+  max-width: 34rem !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app , body.pa-glass-site .pa-booking-app {
+  margin: 0 !important;
+  padding: 1rem 1.05rem 1.25rem !important;
+  border: none !important;
+  border-radius: 0 !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-policies , body.pa-glass-site .pa-booking-policies {
+  margin: 0 !important;
+  padding: 0 1.05rem 0.85rem !important;
+  border-top: 1px solid rgba(20, 20, 20, 0.06) !important;
+  background: transparent;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-title , body.pa-glass-site .pa-booking-title {
+  font-weight: 700 !important;
+  letter-spacing: -0.03em;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-speed , body.pa-glass-site .pa-booking-speed {
+  font-size: 1.02rem !important;
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-fine , body.pa-glass-site .pa-booking-fine {
+  margin: 0 !important;
+  padding: 0.85rem 1.1rem 1.15rem !important;
+  border-top: 1px solid var(--pa-ios-stroke-subtle);
+  background: rgba(245, 245, 243, 0.45);
+  font-size: var(--pa-text-min, 0.9375rem) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root a.pa-booking-cta-primary,
+body.pa-glass-site .pa-booking-root a.pa-booking-cta-primary,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta-primary,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta-primary {
+  border-radius: var(--pa-ios-radius-md) !important;
+  min-height: 46px;
+  padding: 0 1.35rem !important;
+  background: linear-gradient(180deg, #2a2a2a 0%, #111111 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.14) !important;
+  box-shadow: 0 8px 24px rgba(17, 17, 17, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form-panel , body.pa-glass-site .pa-booking-app .pa-form-panel {
+  background: var(--pa-ios-fill-solid) !important;
+  border: 1px solid var(--pa-ios-stroke-subtle) !important;
+  border-radius: var(--pa-ios-radius-md) !important;
+  box-shadow: var(--pa-ios-shadow-sm), var(--pa-ios-specular) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form input.pa-text-input,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form textarea.pa-text-input , body.pa-glass-site .pa-booking-app .pa-form textarea.pa-text-input {
+  background: #ffffff !important;
+  border: 1px solid rgba(20, 20, 20, 0.12) !important;
+  border-radius: var(--pa-ios-radius-sm) !important;
+  box-shadow: inset 0 1px 2px rgba(17, 17, 17, 0.04) !important;
+  font-size: 16px !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-field-label,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-section-label , body.pa-glass-site .pa-booking-app .pa-section-label {
+  color: #141414 !important;
+  font-weight: 700 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-submit,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-pay-btn , body.pa-glass-site .pa-booking-app .pa-pay-btn {
+  border-radius: var(--pa-ios-radius-md) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: linear-gradient(180deg, #2a2a2a 0%, #111111 100%) !important;
+  box-shadow: 0 6px 20px rgba(17, 17, 17, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+/* Footer columns as glass cards */
+body.wp-theme-gutenify-photography footer .wp-block-column > .wp-block-group , body.pa-glass-site footer .wp-block-column > .wp-block-group {
+  padding: 0.85rem;
+  border-radius: var(--pa-ios-radius-md);
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull , body.pa-glass-site .entry-content .wp-block-gallery.alignfull {
+  border-radius: var(--pa-ios-radius-xl);
+  border: 1px solid var(--pa-ios-stroke);
+  background: var(--pa-ios-fill) !important;
+  backdrop-filter: var(--pa-ios-blur-light);
+  -webkit-backdrop-filter: var(--pa-ios-blur-light);
+  box-shadow: var(--pa-ios-shadow-sm);
+}
+
+body.wp-theme-gutenify-photography #pa-portfolio-label h2 , body.pa-glass-site #pa-portfolio-label h2 {
+  font-weight: 800;
+  letter-spacing: -0.035em;
+}
+
+body.wp-theme-gutenify-photography .pa-policy-card , body.pa-glass-site .pa-policy-card {
+  border-radius: var(--pa-ios-radius-md);
+  background: rgba(255, 255, 255, 0.62) !important;
+  border: 1px solid var(--pa-ios-stroke) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-services-grid a,
+body.pa-glass-site .pa-services-grid a {
+  border-radius: var(--pa-ios-radius-md);
+  background: rgba(255, 255, 255, 0.68) !important;
+  border: 1px solid var(--pa-ios-stroke) !important;
+}
+
+/* —— All pages: frosted content panels —— */
+body.wp-theme-gutenify-photography .pa-glass-card,
+body.pa-glass-site .pa-glass-card {
+  padding: 1.15rem 1.25rem;
+  margin-bottom: 0.85rem;
+  border-radius: var(--pa-ios-radius-lg);
+  background: var(--pa-ios-fill-raised) !important;
+  backdrop-filter: var(--pa-ios-blur-light);
+  -webkit-backdrop-filter: var(--pa-ios-blur-light);
+  border: 1px solid var(--pa-ios-stroke);
+  box-shadow: var(--pa-ios-shadow-sm);
+}
+
+body.wp-theme-gutenify-photography .pa-glass-page-title,
+body.pa-glass-site .pa-glass-page-title {
+  display: inline-block;
+  padding: 0.65rem 1.1rem;
+  margin-bottom: 1rem !important;
+  border-radius: var(--pa-ios-radius-md);
+  background: var(--pa-ios-fill) !important;
+  backdrop-filter: var(--pa-ios-blur-light);
+  -webkit-backdrop-filter: var(--pa-ios-blur-light);
+  border: 1px solid var(--pa-ios-stroke);
+  box-shadow: var(--pa-ios-shadow-sm);
+  font-weight: 800 !important;
+  letter-spacing: -0.03em;
+}
+
+body.wp-theme-gutenify-photography .entry-content > .wp-block-paragraph,
+body.pa-glass-site .entry-content > .wp-block-paragraph {
+  padding: 0.75rem 1rem;
+  border-radius: var(--pa-ios-radius-md);
+  background: rgba(255, 255, 255, 0.45) !important;
+  border: 1px solid var(--pa-ios-stroke-subtle);
+  backdrop-filter: blur(14px) saturate(155%);
+  -webkit-backdrop-filter: blur(14px) saturate(155%);
+  margin-bottom: 0.35rem;
+  line-height: 1.6;
+}
+
+body.wp-theme-gutenify-photography .entry-content > .wp-block-paragraph:empty,
+body.pa-glass-site .entry-content > .wp-block-paragraph:empty {
+  display: none;
+}
+
+/* —— v2.13: Professional iOS polish —— */
+body.pa-ios-ui,
+body.pa-glass-site {
+  text-rendering: optimizeLegibility;
+}
+
+body.wp-theme-gutenify-photography #pa-portfolio-label h2,
+body.pa-glass-site #pa-portfolio-label h2,
+body.wp-theme-gutenify-photography .pa-youtube-head h2,
+body.pa-glass-site .pa-youtube-head h2 {
+  display: inline-block;
+  padding: 0.45rem 1rem 0.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.52);
+  border: 1px solid var(--pa-ios-stroke-subtle);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted) !important;
+  box-shadow: var(--pa-ios-shadow-sm);
+}
+
+body.wp-theme-gutenify-photography #pa-portfolio-label,
+body.pa-glass-site #pa-portfolio-label {
+  text-align: left;
+  padding: 1.5rem 1rem 0.35rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-hero,
+body.pa-glass-site .pa-booking-v4 .pa-booking-hero {
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.28) 0%, transparent 100%);
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-glass-panel,
+body.pa-glass-site .pa-booking-app .pa-glass-panel {
+  background: rgba(255, 255, 255, 0.62) !important;
+  border: 1px solid rgba(255, 255, 255, 0.75) !important;
+  border-radius: var(--pa-ios-radius-md) !important;
+  box-shadow: var(--pa-ios-shadow-sm), var(--pa-ios-specular) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-stepper,
+body.pa-glass-site .pa-booking-app .pa-stepper {
+  margin-bottom: 1rem;
+  padding: 0.2rem;
+  border-radius: 999px;
+  background: rgba(120, 120, 128, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: none;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-stepper-item,
+body.pa-glass-site .pa-booking-app .pa-stepper-item {
+  border-radius: 999px;
+  border-bottom: none;
+  margin-bottom: 0;
+  padding: 0.5rem 0.35rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  opacity: 0.65;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-stepper-item.is-active,
+body.pa-glass-site .pa-booking-app .pa-stepper-item.is-active {
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--pa-site-ink);
+  opacity: 1;
+  box-shadow: 0 2px 10px rgba(17, 17, 17, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-stepper-item.is-done,
+body.pa-glass-site .pa-booking-app .pa-stepper-item.is-done {
+  opacity: 0.9;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form input.pa-text-input:focus,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form textarea.pa-text-input:focus,
+body.pa-glass-site .pa-booking-app .pa-form textarea.pa-text-input:focus {
+  border-color: rgba(17, 17, 17, 0.22) !important;
+  box-shadow: 0 0 0 3px rgba(17, 17, 17, 0.08), inset 0 1px 2px rgba(17, 17, 17, 0.04) !important;
+  outline: none;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-sticky,
+body.pa-glass-site .pa-booking-sticky {
+  background: rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(32px) saturate(185%) !important;
+  -webkit-backdrop-filter: blur(32px) saturate(185%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.85) !important;
+  box-shadow: 0 -16px 48px rgba(17, 17, 17, 0.1), inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-panel,
+body.pa-glass-site .pa-footer-panel {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+body.wp-theme-gutenify-photography .pa-policies-details summary,
+body.pa-glass-site .pa-policies-details summary {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.15s ease;
+}
+
+body.wp-theme-gutenify-photography .pa-policies-details summary:hover,
+body.pa-glass-site .pa-policies-details summary:hover {
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-loading,
+body.pa-glass-site .pa-booking-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  min-height: 8rem;
+  color: var(--pa-site-muted) !important;
+  font-weight: 500;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-loading::before,
+body.pa-glass-site .pa-booking-loading::before {
+  content: "";
+  width: 1.1rem;
+  height: 1.1rem;
+  border-radius: 50%;
+  border: 2px solid rgba(20, 20, 20, 0.12);
+  border-top-color: rgba(20, 20, 20, 0.55);
+  animation: pa-ios-spin 0.75s linear infinite;
+}
+
+@keyframes pa-ios-spin {
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.wp-theme-gutenify-photography .pa-booking-loading::before,
+  body.pa-glass-site .pa-booking-loading::before {
+    animation: none;
+    border-top-color: rgba(20, 20, 20, 0.35);
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body.wp-theme-gutenify-photography .pa-ios-glass,
+  body.wp-theme-gutenify-photography .pa-glass-card,
+  body.wp-theme-gutenify-photography .pa-booking-root,
+  body.wp-theme-gutenify-photography header.wp-block-template-part.pa-site-header , body.pa-glass-site header.wp-block-template-part.pa-site-header {
+    background: #f4f4f2 !important;
+  }
+}
+
+@media (max-width: 782px) {
+  body.wp-theme-gutenify-photography header.wp-block-template-part.pa-site-header , body.pa-glass-site header.wp-block-template-part.pa-site-header {
+    margin: 0.5rem 0.5rem 0;
+    border-radius: 22px;
+  }
+
+  body.wp-theme-gutenify-photography .pa-booking-root , body.pa-glass-site .pa-booking-root {
+    margin-left: 0.5rem !important;
+    margin-right: 0.5rem !important;
+    border-radius: 22px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.wp-theme-gutenify-photography .wp-block-navigation .wp-block-navigation-item__content , body.pa-glass-site .wp-block-navigation .wp-block-navigation-item__content {
+    transition: none;
+  }
+}

@@ -1,0 +1,1019 @@
+/**
+ * PA Media Booking — pro creative-studio patterns
+ * (HoneyBook / Studio Ninja / Calendly-inspired package brochures, FAQ, payment schedule)
+ */
+
+/* —— Credential & hero trust —— */
+.pa-booking-premium .pa-booking-credential {
+  margin: 0 0 var(--pa-space-3);
+  font-size: var(--pa-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--pa-color-muted);
+}
+
+/* —— How it works (3-step strip) —— */
+.pa-booking-root.pa-booking-premium .pa-how-it-works {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pa-space-4);
+  padding: var(--pa-space-6) var(--pa-space-5);
+  margin: var(--pa-space-8) auto;
+  max-width: var(--pa-booking-max, 720px);
+  list-style: none;
+  counter-reset: pa-how;
+  text-align: center;
+  background: var(--pa-color-surface-2);
+  border: 1px solid var(--pa-color-border);
+  border-radius: var(--pa-radius-lg);
+}
+
+.pa-booking-root.pa-booking-premium .pa-how-it-works li {
+  position: relative;
+  padding: calc(var(--pa-space-8) + var(--pa-space-2)) var(--pa-space-4) var(--pa-space-5);
+  font-size: var(--pa-text-sm);
+  color: var(--pa-color-muted);
+  line-height: 1.5;
+  text-align: center;
+}
+
+.pa-booking-root.pa-booking-premium .pa-how-it-works li::before {
+  counter-increment: pa-how;
+  content: counter(pa-how);
+  position: absolute;
+  top: var(--pa-space-4);
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1.75rem;
+  height: 1.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--pa-text-xs);
+  font-weight: 800;
+  border-radius: 50%;
+  background: var(--pa-color-ink);
+  color: #fff;
+}
+
+.pa-booking-root.pa-booking-premium .pa-how-it-works li strong {
+  display: block;
+  margin: 0 auto var(--pa-space-2);
+  padding: var(--pa-space-1) var(--pa-space-3);
+  max-width: 14rem;
+  font-size: var(--pa-text-base);
+  font-weight: 700;
+  color: var(--pa-color-ink);
+  line-height: 1.3;
+}
+
+.pa-booking-root.pa-booking-premium .pa-how-step-detail {
+  display: block;
+  margin: 0 auto;
+  padding: 0 var(--pa-space-3);
+  max-width: 16rem;
+  line-height: 1.5;
+}
+
+@media (max-width: 640px) {
+  .pa-booking-root.pa-booking-premium .pa-how-it-works {
+    grid-template-columns: 1fr;
+    gap: var(--pa-space-3);
+    padding: var(--pa-space-5) var(--pa-space-4);
+    max-width: min(100%, 22rem);
+  }
+
+  .pa-booking-root.pa-booking-premium .pa-how-it-works li strong {
+    max-width: none;
+  }
+}
+
+/* —— Package cards (simple picker) —— */
+.pa-booking-v4 .pa-package-pricing-note {
+  margin: 0 0 var(--pa-space-4);
+  font-size: var(--pa-text-sm);
+  line-height: 1.5;
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-v4 .pa-service-list--simple {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pa-space-2);
+}
+
+.pa-booking-v4 .pa-service-package--simple {
+  padding: var(--pa-space-4) var(--pa-space-5) !important;
+  min-height: auto !important;
+}
+
+.pa-booking-v4 .pa-service-package--simple .pa-service-option-name {
+  display: block;
+  font-size: var(--pa-text-base);
+  font-weight: 700;
+  margin-bottom: var(--pa-space-1);
+}
+
+.pa-booking-v4 .pa-service-package--simple .pa-service-option-detail {
+  display: block;
+  font-size: var(--pa-text-sm);
+  line-height: 1.45;
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-v4 .pa-service-package--simple .pa-service-recommended {
+  margin-bottom: var(--pa-space-2);
+}
+
+.pa-booking-v4 .pa-recap-quote-note {
+  margin-top: var(--pa-space-2);
+  padding-top: var(--pa-space-3);
+  border-top: 1px dashed var(--pa-color-border);
+}
+
+/* —— Package brochure cards (legacy / services page) —— */
+.pa-booking-v4 .pa-service-package {
+  text-align: left;
+  align-items: stretch;
+}
+
+.pa-booking-v4 .pa-service-option-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--pa-space-2);
+  width: 100%;
+  margin-bottom: var(--pa-space-1);
+}
+
+.pa-booking-v4 .pa-service-duration {
+  font-size: var(--pa-text-xs);
+  font-weight: 600;
+  color: var(--pa-color-subtle);
+  white-space: nowrap;
+}
+
+.pa-booking-v4 .pa-service-includes {
+  margin: var(--pa-space-3) 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--pa-text-sm);
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-v4 .pa-service-includes li {
+  position: relative;
+  padding-left: 1.1rem;
+  margin-bottom: var(--pa-space-1);
+  line-height: 1.4;
+}
+
+.pa-booking-v4 .pa-service-includes li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.55em;
+  width: 0.35rem;
+  height: 0.35rem;
+  border-radius: 50%;
+  background: var(--pa-color-ink);
+  opacity: 0.35;
+}
+
+.pa-booking-v4 .pa-service-option.is-selected .pa-service-includes li::before {
+  opacity: 0.85;
+}
+
+.pa-booking-v4 .pa-service-ideal {
+  display: block;
+  margin-top: var(--pa-space-2);
+  font-size: var(--pa-text-xs);
+  font-weight: 600;
+  color: var(--pa-color-subtle);
+  letter-spacing: 0.01em;
+}
+
+.pa-booking-v4 .pa-service-deposit-hint {
+  display: inline-block;
+  margin-top: var(--pa-space-3);
+  padding: var(--pa-space-1) var(--pa-space-2);
+  font-size: var(--pa-text-xs);
+  font-weight: 700;
+  color: var(--pa-color-success);
+  background: var(--pa-color-success-bg);
+  border-radius: var(--pa-radius-sm);
+}
+
+/* —— FAQ accordion —— */
+.pa-booking-premium .pa-booking-faq,
+.pa-booking-premium .pa-booking-prep {
+  max-width: var(--pa-booking-max, 720px);
+  margin: 0 auto var(--pa-space-8);
+}
+
+.pa-booking-premium .pa-booking-faq-title,
+.pa-booking-premium .pa-booking-prep-title {
+  margin: 0 0 var(--pa-space-4);
+  font-size: var(--pa-text-lg);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-premium .pa-booking-faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pa-space-2);
+}
+
+.pa-booking-premium .pa-faq-item {
+  border: 1px solid var(--pa-color-border);
+  border-radius: var(--pa-radius-md);
+  background: var(--pa-color-surface);
+  overflow: hidden;
+}
+
+.pa-booking-premium .pa-faq-item summary {
+  padding: var(--pa-space-4);
+  font-size: var(--pa-text-sm);
+  font-weight: 700;
+  color: var(--pa-color-ink);
+  cursor: pointer;
+  list-style: none;
+  min-height: var(--pa-touch-min, 44px);
+  display: flex;
+  align-items: center;
+}
+
+.pa-booking-premium .pa-faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.pa-booking-premium .pa-faq-item summary::after {
+  content: '+';
+  margin-left: auto;
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: var(--pa-color-subtle);
+  line-height: 1;
+}
+
+.pa-booking-premium .pa-faq-item[open] summary::after {
+  content: '−';
+}
+
+.pa-booking-premium .pa-faq-item p {
+  margin: 0;
+  padding: 0 var(--pa-space-4) var(--pa-space-4);
+  font-size: var(--pa-text-sm);
+  line-height: 1.55;
+  color: var(--pa-color-muted);
+}
+
+/* —— Post-booking prep timeline —— */
+.pa-booking-premium .pa-booking-prep-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border: 1px solid var(--pa-color-border);
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-surface);
+  overflow: hidden;
+}
+
+.pa-booking-premium .pa-booking-prep-steps li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--pa-space-3) var(--pa-space-4);
+  padding: var(--pa-space-4) var(--pa-space-5);
+  border-bottom: 1px solid var(--pa-color-border);
+  counter-increment: pa-prep;
+}
+
+.pa-booking-premium .pa-booking-prep-steps {
+  counter-reset: pa-prep;
+}
+
+.pa-booking-premium .pa-booking-prep-steps li:last-child {
+  border-bottom: none;
+}
+
+.pa-booking-premium .pa-booking-prep-steps li::before {
+  content: counter(pa-prep);
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--pa-text-xs);
+  font-weight: 800;
+  border-radius: 50%;
+  background: var(--pa-color-surface-2);
+  color: var(--pa-color-ink);
+  grid-row: span 2;
+  align-self: start;
+}
+
+.pa-booking-premium .pa-booking-prep-steps li strong {
+  display: block;
+  font-size: var(--pa-text-base);
+  font-weight: 700;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-premium .pa-booking-prep-steps li span {
+  grid-column: 2;
+  font-size: var(--pa-text-sm);
+  line-height: 1.5;
+  color: var(--pa-color-muted);
+}
+
+/* —— Payment schedule (HoneyBook-style) —— */
+.pa-booking-v4 .pa-payment-schedule {
+  margin: var(--pa-space-5) 0 0;
+  padding: var(--pa-space-5);
+  border: 1px solid var(--pa-color-border);
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-surface-2);
+}
+
+.pa-booking-v4 .pa-payment-schedule-title {
+  margin: 0 0 var(--pa-space-3);
+  font-size: var(--pa-text-sm);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pa-color-subtle);
+}
+
+.pa-booking-v4 .pa-payment-schedule-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pa-booking-v4 .pa-payment-schedule-list li {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: var(--pa-space-3);
+  padding: var(--pa-space-3) 0;
+  border-bottom: 1px solid var(--pa-color-border);
+  font-size: var(--pa-text-sm);
+  line-height: 1.45;
+}
+
+.pa-booking-v4 .pa-payment-schedule-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.pa-booking-v4 .pa-payment-schedule-list li.is-due {
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-pay-when {
+  font-weight: 700;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-pay-what {
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-v4 .pa-payment-schedule-list li.is-due .pa-pay-what strong {
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-payment-schedule-note {
+  margin: var(--pa-space-3) 0 0;
+  font-size: var(--pa-text-xs);
+  line-height: 1.5;
+  color: var(--pa-color-subtle);
+}
+
+@media (max-width: 480px) {
+  .pa-booking-v4 .pa-payment-schedule-list li {
+    grid-template-columns: 1fr;
+    gap: var(--pa-space-1);
+  }
+}
+
+/* —— Terms / policy agreement —— */
+.pa-booking-v4 .pa-terms-agreement {
+  margin: var(--pa-space-5) 0 0;
+  padding: var(--pa-space-4);
+  border: 1px solid var(--pa-color-border);
+  border-radius: var(--pa-radius-md);
+  background: var(--pa-color-surface);
+}
+
+.pa-booking-v4 .pa-terms-agreement.has-error {
+  border-color: var(--pa-color-danger);
+  background: var(--pa-color-danger-bg);
+}
+
+.pa-booking-v4 .pa-terms-agreement-label {
+  display: flex;
+  gap: var(--pa-space-3);
+  align-items: flex-start;
+  cursor: pointer;
+  font-size: var(--pa-text-sm);
+  line-height: 1.5;
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-v4 .pa-terms-checkbox {
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  margin-top: 0.2rem;
+  accent-color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-terms-link {
+  color: var(--pa-color-ink);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.pa-booking-v4 .pa-terms-link:hover {
+  color: var(--pa-color-accent-hover);
+}
+
+.pa-booking-v4 .pa-terms-agreement .pa-field-error-msg {
+  margin: var(--pa-space-2) 0 0;
+  padding-left: calc(1.125rem + var(--pa-space-3));
+}
+
+/* —— Policies anchor highlight —— */
+.pa-booking-premium .pa-policies-details:target {
+  outline: 2px solid var(--pa-color-focus);
+  outline-offset: 4px;
+  border-radius: var(--pa-radius-md);
+}
+
+/* —— v2.34 PRO BLAST —— */
+
+/* Hero & credential strip */
+.pa-booking-premium .pa-booking-hero {
+  text-align: center;
+  max-width: var(--pa-booking-max, 720px);
+  margin: 0 auto var(--pa-space-6);
+  padding: var(--pa-space-8) var(--pa-space-6) var(--pa-space-6);
+}
+
+.pa-booking-premium .pa-booking-eyebrow {
+  margin: 0 0 var(--pa-space-3);
+  padding: 0 var(--pa-space-4);
+  font-size: var(--pa-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pa-color-subtle);
+}
+
+.pa-booking-premium .pa-booking-title {
+  margin: 0 auto var(--pa-space-4);
+  padding: var(--pa-space-3) var(--pa-space-5);
+  max-width: 20ch;
+  font-size: clamp(1.75rem, 4vw, var(--pa-text-2xl));
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.15;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-premium .pa-booking-lead--hero {
+  margin: 0 auto var(--pa-space-5);
+  padding: 0 var(--pa-space-5);
+  max-width: 42ch;
+  font-size: var(--pa-text-md);
+  line-height: 1.55;
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-premium .pa-booking-credential-strip {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--pa-space-2) var(--pa-space-4);
+  margin: 0 0 var(--pa-space-4);
+  padding: var(--pa-space-3) var(--pa-space-4);
+  border-radius: var(--pa-radius-lg);
+  background: var(--pa-color-surface-2);
+  border: 1px solid var(--pa-color-border);
+}
+
+.pa-booking-premium .pa-credential-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--pa-space-2);
+  font-size: var(--pa-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: var(--pa-color-muted);
+  line-height: 1.4;
+}
+
+.pa-booking-premium .pa-credential-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  background: var(--pa-color-ink);
+  color: #fff;
+  font-size: 0.6rem;
+  flex-shrink: 0;
+}
+
+.pa-booking-premium .pa-credential-icon--lock {
+  background: var(--pa-color-success);
+}
+
+.pa-booking-premium .pa-booking-value-prop {
+  margin: 0;
+  font-size: var(--pa-text-base);
+  line-height: 1.55;
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-premium .pa-booking-value-prop strong {
+  color: var(--pa-color-ink);
+  font-weight: 700;
+}
+
+/* Stepper progress meter */
+.pa-booking-v4 .pa-stepper-meter {
+  width: 100%;
+  height: 3px;
+  margin-top: var(--pa-space-3);
+  border-radius: 999px;
+  background: var(--pa-color-border);
+  overflow: hidden;
+}
+
+.pa-booking-v4 .pa-stepper-meter-fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--pa-color-ink);
+  transition: width 0.35s ease;
+}
+
+/* Package compare grid + recommended badge */
+.pa-booking-v4 .pa-service-list--compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--pa-space-3);
+}
+
+.pa-booking-v4 .pa-service-option.is-recommended {
+  border-color: var(--pa-color-ink);
+  box-shadow: 0 0 0 1px var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-service-recommended {
+  display: inline-block;
+  margin-bottom: var(--pa-space-2);
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--pa-color-ink);
+  color: #fff;
+  font-size: var(--pa-text-xs);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+/* Calendar lead-time legend */
+.pa-booking-v4 .pa-cal-legend-swatch.is-lead {
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--pa-color-surface-2),
+    var(--pa-color-surface-2) 2px,
+    var(--pa-color-border) 2px,
+    var(--pa-color-border) 4px
+  );
+  border: 1.5px solid var(--pa-color-border);
+}
+
+.pa-booking-v4 .pa-cal-legend-item--lead {
+  font-style: italic;
+}
+
+/* Invoice-style recap */
+.pa-booking-v4 .pa-booking-recap-invoice {
+  border-radius: var(--pa-radius-lg);
+  border: 1px solid var(--pa-color-border);
+  background: var(--pa-color-surface);
+  box-shadow: var(--pa-shadow-sm);
+}
+
+.pa-booking-v4 .pa-recap-invoice-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  border-top: 1px solid var(--pa-color-border);
+  border-bottom: 1px solid var(--pa-color-border);
+  margin: var(--pa-space-3) 0 0;
+}
+
+.pa-booking-v4 .pa-recap-invoice-line {
+  display: grid;
+  grid-template-columns: 5.5rem 1fr auto;
+  gap: var(--pa-space-2) var(--pa-space-3);
+  align-items: center;
+  padding: var(--pa-space-3) 0;
+  border-bottom: 1px solid var(--pa-color-border);
+  font-size: var(--pa-text-sm);
+}
+
+.pa-booking-v4 .pa-recap-invoice-line:last-child {
+  border-bottom: none;
+}
+
+.pa-booking-v4 .pa-recap-invoice-label {
+  font-size: var(--pa-text-xs);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--pa-color-subtle);
+}
+
+.pa-booking-v4 .pa-recap-invoice-value {
+  font-weight: 600;
+  color: var(--pa-color-ink);
+  line-height: 1.4;
+}
+
+.pa-booking-v4 .pa-recap-line-edit {
+  border: none;
+  background: transparent;
+  padding: 0.25rem 0.5rem;
+  font-size: var(--pa-text-xs);
+  font-weight: 700;
+  color: var(--pa-color-muted);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+  min-height: var(--pa-touch-min);
+}
+
+.pa-booking-v4 .pa-recap-line-edit:hover {
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-recap-invoice-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: var(--pa-space-4) 0 var(--pa-space-2);
+  font-weight: 800;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-recap-invoice-total-label {
+  font-size: var(--pa-text-sm);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.pa-booking-v4 .pa-recap-invoice-total-value {
+  font-size: var(--pa-text-xl);
+  letter-spacing: -0.02em;
+}
+
+.pa-booking-v4 .pa-recap-invoice-note {
+  margin: 0 0 var(--pa-space-2);
+  font-size: var(--pa-text-xs);
+  line-height: 1.5;
+  color: var(--pa-color-subtle);
+}
+
+/* Sticky recap bar actions */
+.pa-recap-bar-actions {
+  margin-top: var(--pa-space-2);
+}
+
+.pa-recap-bar-edit {
+  border: none;
+  background: rgba(255, 255, 255, 0.12);
+  color: inherit;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: var(--pa-text-xs);
+  font-weight: 700;
+  cursor: pointer;
+  min-height: 32px;
+}
+
+.pa-recap-bar.is-placeholder .pa-recap-bar-edit {
+  display: none;
+}
+
+/* Form groups + field help */
+.pa-booking-v4 .pa-form-grouped .pa-form-group {
+  margin: 0 0 var(--pa-space-6);
+  padding: 0;
+  border: none;
+}
+
+.pa-booking-v4 .pa-form-group-title {
+  display: block;
+  margin: 0 0 var(--pa-space-1);
+  padding: 0;
+  font-size: var(--pa-text-lg);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-form-group-hint {
+  margin: 0 0 var(--pa-space-4);
+  font-size: var(--pa-text-sm);
+  line-height: 1.5;
+  color: var(--pa-color-muted);
+}
+
+.pa-booking-v4 .pa-form-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.pa-booking-v4 .pa-field-help {
+  margin: var(--pa-space-1) 0 0;
+  font-size: var(--pa-text-xs);
+  line-height: 1.45;
+  color: var(--pa-color-subtle);
+}
+
+/* Checkout invoice lines */
+.pa-booking-v4 .pa-checkout-invoice .pa-checkout-invoice-lines {
+  border-top: 1px solid var(--pa-color-border);
+  border-bottom: 1px solid var(--pa-color-border);
+  padding: var(--pa-space-2) 0;
+  margin-bottom: var(--pa-space-4);
+}
+
+.pa-booking-v4 .pa-checkout-invoice-lines dt,
+.pa-booking-v4 .pa-checkout-invoice-lines dd {
+  padding: var(--pa-space-2) 0;
+  border-bottom: 1px solid var(--pa-color-border);
+  font-size: var(--pa-text-sm);
+}
+
+.pa-booking-v4 .pa-checkout-invoice-lines dt:last-of-type,
+.pa-booking-v4 .pa-checkout-invoice-lines dd:last-of-type {
+  border-bottom: none;
+}
+
+/* Premium success states */
+.pa-booking-success-premium .pa-success-eyebrow,
+.pa-done-premium .pa-done-eyebrow {
+  margin: 0 0 var(--pa-space-2);
+  font-size: var(--pa-text-xs);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pa-color-success);
+}
+
+.pa-done-premium .pa-done-lead {
+  margin: 0 0 var(--pa-space-5);
+  font-size: var(--pa-text-base);
+  line-height: 1.55;
+  color: var(--pa-color-muted);
+  max-width: 28rem;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.pa-done-premium .pa-done-timeline li.is-complete::before {
+  background: var(--pa-color-success);
+}
+
+.pa-done-premium .pa-done-timeline li.is-active::before {
+  background: var(--pa-color-ink);
+  box-shadow: 0 0 0 3px rgba(15, 15, 15, 0.12);
+}
+
+.pa-done-trust,
+.pa-success-trust {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--pa-space-2) var(--pa-space-4);
+  margin: 0 0 var(--pa-space-5);
+  padding: var(--pa-space-3) var(--pa-space-4);
+  border-radius: var(--pa-radius-md);
+  background: var(--pa-color-surface-2);
+  border: 1px solid var(--pa-color-border);
+  font-size: var(--pa-text-xs);
+  font-weight: 700;
+  color: var(--pa-color-muted);
+  letter-spacing: 0.02em;
+}
+
+.pa-booking-success-premium .pa-success-timeline li {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.pa-booking-success-premium .pa-success-timeline li span {
+  font-size: var(--pa-text-sm);
+  color: var(--pa-color-muted);
+  font-weight: 400;
+}
+
+.pa-booking-success-premium .pa-success-timeline li.is-complete {
+  color: var(--pa-color-success);
+}
+
+.pa-booking-success-premium .pa-success-timeline li.is-active strong {
+  color: var(--pa-color-ink);
+}
+
+.pa-ics-btn--primary {
+  background: var(--pa-color-ink);
+  color: #fff;
+  border-color: var(--pa-color-ink);
+}
+
+.pa-ics-btn--primary:hover {
+  background: var(--pa-color-accent-hover);
+}
+
+@media (max-width: 640px) {
+  .pa-booking-premium .pa-booking-credential-strip {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+  }
+
+  .pa-booking-v4 .pa-service-list--compare {
+    grid-template-columns: 1fr;
+  }
+
+  .pa-booking-v4 .pa-recap-invoice-line {
+    grid-template-columns: 4.5rem 1fr;
+  }
+
+  .pa-booking-v4 .pa-recap-line-edit {
+    grid-column: 2;
+    justify-self: start;
+    padding-left: 0;
+    min-height: 36px;
+  }
+}
+
+/* —— Package from-pricing —— */
+.pa-booking-v4 .pa-service-from-price {
+  display: block;
+  margin-top: var(--pa-space-2);
+  font-size: var(--pa-text-sm);
+  font-weight: 800;
+  color: var(--pa-color-ink);
+}
+
+/* —— Add-ons —— */
+.pa-booking-v4 .pa-addons-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--pa-space-2);
+}
+
+.pa-booking-v4 .pa-addon-option {
+  display: flex;
+  gap: var(--pa-space-3);
+  align-items: flex-start;
+  padding: var(--pa-space-3) var(--pa-space-4);
+  border: 1px solid var(--pa-color-border);
+  border-radius: var(--pa-radius-md);
+  cursor: pointer;
+  background: var(--pa-color-surface);
+}
+
+.pa-booking-v4 .pa-addon-option:has(.pa-addon-checkbox:checked) {
+  border-color: var(--pa-color-ink);
+  background: var(--pa-color-surface-2);
+}
+
+.pa-booking-v4 .pa-addon-top {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--pa-space-3);
+  width: 100%;
+}
+
+.pa-booking-v4 .pa-addon-name {
+  font-weight: 700;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-v4 .pa-addon-price {
+  font-weight: 700;
+  color: var(--pa-color-muted);
+  white-space: nowrap;
+}
+
+.pa-booking-v4 .pa-addon-desc {
+  display: block;
+  margin-top: var(--pa-space-1);
+  font-size: var(--pa-text-xs);
+  color: var(--pa-color-subtle);
+  line-height: 1.45;
+}
+
+.pa-booking-v4 .pa-recap-invoice-subtotal,
+.pa-booking-v4 .pa-recap-invoice-balance {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--pa-space-3);
+  padding: var(--pa-space-2) 0;
+  font-size: var(--pa-text-sm);
+  border-top: 1px dashed var(--pa-color-border);
+}
+
+.pa-booking-v4 .pa-recap-invoice-balance {
+  color: var(--pa-color-muted);
+  margin-bottom: var(--pa-space-2);
+}
+
+/* —— Booking status page —— */
+.pa-booking-status-page .pa-status-form {
+  max-width: 420px;
+  margin: 0 auto var(--pa-space-8);
+  display: flex;
+  flex-direction: column;
+  gap: var(--pa-space-4);
+}
+
+.pa-booking-status-page .pa-status-result {
+  max-width: 480px;
+  margin: 0 auto var(--pa-space-8);
+  padding: var(--pa-space-5);
+  border-radius: var(--pa-radius-lg);
+  border: 1px solid var(--pa-color-border);
+  background: var(--pa-color-surface);
+}
+
+.pa-booking-status-page .pa-status-result--ok {
+  border-color: var(--pa-color-success);
+  background: var(--pa-color-success-bg);
+}
+
+.pa-booking-status-page .pa-status-result--error {
+  border-color: var(--pa-color-danger);
+  background: var(--pa-color-danger-bg);
+}
+
+.pa-booking-status-page .pa-status-badge {
+  margin: 0 0 var(--pa-space-4);
+  font-size: var(--pa-text-lg);
+  font-weight: 800;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-status-page .pa-status-dl {
+  margin: 0 0 var(--pa-space-4);
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: var(--pa-space-2) var(--pa-space-3);
+  font-size: var(--pa-text-sm);
+}
+
+.pa-booking-status-page .pa-status-dl dt {
+  font-weight: 700;
+  color: var(--pa-color-subtle);
+}
+
+.pa-booking-status-page .pa-status-dl dd {
+  margin: 0;
+  color: var(--pa-color-ink);
+}
+
+.pa-booking-hero--compact {
+  margin-bottom: var(--pa-space-6);
+}
+
+.pa-booking-premium .pa-booking-status-link {
+  margin: var(--pa-space-4) 0 0;
+  font-size: var(--pa-text-sm);
+}
+
+.pa-booking-premium .pa-booking-status-link a {
+  color: var(--pa-color-muted);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}

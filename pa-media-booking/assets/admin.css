@@ -1,0 +1,107 @@
+.pa-status { padding: 2px 8px; border-radius: 4px; font-size: 12px; text-transform: uppercase; }
+.pa-status-pending_approval { background: #fff3cd; }
+.pa-status-approved { background: #d4edda; }
+.pa-status-rejected { background: #f8d7da; }
+.pa-status-pending_payment { background: #e2e3e5; }
+
+.pa-admin-cal {
+  max-width: 640px;
+  margin: 1.5rem 0;
+  padding: 1rem;
+  background: #fff;
+  border: 1px solid #c3c4c7;
+  border-radius: 8px;
+}
+.pa-admin-cal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+.pa-admin-cal-header h2 { margin: 0; font-size: 1.1rem; }
+.pa-admin-cal-nav { display: flex; gap: 6px; }
+.pa-admin-cal-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 0.75rem;
+  font-size: 12px;
+}
+.pa-admin-cal-legend span {
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+.pa-legend-blocked { background: #f8d7da; }
+.pa-legend-booked { background: #d4edda; }
+.pa-legend-pending { background: #fff3cd; }
+.pa-legend-checkout { background: #e2e3e5; }
+.pa-admin-cal-day {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  border: 1px solid #dcdcde;
+  border-radius: 4px;
+  font-size: 13px;
+  background: #fff;
+  padding: 2px;
+  text-align: center;
+}
+.pa-admin-cal-day-num { font-weight: 600; line-height: 1.1; }
+.pa-admin-cal-block-link,
+.pa-admin-cal-unblock-link {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  line-height: 1;
+}
+.pa-admin-cal-block-link { color: #b32d2e; }
+.pa-admin-cal-unblock-link { color: #2271b1; }
+.pa-admin-cal-day.is-checkout { background: #e2e3e5; border-color: #c3c4c7; }
+.pa-admin-cal-day.is-empty { border-color: transparent; background: transparent; }
+.pa-admin-cal-day.is-blocked { background: #f8d7da; border-color: #f5c2c7; font-weight: 600; }
+.pa-admin-cal-day.is-booked { background: #d4edda; border-color: #badbcc; font-weight: 600; }
+.pa-admin-cal-day.is-pending { background: #fff3cd; border-color: #ffecb5; font-weight: 600; }
+
+.pa-admin-cal-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.pa-admin-cal-dow {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 600;
+  color: #646970;
+  padding: 4px 0;
+}
+
+.pa-dash-stats {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(120px, 200px));
+  gap: 12px;
+  margin: 1rem 0 1.25rem;
+}
+.pa-stat {
+  padding: 1rem 1.1rem;
+  background: #fff;
+  border: 1px solid #c3c4c7;
+  border-radius: 8px;
+}
+.pa-stat-num {
+  display: block;
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1.1;
+}
+.pa-stat-label {
+  font-size: 12px;
+  color: #646970;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.pa-dash-actions { margin: 0 0 1rem; }

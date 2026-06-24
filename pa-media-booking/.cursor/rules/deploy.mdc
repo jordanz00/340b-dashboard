@@ -1,0 +1,30 @@
+---
+description: Deploy pa-media-booking to pamedia.art via SFTP only
+globs:
+alwaysApply: true
+---
+
+# PA Media Booking — live deploy
+
+Deploy to **pamedia.art** with SFTP only. Do **not** use wp-admin Plugin Editor, CDP `Runtime.evaluate`, or browser console deploy loops.
+
+## Credentials
+
+- Config: `~/Desktop/Cursor Projects/.env.sftp` (gitignored)
+- Password: macOS Keychain service `pa-media-booking-sftp`
+- First-time setup (user runs locally): `bash pa-media-booking/bin/setup-sftp-credentials.sh`
+
+## Deploy command
+
+From `~/Desktop/Cursor Projects/`:
+
+```bash
+bash deploy-sftp.sh
+```
+
+Then remind user to **Flush Cache** in wp-admin (GoDaddy Quick Links) if CSS/JS changed.
+
+## Remote paths
+
+- Plugin: `/html/wp-content/plugins/pa-media-booking.disabled`
+- MU plugin: `/html/wp-content/mu-plugins/pa-booking-godaddy-paylink.php`

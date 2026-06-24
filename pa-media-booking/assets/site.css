@@ -1,0 +1,3529 @@
+/**
+ * PA Media Arts — liquid glass UI (Gutenify Photography overrides).
+ */
+
+:root,
+body.wp-theme-gutenify-photography , body.pa-glass-site {
+  --pa-site-max: 1140px;
+  --pa-booking-max: min(1080px, calc(100vw - 2.5rem));
+  --pa-site-ink: #141414;
+  --pa-site-charcoal: #2a2a2a;
+  --pa-site-muted: #5c5c5c;
+  --pa-site-line: rgba(20, 20, 20, 0.08);
+  --pa-site-surface: rgba(255, 255, 255, 0.68);
+  --pa-site-canvas: #e6e6e4;
+  --pa-site-band: rgba(245, 245, 243, 0.72);
+  --pa-site-accent: #111111;
+  --pa-site-radius: 18px;
+  --pa-site-shadow: 0 12px 40px rgba(17, 17, 17, 0.09), 0 1px 0 rgba(255, 255, 255, 0.55) inset;
+  --pa-brand-logo-size: 84px;
+  --pa-brand-header-logo-size: 148px;
+  /* Liquid glass */
+  --pa-glass-blur: blur(22px) saturate(165%);
+  --pa-glass-bg: rgba(255, 255, 255, 0.58);
+  --pa-glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --pa-glass-bg-input: rgba(255, 255, 255, 0.88);
+  --pa-glass-border: rgba(255, 255, 255, 0.75);
+  --pa-glass-edge: rgba(20, 20, 20, 0.09);
+  --pa-glass-highlight: rgba(255, 255, 255, 0.92);
+  --pa-glass-shadow: 0 10px 36px rgba(17, 17, 17, 0.08), 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+  --pa-glass-shadow-lg: 0 20px 56px rgba(17, 17, 17, 0.11), 0 1px 0 rgba(255, 255, 255, 0.6) inset;
+  --pa-glass-dark-bg: rgba(28, 28, 30, 0.82);
+  --pa-glass-dark-border: rgba(255, 255, 255, 0.1);
+  --pa-grey-100: #f2f2f0;
+  --pa-grey-200: #e4e4e2;
+  --pa-grey-300: #d0d0ce;
+  --pa-grey-400: #a8a8a6;
+  --pa-nav-transition: background 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, color 0.18s ease, transform 0.15s ease;
+  --pa-nav-ghost-bg: rgba(255, 255, 255, 0.58);
+  --pa-nav-ghost-border: rgba(20, 20, 20, 0.1);
+  --pa-nav-ghost-hover-bg: rgba(255, 255, 255, 0.94);
+  --pa-nav-ghost-hover-border: rgba(20, 20, 20, 0.16);
+  --pa-nav-ghost-hover-shadow: 0 4px 14px rgba(17, 17, 17, 0.08);
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Ambient canvas — soft grey depth behind glass panels */
+body.wp-theme-gutenify-photography , body.pa-glass-site {
+  position: relative;
+  min-height: 100vh;
+  font-size: 1rem;
+  line-height: 1.6;
+  letter-spacing: -0.01em;
+  background:
+    radial-gradient(ellipse 100% 70% at 8% -10%, rgba(220, 220, 218, 0.55), transparent 52%),
+    radial-gradient(ellipse 80% 55% at 92% 105%, rgba(195, 195, 192, 0.4), transparent 48%),
+    linear-gradient(175deg, #d8d8d6 0%, #e9e9e7 42%, #ececea 72%, #e4e4e2 100%) !important;
+}
+
+body.wp-theme-gutenify-photography::before,
+body.pa-glass-site::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+  background-image:
+    radial-gradient(circle at 25% 25%, rgba(255, 255, 255, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 75% 75%, rgba(255, 255, 255, 0.2) 0%, transparent 40%);
+}
+
+body.wp-theme-gutenify-photography .wp-site-blocks , body.pa-glass-site .wp-site-blocks {
+  position: relative;
+  z-index: 1;
+}
+
+/* Shared glass panel utility */
+body.wp-theme-gutenify-photography .pa-glass,
+body.wp-theme-gutenify-photography .pa-booking-root,
+body.wp-theme-gutenify-photography .pa-booking-app , body.pa-glass-site .pa-booking-app {
+  background: var(--pa-glass-bg-strong) !important;
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-border);
+  box-shadow: var(--pa-glass-shadow);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  body.wp-theme-gutenify-photography .pa-glass,
+  body.wp-theme-gutenify-photography .pa-booking-root,
+  body.wp-theme-gutenify-photography .pa-booking-app , body.pa-glass-site .pa-booking-app {
+    background: var(--pa-grey-100) !important;
+  }
+}
+
+/* —— Force readable light page (beats theme inline global styles) —— */
+body.wp-theme-gutenify-photography, body.pa-glass-site,
+body.wp-theme-gutenify-photography .wp-site-blocks,
+body.wp-theme-gutenify-photography main,
+body.wp-theme-gutenify-photography .entry-content,
+body.wp-theme-gutenify-photography .wp-block-group,
+body.wp-theme-gutenify-photography .wp-block-columns,
+body.wp-theme-gutenify-photography .wp-block-column , body.pa-glass-site .wp-block-column {
+  background-color: transparent !important;
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography , body.pa-glass-site {
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "kern" 1;
+}
+
+body.wp-theme-gutenify-photography h1,
+body.wp-theme-gutenify-photography h2,
+body.wp-theme-gutenify-photography h3,
+body.wp-theme-gutenify-photography h4,
+body.wp-theme-gutenify-photography h5,
+body.wp-theme-gutenify-photography h6 , body.pa-glass-site h6 {
+  background-color: transparent !important;
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography p,
+body.wp-theme-gutenify-photography li,
+body.wp-theme-gutenify-photography .has-text-align-center,
+body.wp-theme-gutenify-photography .wp-block-column p , body.pa-glass-site .wp-block-column p {
+  color: var(--pa-site-muted) !important;
+  line-height: 1.6;
+  max-width: 42rem;
+}
+
+/* Theme utility classes: "foreground" = text, not background */
+body.wp-theme-gutenify-photography .has-foreground-color,
+body.wp-theme-gutenify-photography .has-text-color,
+body.wp-theme-gutenify-photography .has-custom-color-1-color , body.pa-glass-site .has-custom-color-1-color {
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .has-foreground-background-color , body.pa-glass-site .has-foreground-background-color {
+  background-color: var(--pa-glass-bg) !important;
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+}
+
+body.wp-theme-gutenify-photography .has-background-background-color,
+body.wp-theme-gutenify-photography .has-black-background-color , body.pa-glass-site .has-black-background-color {
+  background-color: var(--pa-site-canvas) !important;
+}
+
+body.wp-theme-gutenify-photography a:not(.pa-booking-cta-primary):not(.pa-footer-book-cta):not(.pa-services-book-btn),
+body.pa-glass-site a:not(.pa-booking-cta-primary):not(.pa-footer-book-cta):not(.pa-services-book-btn) {
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography a:not(.pa-booking-cta-primary):not(.pa-footer-book-cta):not(.pa-services-book-btn):hover,
+body.pa-glass-site a:not(.pa-booking-cta-primary):not(.pa-footer-book-cta):not(.pa-services-book-btn):hover {
+  color: var(--pa-site-charcoal) !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-site-title a , body.pa-glass-site .wp-block-site-title a {
+  color: var(--pa-site-ink) !important;
+  text-decoration: none;
+  letter-spacing: 0.04em;
+}
+
+/* —— Header: scrolls away (not sticky) —— */
+body.wp-theme-gutenify-photography header.wp-block-template-part,
+body.wp-theme-gutenify-photography .alignfull.has-foreground-color:has(.wp-block-navigation) , body.pa-glass-site .alignfull.has-foreground-color:has(.wp-block-navigation) {
+  position: relative !important;
+  top: auto !important;
+  z-index: 100;
+  background: var(--pa-glass-bg) !important;
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  border-bottom: 1px solid var(--pa-glass-edge);
+  box-shadow: 0 4px 24px rgba(17, 17, 17, 0.05);
+}
+
+body.wp-theme-gutenify-photography .wp-block-navigation,
+body.wp-theme-gutenify-photography .wp-block-navigation ul,
+body.wp-theme-gutenify-photography .wp-block-navigation__container , body.pa-glass-site .wp-block-navigation__container {
+  background: transparent !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-navigation .wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography .wp-block-navigation .wp-block-navigation-item__label , body.pa-glass-site .wp-block-navigation .wp-block-navigation-item__label {
+  color: var(--pa-site-charcoal) !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-navigation .wp-block-navigation-item__content,
+body.pa-glass-site .wp-block-navigation .wp-block-navigation-item__content {
+  transition: var(--pa-nav-transition);
+}
+
+/* —— Shared nav pills (header + footer) —— */
+body.wp-theme-gutenify-photography .pa-site-nav-pill,
+body.pa-glass-site .pa-site-nav-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 5.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  box-sizing: border-box;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill {
+  color: #e4e4e2 !important;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 14px rgba(0, 0, 0, 0.12);
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill,
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill .wp-block-navigation-item__label,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill {
+  background: linear-gradient(165deg, #243140 0%, #131c25 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 4px 14px rgba(17, 23, 30, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill:hover,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill:focus-visible,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill:hover,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill:focus-visible {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.17);
+  border-color: rgba(255, 255, 255, 0.34);
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill:hover,
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill:focus-visible,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill:hover,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill:focus-visible,
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill:hover .wp-block-navigation-item__label,
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill:focus-visible .wp-block-navigation-item__label,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill:hover .wp-block-navigation-item__label,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill:focus-visible .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(165deg, #2f4254 0%, #1c2733 100%) !important;
+  border-color: rgba(255, 255, 255, 0.34) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(17, 23, 30, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill.is-current,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill.is-current,
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill.is-current .wp-block-navigation-item__label,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill.is-current .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Beat theme wp-elements + foreground on header nav links — white text on dark pills */
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .wp-block-navigation-item__label,
+body.wp-theme-gutenify-photography .alignfull.has-foreground-color:has(.wp-block-navigation) .wp-block-navigation a.wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography .alignfull.has-foreground-color:has(.wp-block-navigation) .wp-block-navigation .wp-block-navigation-item__label,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .wp-block-navigation-item__label,
+body.pa-glass-site .alignfull.has-foreground-color:has(.wp-block-navigation) .wp-block-navigation a.wp-block-navigation-item__content,
+body.pa-glass-site .alignfull.has-foreground-color:has(.wp-block-navigation) .wp-block-navigation .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content.pa-site-nav-pill.is-current,
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content.is-current,
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .is-current .wp-block-navigation-item__label,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content.pa-site-nav-pill.is-current,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content.is-current,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .is-current .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Header nav pills — high-contrast dark fill, readable before JS adds .pa-site-nav-pill */
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .wp-block-navigation-item__content,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .wp-block-navigation-item__content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 5.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(165deg, #243140 0%, #131c25 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  box-shadow: 0 4px 14px rgba(17, 23, 30, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+}
+
+/* Primary CTA: the injected "Book" link stands out in accent green */
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content .wp-block-navigation-item__label,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content {
+  background: linear-gradient(165deg, #1f7d54 0%, #115f3d 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 4px 16px rgba(17, 95, 61, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.26) !important;
+}
+
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content:hover,
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content:focus-visible,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content:hover,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .pa-nav-book .wp-block-navigation-item__content:focus-visible {
+  background: linear-gradient(165deg, #259464 0%, #146b46 100%) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 20px rgba(17, 95, 61, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .current-menu-item .wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .current-menu-item .wp-block-navigation-item__label,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .current-menu-item .wp-block-navigation-item__content,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .current-menu-item .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(165deg, #4f6a85 0%, #34485c 100%) !important;
+  border-color: rgba(255, 255, 255, 0.45) !important;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 6px 18px rgba(17, 23, 30, 0.34), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .pa-nav-book.current-menu-item .wp-block-navigation-item__content,
+body.pa-glass-site header.wp-block-template-part .wp-block-navigation .pa-nav-book.current-menu-item .wp-block-navigation-item__content {
+  background: linear-gradient(165deg, #1f7d54 0%, #115f3d 100%) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-site-nav-pill.is-current,
+body.pa-glass-site .pa-site-nav-pill.is-current {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(145deg, rgba(74, 98, 120, 0.95), rgba(37, 53, 68, 0.98)) !important;
+  border-color: rgba(255, 255, 255, 0.24) !important;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill.is-current .wp-block-navigation-item__label,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill.is-current .wp-block-navigation-item__label {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill-row,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill-row {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: 28rem;
+  margin: 0 auto !important;
+  padding: 0 !important;
+  list-style: none;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .wp-block-navigation-item,
+body.pa-glass-site header.pa-site-header .wp-block-navigation-item {
+  margin: 0 !important;
+  width: auto !important;
+}
+
+/* —— Brand lockup: logo + wordmark (header + footer) —— */
+body.wp-theme-gutenify-photography header.wp-block-template-part.pa-site-header , body.pa-glass-site header.wp-block-template-part.pa-site-header {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  text-align: center;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-lockup , body.pa-glass-site header.pa-site-header .pa-brand-lockup {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  gap: 0.75rem !important;
+  padding: 1.1rem 1rem 0.85rem !important;
+  margin: 0 auto !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-logo-wrap,
+body.wp-theme-gutenify-photography footer.pa-site-footer .pa-brand-logo-wrap , body.pa-glass-site footer.pa-site-footer .pa-brand-logo-wrap {
+  line-height: 0;
+  margin: 0 auto;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-logo-wrap a , body.pa-glass-site header.pa-site-header .pa-brand-logo-wrap a {
+  display: inline-block;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+body.wp-theme-gutenify-photography footer.pa-site-footer .pa-brand-logo-wrap a , body.pa-glass-site footer.pa-site-footer .pa-brand-logo-wrap a {
+  display: inline-block;
+  border-radius: 50%;
+  box-shadow: 0 6px 22px rgba(17, 17, 17, 0.14);
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-logo,
+body.wp-theme-gutenify-photography header.pa-site-header .wp-block-site-logo img.pa-brand-logo , body.pa-glass-site header.pa-site-header .wp-block-site-logo img.pa-brand-logo {
+  width: var(--pa-brand-header-logo-size) !important;
+  height: auto !important;
+  max-width: var(--pa-brand-header-logo-size) !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+  object-fit: contain;
+  filter: none;
+}
+
+body.wp-theme-gutenify-photography footer.pa-site-footer .pa-brand-logo,
+body.wp-theme-gutenify-photography footer.pa-site-footer .wp-block-site-logo img.pa-brand-logo , body.pa-glass-site footer.pa-site-footer .wp-block-site-logo img.pa-brand-logo {
+  width: var(--pa-brand-logo-size) !important;
+  height: var(--pa-brand-logo-size) !important;
+  max-height: var(--pa-brand-logo-size) !important;
+  max-width: var(--pa-brand-logo-size) !important;
+  border-radius: 50%;
+  object-fit: cover;
+  filter: none;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-wordmark , body.pa-glass-site header.pa-site-header .pa-brand-wordmark {
+  margin: 0 !important;
+  padding: 0 !important;
+  text-align: center !important;
+  width: 100% !important;
+  max-width: 42rem;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-wordmark a , body.pa-glass-site header.pa-site-header .pa-brand-wordmark a {
+  display: block;
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: clamp(1.35rem, 4.8vw, 2.15rem) !important;
+  font-weight: 800 !important;
+  font-style: normal !important;
+  letter-spacing: 0.01em !important;
+  line-height: 1.12 !important;
+  text-transform: none !important;
+  color: var(--pa-site-ink) !important;
+  text-decoration: none !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-wordmark a:hover , body.pa-glass-site header.pa-site-header .pa-brand-wordmark a:hover {
+  color: var(--pa-site-charcoal) !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .pa-brand-tagline , body.pa-glass-site header.pa-site-header .pa-brand-tagline {
+  margin: 0.3rem 0 0 !important;
+  padding: 0 1rem !important;
+  max-width: 28rem;
+  font-size: clamp(0.88rem, 2.4vw, 0.98rem) !important;
+  font-weight: 500 !important;
+  line-height: 1.5 !important;
+  color: var(--pa-site-muted) !important;
+  text-align: center !important;
+  letter-spacing: 0.01em;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-tagline , body.pa-glass-site .pa-booking-tagline {
+  font-weight: 600;
+  color: var(--pa-text) !important;
+  margin-bottom: 0.35rem !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .wp-block-navigation , body.pa-glass-site header.pa-site-header .wp-block-navigation {
+  margin-top: 0.35rem;
+  padding-bottom: 0.85rem;
+  width: 100%;
+}
+
+/* —— PAMA brand mark (PA state outline + wordmark) —— */
+.pa-brand-hidden {
+  display: none !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header .wp-block-site-logo img.pa-brand-logo-lockup,
+body.pa-glass-site header.pa-site-header .wp-block-site-logo img.pa-brand-logo-lockup {
+  width: clamp(200px, 48vw, 300px) !important;
+  height: auto !important;
+  max-width: min(300px, 82vw) !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+  object-fit: contain !important;
+  filter: none !important;
+}
+
+body.wp-theme-gutenify-photography header.pa-site-header.pa-brand-lockup-mode .pa-brand-lockup,
+body.pa-glass-site header.pa-site-header.pa-brand-lockup-mode .pa-brand-lockup {
+  gap: 0.25rem !important;
+  padding: 0.85rem 1rem 0.65rem !important;
+}
+
+body.wp-theme-gutenify-photography footer.pa-site-footer .pa-brand-logo-wrap-lockup a,
+body.pa-glass-site footer.pa-site-footer .pa-brand-logo-wrap-lockup a {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+
+body.wp-theme-gutenify-photography footer.pa-site-footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+body.pa-glass-site footer.pa-site-footer .wp-block-site-logo img.pa-brand-logo-lockup-white {
+  width: min(200px, 64vw) !important;
+  height: auto !important;
+  max-width: min(200px, 64vw) !important;
+  max-height: none !important;
+  border-radius: 0 !important;
+  object-fit: contain !important;
+  filter: none !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-site-logo img:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white) , body.pa-glass-site .wp-block-site-logo img:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white) , body.wp-theme-gutenify-photography header img.custom-logo:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white) , body.pa-glass-site header img.custom-logo:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white) {
+  max-height: 44px;
+  width: auto;
+  filter: none;
+}
+
+/* Hide stale theme logo only until our lockup class is present (server or JS). */
+body.pa-glass-site header .wp-block-site-logo img:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white),
+body.wp-theme-gutenify-photography header .wp-block-site-logo img:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white),
+body.pa-glass-site header img.custom-logo:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white),
+body.wp-theme-gutenify-photography header img.custom-logo:not(.pa-brand-logo-lockup):not(.pa-brand-logo-lockup-white) {
+  visibility: hidden;
+  max-height: 1px;
+  overflow: hidden;
+}
+
+body.pa-glass-site header.pa-brand-lockup-mode .wp-block-site-logo img.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header.pa-brand-lockup-mode .wp-block-site-logo img.pa-brand-logo-lockup,
+body.pa-glass-site header .wp-block-site-logo img.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header .wp-block-site-logo img.pa-brand-logo-lockup,
+body.pa-glass-site header.pa-brand-lockup-mode img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header.pa-brand-lockup-mode img.custom-logo.pa-brand-logo-lockup,
+body.pa-glass-site header img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header img.custom-logo.pa-brand-logo-lockup {
+  visibility: visible;
+  opacity: 1;
+  max-height: none;
+  overflow: visible;
+}
+
+@media (max-width: 782px) {
+  body.wp-theme-gutenify-photography header.pa-site-header .wp-block-site-logo img.pa-brand-logo-lockup,
+  body.pa-glass-site header.pa-site-header .wp-block-site-logo img.pa-brand-logo-lockup,
+  body.wp-theme-gutenify-photography header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
+  body.pa-glass-site header.pa-site-header img.custom-logo.pa-brand-logo-lockup {
+    width: clamp(168px, 74vw, 248px) !important;
+    max-width: min(248px, 88vw) !important;
+  }
+
+  body.wp-theme-gutenify-photography header.pa-site-header.pa-brand-lockup-mode .pa-brand-lockup,
+  body.pa-glass-site header.pa-site-header.pa-brand-lockup-mode .pa-brand-lockup {
+    padding: 0.75rem 0.65rem 0.55rem !important;
+    gap: 0.35rem !important;
+  }
+
+  body.wp-theme-gutenify-photography header.pa-site-header .wp-block-navigation,
+  body.pa-glass-site header.pa-site-header .wp-block-navigation {
+    padding-bottom: 0.65rem;
+  }
+
+  body.wp-theme-gutenify-photography header.wp-block-template-part .wp-block-navigation .wp-block-navigation-item__content,
+  body.pa-glass-site header.wp-block-template-part .wp-block-navigation .wp-block-navigation-item__content {
+    min-height: 44px;
+    padding: 0.55rem 0.95rem;
+    font-size: 0.95rem;
+  }
+
+  body.wp-theme-gutenify-photography .wp-block-navigation__responsive-container-open,
+  body.pa-glass-site .wp-block-navigation__responsive-container-open {
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  body.wp-theme-gutenify-photography .wp-block-navigation__responsive-container .wp-block-site-logo img.pa-brand-logo-lockup,
+  body.pa-glass-site .wp-block-navigation__responsive-container .wp-block-site-logo img.pa-brand-logo-lockup,
+  body.wp-theme-gutenify-photography .wp-block-navigation__responsive-container img.custom-logo.pa-brand-logo-lockup,
+  body.pa-glass-site .wp-block-navigation__responsive-container img.custom-logo.pa-brand-logo-lockup {
+    width: min(220px, 78vw) !important;
+    max-width: 78vw !important;
+    height: auto !important;
+    margin: 0 auto 0.75rem;
+    display: block;
+  }
+
+  body.pa-booking-page .entry-content {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+  }
+
+  body.pa-booking-page main.wp-block-group {
+    padding-top: 0.35rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  body.wp-theme-gutenify-photography footer.pa-site-footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+  body.pa-glass-site footer.pa-site-footer .wp-block-site-logo img.pa-brand-logo-lockup-white {
+    width: min(180px, 72vw) !important;
+    max-width: 72vw !important;
+  }
+}
+body.wp-theme-gutenify-photography .wp-block-cover.alignfull , body.pa-glass-site .wp-block-cover.alignfull {
+  position: relative !important;
+  min-height: clamp(100px, 16vh, 180px) !important;
+  max-height: 180px !important;
+  margin-bottom: 0 !important;
+  overflow: hidden;
+}
+
+body.wp-theme-gutenify-photography .wp-block-cover.alignfull .wp-block-cover__image-background , body.pa-glass-site .wp-block-cover.alignfull .wp-block-cover__image-background {
+  object-fit: cover;
+  object-position: center 35%;
+}
+
+body.wp-theme-gutenify-photography .wp-block-cover.alignfull .wp-block-cover__background , body.pa-glass-site .wp-block-cover.alignfull .wp-block-cover__background {
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.1) 0%,
+    rgba(0, 0, 0, 0.25) 100%
+  ) !important;
+  opacity: 1 !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-site-title , body.pa-glass-site .wp-block-site-title {
+  color: var(--pa-site-ink) !important;
+}
+
+/* —— Home cinematic hero — full-bleed, overlaid headline + CTAs —— */
+body.home.wp-theme-gutenify-photography,
+body.home.pa-glass-site {
+  overflow-x: hidden;
+}
+
+body.home.wp-theme-gutenify-photography .pa-glass-hero-wrap,
+body.home.pa-glass-site .pa-glass-hero-wrap {
+  width: 100vw;
+  max-width: 100vw;
+  margin-left: calc(50% - 50vw);
+  margin-right: calc(50% - 50vw);
+  overflow: hidden;
+}
+
+body.home.wp-theme-gutenify-photography .wp-block-cover.alignfull.pa-home-hero,
+body.home.pa-glass-site .wp-block-cover.alignfull.pa-home-hero {
+  min-height: clamp(460px, 80vh, 760px) !important;
+  max-height: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0 !important;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .wp-block-cover__image-background,
+body.home.pa-glass-site .pa-home-hero .wp-block-cover__image-background {
+  object-position: center 42%;
+  transform: scale(1.03);
+}
+
+/* Cinematic darkening so white headline reads cleanly over any photo */
+body.home.wp-theme-gutenify-photography .pa-home-hero .wp-block-cover__background,
+body.home.pa-glass-site .pa-home-hero .wp-block-cover__background {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 12, 18, 0.42) 0%,
+    rgba(8, 12, 18, 0.30) 38%,
+    rgba(8, 12, 18, 0.62) 100%
+  ) !important;
+  opacity: 1 !important;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-content,
+body.home.pa-glass-site .pa-home-hero .pa-hero-content {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  animation: pa-hero-rise 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes pa-hero-rise {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-eyebrow,
+body.home.pa-glass-site .pa-home-hero .pa-hero-eyebrow {
+  margin: 0 0 1rem !important;
+  font-size: clamp(0.72rem, 1.6vw, 0.82rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.92) !important;
+  max-width: none;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-title,
+body.home.pa-glass-site .pa-home-hero .pa-hero-title {
+  margin: 0 0 1.1rem !important;
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: clamp(2.1rem, 6vw, 4rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.05 !important;
+  letter-spacing: -0.03em !important;
+  color: #ffffff !important;
+  text-shadow: 0 2px 28px rgba(0, 0, 0, 0.45);
+  max-width: 16ch;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-lead,
+body.home.pa-glass-site .pa-home-hero .pa-hero-lead {
+  margin: 0 auto 1.85rem !important;
+  max-width: 40rem;
+  font-size: clamp(1rem, 2.2vw, 1.22rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.55 !important;
+  color: rgba(255, 255, 255, 0.92) !important;
+  text-shadow: 0 1px 16px rgba(0, 0, 0, 0.4);
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-actions,
+body.home.pa-glass-site .pa-home-hero .pa-hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1.6rem;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-btn,
+body.home.pa-glass-site .pa-home-hero .pa-hero-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 54px;
+  padding: 0.9rem 2rem;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  text-decoration: none !important;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-actions a.pa-hero-btn-primary,
+body.home.pa-glass-site .pa-home-hero .pa-hero-actions a.pa-hero-btn-primary {
+  background: linear-gradient(165deg, #1f1f1f 0%, #000000 100%) !important;
+  color: #ffffff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.92) !important;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.16);
+  text-shadow: none !important;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-actions a.pa-hero-btn-primary:hover,
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-actions a.pa-hero-btn-primary:focus-visible,
+body.home.pa-glass-site .pa-home-hero .pa-hero-actions a.pa-hero-btn-primary:hover,
+body.home.pa-glass-site .pa-home-hero .pa-hero-actions a.pa-hero-btn-primary:focus-visible {
+  transform: translateY(-2px);
+  background: linear-gradient(165deg, #333333 0%, #111111 100%) !important;
+  border-color: #ffffff !important;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.58), inset 0 1px 0 rgba(255, 255, 255, 0.22);
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-btn-secondary,
+body.home.pa-glass-site .pa-home-hero .pa-hero-btn-secondary {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-btn-secondary:hover,
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-btn-secondary:focus-visible,
+body.home.pa-glass-site .pa-home-hero .pa-hero-btn-secondary:hover,
+body.home.pa-glass-site .pa-home-hero .pa-hero-btn-secondary:focus-visible {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.85);
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-badge,
+body.home.pa-glass-site .pa-home-hero .pa-hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.42rem 1rem;
+  border-radius: 999px;
+  background: rgba(212, 175, 55, 0.16);
+  border: 1px solid rgba(212, 175, 55, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #f7e6a8 !important;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-badge:hover,
+body.home.pa-glass-site .pa-home-hero .pa-hero-badge:hover {
+  transform: translateY(-1px);
+  background: rgba(212, 175, 55, 0.24);
+  border-color: rgba(212, 175, 55, 0.7);
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-badge-star,
+body.home.pa-glass-site .pa-home-hero .pa-hero-badge-star {
+  color: #f0d78c !important;
+  font-size: 0.9rem;
+  line-height: 1;
+}
+
+/* Tighten the white header void so the hero leads the page */
+body.home.wp-theme-gutenify-photography header.pa-site-header .pa-brand-lockup,
+body.home.pa-glass-site header.pa-site-header .pa-brand-lockup {
+  padding: 0.75rem 1rem 0.5rem !important;
+  gap: 0.4rem !important;
+}
+
+body.home.wp-theme-gutenify-photography header.pa-site-header .pa-brand-tagline,
+body.home.pa-glass-site header.pa-site-header .pa-brand-tagline {
+  display: none !important;
+}
+
+body.home.wp-theme-gutenify-photography main.wp-block-group,
+body.home.pa-glass-site main.wp-block-group {
+  padding-top: 0 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-content,
+  body.home.pa-glass-site .pa-home-hero .pa-hero-content {
+    animation: none !important;
+  }
+  body.home.wp-theme-gutenify-photography .pa-home-hero .wp-block-cover__image-background,
+  body.home.pa-glass-site .pa-home-hero .wp-block-cover__image-background {
+    transform: none;
+  }
+}
+
+@media (max-width: 600px) {
+  body.home.wp-theme-gutenify-photography .wp-block-cover.alignfull.pa-home-hero,
+  body.home.pa-glass-site .wp-block-cover.alignfull.pa-home-hero {
+    min-height: clamp(420px, 72vh, 560px) !important;
+  }
+  body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-btn,
+  body.home.pa-glass-site .pa-home-hero .pa-hero-btn {
+    width: 100%;
+    max-width: 22rem;
+  }
+}
+
+/* —— Main layout —— */
+body.wp-theme-gutenify-photography main.wp-block-group , body.pa-glass-site main.wp-block-group {
+  padding-top: 1rem !important;
+  padding-bottom: 2rem !important;
+  background: transparent !important;
+}
+
+body.pa-booking-page main.wp-block-group {
+  padding-top: 0.65rem !important;
+  padding-bottom: 1.25rem !important;
+}
+
+body.pa-glass-site .entry-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+body.pa-booking-page .entry-content {
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  padding-left: 0.75rem;
+  padding-right: 0.75rem;
+}
+
+body.pa-booking-page .pa-booking-root {
+  width: 100%;
+  max-width: 100%;
+}
+
+body.pa-booking-page .pa-brand-tagline,
+body.pa-booking-page .pa-brand-tagline-compact {
+  display: none !important;
+}
+
+body.wp-theme-gutenify-photography .entry-content , body.pa-glass-site .entry-content {
+  max-width: var(--pa-site-max);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Booking widget — wider than theme default content (750px) on laptop/desktop */
+body.wp-theme-gutenify-photography .is-layout-constrained > .pa-booking-root,
+body.wp-theme-gutenify-photography .entry-content > .pa-booking-root,
+body.wp-theme-gutenify-photography .wp-block-post-content > .pa-booking-root,
+body.pa-glass-site .is-layout-constrained > .pa-booking-root,
+body.pa-glass-site .entry-content > .pa-booking-root,
+body.pa-glass-site .wp-block-post-content > .pa-booking-root {
+  max-width: var(--pa-booking-max) !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-group.alignfull.has-foreground-color , body.pa-glass-site .wp-block-group.alignfull.has-foreground-color {
+  background: var(--pa-glass-bg) !important;
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  color: var(--pa-site-ink) !important;
+  border-top: 1px solid var(--pa-glass-edge);
+  border-bottom: 1px solid var(--pa-glass-edge);
+}
+
+/* —— Portfolio galleries — compact editorial grid —— */
+body.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull , body.pa-glass-site .entry-content .wp-block-gallery.alignfull {
+  max-width: 960px;
+  width: calc(100% - 2rem);
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 1.25rem 1rem 1.75rem;
+  background: var(--pa-glass-bg) !important;
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-edge);
+  border-radius: 22px;
+  box-shadow: var(--pa-glass-shadow);
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px !important;
+  align-items: stretch;
+}
+
+body.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull + .wp-block-gallery.alignfull , body.pa-glass-site .entry-content .wp-block-gallery.alignfull + .wp-block-gallery.alignfull {
+  margin-top: 0.75rem !important;
+  padding-top: 1rem;
+  border-top: none;
+}
+
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image , body.pa-glass-site .wp-block-gallery.alignfull .wp-block-image {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.45);
+  box-shadow: 0 4px 16px rgba(17, 17, 17, 0.08);
+  transition: transform 0.22s ease, box-shadow 0.22s ease;
+}
+
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image.aligncenter , body.pa-glass-site .wp-block-gallery.alignfull .wp-block-image.aligncenter {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image:hover , body.pa-glass-site .wp-block-gallery.alignfull .wp-block-image:hover {
+  transform: scale(1.02);
+  box-shadow: 0 10px 28px rgba(17, 17, 17, 0.12);
+  z-index: 1;
+}
+
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image img , body.pa-glass-site .wp-block-gallery.alignfull .wp-block-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+}
+
+/* Gallery lightbox — click to enlarge */
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .pa-gallery-tile , body.pa-glass-site .wp-block-gallery.alignfull .pa-gallery-tile {
+  cursor: zoom-in;
+  position: relative;
+}
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .pa-gallery-tile::after , body.pa-glass-site .wp-block-gallery.alignfull .pa-gallery-tile::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, transparent 55%, rgba(0, 0, 0, 0.35));
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  pointer-events: none;
+}
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .pa-gallery-tile:hover::after,
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .pa-gallery-tile:focus-visible::after , body.pa-glass-site .wp-block-gallery.alignfull .pa-gallery-tile:focus-visible::after {
+  opacity: 1;
+}
+body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .pa-gallery-tile:focus-visible , body.pa-glass-site .wp-block-gallery.alignfull .pa-gallery-tile:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 2px;
+}
+
+.pa-gallery-lightbox[hidden] {
+  display: none !important;
+}
+body.pa-gallery-lightbox-open {
+  overflow: hidden;
+}
+.pa-gallery-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pa-gallery-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  border: none;
+  padding: 0;
+  margin: 0;
+  background: rgba(6, 8, 12, 0.82);
+  backdrop-filter: blur(14px) saturate(120%);
+  -webkit-backdrop-filter: blur(14px) saturate(120%);
+  cursor: zoom-out;
+}
+.pa-gallery-lightbox-panel {
+  position: relative;
+  z-index: 1;
+  width: min(96vw, 1200px);
+  max-height: 92vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+}
+.pa-gallery-lightbox-stage {
+  pointer-events: auto;
+  max-height: calc(92vh - 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pa-gallery-lightbox-img {
+  display: block;
+  max-width: 96vw;
+  max-height: calc(92vh - 4.5rem);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  box-shadow: 0 24px 72px rgba(0, 0, 0, 0.55);
+  opacity: 0;
+  transform: scale(0.97);
+  transition: opacity 0.32s ease, transform 0.32s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.pa-gallery-lightbox-img.is-loaded {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.pa-gallery-lightbox-caption {
+  pointer-events: none;
+  margin: 0.75rem 0 0;
+  max-width: min(90vw, 640px);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.9) !important;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+.pa-gallery-lightbox-close,
+.pa-gallery-lightbox-nav {
+  pointer-events: auto;
+  position: absolute;
+  border: none;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+  font: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  min-width: 44px;
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+}
+.pa-gallery-lightbox-close {
+  top: -0.25rem;
+  right: 0;
+  font-size: 1.75rem;
+}
+.pa-gallery-lightbox-prev {
+  left: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.pa-gallery-lightbox-next {
+  right: -0.5rem;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.pa-gallery-lightbox-close:focus-visible,
+.pa-gallery-lightbox-nav:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+.pa-gallery-lightbox-counter {
+  pointer-events: none;
+  margin: 0.65rem 0 0;
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+@media (max-width: 600px) {
+  .pa-gallery-lightbox-prev { left: 0.25rem; }
+  .pa-gallery-lightbox-next { right: 0.25rem; }
+  .pa-gallery-lightbox-close { top: 0.25rem; right: 0.25rem; }
+}
+
+body.wp-theme-gutenify-photography #pa-portfolio-label , body.pa-glass-site #pa-portfolio-label {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 2.25rem 1rem 0.85rem;
+  text-align: center;
+  background: transparent;
+}
+
+body.wp-theme-gutenify-photography #pa-portfolio-label h2 , body.pa-glass-site #pa-portfolio-label h2 {
+  font-size: clamp(1.15rem, 2.5vw, 1.45rem);
+  font-weight: 700;
+  margin: 0;
+  letter-spacing: -0.02em;
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography #pa-portfolio-label , body.pa-glass-site #pa-portfolio-label {
+  padding: 1.35rem 1rem 0.5rem;
+  scroll-margin-top: 96px;
+}
+
+@media (max-width: 900px) {
+  body.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull , body.pa-glass-site .entry-content .wp-block-gallery.alignfull {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    max-width: 720px;
+    gap: 7px !important;
+    padding: 1rem 0.85rem 1.35rem;
+  }
+}
+
+@media (max-width: 600px) {
+  body.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull , body.pa-glass-site .entry-content .wp-block-gallery.alignfull {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 100%;
+    width: calc(100% - 1.25rem);
+    gap: 6px !important;
+    border-radius: 18px;
+  }
+
+  body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image , body.pa-glass-site .wp-block-gallery.alignfull .wp-block-image {
+    border-radius: 10px;
+  }
+
+  body.wp-theme-gutenify-photography #pa-portfolio-label , body.pa-glass-site #pa-portfolio-label {
+    padding: 1.75rem 0.75rem 0.65rem;
+  }
+}
+
+/* —— Section headings —— */
+body.wp-theme-gutenify-photography .entry-content > .wp-block-heading,
+body.pa-glass-site .entry-content > .wp-block-heading {
+  display: inline-block;
+  width: fit-content;
+  max-width: 100%;
+  font-size: clamp(1.05rem, 2.2vw, 1.25rem) !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted) !important;
+  background: rgba(255, 255, 255, 0.52) !important;
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--pa-glass-edge);
+  border-radius: 999px;
+  margin-top: 2rem !important;
+  margin-bottom: 0.85rem !important;
+  padding: 0.45rem 1rem 0.5rem !important;
+  border-bottom: none;
+  box-shadow: var(--pa-glass-shadow);
+}
+
+body.wp-theme-gutenify-photography .entry-content .wp-block-column a:not(.pa-booking-cta-primary):not(.pa-footer-book-cta) , body.pa-glass-site .entry-content .wp-block-column a:not(.pa-booking-cta-primary):not(.pa-footer-book-cta) {
+  display: block;
+  padding: 0.4rem 0;
+  font-weight: 500;
+  color: var(--pa-site-ink) !important;
+  text-underline-offset: 3px;
+}
+
+/* —— Home section heads (shared editorial rhythm) —— */
+body.home.wp-theme-gutenify-photography .pa-section-head,
+body.home.pa-glass-site .pa-section-head {
+  text-align: center;
+  max-width: var(--pa-site-max);
+  margin: 3rem auto 1.4rem;
+  padding: 0 1rem;
+}
+
+body.home.wp-theme-gutenify-photography .pa-section-eyebrow,
+body.home.pa-glass-site .pa-section-eyebrow {
+  margin: 0 0 0.4rem !important;
+  font-size: 0.74rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted) !important;
+  max-width: none;
+  text-align: center;
+}
+
+body.home.wp-theme-gutenify-photography .pa-section-title,
+body.home.pa-glass-site .pa-section-title {
+  display: block;
+  width: auto;
+  margin: 0 !important;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: clamp(1.7rem, 4vw, 2.4rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.025em !important;
+  text-transform: none !important;
+  color: var(--pa-site-ink) !important;
+  line-height: 1.1 !important;
+}
+
+/* —— Portfolio showcase — uniform portrait grid —— */
+body.pa-has-portfolio-showcase .pa-portfolio-showcase,
+body.home.wp-theme-gutenify-photography .pa-portfolio-showcase,
+body.home.pa-glass-site .pa-portfolio-showcase {
+  width: min(1100px, calc(100vw - 1.5rem));
+  max-width: 1100px;
+  margin: 0 auto 2.5rem;
+  padding: 0 0.75rem;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-hint,
+body.home .pa-portfolio-hint {
+  margin: 0 auto 1.15rem;
+  max-width: 36rem;
+  text-align: center;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-grid,
+body.home .pa-portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+  width: 100%;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile,
+body.home .pa-portfolio-tile {
+  position: relative;
+  display: block !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+  min-height: 0;
+  aspect-ratio: 3 / 4;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  box-shadow: 0 8px 24px rgba(17, 17, 17, 0.1);
+  cursor: zoom-in;
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.22s ease;
+  transition-delay: calc(min(var(--pa-tile-i, 0), 11) * 0.035s);
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile.is-visible,
+body.home .pa-portfolio-tile.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile.aligncenter,
+body.home .pa-portfolio-tile.aligncenter {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile img,
+body.home .pa-portfolio-tile img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  object-fit: cover;
+  object-position: center top;
+  transform: scale(1);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile:hover img,
+body.pa-has-portfolio-showcase .pa-portfolio-tile:focus-visible img,
+body.home .pa-portfolio-tile:hover img,
+body.home .pa-portfolio-tile:focus-visible img {
+  transform: scale(1.04);
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile-overlay,
+body.home .pa-portfolio-tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-end;
+  gap: 0.35rem;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(180deg, transparent 55%, rgba(8, 10, 14, 0.65) 100%);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile:hover .pa-portfolio-tile-overlay,
+body.pa-has-portfolio-showcase .pa-portfolio-tile:focus-visible .pa-portfolio-tile-overlay,
+body.home .pa-portfolio-tile:hover .pa-portfolio-tile-overlay,
+body.home .pa-portfolio-tile:focus-visible .pa-portfolio-tile-overlay {
+  opacity: 1;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile-view,
+body.home .pa-portfolio-tile-view {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.28rem 0.65rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: #111111 !important;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile-caption,
+body.home .pa-portfolio-tile-caption {
+  color: rgba(255, 255, 255, 0.92) !important;
+  font-size: 0.76rem;
+  font-weight: 600;
+  line-height: 1.35;
+  max-width: 100%;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile:hover,
+body.pa-has-portfolio-showcase .pa-portfolio-tile:focus-visible,
+body.home .pa-portfolio-tile:hover,
+body.home .pa-portfolio-tile:focus-visible {
+  box-shadow: 0 14px 36px rgba(17, 17, 17, 0.16);
+  z-index: 1;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile:focus-visible,
+body.home .pa-portfolio-tile:focus-visible {
+  outline: 2px solid #111;
+  outline-offset: 3px;
+}
+
+body.pa-has-portfolio-showcase #pa-portfolio-label,
+body.home #pa-portfolio-label {
+  margin-bottom: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  body.pa-has-portfolio-showcase .pa-portfolio-grid,
+  body.home .pa-portfolio-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+@media (max-width: 560px) {
+  body.pa-has-portfolio-showcase .pa-portfolio-grid,
+  body.home .pa-portfolio-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  body.pa-has-portfolio-showcase .pa-portfolio-tile,
+  body.home .pa-portfolio-tile {
+    border-radius: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.pa-has-portfolio-showcase .pa-portfolio-tile,
+  body.home .pa-portfolio-tile {
+    opacity: 1;
+    transform: none;
+    transition: box-shadow 0.2s ease;
+  }
+
+  body.pa-has-portfolio-showcase .pa-portfolio-tile img,
+  body.home .pa-portfolio-tile img {
+    transition: none;
+  }
+}
+
+/* —— Immersive portfolio on home — legacy WP galleries (non-showcase) —— */
+body.home.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull,
+body.home.pa-glass-site .entry-content .wp-block-gallery.alignfull {
+  max-width: 1240px;
+  width: calc(100% - 2rem);
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  gap: 12px !important;
+  border-radius: 0 !important;
+}
+
+body.home.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull + .wp-block-gallery.alignfull,
+body.home.pa-glass-site .entry-content .wp-block-gallery.alignfull + .wp-block-gallery.alignfull {
+  margin-top: 12px !important;
+}
+
+body.home.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image,
+body.home.pa-glass-site .wp-block-gallery.alignfull .wp-block-image {
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  box-shadow: 0 8px 26px rgba(17, 17, 17, 0.12);
+}
+
+body.home.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image:hover,
+body.home.pa-glass-site .wp-block-gallery.alignfull .wp-block-image:hover {
+  transform: scale(1.025);
+  box-shadow: 0 16px 40px rgba(17, 17, 17, 0.2);
+}
+
+@media (max-width: 900px) {
+  body.home.wp-theme-gutenify-photography .entry-content .wp-block-gallery.alignfull,
+  body.home.pa-glass-site .entry-content .wp-block-gallery.alignfull {
+    max-width: 760px;
+  }
+}
+
+/* —— Services grid —— */
+body.wp-theme-gutenify-photography .pa-services-grid , body.pa-glass-site .pa-services-grid {
+  display: grid;
+  gap: 10px;
+  margin: 1rem 0 2rem;
+}
+
+@media (min-width: 600px) {
+  body.wp-theme-gutenify-photography .pa-services-grid , body.pa-glass-site .pa-services-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+body.wp-theme-gutenify-photography .pa-services-grid a , body.pa-glass-site .pa-services-grid a {
+  display: flex;
+  align-items: center;
+  min-height: 54px;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--pa-glass-border);
+  border-radius: 14px;
+  background: var(--pa-glass-bg-strong);
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  box-shadow: var(--pa-glass-shadow);
+  color: var(--pa-site-ink) !important;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.94rem;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+body.wp-theme-gutenify-photography .pa-services-grid a:hover , body.pa-glass-site .pa-services-grid a:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--pa-glass-shadow-lg);
+  border-color: rgba(255, 255, 255, 0.9);
+}
+
+body.wp-theme-gutenify-photography .pa-hide-duplicate-booking , body.pa-glass-site .pa-hide-duplicate-booking {
+  display: none !important;
+}
+
+/* —— Footer — dark glass —— */
+body.wp-theme-gutenify-photography footer.wp-block-template-part , body.pa-glass-site footer.wp-block-template-part {
+  border-top: 1px solid var(--pa-glass-dark-border);
+  background: transparent !important;
+  color: #b8b8b8 !important;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+body.wp-theme-gutenify-photography footer.wp-block-template-part > .wp-block-group , body.pa-glass-site footer.wp-block-template-part > .wp-block-group {
+  background: var(--pa-glass-dark-bg) !important;
+  backdrop-filter: blur(28px) saturate(140%);
+  -webkit-backdrop-filter: blur(28px) saturate(140%);
+  border-top: 1px solid var(--pa-glass-dark-border);
+  box-shadow: 0 -8px 40px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  color: #b0b0ae !important;
+  padding: 2.25rem 1.25rem 1.5rem !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography footer .pa-footer-legacy,
+body.pa-glass-site footer .pa-footer-legacy {
+  display: none !important;
+}
+
+/* Professional footer (replaces theme column clutter) */
+body.wp-theme-gutenify-photography .pa-site-footer-pro,
+body.pa-glass-site .pa-site-footer-pro {
+  max-width: var(--pa-site-max);
+  margin: 0 auto;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-info,
+body.pa-glass-site .pa-footer-info {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+@media (min-width: 768px) {
+  body.wp-theme-gutenify-photography .pa-footer-info,
+  body.pa-glass-site .pa-footer-info {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.25rem;
+  }
+}
+
+body.wp-theme-gutenify-photography .pa-footer-panel,
+body.pa-glass-site .pa-footer-panel {
+  padding: 1rem 1.1rem;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-panel h3,
+body.pa-glass-site .pa-footer-panel h3 {
+  margin: 0 0 0.65rem !important;
+  padding: 0 !important;
+  border: none !important;
+  font-size: 0.72rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #ececea !important;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-panel-body p,
+body.pa-glass-site .pa-footer-panel-body p {
+  margin: 0 !important;
+  font-size: 0.88rem !important;
+  line-height: 1.55 !important;
+  color: #a8a8a6 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-panel-body p + p,
+body.pa-glass-site .pa-footer-panel-body p + p {
+  margin-top: 0.65rem !important;
+}
+
+body.wp-theme-gutenify-photography #pa-about .pa-footer-panel-body p,
+body.pa-glass-site #pa-about .pa-footer-panel-body p {
+  font-size: 0.9rem !important;
+  line-height: 1.62 !important;
+  color: #b4b4b2 !important;
+  letter-spacing: 0.01em;
+}
+
+body.wp-theme-gutenify-photography #pa-about .pa-footer-panel-body p:first-child,
+body.pa-glass-site #pa-about .pa-footer-panel-body p:first-child {
+  color: #d8d8d6 !important;
+  font-weight: 500;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-service-list,
+body.wp-theme-gutenify-photography .pa-footer-work-list,
+body.pa-glass-site .pa-footer-service-list,
+body.pa-glass-site .pa-footer-work-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-service-list li,
+body.pa-glass-site .pa-footer-service-list li {
+  padding: 0.28rem 0;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  color: #b8b8b6 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-service-list li:last-child,
+body.pa-glass-site .pa-footer-service-list li:last-child {
+  border-bottom: none;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-list li,
+body.pa-glass-site .pa-footer-work-list li {
+  padding: 0.45rem 0;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-title,
+body.pa-glass-site .pa-footer-work-title {
+  display: block;
+  font-weight: 600;
+  color: #e8e8e6 !important;
+  line-height: 1.35;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-detail,
+body.pa-glass-site .pa-footer-work-detail {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #9a9a98 !important;
+  line-height: 1.4;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-list a,
+body.pa-glass-site .pa-footer-work-list a {
+  color: inherit !important;
+  text-decoration: none;
+  font-weight: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-list a .pa-footer-work-title,
+body.pa-glass-site .pa-footer-work-list a .pa-footer-work-title {
+  color: #e0e0de !important;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-list a:hover .pa-footer-work-title,
+body.pa-glass-site .pa-footer-work-list a:hover .pa-footer-work-title {
+  color: #ffffff !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-list li:last-child,
+body.pa-glass-site .pa-footer-work-list li:last-child {
+  border-bottom: none;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-list .pa-footer-work-award,
+body.pa-glass-site .pa-footer-work-list .pa-footer-work-award {
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.35rem;
+  border-radius: 12px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.14) 0%, rgba(255, 255, 255, 0.06) 100%);
+  border-bottom: none;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-award .pa-footer-work-title,
+body.pa-glass-site .pa-footer-work-award .pa-footer-work-title {
+  color: #f0d78c;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-award .pa-footer-work-detail,
+body.pa-glass-site .pa-footer-work-award .pa-footer-work-detail {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-work-award a:hover .pa-footer-work-title,
+body.pa-glass-site .pa-footer-work-award a:hover .pa-footer-work-title {
+  color: #ffffff;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-cta-strip,
+body.pa-glass-site .pa-footer-cta-strip {
+  text-align: center;
+  padding: 1rem 1rem 0.15rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-cta-lead,
+body.pa-glass-site .pa-footer-cta-lead {
+  margin: 0 0 0.85rem !important;
+  font-size: 0.92rem !important;
+  line-height: 1.45 !important;
+  color: #b4b4b2 !important;
+  max-width: 28rem;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.pa-booking-page .pa-footer-cta-strip {
+  border-top: none;
+  padding-top: 0;
+}
+
+body.pa-booking-page main.wp-block-group {
+  padding-top: 1rem !important;
+  padding-bottom: 1.5rem !important;
+}
+
+body.pa-booking-page .pa-booking-fine {
+  margin-top: 0.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+body.pa-glass-site .pa-hide-theme-footer-logo,
+body.pa-glass-site .pa-footer-clutter-hidden,
+body.wp-theme-gutenify-photography .pa-hide-theme-footer-logo,
+body.wp-theme-gutenify-photography .pa-footer-clutter-hidden {
+  display: none !important;
+}
+
+body.wp-theme-gutenify-photography footer.wp-block-template-part > .wp-block-group,
+body.pa-glass-site footer.wp-block-template-part > .wp-block-group {
+  padding-bottom: 0 !important;
+}
+
+body.wp-theme-gutenify-photography footer.wp-block-template-part .wp-block-heading , body.pa-glass-site footer.wp-block-template-part .wp-block-heading {
+  color: #f0f0ee !important;
+}
+
+body.wp-theme-gutenify-photography footer.wp-block-template-part p , body.pa-glass-site footer.wp-block-template-part p {
+  color: #a8a8a6 !important;
+  max-width: none !important;
+  text-align: center;
+}
+
+body.wp-theme-gutenify-photography footer.wp-block-template-part > .wp-block-group,
+body.pa-glass-site footer.wp-block-template-part > .wp-block-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+body.wp-theme-gutenify-photography footer.pa-site-footer .pa-brand-logo-wrap , body.pa-glass-site footer.pa-site-footer .pa-brand-logo-wrap {
+  margin-bottom: 1rem;
+}
+
+body.wp-theme-gutenify-photography footer a,
+body.pa-glass-site footer a {
+  color: #ececea !important;
+  transition: var(--pa-nav-transition);
+}
+
+body.wp-theme-gutenify-photography footer a:hover,
+body.wp-theme-gutenify-photography footer a:focus,
+body.pa-glass-site footer a:hover,
+body.pa-glass-site footer a:focus {
+  color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography footer.wp-block-template-part > .wp-block-group,
+body.pa-glass-site footer.wp-block-template-part > .wp-block-group {
+  padding-bottom: 0 !important;
+}
+
+body.wp-theme-gutenify-photography footer .pa-footer-nav-legacy,
+body.pa-glass-site footer .pa-footer-nav-legacy {
+  display: none !important;
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav,
+body.pa-glass-site .pa-site-bottom-nav {
+  width: 100%;
+  max-width: 100%;
+  margin-top: 0.35rem;
+  padding: 1.15rem 1.25rem calc(1.85rem + env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  box-sizing: border-box;
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav-links,
+body.pa-glass-site .pa-site-bottom-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 0.55rem;
+  max-width: 28rem;
+  margin: 0 auto;
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav-link,
+body.pa-glass-site .pa-site-bottom-nav-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  min-width: 5.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-decoration: none !important;
+  color: #e4e4e2 !important;
+  background: rgba(255, 255, 255, 0.09);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(14px) saturate(140%);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav-link:hover,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav-link:focus-visible,
+body.pa-glass-site .pa-site-bottom-nav-link:hover,
+body.pa-glass-site .pa-site-bottom-nav-link:focus-visible {
+  color: #ffffff !important;
+  background: rgba(255, 255, 255, 0.17);
+  border-color: rgba(255, 255, 255, 0.34);
+  transform: translateY(-1px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.14), 0 6px 18px rgba(0, 0, 0, 0.18);
+}
+
+body.wp-theme-gutenify-photography .pa-site-bottom-nav-link.is-current,
+body.pa-glass-site .pa-site-bottom-nav-link.is-current {
+  color: #ffffff !important;
+  background: linear-gradient(145deg, rgba(74, 98, 120, 0.95), rgba(37, 53, 68, 0.98));
+  border-color: rgba(255, 255, 255, 0.24);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+body.wp-theme-gutenify-photography .pa-legal-footer , body.pa-glass-site .pa-legal-footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 100%;
+  margin-top: 1rem;
+  padding: 1rem 1rem 0.85rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: center !important;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-footer p,
+body.pa-glass-site .pa-legal-footer p {
+  width: 100%;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-entity , body.pa-glass-site .pa-legal-entity {
+  margin: 0 0 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #d8d8d6 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-location , body.pa-glass-site .pa-legal-location {
+  margin: 0 0 0.55rem;
+  font-size: 0.78rem;
+  color: #90908e !important;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-links , body.pa-glass-site .pa-legal-links {
+  margin: 0 0 0.45rem;
+  font-size: 0.78rem;
+  color: #90908e !important;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-links a , body.pa-glass-site .pa-legal-links a {
+  display: inline;
+  color: #c8c8c6 !important;
+  text-decoration: none;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-email,
+body.pa-glass-site .pa-legal-email {
+  margin: 0 !important;
+  font-size: 0.9rem !important;
+  line-height: 1.4 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-email a,
+body.pa-glass-site .pa-legal-email a {
+  display: inline-block;
+  font-weight: 600 !important;
+  color: #e8e8e6 !important;
+  text-decoration: none !important;
+  letter-spacing: 0.01em;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-email a:hover,
+body.wp-theme-gutenify-photography .pa-legal-email a:focus,
+body.pa-glass-site .pa-legal-email a:hover,
+body.pa-glass-site .pa-legal-email a:focus {
+  color: #ffffff !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+
+body.wp-theme-gutenify-photography footer .wp-block-column > .wp-block-group.pa-footer-booking , body.pa-glass-site footer .wp-block-column > .wp-block-group.pa-footer-booking {
+  padding: 0 !important;
+  margin: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-booking-card , body.pa-glass-site .pa-footer-booking-card {
+  text-align: center;
+  margin: 0;
+  padding: 0.9rem 1rem 1rem;
+  border-radius: 14px;
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.04) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-booking-label , body.pa-glass-site .pa-footer-booking-label {
+  margin: 0 0 0.4rem !important;
+  padding: 0;
+  font-size: 0.7rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #f2f2f0 !important;
+  line-height: 1.2 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-booking-lead , body.pa-glass-site .pa-footer-booking-lead {
+  margin: 0 0 0.75rem !important;
+  padding: 0;
+  font-size: 0.88rem !important;
+  line-height: 1.45 !important;
+  color: #b4b4b2 !important;
+  max-width: none;
+}
+
+body.wp-theme-gutenify-photography a.pa-footer-book-cta , body.pa-glass-site a.pa-footer-book-cta {
+  display: inline-flex !important;
+  width: auto;
+  min-width: min(100%, 220px);
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.6rem 1.35rem !important;
+  margin: 0 0 0.75rem !important;
+  border-radius: 999px;
+  background: #ffffff !important;
+  color: #111111 !important;
+  border: none !important;
+  font-weight: 700 !important;
+  font-size: 0.9rem !important;
+  text-decoration: none !important;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+body.wp-theme-gutenify-photography a.pa-footer-book-cta:hover,
+body.wp-theme-gutenify-photography a.pa-footer-book-cta:focus , body.pa-glass-site a.pa-footer-book-cta:focus {
+  background: #f0f0ee !important;
+  color: #111111 !important;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-booking-note , body.pa-glass-site .pa-footer-booking-note {
+  margin: 0 !important;
+  padding: 0;
+  font-size: 0.8rem !important;
+  line-height: 1.4 !important;
+  color: #90908e !important;
+  text-align: center;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-booking-note--hidden,
+body.pa-glass-site .pa-footer-booking-note--hidden {
+  display: none !important;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-email,
+body.pa-glass-site .pa-footer-email {
+  width: 100%;
+  margin: 0;
+  padding: 0.9rem 1rem 1.15rem;
+  text-align: center !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-email a,
+body.pa-glass-site .pa-footer-email a {
+  display: inline-block;
+  font-size: 0.9rem !important;
+  font-weight: 600 !important;
+  color: #e8e8e6 !important;
+  text-decoration: none !important;
+  letter-spacing: 0.01em;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-email a:hover,
+body.wp-theme-gutenify-photography .pa-footer-email a:focus,
+body.pa-glass-site .pa-footer-email a:hover,
+body.pa-glass-site .pa-footer-email a:focus {
+  color: #ffffff !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-booking-note a , body.pa-glass-site .pa-footer-booking-note a {
+  font-weight: 600 !important;
+  color: #e8e8e6 !important;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form-panel , body.pa-glass-site .pa-booking-app .pa-form-panel {
+  background: var(--pa-glass-bg) !important;
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  border: 1px solid var(--pa-glass-edge) !important;
+  box-shadow: inset 0 1px 0 var(--pa-glass-highlight);
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form input.pa-text-input,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form textarea.pa-text-input,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form .pa-input , body.pa-glass-site .pa-booking-app .pa-form .pa-input {
+  background: var(--pa-glass-bg-input) !important;
+  color: #141414 !important;
+  border: 1px solid var(--pa-glass-edge) !important;
+  box-shadow: inset 0 1px 3px rgba(17, 17, 17, 0.06), 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+  -webkit-text-fill-color: #141414 !important;
+  opacity: 1 !important;
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form input.pa-text-input::placeholder,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-form textarea.pa-text-input::placeholder , body.pa-glass-site .pa-booking-app .pa-form textarea.pa-text-input::placeholder {
+  color: #666666 !important;
+  -webkit-text-fill-color: #666666 !important;
+  opacity: 1 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-field-label , body.pa-glass-site .pa-booking-app .pa-field-label {
+  color: #141414 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root a.pa-booking-cta-primary,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta-primary,
+body.pa-glass-site .pa-booking-root a.pa-booking-cta-primary,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta-primary {
+  background: #111111 !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  border: 2px solid #111111 !important;
+  text-decoration: none !important;
+  text-underline-offset: 0 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root a.pa-booking-cta-primary:hover,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta-primary:hover,
+body.pa-glass-site .pa-booking-root a.pa-booking-cta-primary:hover,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta-primary:hover {
+  background: #2a2a2a !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root a.pa-booking-cta-secondary,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta-secondary,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta-secondary {
+  background: #ffffff !important;
+  color: #141414 !important;
+  border: 2px solid #d0d0d0 !important;
+  transition: var(--pa-nav-transition);
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root a.pa-booking-cta-secondary:hover,
+body.wp-theme-gutenify-photography .pa-booking-root a.pa-booking-cta-secondary:focus,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta-secondary:hover,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta-secondary:focus,
+body.pa-glass-site .pa-booking-root a.pa-booking-cta-secondary:hover,
+body.pa-glass-site .pa-booking-root a.pa-booking-cta-secondary:focus,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta-secondary:hover,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta-secondary:focus {
+  background: var(--pa-nav-ghost-hover-bg) !important;
+  color: #141414 !important;
+  border-color: var(--pa-nav-ghost-hover-border) !important;
+  box-shadow: var(--pa-nav-ghost-hover-shadow);
+  transform: translateY(-1px);
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-submit,
+body.wp-theme-gutenify-photography .pa-booking-app .pa-pay-btn , body.pa-glass-site .pa-booking-app .pa-pay-btn {
+  background: #111111 !important;
+  color: #ffffff !important;
+  border: 2px solid #111111 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-app .pa-submit:hover:not(:disabled),
+body.wp-theme-gutenify-photography .pa-booking-app .pa-pay-btn:hover:not(:disabled) , body.pa-glass-site .pa-booking-app .pa-pay-btn:hover:not(:disabled) {
+  background: #2a2a2a !important;
+  color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography .pa-deposit-bar-pay,
+body.pa-glass-site .pa-deposit-bar-pay {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(255, 255, 255, 0.22) !important;
+  transition: var(--pa-nav-transition);
+}
+
+body.wp-theme-gutenify-photography .pa-deposit-bar-pay:hover:not(:disabled),
+body.wp-theme-gutenify-photography .pa-deposit-bar-pay:focus-visible,
+body.pa-glass-site .pa-deposit-bar-pay:hover:not(:disabled),
+body.pa-glass-site .pa-deposit-bar-pay:focus-visible {
+  background: rgba(255, 255, 255, 0.24) !important;
+  border-color: rgba(255, 255, 255, 0.36) !important;
+  transform: translateY(-1px);
+}
+
+/* —— Booking block — glass shell (see glass.css for iOS sheet layout) —— */
+body.wp-theme-gutenify-photography .pa-booking-root , body.pa-glass-site .pa-booking-root {
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-eyebrow , body.pa-glass-site .pa-booking-eyebrow {
+  color: var(--pa-site-muted) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-title , body.pa-glass-site .pa-booking-title {
+  font-size: clamp(1.85rem, 4.5vw, 2.6rem);
+  letter-spacing: -0.035em;
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-v3 .pa-booking-title,
+body.pa-glass-site .pa-booking-v3 .pa-booking-title {
+  font-size: clamp(1.35rem, 3vw, 1.65rem) !important;
+  letter-spacing: -0.025em !important;
+  font-weight: 700 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-lead,
+body.wp-theme-gutenify-photography .pa-booking-trust,
+body.wp-theme-gutenify-photography .pa-booking-fine , body.pa-glass-site .pa-booking-fine {
+  color: var(--pa-site-muted) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-fine a , body.pa-glass-site .pa-booking-fine a {
+  color: var(--pa-site-ink) !important;
+  font-weight: 600;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root .pa-how-it-works,
+body.pa-glass-site .pa-booking-root .pa-how-it-works {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--pa-space-4, 1rem);
+  margin: var(--pa-space-8, 2rem) auto;
+  padding: var(--pa-space-6, 1.5rem) var(--pa-space-5, 1.25rem);
+  max-width: var(--pa-booking-max, 720px);
+  list-style: none;
+  text-align: center;
+  background: var(--pa-color-surface-2, var(--pa-glass-bg));
+  border: 1px solid var(--pa-color-border, var(--pa-glass-border));
+  border-radius: var(--pa-radius-lg, 16px);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root .pa-how-it-works li,
+body.pa-glass-site .pa-booking-root .pa-how-it-works li {
+  text-align: center;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--pa-color-muted, var(--pa-site-muted)) !important;
+}
+
+@media (max-width: 640px) {
+  body.wp-theme-gutenify-photography .pa-booking-root .pa-how-it-works,
+  body.pa-glass-site .pa-booking-root .pa-how-it-works {
+    grid-template-columns: 1fr;
+    max-width: min(100%, 22rem);
+  }
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root .pa-how-it-works strong,
+body.pa-glass-site .pa-booking-root .pa-how-it-works strong {
+  display: block;
+  color: var(--pa-color-ink, var(--pa-site-ink)) !important;
+  font-size: 1rem;
+  margin: 0 auto 0.5rem;
+  padding: 0 0.75rem;
+  line-height: 1.3;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-policies , body.pa-glass-site .pa-booking-policies {
+  margin: 2rem 0 0;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--pa-glass-edge);
+}
+
+body.wp-theme-gutenify-photography .pa-policies-title , body.pa-glass-site .pa-policies-title {
+  text-align: center;
+  font-size: 1.15rem;
+  margin: 0 0 1rem;
+  border: none;
+  padding: 0;
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-policies-grid , body.pa-glass-site .pa-policies-grid {
+  display: grid;
+  gap: 12px;
+}
+
+@media (min-width: 640px) {
+  body.wp-theme-gutenify-photography .pa-policies-grid , body.pa-glass-site .pa-policies-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+body.wp-theme-gutenify-photography .pa-policy-card , body.pa-glass-site .pa-policy-card {
+  padding: 1rem 1.1rem;
+  border: 1px solid var(--pa-glass-border);
+  border-radius: 16px;
+  background: var(--pa-glass-bg);
+  backdrop-filter: var(--pa-glass-blur);
+  -webkit-backdrop-filter: var(--pa-glass-blur);
+  box-shadow: var(--pa-glass-shadow);
+}
+
+body.wp-theme-gutenify-photography .pa-policy-card h4 , body.pa-glass-site .pa-policy-card h4 {
+  margin: 0 0 0.4rem;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--pa-site-muted) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-policy-card p , body.pa-glass-site .pa-policy-card p {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-success , body.pa-glass-site .pa-booking-success {
+  color: var(--pa-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-scroll-cue , body.pa-glass-site .pa-scroll-cue {
+  text-align: center;
+  margin: 2rem 0 0;
+  font-size: 0.9rem;
+}
+
+body.wp-theme-gutenify-photography .pa-scroll-cue a , body.pa-glass-site .pa-scroll-cue a {
+  color: var(--pa-site-muted) !important;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+body.home.wp-theme-gutenify-photography .wp-block-columns {
+  gap: 2.5rem !important;
+  margin-top: 1rem;
+}
+
+@media (max-width: 782px) {
+  body.wp-theme-gutenify-photography .pa-booking-root , body.pa-glass-site .pa-booking-root {
+    border-radius: 22px !important;
+  }
+
+  body.wp-theme-gutenify-photography .wp-block-cover.alignfull , body.pa-glass-site .wp-block-cover.alignfull {
+    min-height: clamp(80px, 14vh, 140px) !important;
+    max-height: 140px !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image , body.pa-glass-site .wp-block-gallery.alignfull .wp-block-image {
+    transition: none;
+  }
+
+  body.wp-theme-gutenify-photography .wp-block-gallery.alignfull .wp-block-image:hover , body.pa-glass-site .wp-block-gallery.alignfull .wp-block-image:hover {
+    transform: none;
+  }
+}
+
+/* Booking page: readable text; glass shell from glass.css */
+body.wp-theme-gutenify-photography .entry-content .pa-booking-root,
+body.pa-glass-site .entry-content .pa-booking-root,
+body.wp-theme-gutenify-photography .wp-block-post-content .pa-booking-root,
+body.pa-glass-site .wp-block-post-content .pa-booking-root {
+  color: #141414 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root :where(h2, h3, h4, p, span, label, legend, li, dt, dd):not(.pa-fast-banner *):not(.pa-summary-bar *):not(.pa-deposit-bar *):not(.pa-booking-recap *),
+body.pa-glass-site .pa-booking-root :where(h2, h3, h4, p, span, label, legend, li, dt, dd):not(.pa-fast-banner *):not(.pa-summary-bar *):not(.pa-deposit-bar *):not(.pa-booking-recap *) {
+  color: inherit;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-root .has-foreground-color,
+body.wp-theme-gutenify-photography .pa-booking-root .has-text-color,
+body.pa-glass-site .pa-booking-root .has-text-color {
+  color: #0f0f0f !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-policies .pa-policy-card,
+body.pa-glass-site .pa-booking-policies .pa-policy-card {
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-policies .pa-policy-card h4,
+body.pa-glass-site .pa-booking-policies .pa-policy-card h4 {
+  font-size: 0.95rem !important;
+  color: #111111 !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-policies .pa-policy-card p,
+body.pa-glass-site .pa-booking-policies .pa-policy-card p {
+  font-size: 0.98rem !important;
+  line-height: 1.55 !important;
+  color: #3a3a3a !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-event-pill:not(.is-selected),
+body.pa-glass-site .pa-booking-v4 .pa-event-pill:not(.is-selected) {
+  color: #111111 !important;
+  -webkit-text-fill-color: #111111 !important;
+  background: #f3f3f1 !important;
+  border: 2px solid rgba(17, 17, 17, 0.24) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-event-pill.is-selected,
+body.pa-glass-site .pa-booking-v4 .pa-event-pill.is-selected {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: #111111 !important;
+  border-color: #111111 !important;
+}
+
+/* Start booking CTA — beat theme dark-section link inherit (0,5,1) */
+body.wp-theme-gutenify-photography .entry-content .pa-booking-root a.pa-booking-cta.pa-booking-cta-primary.wp-element-button,
+body.pa-glass-site .entry-content .pa-booking-root a.pa-booking-cta.pa-booking-cta-primary.wp-element-button,
+body.wp-theme-gutenify-photography .wp-block-post-content .pa-booking-root a.pa-booking-cta.pa-booking-cta-primary.wp-element-button,
+body.pa-glass-site .wp-block-post-content .pa-booking-root a.pa-booking-cta.pa-booking-cta-primary.wp-element-button,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta.pa-booking-cta-primary.wp-element-button,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta.pa-booking-cta-primary.wp-element-button {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #111111 !important;
+  background-image: linear-gradient(145deg, #2a2a2a 0%, #111111 100%) !important;
+  border: 2px solid #111111 !important;
+  text-decoration: none !important;
+  text-underline-offset: 0 !important;
+  font-weight: 700 !important;
+  box-shadow: 0 8px 24px rgba(17, 17, 17, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+}
+
+body.wp-theme-gutenify-photography .entry-content .pa-booking-root a.pa-booking-cta.pa-booking-cta-primary.wp-element-button:hover,
+body.pa-glass-site .entry-content .pa-booking-root a.pa-booking-cta.pa-booking-cta-primary.wp-element-button:hover,
+body.wp-theme-gutenify-photography .pa-booking-sticky a.pa-booking-cta.pa-booking-cta-primary.wp-element-button:hover,
+body.pa-glass-site .pa-booking-sticky a.pa-booking-cta.pa-booking-cta-primary.wp-element-button:hover {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #2a2a2a !important;
+  background-image: linear-gradient(145deg, #3a3a3a 0%, #1a1a1a 100%) !important;
+  text-decoration: none !important;
+}
+
+/* —— Social icons: white, high visibility —— */
+body.wp-theme-gutenify-photography .wp-block-social-links.pa-site-social,
+body.pa-glass-site .wp-block-social-links.pa-site-social,
+body.wp-theme-gutenify-photography footer .wp-block-social-links,
+body.pa-glass-site footer .wp-block-social-links {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  gap: 14px !important;
+  font-size: 28px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-social-links .wp-social-link,
+body.pa-glass-site .wp-block-social-links .wp-social-link {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  border-radius: 999px !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  transition: transform 0.18s ease, background 0.18s ease, border-color 0.18s ease;
+}
+
+body.wp-theme-gutenify-photography .wp-block-social-links .wp-block-social-link-anchor,
+body.pa-glass-site .wp-block-social-links .wp-block-social-link-anchor,
+body.wp-theme-gutenify-photography .wp-block-social-links .wp-block-social-link-anchor svg,
+body.pa-glass-site .wp-block-social-links .wp-block-social-link-anchor svg,
+body.wp-theme-gutenify-photography .wp-block-social-links .wp-social-link a,
+body.pa-glass-site .wp-block-social-links .wp-social-link a {
+  color: #ffffff !important;
+  fill: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-social-links .wp-social-link a,
+body.pa-glass-site .wp-block-social-links .wp-social-link a {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  padding: 10px !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-social-links .wp-social-link svg,
+body.pa-glass-site .wp-block-social-links .wp-social-link svg {
+  width: 1.35em !important;
+  height: 1.35em !important;
+}
+
+body.wp-theme-gutenify-photography .wp-block-social-links .wp-social-link:hover,
+body.pa-glass-site .wp-block-social-links .wp-social-link:hover {
+  background: rgba(255, 255, 255, 0.26) !important;
+  border-color: rgba(255, 255, 255, 0.72) !important;
+  transform: translateY(-2px) scale(1.04);
+}
+
+body.wp-theme-gutenify-photography .pa-footer-social,
+body.pa-glass-site .pa-footer-social {
+  display: flex;
+  justify-content: center;
+  margin: 0 0 1rem;
+  padding: 0.25rem 0 0.5rem;
+}
+
+/* Light sections (if social appears outside footer) */
+body.wp-theme-gutenify-photography main .wp-block-social-links.pa-site-social .wp-social-link,
+body.pa-glass-site main .wp-block-social-links.pa-site-social .wp-social-link {
+  background: rgba(17, 17, 17, 0.88) !important;
+  border-color: rgba(17, 17, 17, 0.88) !important;
+  box-shadow: 0 6px 18px rgba(17, 17, 17, 0.18);
+}
+
+/* —— YouTube feature embed —— */
+body.wp-theme-gutenify-photography .pa-youtube-feature,
+body.pa-glass-site .pa-youtube-feature {
+  width: 100%;
+  max-width: var(--pa-booking-max);
+  margin: 0.75rem auto 1.25rem;
+  padding: 1rem 1.1rem 1.1rem;
+  border-radius: 18px;
+  overflow: hidden;
+  scroll-margin-top: 96px;
+}
+
+body.wp-theme-gutenify-photography .pa-youtube-head,
+body.pa-glass-site .pa-youtube-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  margin-bottom: 0.75rem;
+}
+
+body.wp-theme-gutenify-photography .pa-youtube-head h2,
+body.pa-glass-site .pa-youtube-head h2 {
+  margin: 0 !important;
+  padding: 0.45rem 1rem 0.5rem !important;
+  border: 1px solid var(--pa-glass-edge);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.52) !important;
+  font-size: 0.78rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-youtube-head a,
+body.pa-glass-site .pa-youtube-head a {
+  font-size: 0.82rem !important;
+  font-weight: 600 !important;
+  color: var(--pa-site-muted) !important;
+  text-decoration: none !important;
+}
+
+body.wp-theme-gutenify-photography .pa-youtube-head a:hover,
+body.pa-glass-site .pa-youtube-head a:hover {
+  color: var(--pa-site-ink) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px;
+}
+
+body.wp-theme-gutenify-photography .pa-youtube-player,
+body.pa-glass-site .pa-youtube-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #0e0e0e;
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  box-shadow: 0 12px 36px rgba(17, 17, 17, 0.12);
+}
+
+body.wp-theme-gutenify-photography .pa-youtube-iframe,
+body.pa-glass-site .pa-youtube-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+@media (min-width: 900px) {
+  body.wp-theme-gutenify-photography .pa-youtube-feature,
+  body.pa-glass-site .pa-youtube-feature {
+    padding: 1.15rem 1.35rem 1.25rem;
+  }
+}
+
+/* —— Services page showcase —— */
+body.pa-services-page .pa-services-legacy-hidden,
+body.pa-has-services-showcase .pa-services-legacy-hidden {
+  display: none !important;
+}
+
+body.pa-services-page .pa-services-showcase,
+body.pa-has-services-showcase .pa-services-showcase {
+  width: min(920px, calc(100vw - 1.5rem));
+  max-width: 920px;
+  margin: 0.35rem auto 2rem;
+  padding: 0 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+body.pa-services-page .entry-content,
+body.pa-has-services-showcase .entry-content {
+  gap: 0.35rem !important;
+}
+
+/* Light glass hero — high contrast on the site canvas (beats theme ink overrides) */
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-hero,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-hero,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-hero,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-hero {
+  text-align: center;
+  margin: 0 auto;
+  padding: clamp(1.45rem, 3.5vw, 2rem) clamp(1rem, 3vw, 1.75rem);
+  border-radius: var(--pa-ios-radius-xl, 28px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  background:
+    linear-gradient(155deg, rgba(255, 255, 255, 0.96) 0%, rgba(248, 248, 246, 0.9) 48%, rgba(240, 240, 238, 0.94) 100%);
+  box-shadow:
+    0 18px 48px rgba(17, 17, 17, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-hero::before,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-hero::before,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-hero::before,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-hero::before {
+  content: '';
+  display: block;
+  width: 3.5rem;
+  height: 3px;
+  margin: 0 auto 1.1rem;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #111111, #6b6b6b);
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-eyebrow,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-eyebrow,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-eyebrow,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-eyebrow {
+  display: inline-block;
+  margin: 0 0 0.9rem !important;
+  padding: 0.35rem 0.85rem !important;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 20, 20, 0.08);
+  background: rgba(255, 255, 255, 0.72) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-title,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-title,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-title,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-title {
+  margin: 0 0 0.85rem !important;
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif !important;
+  font-size: clamp(2rem, 5.5vw, 3rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.06 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+  background: transparent !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-lead,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-lead,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-lead,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-lead {
+  margin: 0 auto 1.15rem !important;
+  max-width: 36rem;
+  font-size: clamp(0.98rem, 2vw, 1.1rem) !important;
+  line-height: 1.58 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-pillars,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-pillars,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-pillars,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-pillars {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0 !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-pillar,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-pillar,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-pillar,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-pillar {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.38rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  background: rgba(255, 255, 255, 0.82) !important;
+  font-size: 0.72rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.04em;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+  line-height: 1.2 !important;
+}
+
+/* Unified offerings panel — one surface, stacked service rows */
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings {
+  border-radius: var(--pa-ios-radius-xl, 28px);
+  border: 1px solid rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.92) !important;
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  box-shadow:
+    0 14px 40px rgba(17, 17, 17, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.94);
+  overflow: hidden;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings-head,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings-head,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings-head,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings-head {
+  padding: 1.15rem 1.25rem 0.95rem;
+  border-bottom: 1px solid rgba(20, 20, 20, 0.07);
+  text-align: left;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings-eyebrow,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings-eyebrow,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings-eyebrow,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings-eyebrow {
+  margin: 0 0 0.35rem !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings-lead,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-offerings-lead,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings-lead,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-offerings-lead {
+  margin: 0 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.5 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+  max-width: 38rem !important;
+}
+
+body.pa-services-page .pa-services-cards,
+body.pa-has-services-showcase .pa-services-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin: 0;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  min-height: 0;
+  padding: 1.2rem 1.25rem 1.15rem;
+  border: none;
+  border-bottom: 1px solid rgba(20, 20, 20, 0.07);
+  border-radius: 0;
+  background: transparent !important;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  box-shadow: none;
+  opacity: 1;
+  transform: none;
+  transition: background 0.2s ease;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card:last-child,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card:last-child,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card:last-child,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card:last-child {
+  border-bottom: none;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card:hover,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card:hover,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card:hover,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card:hover {
+  background: rgba(248, 248, 246, 0.65) !important;
+}
+
+body.pa-services-page .pa-services-card.is-visible,
+body.pa-has-services-showcase .pa-services-card.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+body.pa-services-page .pa-services-card::before,
+body.pa-has-services-showcase .pa-services-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  height: auto;
+  border-radius: 0;
+  background: #111111;
+  opacity: 0.9;
+}
+
+body.pa-services-page .pa-services-card--audio::before,
+body.pa-has-services-showcase .pa-services-card--audio::before {
+  background: linear-gradient(90deg, #111111, #5a5a5a);
+}
+
+body.pa-services-page .pa-services-card--photo::before,
+body.pa-has-services-showcase .pa-services-card--photo::before {
+  background: linear-gradient(90deg, #1a1a1a, #4a4a4a);
+}
+
+body.pa-services-page .pa-services-card--video::before,
+body.pa-has-services-showcase .pa-services-card--video::before {
+  background: linear-gradient(90deg, #111111, #3d3d3d);
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-index,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-index,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-index,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-index {
+  display: block;
+  margin: 0 0 0.2rem !important;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-head,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-head,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-head,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.85rem;
+  padding-left: 0.35rem;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-mark,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-mark,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-mark,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-mark {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 3.1rem;
+  height: 3.1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  background: linear-gradient(160deg, #111111 0%, #3a3a3a 100%);
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-head-text,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-head-text,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-head-text,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-head-text {
+  flex: 1;
+  min-width: 0;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-title,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-title,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-title,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-title {
+  margin: 0 !important;
+  font-size: clamp(1.15rem, 2.5vw, 1.38rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.12 !important;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+  background: transparent !important;
+  text-transform: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-tagline,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-tagline,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-tagline,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-tagline {
+  margin: 0.35rem 0 0 !important;
+  font-size: 0.86rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-summary,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-summary,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-summary,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-summary {
+  margin: 0 !important;
+  padding: 0 0 0 0.5rem;
+  font-size: 0.9rem !important;
+  line-height: 1.55 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-body,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-body,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-body,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-body {
+  display: grid;
+  gap: 0.85rem;
+  padding-left: 0.5rem;
+}
+
+@media (min-width: 720px) {
+  body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-body,
+  body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-body,
+  body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-body,
+  body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-body {
+    grid-template-columns: 1.15fr 0.85fr;
+    gap: 1.25rem;
+    align-items: start;
+  }
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-label,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-label,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-label,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-label {
+  margin: 0 0 0.45rem !important;
+  font-size: 0.64rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-list,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-list,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-list,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-list {
+  margin: 0.1rem 0 0 !important;
+  padding: 0 0 0 1rem !important;
+  list-style: disc;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-list li,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-list li,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-list li,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-list li {
+  margin: 0.28rem 0 0 !important;
+  font-size: 0.86rem !important;
+  line-height: 1.48 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-tags,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-tags,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-tags,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-card-tag,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-card-tag,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-tag,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-card-tag {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.32rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 20, 20, 0.1);
+  background: rgba(248, 248, 246, 0.95) !important;
+  font-size: 0.72rem !important;
+  font-weight: 600 !important;
+  line-height: 1.2 !important;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-proof,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-proof,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-proof,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-proof {
+  text-align: center;
+  margin: 0;
+  padding: 0.75rem 1rem;
+  border-radius: 14px;
+  border: 1px solid rgba(20, 20, 20, 0.07);
+  background: rgba(255, 255, 255, 0.55) !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-proof-text,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-proof-text,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-proof-text,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-proof-text {
+  margin: 0 !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  line-height: 1.45 !important;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-book,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-book,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-book,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-book {
+  text-align: center;
+  padding: clamp(1.55rem, 3.5vw, 2rem) 1.25rem;
+  border-radius: var(--pa-ios-radius-lg, 20px);
+  border: 1px solid rgba(255, 255, 255, 0.82);
+  background: rgba(255, 255, 255, 0.9) !important;
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  box-shadow:
+    0 12px 36px rgba(17, 17, 17, 0.09),
+    inset 0 1px 0 rgba(255, 255, 255, 0.92);
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-book-title,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-book-title,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-book-title,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-book-title {
+  margin: 0 0 0.5rem !important;
+  font-size: clamp(1.3rem, 3vw, 1.6rem) !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+  background: transparent !important;
+}
+
+body.wp-theme-gutenify-photography.pa-services-page .entry-content .pa-services-showcase .pa-services-book-lead,
+body.pa-glass-site.pa-services-page .entry-content .pa-services-showcase .pa-services-book-lead,
+body.wp-theme-gutenify-photography.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-book-lead,
+body.pa-glass-site.pa-has-services-showcase .entry-content .pa-services-showcase .pa-services-book-lead {
+  margin: 0 auto 1.2rem !important;
+  max-width: 28rem;
+  font-size: 0.93rem !important;
+  line-height: 1.52 !important;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: 28rem !important;
+}
+
+/* Book CTA — beat theme link inherit (same pattern as booking primary CTA) */
+body.wp-theme-gutenify-photography .entry-content .pa-services-showcase a.pa-services-book-btn.wp-element-button,
+body.pa-glass-site .entry-content .pa-services-showcase a.pa-services-book-btn.wp-element-button,
+body.wp-theme-gutenify-photography .wp-block-post-content .pa-services-showcase a.pa-services-book-btn.wp-element-button,
+body.pa-glass-site .wp-block-post-content .pa-services-showcase a.pa-services-book-btn.wp-element-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0.88rem 1.75rem;
+  border-radius: 999px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #111111 !important;
+  background-image: linear-gradient(145deg, #2a2a2a 0%, #111111 100%) !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 0 10px 28px rgba(17, 17, 17, 0.24), inset 0 1px 0 rgba(255, 255, 255, 0.14) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+body.wp-theme-gutenify-photography .entry-content .pa-services-showcase a.pa-services-book-btn.wp-element-button:hover,
+body.wp-theme-gutenify-photography .entry-content .pa-services-showcase a.pa-services-book-btn.wp-element-button:focus-visible,
+body.pa-glass-site .entry-content .pa-services-showcase a.pa-services-book-btn.wp-element-button:hover,
+body.pa-glass-site .entry-content .pa-services-showcase a.pa-services-book-btn.wp-element-button:focus-visible,
+body.wp-theme-gutenify-photography .wp-block-post-content .pa-services-showcase a.pa-services-book-btn.wp-element-button:hover,
+body.pa-glass-site .wp-block-post-content .pa-services-showcase a.pa-services-book-btn.wp-element-button:focus-visible {
+  transform: translateY(-2px);
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #000000 !important;
+  background-image: linear-gradient(145deg, #1a1a1a 0%, #000000 100%) !important;
+  border-color: #000000 !important;
+  box-shadow: 0 14px 34px rgba(17, 17, 17, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.pa-services-page .pa-services-card,
+  body.pa-has-services-showcase .pa-services-card {
+    transition: none;
+  }
+}
+
+body.pa-services-page .pa-services-card.is-recommended,
+body.pa-has-services-showcase .pa-services-card.is-recommended {
+  border-color: rgba(15, 15, 15, 0.22);
+  box-shadow: 0 0 0 1px rgba(15, 15, 15, 0.12);
+}
+
+body.pa-services-page .pa-services-card-recommended,
+body.pa-has-services-showcase .pa-services-card-recommended {
+  display: inline-block;
+  margin-bottom: 0.35rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: #0f0f0f;
+  color: #fff;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ==========================================================================
+   About page — Jordan Zabady, Founder & CEO
+   ========================================================================== */
+
+body.pa-has-about-showcase .pa-about-legacy-hidden {
+  display: none !important;
+}
+
+body.pa-has-about-showcase .entry-content {
+  gap: 0.35rem !important;
+}
+
+.pa-about-showcase {
+  width: min(920px, calc(100vw - 1.5rem));
+  max-width: 920px;
+  margin: 0.35rem auto 2rem;
+  padding: 0 0.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+/* —— Hero card —— */
+.pa-about-hero {
+  text-align: center;
+  padding: clamp(2rem, 5vw, 2.75rem) clamp(1.25rem, 4vw, 2.25rem);
+  border-radius: var(--pa-ios-radius-xl, 28px);
+  border: 1px solid rgba(255, 255, 255, 0.88);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.96) 0%, rgba(248,248,246,0.9) 48%, rgba(240,240,238,0.94) 100%);
+  box-shadow:
+    0 18px 48px rgba(17,17,17,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.95);
+}
+
+.pa-about-eyebrow {
+  display: inline-block;
+  margin: 0 0 1.1rem !important;
+  padding: 0.35rem 0.9rem !important;
+  border-radius: 999px;
+  border: 1px solid rgba(20,20,20,0.08);
+  background: rgba(255,255,255,0.72) !important;
+  font-size: 0.68rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+.pa-about-name {
+  margin: 0 0 0.45rem !important;
+  font-family: "Poppins", "Segoe UI", system-ui, -apple-system, sans-serif !important;
+  font-size: clamp(2.5rem, 7vw, 4rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.04 !important;
+  letter-spacing: -0.03em !important;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+}
+
+.pa-about-role {
+  margin: 0 0 1.2rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+.pa-about-lead {
+  margin: 0 auto 1rem !important;
+  max-width: 36rem;
+  font-size: clamp(1rem, 2vw, 1.12rem) !important;
+  line-height: 1.62 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+}
+
+.pa-about-meta {
+  margin: 0 !important;
+  font-size: 0.78rem !important;
+  letter-spacing: 0.02em;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+/* —— Glass card base (story + expertise) —— */
+.pa-about-story,
+.pa-about-expertise {
+  padding: clamp(1.35rem, 3vw, 1.75rem) clamp(1.25rem, 3vw, 2rem);
+  border-radius: var(--pa-ios-radius-xl, 28px);
+  border: 1px solid rgba(255,255,255,0.86);
+  background: rgba(255,255,255,0.92) !important;
+  backdrop-filter: blur(28px) saturate(170%);
+  -webkit-backdrop-filter: blur(28px) saturate(170%);
+  box-shadow:
+    0 14px 40px rgba(17,17,17,0.09),
+    inset 0 1px 0 rgba(255,255,255,0.94);
+}
+
+/* —— Section eyebrow shared —— */
+.pa-about-section-eyebrow {
+  margin: 0 0 1.1rem !important;
+  font-size: 0.68rem !important;
+  font-weight: 800 !important;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+  max-width: none !important;
+}
+
+/* —— Story body —— */
+.pa-about-story-p {
+  margin: 0 0 1.05rem !important;
+  font-size: clamp(0.96rem, 1.9vw, 1.06rem) !important;
+  line-height: 1.72 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+  max-width: 40rem !important;
+}
+
+.pa-about-story-p:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* —— Stats row —— */
+.pa-about-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.65rem;
+}
+
+.pa-about-stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.28rem;
+  padding: 1.35rem 0.85rem 1.2rem;
+  border-radius: var(--pa-ios-radius-lg, 22px);
+  border: 1px solid rgba(255,255,255,0.86);
+  background: rgba(255,255,255,0.92) !important;
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(17,17,17,0.06), inset 0 1px 0 rgba(255,255,255,0.9);
+}
+
+.pa-about-stat-value {
+  display: block;
+  font-family: "Poppins", system-ui, sans-serif;
+  font-size: clamp(1.9rem, 4.5vw, 2.6rem);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.025em;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+}
+
+.pa-about-stat-label {
+  display: block;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+}
+
+.pa-about-stat-note {
+  display: block;
+  font-size: 0.7rem;
+  line-height: 1.4;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+}
+
+/* —— Expertise grid —— */
+.pa-about-expertise-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.85rem;
+}
+
+.pa-about-discipline {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.05rem 1rem 1rem;
+  border-radius: var(--pa-ios-radius-md, 16px);
+  background: rgba(248,248,246,0.85);
+  border: 1px solid rgba(20,20,20,0.06);
+}
+
+.pa-about-discipline-head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.pa-about-discipline-mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  flex-shrink: 0;
+  border-radius: 8px;
+  background: rgba(20,20,20,0.08);
+  font-size: 0.67rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+}
+
+.pa-about-discipline-label {
+  font-size: 0.7rem !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+}
+
+.pa-about-discipline-title {
+  margin: 0 !important;
+  font-family: "Poppins", system-ui, sans-serif !important;
+  font-size: 1.05rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+}
+
+.pa-about-discipline-desc {
+  margin: 0 !important;
+  font-size: 0.84rem !important;
+  line-height: 1.58 !important;
+  color: var(--pa-site-charcoal, #2a2a2a) !important;
+  -webkit-text-fill-color: var(--pa-site-charcoal, #2a2a2a) !important;
+  max-width: none !important;
+}
+
+/* —— CTA card —— */
+.pa-about-cta {
+  text-align: center;
+  padding: clamp(1.75rem, 4vw, 2.25rem) clamp(1.25rem, 4vw, 2rem);
+  border-radius: var(--pa-ios-radius-xl, 28px);
+  border: 1px solid rgba(255,255,255,0.88);
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.96) 0%, rgba(248,248,246,0.9) 48%, rgba(240,240,238,0.94) 100%);
+  box-shadow:
+    0 18px 48px rgba(17,17,17,0.1),
+    inset 0 1px 0 rgba(255,255,255,0.95);
+}
+
+.pa-about-cta-title {
+  margin: 0 0 0.55rem !important;
+  font-family: "Poppins", system-ui, sans-serif !important;
+  font-size: clamp(1.55rem, 3.5vw, 2.1rem) !important;
+  font-weight: 800 !important;
+  line-height: 1.1 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--pa-site-ink, #141414) !important;
+  -webkit-text-fill-color: var(--pa-site-ink, #141414) !important;
+  max-width: none !important;
+}
+
+.pa-about-cta-lead {
+  margin: 0 auto 1.3rem !important;
+  max-width: 30rem;
+  font-size: clamp(0.92rem, 1.8vw, 1rem) !important;
+  line-height: 1.55 !important;
+  color: var(--pa-site-muted, #5c5c5c) !important;
+  -webkit-text-fill-color: var(--pa-site-muted, #5c5c5c) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-about-cta-btn.wp-element-button,
+body.pa-glass-site .pa-about-cta-btn.wp-element-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 50px;
+  padding: 0.88rem 1.85rem;
+  border-radius: 999px;
+  font-size: 0.94rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #111111 !important;
+  background-image: linear-gradient(145deg, #2a2a2a 0%, #111111 100%) !important;
+  border: 2px solid #111111 !important;
+  box-shadow: 0 10px 28px rgba(17,17,17,0.24), inset 0 1px 0 rgba(255,255,255,0.14) !important;
+  transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+}
+
+body.wp-theme-gutenify-photography .pa-about-cta-btn.wp-element-button:hover,
+body.pa-glass-site .pa-about-cta-btn.wp-element-button:hover {
+  transform: translateY(-2px);
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background-color: #000000 !important;
+  background-image: linear-gradient(145deg, #1a1a1a 0%, #000000 100%) !important;
+  box-shadow: 0 14px 34px rgba(17,17,17,0.3), inset 0 1px 0 rgba(255,255,255,0.12) !important;
+}
+
+/* —— Mobile —— */
+@media (max-width: 680px) {
+  .pa-about-stats {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .pa-about-expertise-grid {
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 780px) {
+  .pa-about-stats {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  .pa-about-expertise-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-about-cta-btn {
+    transition: none !important;
+  }
+}
