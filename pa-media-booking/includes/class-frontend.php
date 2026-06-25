@@ -219,8 +219,8 @@ class PA_Booking_Frontend {
     }
 
     /**
-     * Plugin-hosted PAMA brand mark (square icon + header/footer lockups).
-     * Source: assets/pama-brand-source.png — run bin/process-pama-logo.py to regenerate.
+     * Plugin-hosted PAMA brand mark — served exactly as pama-brand-source.png.
+     * Run bin/process-pama-logo.py after replacing the source file.
      */
     public static function logo_url() {
         return add_query_arg('v', self::logo_cache_buster('pa-logo.png'), PA_BOOKING_URL . 'assets/pa-logo.png');
@@ -231,6 +231,7 @@ class PA_Booking_Frontend {
     }
 
     public static function logo_white_url() {
+        // Same as-is mark on dark footer surfaces (no transparency / recolor pass).
         return add_query_arg('v', self::logo_cache_buster('pa-logo-white.png'), PA_BOOKING_URL . 'assets/pa-logo-white.png');
     }
 

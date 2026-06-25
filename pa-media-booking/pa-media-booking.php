@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PA Media Booking
  * Description: Custom calendar booking for independent artists — availability, deposits, GoDaddy Pay Link / Stripe, admin approval.
- * Version: 2.38.2
+ * Version: 2.38.3
  * Author: Pennsylvania Media Arts LLC
  * Text Domain: pa-media-booking
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PA_BOOKING_VERSION', '2.38.2');
+define('PA_BOOKING_VERSION', '2.38.3');
 define('PA_BOOKING_PATH', plugin_dir_path(__FILE__));
 define('PA_BOOKING_URL', plugin_dir_url(__FILE__));
 

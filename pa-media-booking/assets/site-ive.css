@@ -181,3 +181,33 @@ body.pa-glass-site .pa-services-book {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ============================================================ LOGO ===== */
+/* Official square mark — use as-is (no transparency / recolor processing). */
+body.wp-theme-gutenify-photography header .wp-block-site-logo img.pa-brand-logo-lockup,
+body.pa-glass-site header .wp-block-site-logo img.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header img.custom-logo.pa-brand-logo-lockup,
+body.pa-glass-site header img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography .wp-block-navigation__responsive-container img.pa-brand-logo-lockup,
+body.pa-glass-site .wp-block-navigation__responsive-container img.pa-brand-logo-lockup {
+  width: clamp(76px, 18vw, 96px) !important;
+  height: auto !important;
+  max-width: 96px !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  filter: none !important;
+  border-radius: 0 !important;
+}
+
+body.wp-theme-gutenify-photography footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+body.pa-glass-site footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+body.wp-theme-gutenify-photography footer img.custom-logo.pa-brand-logo-lockup-white,
+body.pa-glass-site footer img.custom-logo.pa-brand-logo-lockup-white {
+  width: clamp(68px, 16vw, 84px) !important;
+  height: auto !important;
+  max-width: 84px !important;
+  max-height: none !important;
+  object-fit: contain !important;
+  filter: none !important;
+  border-radius: 0 !important;
+}
