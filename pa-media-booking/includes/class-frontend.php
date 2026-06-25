@@ -399,6 +399,7 @@ class PA_Booking_Frontend {
         if (!is_admin()) {
             wp_enqueue_style('pa-site', PA_BOOKING_URL . 'assets/site.css', array(), self::asset_version('assets/site.css'));
             wp_enqueue_style('pa-glass', PA_BOOKING_URL . 'assets/glass.css', array('pa-site'), self::asset_version('assets/glass.css'));
+            wp_enqueue_style('pa-site-ive', PA_BOOKING_URL . 'assets/site-ive.css', array('pa-glass'), self::asset_version('assets/site-ive.css'));
             wp_enqueue_script('pa-site', PA_BOOKING_URL . 'assets/site.js', array(), self::asset_version('assets/site.js'), true);
             $s = PA_Booking::get_settings();
             $site_service_lines = array_values(array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) ($s['services'] ?? '')))));
@@ -440,6 +441,7 @@ class PA_Booking_Frontend {
         wp_enqueue_style('pa-booking-experience', PA_BOOKING_URL . 'assets/booking-experience.css', array('pa-booking-v4'), self::asset_version('assets/booking-experience.css'));
         wp_enqueue_style('pa-booking-saas', PA_BOOKING_URL . 'assets/booking-saas.css', array('pa-booking-experience'), self::asset_version('assets/booking-saas.css'));
         wp_enqueue_style('pa-booking-pro', PA_BOOKING_URL . 'assets/booking-pro.css', array('pa-booking-saas'), self::asset_version('assets/booking-pro.css'));
+        wp_enqueue_style('pa-booking-ive', PA_BOOKING_URL . 'assets/booking-ive.css', array('pa-booking-pro'), self::asset_version('assets/booking-ive.css'));
         wp_enqueue_script('pa-booking', PA_BOOKING_URL . 'assets/booking.js', array(), self::asset_version('assets/booking.js'), true);
         $service_lines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) ($s['services'] ?? ''))));
         wp_localize_script(

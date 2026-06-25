@@ -198,12 +198,14 @@
 
 /* —— Calendar polish —— */
 .pa-booking-v4.pa-booking-premium .pa-schedule-trust {
-  display: flex;
+  display: flex !important;
   flex-wrap: wrap;
+  justify-content: center !important;
   align-items: center;
-  justify-content: center;
-  gap: 0.35rem 0.5rem;
-  margin: 0 0 var(--pa-space-4);
+  gap: 0.25rem 0.45rem;
+  width: 100%;
+  max-width: 100%;
+  margin: 0 auto var(--pa-space-4) !important;
   padding: var(--pa-space-3) var(--pa-space-4);
   border-radius: var(--pa-radius-md);
   background: var(--pa-color-surface-2);
@@ -213,12 +215,20 @@
   letter-spacing: 0.04em;
   text-transform: uppercase;
   color: var(--pa-color-muted);
-  text-align: center;
-  line-height: 1.45;
+  text-align: center !important;
+  line-height: 1.6;
+  box-sizing: border-box;
+}
+
+.pa-booking-v4 .pa-schedule-trust-item,
+.pa-booking-v4 .pa-schedule-trust-dot {
+  flex: 0 0 auto;
+  text-align: center !important;
 }
 
 .pa-booking-v4 .pa-schedule-trust-dot {
   opacity: 0.45;
+  margin: 0 0.35rem;
 }
 
 .pa-booking-v4 .pa-date-hint {

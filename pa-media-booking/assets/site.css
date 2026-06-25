@@ -1430,6 +1430,34 @@ body.home #pa-portfolio-label {
   margin-bottom: 0.5rem;
 }
 
+/* —— Portfolio section head — center on all pages —— */
+body.pa-has-portfolio-head #pa-portfolio-label,
+body.pa-has-portfolio-head .pa-portfolio-head,
+body.pa-glass-site #pa-portfolio-label,
+body.pa-glass-site .pa-portfolio-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center !important;
+  width: 100%;
+  max-width: var(--pa-site-max, 1100px);
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.pa-has-portfolio-head #pa-portfolio-label .pa-section-eyebrow,
+body.pa-has-portfolio-head #pa-portfolio-label .pa-section-title,
+body.pa-has-portfolio-head .pa-portfolio-head .pa-section-eyebrow,
+body.pa-has-portfolio-head .pa-portfolio-head .pa-section-title,
+body.pa-glass-site #pa-portfolio-label .pa-section-eyebrow,
+body.pa-glass-site #pa-portfolio-label .pa-section-title {
+  text-align: center !important;
+  width: 100%;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 body.pa-has-portfolio-showcase .pa-portfolio-head,
 body.home .pa-portfolio-head,
 #pa-portfolio-label.pa-portfolio-head {

@@ -1,0 +1,1000 @@
+/**
+ * PA Media Booking — "Ive" design layer.
+ *
+ * The definitive design language for the booking funnel: calm, white, precise.
+ * Inspired by Apple/Jony Ive — deference, clarity, generous whitespace, one
+ * accent, soft depth, continuous-corner radii, and physics-based motion.
+ *
+ * Loads LAST (after booking-pro.css) so it harmonises the older v4 / experience
+ * / saas / pro layers into a single coherent system. Scoped to .pa-booking-root.
+ */
+
+/* ============================================================= TOKENS ===== */
+.pa-booking-root.pa-booking-v4 {
+  /* Apple system greys */
+  --iv-ink: #1d1d1f;
+  --iv-secondary: #6e6e73;
+  --iv-tertiary: #86868b;
+  --iv-hairline: #d2d2d7;
+  --iv-hairline-soft: rgba(0, 0, 0, 0.08);
+  --iv-surface: #ffffff;
+  --iv-surface-2: #f5f5f7;
+  --iv-surface-3: #fbfbfd;
+  --iv-accent: #0071e3;      /* Apple link/focus blue */
+  --iv-accent-hover: #0077ed;
+  --iv-focus-ring: rgba(0, 113, 227, 0.28);
+
+  /* One consistent side gutter used by the hero + app body so text lines up
+     down the whole funnel and never crowds the edge. */
+  --iv-gutter: clamp(1.5rem, 4.5vw, 3rem);
+
+  /* Inner padding for every box/card — text must never touch the left edge. */
+  --iv-box-pad: clamp(1.35rem, 5vw, 1.85rem);
+
+  /* Continuous-corner radii */
+  --iv-r-shell: 28px;
+  --iv-r-card: 18px;
+  --iv-r-control: 12px;
+  --iv-r-pill: 980px;
+
+  /* Soft, diffuse depth */
+  --iv-shadow-1: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --iv-shadow-2: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --iv-shadow-3: 0 18px 48px rgba(0, 0, 0, 0.10);
+
+  /* Apple easing */
+  --iv-ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+  --iv-ease-spring: cubic-bezier(0.34, 1.32, 0.46, 1);
+
+  /* Map legacy variables onto the Ive system so older layers inherit it */
+  --pa-color-ink: var(--iv-ink);
+  --pa-color-muted: var(--iv-secondary);
+  --pa-color-subtle: var(--iv-tertiary);
+  --pa-color-border: var(--iv-hairline);
+  --pa-color-surface: var(--iv-surface);
+  --pa-color-surface-2: var(--iv-surface-2);
+  --pa-color-focus: var(--iv-accent);
+  --bk-ink: var(--iv-ink);
+  --bk-muted: var(--iv-secondary);
+  --bk-stroke: var(--iv-hairline);
+  --bk-surface: var(--iv-surface);
+}
+
+/* ========================================================= TYPOGRAPHY ===== */
+body.pa-glass-site .pa-booking-root.pa-booking-v4,
+body.wp-theme-gutenify-photography .pa-booking-root.pa-booking-v4 {
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern" 1, "liga" 1;
+  letter-spacing: -0.01em;
+  color: var(--iv-ink);
+}
+
+/* ============================================================== SHELL ===== */
+/* Replace the busy coloured "liquid glass" wash with a calm white surface. */
+body.pa-glass-site .pa-booking-root.pa-booking-v4,
+body.wp-theme-gutenify-photography .pa-booking-root.pa-booking-v4 {
+  width: 100% !important;
+  max-width: min(860px, calc(100vw - 2rem)) !important;
+  margin: 1.5rem auto 3rem !important;
+  border-radius: var(--iv-r-shell) !important;
+  border: 1px solid var(--iv-hairline-soft) !important;
+  background: var(--iv-surface) !important;
+  background-image: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: var(--iv-shadow-3) !important;
+  overflow: hidden !important;
+}
+
+/* Kill the coloured radial ambient layers — Ive deference. */
+body.pa-glass-site .pa-booking-root.pa-booking-v4::before,
+body.wp-theme-gutenify-photography .pa-booking-root.pa-booking-v4::before,
+body.pa-glass-site .pa-booking-root.pa-booking-v4::after,
+body.wp-theme-gutenify-photography .pa-booking-root.pa-booking-v4::after {
+  display: none !important;
+}
+
+/* Light-grey body so the white cards inside read as distinct, premium surfaces
+   instead of white-on-white boxes. */
+body.pa-glass-site .pa-booking-v4 .pa-booking-app,
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-app {
+  background: var(--iv-surface-2) !important;
+  background-image: none !important;
+  border-top: none !important;
+  padding: clamp(1.5rem, 4.5vw, 3rem) var(--iv-gutter) clamp(2rem, 5vw, 3.25rem) !important;
+}
+
+/* =============================================================== HERO ===== */
+/* Body-scoped so it beats the theme's higher-specificity padding rules and
+   lines the hero up with the app body for a single, consistent side gutter. */
+body.pa-glass-site .pa-booking-v4 .pa-booking-hero,
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-hero {
+  padding: clamp(2.25rem, 6vw, 3.5rem) var(--iv-gutter) clamp(1.75rem, 4vw, 2.5rem) !important;
+  border-bottom: 1px solid var(--iv-hairline-soft) !important;
+  background: var(--iv-surface) !important;
+}
+
+.pa-booking-v4 .pa-booking-eyebrow {
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: var(--iv-tertiary) !important;
+  margin: 0 0 0.6rem !important;
+}
+
+.pa-booking-v4 .pa-booking-title {
+  font-size: clamp(1.9rem, 5.2vw, 2.6rem) !important;
+  font-weight: 700 !important;
+  line-height: 1.06 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--iv-ink) !important;
+  margin: 0 0 0.7rem !important;
+}
+
+.pa-booking-v4 .pa-booking-lead,
+.pa-booking-v4 .pa-booking-lead--hero {
+  font-size: clamp(1.05rem, 2.4vw, 1.2rem) !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--iv-secondary) !important;
+  max-width: 33rem !important;
+}
+
+.pa-booking-v4 .pa-booking-value-prop {
+  font-size: 0.98rem !important;
+  color: var(--iv-secondary) !important;
+  line-height: 1.55 !important;
+  margin-top: 1rem !important;
+}
+
+.pa-booking-v4 .pa-booking-value-prop strong {
+  color: var(--iv-ink) !important;
+  font-weight: 600 !important;
+}
+
+/* Credential strip — quiet, evenly spaced */
+.pa-booking-v4 .pa-booking-credential-strip {
+  margin-top: 1.4rem !important;
+  gap: 0.5rem 1.25rem !important;
+}
+
+.pa-booking-v4 .pa-credential-item {
+  font-size: 0.84rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  color: var(--iv-secondary) !important;
+}
+
+.pa-booking-v4 .pa-credential-icon {
+  color: var(--iv-ink) !important;
+}
+
+/* ====================================================== STEPPER CHROME ===== */
+body.pa-glass-site .pa-booking-v4 .pa-booking-chrome,
+body.wp-theme-gutenify-photography .pa-booking-v4 .pa-booking-chrome {
+  margin-bottom: clamp(1.5rem, 4vw, 2rem) !important;
+  padding-left: var(--iv-box-pad) !important;
+  padding-right: var(--iv-box-pad) !important;
+}
+
+.pa-booking-v4 .pa-stepper {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: 0 !important;
+  gap: 0 !important;
+}
+
+.pa-booking-v4 .pa-stepper-item {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  gap: 0.5rem !important;
+}
+
+.pa-booking-v4 .pa-stepper-num {
+  width: 1.6rem !important;
+  height: 1.6rem !important;
+  border-radius: 50% !important;
+  border: 1.5px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  color: var(--iv-tertiary) !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  box-shadow: none !important;
+  transition: all 0.4s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-stepper-item.is-active .pa-stepper-num {
+  background: var(--iv-ink) !important;
+  border-color: var(--iv-ink) !important;
+  color: #fff !important;
+}
+
+.pa-booking-v4 .pa-stepper-item.is-done .pa-stepper-num {
+  background: var(--iv-ink) !important;
+  border-color: var(--iv-ink) !important;
+  color: #fff !important;
+}
+
+.pa-booking-v4 .pa-stepper-label {
+  font-size: 0.82rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  color: var(--iv-tertiary) !important;
+  text-transform: none !important;
+}
+
+.pa-booking-v4 .pa-stepper-item.is-active .pa-stepper-label {
+  color: var(--iv-ink) !important;
+  font-weight: 600 !important;
+}
+
+.pa-booking-v4 .pa-stepper-meter {
+  background: var(--iv-hairline) !important;
+  height: 2px !important;
+  border-radius: 2px !important;
+  overflow: hidden !important;
+}
+
+.pa-booking-v4 .pa-stepper-meter-fill {
+  background: var(--iv-ink) !important;
+  transition: width 0.5s var(--iv-ease) !important;
+}
+
+/* Schedule sub-flow progress */
+.pa-booking-v4 .pa-flow-progress-meter {
+  background: var(--iv-hairline) !important;
+}
+.pa-booking-v4 .pa-flow-progress-meter-fill {
+  background: var(--iv-ink) !important;
+  transition: width 0.5s var(--iv-ease) !important;
+}
+.pa-booking-v4 .pa-flow-progress-label {
+  color: var(--iv-tertiary) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  text-transform: none !important;
+}
+.pa-booking-v4 .pa-flow-progress-item.is-active .pa-flow-progress-label {
+  color: var(--iv-ink) !important;
+  font-weight: 600 !important;
+}
+.pa-booking-v4 .pa-flow-progress-item.is-done .pa-flow-progress-icon,
+.pa-booking-v4 .pa-flow-progress-item.is-active .pa-flow-progress-icon {
+  background: var(--iv-ink) !important;
+  border-color: var(--iv-ink) !important;
+  color: #fff !important;
+}
+
+/* ===================================================== SECTION HEADERS ===== */
+.pa-booking-v4 .pa-section-title {
+  font-size: 1.32rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--iv-ink) !important;
+  margin-bottom: 0.4rem !important;
+}
+
+.pa-booking-v4 .pa-section-hint,
+.pa-booking-v4 .pa-panel-hint,
+.pa-booking-v4 .pa-step-hint,
+.pa-booking-v4 .pa-step-intro-lead {
+  font-size: 0.95rem !important;
+  font-weight: 400 !important;
+  line-height: 1.5 !important;
+  color: var(--iv-secondary) !important;
+}
+
+.pa-booking-v4 .pa-step-intro-eyebrow {
+  color: var(--iv-tertiary) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+}
+
+.pa-booking-v4 .pa-step-intro-title {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.022em !important;
+  color: var(--iv-ink) !important;
+}
+
+/* Section cards — flat, hairline-separated, no heavy glass */
+/* Section cards — hairline-separated; horizontal pad so titles/text never hug the edge */
+.pa-booking-v4 .pa-glass-section {
+  background: transparent !important;
+  border: none !important;
+  border-top: 1px solid var(--iv-hairline-soft) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: clamp(1.4rem, 4vw, 1.9rem) var(--iv-box-pad) 0 !important;
+}
+
+.pa-booking-v4 .pa-booking-sheet > .pa-glass-section:first-child,
+.pa-booking-v4 .pa-glass-section:first-child {
+  border-top: none !important;
+  padding-top: 0 !important;
+  /* keep padding-left/right from rule above */
+}
+
+.pa-booking-v4 .pa-booking-sheet {
+  gap: clamp(1.4rem, 4vw, 2rem) !important;
+}
+
+/* ==================================================== SERVICE OPTIONS ===== */
+.pa-booking-v4 .pa-service-list,
+.pa-booking-v4 .pa-service-list--simple {
+  gap: 0.75rem !important;
+}
+
+.pa-booking-v4 .pa-service-option {
+  border-radius: var(--iv-r-card) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  box-shadow: none !important;
+  padding: 1.15rem 1.3rem !important;
+  padding-right: 3rem !important;
+  transition: border-color 0.35s var(--iv-ease),
+    background 0.35s var(--iv-ease), box-shadow 0.35s var(--iv-ease),
+    transform 0.2s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-service-option:hover:not(.is-selected) {
+  border-color: var(--iv-tertiary) !important;
+  background: var(--iv-surface) !important;
+  box-shadow: var(--iv-shadow-2) !important;
+  transform: translateY(-1px) !important;
+}
+
+.pa-booking-v4 .pa-service-option.is-selected {
+  background: var(--iv-ink) !important;
+  border-color: var(--iv-ink) !important;
+  color: #fff !important;
+  box-shadow: var(--iv-shadow-2) !important;
+  transform: none !important;
+}
+
+.pa-booking-v4 .pa-service-option.is-selected::after {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+}
+
+.pa-booking-v4 .pa-service-option-name {
+  font-size: 1.05rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+  line-height: 1.3 !important;
+}
+
+.pa-booking-v4 .pa-service-option-detail {
+  font-size: 0.92rem !important;
+  font-weight: 400 !important;
+  color: var(--iv-secondary) !important;
+  line-height: 1.45 !important;
+}
+
+.pa-booking-v4 .pa-service-option.is-selected .pa-service-option-detail {
+  color: rgba(255, 255, 255, 0.78) !important;
+}
+
+.pa-booking-v4 .pa-service-recommended {
+  border-radius: var(--iv-r-pill) !important;
+  background: var(--iv-ink) !important;
+  color: #fff !important;
+  font-size: 0.68rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+  padding: 0.18rem 0.6rem !important;
+}
+
+.pa-booking-v4 .pa-service-option.is-selected .pa-service-recommended {
+  background: #fff !important;
+  color: var(--iv-ink) !important;
+}
+
+.pa-booking-v4 .pa-service-selected {
+  border-radius: var(--iv-r-card) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface-2) !important;
+}
+
+.pa-booking-v4 .pa-selected-value {
+  color: var(--iv-ink) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.01em !important;
+}
+
+/* ========================================================== CALENDAR ===== */
+.pa-booking-v4 .pa-cal-pro .pa-cal-shell {
+  border-radius: var(--iv-r-card) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  overflow: hidden !important;
+  padding: var(--iv-box-pad) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-title {
+  font-size: 1.12rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.018em !important;
+  color: var(--iv-ink) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-subtitle {
+  font-weight: 400 !important;
+  color: var(--iv-secondary) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-nav-btn {
+  border-radius: 50% !important;
+  width: 2.3rem !important;
+  height: 2.3rem !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  color: var(--iv-ink) !important;
+  box-shadow: none !important;
+  transition: background 0.3s var(--iv-ease), border-color 0.3s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-nav-btn:hover:not(:disabled) {
+  background: var(--iv-surface-2) !important;
+  border-color: var(--iv-tertiary) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-dow {
+  font-size: 0.7rem !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  color: var(--iv-tertiary) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-grid {
+  gap: 4px !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day {
+  border-radius: 50% !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  transition: background 0.28s var(--iv-ease), border-color 0.28s var(--iv-ease),
+    color 0.28s var(--iv-ease), transform 0.18s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-available {
+  background: var(--iv-surface) !important;
+  border: 1px solid transparent !important;
+  color: var(--iv-ink) !important;
+  box-shadow: none !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-available.is-weekend {
+  background: var(--iv-surface) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-available:hover:not(.is-selected) {
+  background: var(--iv-surface-2) !important;
+  border-color: transparent !important;
+  box-shadow: none !important;
+  transform: scale(1.04) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-today:not(.is-selected):not(.is-past):not(.is-unavailable) {
+  border-color: var(--iv-hairline) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-today:not(.is-selected)::after {
+  background: var(--iv-ink) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-selected {
+  background: var(--iv-ink) !important;
+  border-color: var(--iv-ink) !important;
+  color: #fff !important;
+  box-shadow: var(--iv-shadow-2) !important;
+  transform: none !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-past,
+.pa-booking-v4 .pa-cal-pro .pa-cal-day.is-unavailable {
+  background: transparent !important;
+  color: #c7c7cc !important;
+}
+
+.pa-booking-v4 .pa-cal-availability-badge {
+  border-radius: var(--iv-r-pill) !important;
+  background: var(--iv-surface-2) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  color: var(--iv-secondary) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+}
+
+.pa-booking-v4 .pa-cal-today-btn {
+  color: var(--iv-accent) !important;
+  font-weight: 500 !important;
+}
+
+.pa-booking-v4 .pa-cal-timezone,
+.pa-booking-v4 .pa-cal-meta-note {
+  color: var(--iv-tertiary) !important;
+  font-weight: 400 !important;
+}
+
+/* ====================================================== TIME WINDOWS ===== */
+.pa-booking-v4 .pa-time-grid {
+  gap: 0.7rem !important;
+}
+
+.pa-booking-v4 .pa-time-card {
+  border-radius: var(--iv-r-control) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  color: var(--iv-ink) !important;
+  box-shadow: none !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  transition: border-color 0.32s var(--iv-ease), background 0.32s var(--iv-ease),
+    color 0.32s var(--iv-ease), transform 0.18s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-time-card:hover:not(.is-selected) {
+  border-color: var(--iv-tertiary) !important;
+  background: var(--iv-surface-2) !important;
+  transform: translateY(-1px) !important;
+}
+
+.pa-booking-v4 .pa-time-card.is-selected {
+  background: var(--iv-ink) !important;
+  border-color: var(--iv-ink) !important;
+  color: #fff !important;
+  box-shadow: var(--iv-shadow-2) !important;
+}
+
+/* =========================================================== FORM ===== */
+.pa-booking-v4 .pa-form-group {
+  border-radius: var(--iv-r-card) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  box-shadow: var(--iv-shadow-1) !important;
+  padding: clamp(1.5rem, 4.5vw, 1.9rem) !important;
+}
+
+.pa-booking-v4 .pa-form-group-title {
+  font-size: 1.08rem !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.018em !important;
+  color: var(--iv-ink) !important;
+}
+
+.pa-booking-v4 .pa-form-group-hint {
+  font-size: 0.9rem !important;
+  font-weight: 400 !important;
+  color: var(--iv-secondary) !important;
+  line-height: 1.45 !important;
+}
+
+.pa-booking-v4 .pa-field-label {
+  font-size: 0.86rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.005em !important;
+  color: var(--iv-ink) !important;
+}
+
+.pa-booking-v4 .pa-input,
+.pa-booking-v4 .pa-text-input {
+  border-radius: var(--iv-r-control) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  color: var(--iv-ink) !important;
+  font-size: 1rem !important;
+  font-family: inherit !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: none !important;
+  padding: 0.85rem 1rem !important;
+  transition: border-color 0.25s var(--iv-ease), box-shadow 0.25s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-input::placeholder,
+.pa-booking-v4 .pa-text-input::placeholder {
+  color: var(--iv-tertiary) !important;
+}
+
+.pa-booking-v4 .pa-input:focus,
+.pa-booking-v4 .pa-text-input:focus {
+  outline: none !important;
+  border-color: var(--iv-accent) !important;
+  box-shadow: 0 0 0 4px var(--iv-focus-ring) !important;
+}
+
+.pa-booking-v4 .pa-input.pa-input-error,
+.pa-booking-v4 .pa-text-input.pa-input-error {
+  border-color: #ff3b30 !important;
+  box-shadow: 0 0 0 4px rgba(255, 59, 48, 0.18) !important;
+}
+
+/* Event-type pills */
+.pa-booking-v4 .pa-event-pill {
+  border-radius: var(--iv-r-pill) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  color: var(--iv-ink) !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: none !important;
+  transition: all 0.3s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-event-pill:hover:not(.is-selected) {
+  border-color: var(--iv-tertiary) !important;
+  background: var(--iv-surface-2) !important;
+}
+
+.pa-booking-v4 .pa-event-pill.is-selected {
+  background: var(--iv-ink) !important;
+  border-color: var(--iv-ink) !important;
+  color: #fff !important;
+}
+
+/* Add-ons */
+.pa-booking-v4 .pa-addon-option {
+  border-radius: var(--iv-r-card) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  box-shadow: none !important;
+  transition: border-color 0.3s var(--iv-ease), background 0.3s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-addon-option:hover {
+  border-color: var(--iv-tertiary) !important;
+  background: var(--iv-surface-2) !important;
+}
+
+.pa-booking-v4 .pa-addon-option:has(.pa-addon-checkbox:checked) {
+  border-color: var(--iv-ink) !important;
+  background: var(--iv-surface-2) !important;
+}
+
+.pa-booking-v4 .pa-addon-checkbox {
+  accent-color: var(--iv-ink) !important;
+}
+
+.pa-booking-v4 .pa-addon-name {
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+  color: var(--iv-ink) !important;
+}
+
+.pa-booking-v4 .pa-addon-desc {
+  color: var(--iv-secondary) !important;
+}
+
+/* ========================================================= BUTTONS ===== */
+.pa-booking-v4 .pa-submit,
+.pa-booking-v4 .pa-btn,
+.pa-booking-v4 .pa-checkout-btn,
+.pa-booking-v4 .pa-schedule-continue.is-ready {
+  border-radius: var(--iv-r-pill) !important;
+  background: var(--iv-ink) !important;
+  border: none !important;
+  color: #fff !important;
+  font-family: inherit !important;
+  font-size: 1.02rem !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: none !important;
+  padding: 0.95rem 1.6rem !important;
+  transition: background 0.3s var(--iv-ease), transform 0.18s var(--iv-ease),
+    opacity 0.3s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-submit:hover:not(:disabled),
+.pa-booking-v4 .pa-btn:hover:not(:disabled),
+.pa-booking-v4 .pa-checkout-btn:hover:not(:disabled),
+.pa-booking-v4 .pa-schedule-continue.is-ready:hover {
+  background: #000 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: var(--iv-shadow-2) !important;
+}
+
+.pa-booking-v4 .pa-submit:active:not(:disabled),
+.pa-booking-v4 .pa-btn:active:not(:disabled),
+.pa-booking-v4 .pa-checkout-btn:active:not(:disabled) {
+  transform: scale(0.985) !important;
+}
+
+.pa-booking-v4 .pa-schedule-continue.is-disabled,
+.pa-booking-v4 .pa-submit:disabled,
+.pa-booking-v4 .pa-btn:disabled {
+  background: var(--iv-surface-2) !important;
+  color: var(--iv-tertiary) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  opacity: 1 !important;
+}
+
+.pa-booking-v4 .pa-schedule-continue.is-ready::after {
+  display: none !important;
+}
+
+/* Text / link buttons — Apple blue */
+.pa-booking-v4 .pa-back,
+.pa-booking-v4 .pa-text-btn,
+.pa-booking-v4 .pa-recap-bar-edit,
+.pa-booking-v4 .pa-cal-today-btn {
+  color: var(--iv-accent) !important;
+  background: transparent !important;
+  border: none !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  box-shadow: none !important;
+  transition: color 0.2s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-back:hover,
+.pa-booking-v4 .pa-text-btn:hover,
+.pa-booking-v4 .pa-recap-bar-edit:hover {
+  color: var(--iv-accent-hover) !important;
+  text-decoration: underline !important;
+  text-underline-offset: 3px !important;
+}
+
+.pa-booking-v4 .pa-continue-footnote {
+  color: var(--iv-tertiary) !important;
+  font-size: 0.84rem !important;
+  font-weight: 400 !important;
+}
+
+/* ======================================================== RECAP BAR ===== */
+.pa-booking-v4 .pa-recap-bar,
+.pa-booking-v4 .pa-booking-recap {
+  border-radius: var(--iv-r-card) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  box-shadow: var(--iv-shadow-1) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: clamp(1.1rem, 3.5vw, 1.4rem) clamp(1.25rem, 4vw, 1.6rem) !important;
+}
+
+.pa-booking-v4 .pa-recap-bar-kicker {
+  color: var(--iv-tertiary) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: uppercase !important;
+}
+
+.pa-booking-v4 .pa-recap-bar-date {
+  color: var(--iv-ink) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+}
+
+.pa-booking-v4 .pa-recap-bar-meta,
+.pa-booking-v4 .pa-recap-bar-deposit {
+  color: var(--iv-secondary) !important;
+}
+
+/* Date chips */
+.pa-booking-v4 .pa-date-chip {
+  border-radius: var(--iv-r-pill) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  color: var(--iv-ink) !important;
+  font-weight: 500 !important;
+}
+
+/* Trust / what-happens-next / deposit preview */
+.pa-booking-v4 .pa-whats-next,
+.pa-booking-v4 .pa-deposit-preview,
+.pa-booking-v4 .pa-fast-banner {
+  border-radius: var(--iv-r-card) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  box-shadow: var(--iv-shadow-1) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  padding: clamp(1.25rem, 4vw, 1.6rem) clamp(1.25rem, 4vw, 1.7rem) !important;
+}
+
+.pa-booking-v4 .pa-whats-next-title {
+  color: var(--iv-ink) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+}
+
+/* Schedule checklist chips */
+.pa-booking-v4 .pa-schedule-checklist-item {
+  border-radius: var(--iv-r-pill) !important;
+  border: 1px solid var(--iv-hairline) !important;
+  background: var(--iv-surface) !important;
+  color: var(--iv-secondary) !important;
+  font-weight: 500 !important;
+  transition: all 0.3s var(--iv-ease) !important;
+}
+
+.pa-booking-v4 .pa-schedule-checklist-item.is-done {
+  border-color: var(--iv-ink) !important;
+  color: var(--iv-ink) !important;
+}
+
+/* ===================================================== FOCUS RINGS ===== */
+.pa-booking-v4 .pa-cal-day:focus-visible,
+.pa-booking-v4 .pa-service-option:focus-visible,
+.pa-booking-v4 .pa-time-card:focus-visible,
+.pa-booking-v4 .pa-event-pill:focus-visible,
+.pa-booking-v4 .pa-submit:focus-visible,
+.pa-booking-v4 .pa-btn:focus-visible,
+.pa-booking-v4 .pa-stepper-item:focus-visible {
+  outline: none !important;
+  box-shadow: 0 0 0 4px var(--iv-focus-ring) !important;
+}
+
+/* ========================================================= MOTION ===== */
+.pa-booking-v4 .pa-step-stage--fwd,
+.pa-booking-v4 .pa-step-stage--back {
+  animation-timing-function: var(--iv-ease) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pa-booking-v4 *,
+  .pa-booking-v4 *::before,
+  .pa-booking-v4 *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
+
+/* ============================================== BREATHING ROOM PASS ===== */
+/* Goal: nothing crowds an edge; every box has room; clear space between boxes. */
+
+/* White cards pop on the grey body */
+.pa-booking-v4 .pa-cal-pro .pa-cal-shell,
+.pa-booking-v4 .pa-time-card,
+.pa-booking-v4 .pa-service-option,
+.pa-booking-v4 .pa-addon-option {
+  box-shadow: var(--iv-shadow-1) !important;
+}
+
+/* Service options — balanced padding (was 1.3rem L / 3rem R) and roomier */
+.pa-booking-v4 .pa-service-option {
+  padding: 1.4rem 2.75rem 1.4rem 1.6rem !important;
+}
+
+/* Hints become quiet text, not nested boxes — removes box-in-box clutter */
+.pa-booking-v4 .pa-date-hint,
+.pa-booking-v4 .pa-time-hint,
+.pa-booking-v4 .pa-panel-hint {
+  background: transparent !important;
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 0 !important;
+  margin: 0.15rem 0 1rem !important;
+  color: var(--iv-secondary) !important;
+}
+
+/* Calendar — let the days breathe inside the card (shell provides side pad) */
+.pa-booking-v4 .pa-cal-pro .pa-cal-grid {
+  gap: 7px !important;
+  padding: 0.5rem 0 0 !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-header {
+  padding: 0 0 0.35rem !important;
+}
+
+/* —— Vertical rhythm: clear separation between stacked boxes —— */
+.pa-booking-v4 .pa-booking-sheet {
+  gap: clamp(1.6rem, 4.5vw, 2.25rem) !important;
+}
+
+.pa-booking-v4 .pa-form,
+.pa-booking-v4 .pa-form-grouped {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: clamp(1.1rem, 3.5vw, 1.5rem) !important;
+}
+
+.pa-booking-v4 .pa-form-grouped .pa-form-group {
+  margin: 0 !important;
+}
+
+.pa-booking-v4 .pa-form-group-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 1rem !important;
+}
+
+/* Space the big blocks on the details step apart */
+.pa-booking-v4 .pa-step .pa-whats-next,
+.pa-booking-v4 .pa-step .pa-form,
+.pa-booking-v4 .pa-step .pa-payment-schedule-card,
+.pa-booking-v4 .pa-step .pa-checkout,
+.pa-booking-v4 .pa-step .pa-terms-agreement {
+  margin-top: clamp(1.25rem, 4vw, 1.75rem) !important;
+}
+
+/* Add-on rows — roomier inner padding */
+.pa-booking-v4 .pa-addon-option {
+  padding: 1.1rem 1.25rem !important;
+}
+
+/* ========================================= LEFT INSET — text never hugs box edge ===== */
+/* Headings, hints, labels inside sections inherit section pad; these catch the rest. */
+
+.pa-booking-v4 .pa-section-title,
+.pa-booking-v4 .pa-section-hint,
+.pa-booking-v4 .pa-section-label,
+.pa-booking-v4 .pa-package-pricing-note {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.pa-booking-v4 .pa-date-hint,
+.pa-booking-v4 .pa-time-hint,
+.pa-booking-v4 .pa-panel-hint,
+.pa-booking-v4 .pa-step-hint {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.pa-booking-v4 .pa-service-selected,
+.pa-booking-v4 .pa-recap-bar,
+.pa-booking-v4 .pa-booking-recap,
+.pa-booking-v4 .pa-whats-next,
+.pa-booking-v4 .pa-deposit-preview,
+.pa-booking-v4 .pa-fast-banner,
+.pa-booking-v4 .pa-form-group,
+.pa-booking-v4 .pa-schedule-trust {
+  padding-left: var(--iv-box-pad) !important;
+  padding-right: var(--iv-box-pad) !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-meta,
+.pa-booking-v4 .pa-cal-pro .pa-cal-legend,
+.pa-booking-v4 .pa-cal-timezone,
+.pa-booking-v4 .pa-cal-footer {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.pa-booking-v4 .pa-cal-pro .pa-cal-header,
+.pa-booking-v4 .pa-cal-pro .pa-cal-grid {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.pa-booking-v4 .pa-service-option {
+  padding-left: var(--iv-box-pad) !important;
+  padding-right: calc(var(--iv-box-pad) + 1.25rem) !important;
+}
+
+.pa-booking-v4 .pa-field-label,
+.pa-booking-v4 .pa-form-group-title,
+.pa-booking-v4 .pa-form-group-hint,
+.pa-booking-v4 .pa-field-help {
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+}
+
+.pa-booking-v4 .pa-input,
+.pa-booking-v4 .pa-text-input,
+.pa-booking-v4 textarea.pa-text-input {
+  padding-left: 1rem !important;
+  padding-right: 1rem !important;
+}

@@ -25,6 +25,7 @@
   injectLegalFooter();
   polishFooterNav();
   applyGlassLayout();
+  removeBookingStatusLinks();
 
   if (document.body.classList.contains('home')) {
     buildHomeHero();
@@ -337,6 +338,12 @@
     nav.appendChild(li);
   }
 
+  function removeBookingStatusLinks() {
+    document.querySelectorAll('.pa-booking-status-link').forEach(function (el) {
+      el.remove();
+    });
+  }
+
   function labelPortfolioSection() {
     var gallery = document.querySelector('.entry-content .wp-block-gallery.alignfull');
     if (!gallery || document.getElementById('pa-portfolio-label')) {
@@ -345,6 +352,7 @@
     var label = document.createElement('div');
     label.id = 'pa-portfolio-label';
     label.className = 'pa-section-head pa-portfolio-head';
+    document.body.classList.add('pa-has-portfolio-head');
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-section-eyebrow';
     eyebrow.textContent = 'Selected work';

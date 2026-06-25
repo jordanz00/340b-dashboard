@@ -74,6 +74,8 @@ cd $REMOTE/assets
 put "$LOCAL/assets/pa-logo.png" -o pa-logo.png
 put "$LOCAL/assets/pa-logo-dark.png" -o pa-logo-dark.png
 put "$LOCAL/assets/pa-logo-white.png" -o pa-logo-white.png
+put "$LOCAL/assets/booking-ive.css" -o booking-ive.css
+put "$LOCAL/assets/site-ive.css" -o site-ive.css
 bye
 EOF
 
@@ -90,5 +92,7 @@ echo "Warming fresh HTML (mobile + desktop, cache bypass)..."
 curl -fsS -m 60 "https://pamedia.art/?nocache=1" -A "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)" -o /dev/null || true
 curl -fsS -m 60 "https://pamedia.art/?nocache=1" -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" -o /dev/null || true
 curl -fsS -m 60 "https://pamedia.art/" -A "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)" -o /dev/null || true
+curl -fsS -m 60 "https://pamedia.art/book/?nocache=1" -A "Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)" -o /dev/null || true
+curl -fsS -m 60 "https://pamedia.art/book/" -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7)" -o /dev/null || true
 
 echo "Done. If CSS/JS or logo still looks stale on phone: wp-admin → GoDaddy Quick Links → Flush Cache, then hard-refresh."

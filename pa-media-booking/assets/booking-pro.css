@@ -956,71 +956,18 @@
   margin-bottom: var(--pa-space-2);
 }
 
-/* —— Booking status page —— */
-.pa-booking-status-page .pa-status-form {
-  max-width: 420px;
-  margin: 0 auto var(--pa-space-8);
-  display: flex;
-  flex-direction: column;
-  gap: var(--pa-space-4);
-}
-
-.pa-booking-status-page .pa-status-result {
-  max-width: 480px;
-  margin: 0 auto var(--pa-space-8);
-  padding: var(--pa-space-5);
-  border-radius: var(--pa-radius-lg);
-  border: 1px solid var(--pa-color-border);
-  background: var(--pa-color-surface);
-}
-
-.pa-booking-status-page .pa-status-result--ok {
-  border-color: var(--pa-color-success);
-  background: var(--pa-color-success-bg);
-}
-
-.pa-booking-status-page .pa-status-result--error {
-  border-color: var(--pa-color-danger);
-  background: var(--pa-color-danger-bg);
-}
-
-.pa-booking-status-page .pa-status-badge {
-  margin: 0 0 var(--pa-space-4);
-  font-size: var(--pa-text-lg);
-  font-weight: 800;
-  color: var(--pa-color-ink);
-}
-
-.pa-booking-status-page .pa-status-dl {
-  margin: 0 0 var(--pa-space-4);
-  display: grid;
-  grid-template-columns: 7rem 1fr;
-  gap: var(--pa-space-2) var(--pa-space-3);
-  font-size: var(--pa-text-sm);
-}
-
-.pa-booking-status-page .pa-status-dl dt {
-  font-weight: 700;
-  color: var(--pa-color-subtle);
-}
-
-.pa-booking-status-page .pa-status-dl dd {
-  margin: 0;
-  color: var(--pa-color-ink);
-}
-
 .pa-booking-hero--compact {
   margin-bottom: var(--pa-space-6);
 }
 
-.pa-booking-premium .pa-booking-status-link {
-  margin: var(--pa-space-4) 0 0;
-  font-size: var(--pa-text-sm);
-}
-
-.pa-booking-premium .pa-booking-status-link a {
-  color: var(--pa-color-muted);
-  font-weight: 600;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+/* Trust strip — beat theme left-align inside booking funnel */
+body.pa-glass-site .pa-booking-root .pa-schedule-trust,
+body.wp-theme-gutenify-photography .pa-booking-root .pa-schedule-trust {
+  display: flex !important;
+  flex-wrap: wrap;
+  justify-content: center !important;
+  align-items: center;
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
 }

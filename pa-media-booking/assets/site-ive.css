@@ -1,0 +1,183 @@
+/**
+ * PA Media Arts — site-wide "Ive" polish layer.
+ *
+ * Brings the Apple/Jony Ive design language to the whole site chrome: calmer
+ * canvas, SF Pro typography, refined section heads, pill CTAs, smoother motion.
+ * Loads LAST (after glass.css) and is scoped to the theme/glass body classes so
+ * it harmonises with the existing liquid-glass system without rebuilding it.
+ */
+
+/* ============================================================= TOKENS ===== */
+body.wp-theme-gutenify-photography,
+body.pa-glass-site {
+  --iv-site-ink: #1d1d1f;
+  --iv-site-secondary: #6e6e73;
+  --iv-site-tertiary: #86868b;
+  --iv-site-hairline: #d2d2d7;
+  --iv-site-canvas: #f5f5f7;
+  --iv-site-accent: #0071e3;
+  --iv-ease: cubic-bezier(0.28, 0.11, 0.32, 1);
+
+  /* Refine shared tokens toward the Apple palette */
+  --pa-site-ink: #1d1d1f;
+  --pa-site-muted: #6e6e73;
+  --pa-site-accent: #1d1d1f;
+  --pa-site-radius: 20px;
+}
+
+/* ========================================================= TYPOGRAPHY ===== */
+body.wp-theme-gutenify-photography,
+body.pa-glass-site {
+  font-family: "SF Pro Display", "SF Pro Text", -apple-system, BlinkMacSystemFont,
+    "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  letter-spacing: -0.011em;
+  color: var(--iv-site-ink);
+}
+
+/* Calmer, lighter canvas — quiet the coloured noise */
+body.wp-theme-gutenify-photography,
+body.pa-glass-site {
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -10%, #ffffff, transparent 55%),
+    linear-gradient(180deg, #fafafa 0%, var(--iv-site-canvas) 60%, #f0f0f2 100%) !important;
+}
+
+body.wp-theme-gutenify-photography::before,
+body.pa-glass-site::before {
+  opacity: 0.35 !important;
+}
+
+/* Headings — Apple display weight + tight tracking (booking funnel excluded) */
+body.wp-theme-gutenify-photography h1:not(.pa-booking-title),
+body.pa-glass-site h1:not(.pa-booking-title),
+body.wp-theme-gutenify-photography h2,
+body.pa-glass-site h2,
+body.wp-theme-gutenify-photography h3,
+body.pa-glass-site h3 {
+  letter-spacing: -0.022em !important;
+  font-weight: 700 !important;
+}
+
+/* ============================================================== HERO ===== */
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-eyebrow,
+body.home.pa-glass-site .pa-home-hero .pa-hero-eyebrow {
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: var(--iv-site-tertiary) !important;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-title,
+body.home.pa-glass-site .pa-home-hero .pa-hero-title {
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.04 !important;
+}
+
+body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-lead,
+body.home.pa-glass-site .pa-home-hero .pa-hero-lead {
+  font-weight: 400 !important;
+  letter-spacing: -0.01em !important;
+  line-height: 1.5 !important;
+  color: var(--iv-site-secondary) !important;
+}
+
+/* ====================================================== SECTION HEADS ===== */
+body.wp-theme-gutenify-photography .pa-section-eyebrow,
+body.pa-glass-site .pa-section-eyebrow,
+body.wp-theme-gutenify-photography .pa-services-eyebrow,
+body.pa-glass-site .pa-services-eyebrow,
+body.wp-theme-gutenify-photography .pa-services-offerings-eyebrow,
+body.pa-glass-site .pa-services-offerings-eyebrow {
+  font-weight: 600 !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  color: var(--iv-site-tertiary) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-section-title,
+body.pa-glass-site .pa-section-title,
+body.wp-theme-gutenify-photography .pa-services-title,
+body.pa-glass-site .pa-services-title {
+  font-weight: 700 !important;
+  letter-spacing: -0.025em !important;
+  color: var(--iv-site-ink) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-services-lead,
+body.pa-glass-site .pa-services-lead,
+body.wp-theme-gutenify-photography .pa-services-offerings-lead,
+body.pa-glass-site .pa-services-offerings-lead {
+  font-weight: 400 !important;
+  color: var(--iv-site-secondary) !important;
+  line-height: 1.5 !important;
+}
+
+/* =========================================================== CTAs ===== */
+body.wp-theme-gutenify-photography .pa-hero-btn-primary,
+body.pa-glass-site .pa-hero-btn-primary,
+body.wp-theme-gutenify-photography .pa-booking-cta-primary,
+body.pa-glass-site .pa-booking-cta-primary,
+body.wp-theme-gutenify-photography .pa-services-book-btn,
+body.pa-glass-site .pa-services-book-btn,
+body.wp-theme-gutenify-photography .pa-footer-book-cta,
+body.pa-glass-site .pa-footer-book-cta {
+  border-radius: 980px !important;
+  background: var(--iv-site-ink) !important;
+  color: #fff !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  border: none !important;
+  box-shadow: none !important;
+  transition: background 0.3s var(--iv-ease), transform 0.18s var(--iv-ease),
+    box-shadow 0.3s var(--iv-ease) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-hero-btn-primary:hover,
+body.pa-glass-site .pa-hero-btn-primary:hover,
+body.wp-theme-gutenify-photography .pa-booking-cta-primary:hover,
+body.pa-glass-site .pa-booking-cta-primary:hover,
+body.wp-theme-gutenify-photography .pa-services-book-btn:hover,
+body.pa-glass-site .pa-services-book-btn:hover,
+body.wp-theme-gutenify-photography .pa-footer-book-cta:hover,
+body.pa-glass-site .pa-footer-book-cta:hover {
+  background: #000 !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16) !important;
+}
+
+body.wp-theme-gutenify-photography .pa-hero-btn-secondary,
+body.pa-glass-site .pa-hero-btn-secondary {
+  border-radius: 980px !important;
+  font-weight: 500 !important;
+  letter-spacing: -0.01em !important;
+  transition: all 0.3s var(--iv-ease) !important;
+}
+
+/* ====================================================== NAV / MOTION ===== */
+body.wp-theme-gutenify-photography header.pa-site-header .pa-site-nav-pill,
+body.pa-glass-site header.pa-site-header .pa-site-nav-pill {
+  border-radius: 980px !important;
+  letter-spacing: -0.01em !important;
+  transition: background 0.3s var(--iv-ease), color 0.3s var(--iv-ease),
+    box-shadow 0.3s var(--iv-ease), transform 0.18s var(--iv-ease) !important;
+}
+
+/* Continuous-corner radius on glass cards/surfaces */
+body.wp-theme-gutenify-photography .pa-services-card,
+body.pa-glass-site .pa-services-card,
+body.wp-theme-gutenify-photography .pa-services-book,
+body.pa-glass-site .pa-services-book {
+  border-radius: var(--pa-site-radius) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.wp-theme-gutenify-photography *,
+  body.pa-glass-site * {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
