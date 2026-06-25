@@ -54,10 +54,10 @@ class PA_Booking_Frontend {
     }
 
     /**
-     * Best available wide share image: plugin lockup (not legacy theme cover photo).
+     * Best available share image: full square PAMA mark (favicon asset).
      */
     public static function og_image_url() {
-        return self::logo_dark_url();
+        return self::logo_url();
     }
 
     /**
@@ -391,7 +391,7 @@ class PA_Booking_Frontend {
         $logo = esc_url(self::logo_url());
         $dark = esc_url(self::logo_dark_url());
         echo '<link rel="icon" href="' . $logo . '" sizes="any">' . "\n";
-        echo '<link rel="apple-touch-icon" href="' . $dark . '">' . "\n";
+        echo '<link rel="apple-touch-icon" href="' . $logo . '">' . "\n";
         echo '<link rel="preload" as="image" href="' . $dark . '">' . "\n";
     }
 
@@ -566,20 +566,21 @@ class PA_Booking_Frontend {
                 <p class="pa-booking-loading">Loading…</p>
             </div>
 
+            <div class="pa-booking-supplement">
             <ol class="pa-how-it-works" aria-label="How booking works">
-                <li><strong>Choose package</strong><span class="pa-how-step-detail">Select photo, video, audio, or DJ coverage</span></li>
-                <li><strong>Pick a date</strong><span class="pa-how-step-detail">Live calendar — deposit holds your slot</span></li>
-                <li><strong>Confirm</strong><span class="pa-how-step-detail"><?php echo $payments ? 'Sign off on policies & pay deposit' : 'Submit — we confirm within one business day'; ?></span></li>
+                <li><strong>Choose package</strong><span class="pa-how-step-detail">Photo, video, audio, or DJ</span></li>
+                <li><strong>Pick a date</strong><span class="pa-how-step-detail">Live calendar · deposit holds your slot</span></li>
+                <li><strong>Confirm</strong><span class="pa-how-step-detail"><?php echo $payments ? 'Policies & deposit' : 'Submit for confirmation'; ?></span></li>
             </ol>
 
             <section class="pa-booking-faq" aria-labelledby="pa-booking-faq-title">
                 <h3 id="pa-booking-faq-title" class="pa-booking-faq-title">Frequently asked questions</h3>
                 <div class="pa-booking-faq-list">
                     <?php foreach (PA_Booking_Service_Catalog::faq_items() as $item) : ?>
-                    <details class="pa-faq-item">
-                        <summary><?php echo esc_html($item['q']); ?></summary>
-                        <p><?php echo esc_html($item['a']); ?></p>
-                    </details>
+                    <div class="pa-faq-item">
+                        <p class="pa-faq-q"><?php echo esc_html($item['q']); ?></p>
+                        <p class="pa-faq-a"><?php echo esc_html($item['a']); ?></p>
+                    </div>
                     <?php endforeach; ?>
                 </div>
             </section>
@@ -596,8 +597,8 @@ class PA_Booking_Frontend {
                 </ol>
             </section>
 
-            <details class="pa-booking-policies pa-policies-details" id="pa-booking-policies">
-                <summary class="pa-policies-title">Policies</summary>
+            <section class="pa-booking-policies" id="pa-booking-policies" aria-labelledby="pa-booking-policies-title">
+                <h3 id="pa-booking-policies-title" class="pa-policies-title">Policies</h3>
                 <div class="pa-policies-grid">
                     <div class="pa-policy-card">
                         <h4>Deposit</h4>
@@ -612,7 +613,8 @@ class PA_Booking_Frontend {
                         <p><?php echo esc_html($s['policy_travel'] ?? ''); ?></p>
                     </div>
                 </div>
-            </details>
+            </section>
+            </div>
         </div>
 
         <div class="pa-booking-sticky" aria-label="Quick book" hidden>

@@ -26,10 +26,18 @@ BRAND  = ASSETS / "brand"
 SOCIAL = BRAND / "social"
 SOURCE = ASSETS / "pama-brand-source.png"
 
-BG_THRESHOLD = 40
+BG_THRESHOLD = 32
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 INK   = (17, 17, 17)
+
+
+def _lum(r: int, g: int, b: int) -> float:
+    return (r + g + b) / 3.0
+
+
+def _is_background(r: int, g: int, b: int) -> bool:
+    return _lum(r, g, b) <= BG_THRESHOLD
 
 
 def _load() -> Image.Image:
@@ -57,9 +65,10 @@ def _mark_white_transparent(src: Image.Image) -> Image.Image:
     for y in range(src.height):
         for x in range(src.width):
             r, g, b, _ = px[x, y]
-            lum = (r + g + b) / 3
-            if lum > BG_THRESHOLD:
-                opx[x, y] = (255, 255, 255, min(255, int(lum)))
+            if _is_background(r, g, b):
+                continue
+            strength = 255 if _lum(r, g, b) > 200 else 235
+            opx[x, y] = (255, 255, 255, strength)
     return _trim(out)
 
 
@@ -69,9 +78,12 @@ def _mark_dark_transparent(src: Image.Image) -> Image.Image:
     for y in range(src.height):
         for x in range(src.width):
             r, g, b, _ = px[x, y]
-            lum = (r + g + b) / 3
-            if lum > BG_THRESHOLD:
-                opx[x, y] = (*INK, min(255, int(lum)))
+            if _is_background(r, g, b):
+                continue
+            if _lum(r, g, b) > 200:
+                opx[x, y] = (255, 255, 255, 255)
+            else:
+                opx[x, y] = (*INK, 255)
     return _trim(out)
 
 

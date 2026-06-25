@@ -193,27 +193,27 @@ class PA_Booking_Service_Catalog {
         return array(
             array(
                 'q' => 'What does the deposit do?',
-                'a' => ($s['policy_deposit'] ?? '') ?: ('Your $' . $deposit . ' deposit reserves your date on our calendar and applies toward your final balance.'),
+                'a' => ($s['policy_deposit'] ?? '') ?: ('Your $' . $deposit . ' deposit holds your date and applies toward your balance.'),
             ),
             array(
                 'q' => 'When is the remaining balance due?',
-                'a' => 'After we confirm your booking, we send a quote for the full package. The remaining balance is typically due before your event date — we confirm exact terms in writing.',
+                'a' => 'Before your event date — we confirm the schedule in writing after booking.',
             ),
             array(
                 'q' => 'How fast will I hear back?',
-                'a' => 'We personally confirm every booking within one business day. You receive email confirmation with next steps and a pre-production call invite.',
+                'a' => 'Within one business day by email with next steps.',
             ),
             array(
                 'q' => 'Can I book multiple days?',
-                'a' => 'Yes. Select each day on the calendar (up to 14 days online). For longer productions, contact us for a custom quote.',
+                'a' => 'Yes. Select up to 14 days online; contact us for longer productions.',
             ),
             array(
                 'q' => 'Do you travel outside Central PA?',
-                'a' => ($s['policy_travel'] ?? '') ?: 'We cover Central Pennsylvania by default. Travel beyond that may include a mileage fee — quoted before you pay the final balance.',
+                'a' => ($s['policy_travel'] ?? '') ?: 'Central PA is included. Travel beyond may include a mileage fee, quoted in advance.',
             ),
             array(
                 'q' => 'What if I need to cancel?',
-                'a' => ($s['policy_cancel'] ?? '') ?: 'Cancellation terms are outlined in your booking confirmation. Contact us as soon as possible if your plans change.',
+                'a' => ($s['policy_cancel'] ?? '') ?: 'Contact us as soon as possible. Refund terms are confirmed in writing.',
             ),
         );
     }
@@ -227,19 +227,19 @@ class PA_Booking_Service_Catalog {
         return array(
             array(
                 'title' => 'Confirmation email',
-                'body'  => 'Within one business day you receive a personal confirmation with your held date, package summary, and point of contact.',
+                'body'  => 'Personal confirmation within one business day.',
             ),
             array(
                 'title' => 'Pre-production call',
-                'body'  => 'We schedule a short call to walk through timeline, shot list, audio needs, venue access, and deliverable expectations.',
+                'body'  => 'Short call for timeline, venue access, and deliverables.',
             ),
             array(
                 'title' => 'Final balance & contract',
-                'body'  => 'You receive a written quote for the remaining balance. Payment schedule and any travel fees are confirmed before your event.',
+                'body'  => 'Written quote and payment schedule before your event.',
             ),
             array(
                 'title' => 'Event day',
-                'body'  => 'Our crew arrives per your agreed time window with gear prepped for your venue. You focus on the event — we handle capture.',
+                'body'  => 'Crew arrives on schedule — you focus on the event.',
             ),
         );
     }

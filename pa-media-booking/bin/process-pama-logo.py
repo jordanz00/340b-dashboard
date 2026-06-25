@@ -2,11 +2,11 @@
 """
 Process the official PAMA brand mark into site assets.
 
-Source : assets/pama-brand-source.png  (1024×1024, white on black)
+Source : assets/pama-brand-source.png  (1024x1024, white PA shape + black text on black field)
 Outputs:
   pa-logo.png        — square mark, black field (favicon / WP site icon)
-  pa-logo-white.png  — white on transparent (footer, dark surfaces)
-  pa-logo-dark.png   — dark on transparent (header, light surfaces)
+  pa-logo-white.png  — white monochrome on transparent (footer, dark surfaces)
+  pa-logo-dark.png   — full-color on transparent (header, light surfaces)
 
 Run:  python3 bin/process-pama-logo.py
 """
@@ -15,18 +15,22 @@ from __future__ import annotations
 from pathlib import Path
 from PIL import Image
 
-ROOT   = Path(__file__).resolve().parents[1]
+ROOT = Path(__file__).resolve().parents[1]
 ASSETS = ROOT / "assets"
 SOURCE = ASSETS / "pama-brand-source.png"
 
-# Pixels darker than this are treated as background.
-_BG_THRESHOLD = 40
+# Pixels at or below this luminance are treated as the outer black field.
+_BG_THRESHOLD = 32
 
 
 def _load_rgba() -> Image.Image:
     if not SOURCE.exists():
         raise FileNotFoundError(f"Place source at {SOURCE}")
     return Image.open(SOURCE).convert("RGBA")
+
+
+def _lum(r: int, g: int, b: int) -> float:
+    return (r + g + b) / 3.0
 
 
 def _trim(img: Image.Image, pad: int = 8) -> Image.Image:
@@ -41,37 +45,44 @@ def _trim(img: Image.Image, pad: int = 8) -> Image.Image:
     return img.crop((
         max(0, x0 - pad),
         max(0, y0 - pad),
-        min(img.width,  x1 + pad),
+        min(img.width, x1 + pad),
         min(img.height, y1 + pad),
     ))
 
 
-def _white_on_transparent(src: Image.Image) -> Image.Image:
-    """Keep light pixels; drop dark background."""
-    px = src.load()
-    out = Image.new("RGBA", src.size, (0, 0, 0, 0))
-    opx = out.load()
-    for y in range(src.height):
-        for x in range(src.width):
-            r, g, b, a = px[x, y]
-            lum = (r + g + b) / 3
-            if lum > _BG_THRESHOLD:
-                opx[x, y] = (255, 255, 255, min(255, int((lum / 255) * 255)))
-    return _trim(out, pad=12)
+def _is_background(r: int, g: int, b: int) -> bool:
+    return _lum(r, g, b) <= _BG_THRESHOLD
 
 
 def _dark_on_transparent(src: Image.Image) -> Image.Image:
-    """Invert light pixels to near-black; drop dark background."""
+    """Keep white state + black wordmark; drop outer black field."""
     px = src.load()
     out = Image.new("RGBA", src.size, (0, 0, 0, 0))
     opx = out.load()
     for y in range(src.height):
         for x in range(src.width):
-            r, g, b, a = px[x, y]
-            lum = (r + g + b) / 3
-            if lum > _BG_THRESHOLD:
-                strength = min(255, int((lum / 255) * 255))
-                opx[x, y] = (17, 17, 17, strength)
+            r, g, b, _a = px[x, y]
+            if _is_background(r, g, b):
+                continue
+            if _lum(r, g, b) > 200:
+                opx[x, y] = (255, 255, 255, 255)
+            else:
+                opx[x, y] = (17, 17, 17, 255)
+    return _trim(out, pad=12)
+
+
+def _white_on_transparent(src: Image.Image) -> Image.Image:
+    """Monochrome white mark for dark footer surfaces."""
+    px = src.load()
+    out = Image.new("RGBA", src.size, (0, 0, 0, 0))
+    opx = out.load()
+    for y in range(src.height):
+        for x in range(src.width):
+            r, g, b, _a = px[x, y]
+            if _is_background(r, g, b):
+                continue
+            strength = 255 if _lum(r, g, b) > 200 else 235
+            opx[x, y] = (255, 255, 255, strength)
     return _trim(out, pad=12)
 
 
@@ -83,15 +94,15 @@ def _square_icon(src: Image.Image, size: int = 512) -> Image.Image:
 def _save(img: Image.Image, path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     img.save(path, "PNG", optimize=True)
-    print(f"  Wrote {path.name}  ({path.stat().st_size // 1024} KB, {img.size[0]}×{img.size[1]})")
+    print(f"  Wrote {path.name}  ({path.stat().st_size // 1024} KB, {img.size[0]}x{img.size[1]})")
 
 
 def main() -> None:
     print(f"Processing {SOURCE.name}...")
     src = _load_rgba()
-    _save(_square_icon(src),           ASSETS / "pa-logo.png")
-    _save(_white_on_transparent(src),  ASSETS / "pa-logo-white.png")
-    _save(_dark_on_transparent(src),   ASSETS / "pa-logo-dark.png")
+    _save(_square_icon(src), ASSETS / "pa-logo.png")
+    _save(_white_on_transparent(src), ASSETS / "pa-logo-white.png")
+    _save(_dark_on_transparent(src), ASSETS / "pa-logo-dark.png")
     print("Done.")
 
 

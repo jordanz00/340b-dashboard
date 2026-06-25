@@ -9,6 +9,9 @@ if (!defined('ABSPATH')) {
 }
 
 class PA_Booking_Emails {
+    /** @var string|null Plain-text alternative while sending branded HTML mail. */
+    private static $alt_body = null;
+
     public static function artist_name() {
         $s = PA_Booking::get_settings();
         return !empty($s['artist_name']) ? $s['artist_name'] : 'Pennsylvania Media Arts LLC';
@@ -22,7 +25,27 @@ class PA_Booking_Emails {
     public static function signature() {
         $name = self::artist_name();
         $email = self::notify_email();
-        return "\n\n— {$name}\n{$email}\nhttps://pamedia.art";
+        return "\n\n-- {$name}\n{$email}\nhttps://pamedia.art";
+    }
+
+    /**
+     * Normalise subject lines: ASCII dash only (avoids broken MIME encoded-words).
+     */
+    public static function subject_line($text) {
+        $text = str_replace(array("\u{2014}", "\u{2013}", '—', '–'), ' - ', $text);
+        return preg_replace('/\s+/', ' ', trim($text));
+    }
+
+    /**
+     * Ensure UTF-8 and, for branded mail, set HTML body + plain AltBody via PHPMailer.
+     * Do not hand-build multipart bodies — wp_mail will QP-encode them and corrupt HTML.
+     */
+    public static function configure_mailer($phpmailer) {
+        $phpmailer->CharSet = 'UTF-8';
+        if (self::$alt_body !== null) {
+            $phpmailer->isHTML(true);
+            $phpmailer->AltBody = self::$alt_body;
+        }
     }
 
     /**
@@ -32,12 +55,17 @@ class PA_Booking_Emails {
         if (!is_email($to)) {
             return false;
         }
-        wp_mail($to, $subject, rtrim($body) . self::signature());
-        return true;
+
+        self::$alt_body = null;
+        add_action('phpmailer_init', array(__CLASS__, 'configure_mailer'), 10, 1);
+        $sent = wp_mail($to, self::subject_line($subject), rtrim($body) . self::signature());
+        remove_action('phpmailer_init', array(__CLASS__, 'configure_mailer'), 10, 1);
+
+        return $sent;
     }
 
     /**
-     * Multipart plain + HTML for customers.
+     * HTML + plain-text alternative for customers (PHPMailer builds multipart).
      *
      * @param string $html_inner Safe HTML for the email body (no html/head tags).
      */
@@ -46,24 +74,15 @@ class PA_Booking_Emails {
             return false;
         }
 
-        $plain = rtrim($plain_body) . self::signature();
-        $html  = self::wrap_html($html_inner);
-        $boundary = 'pa_' . wp_generate_password(16, false);
+        self::$alt_body = rtrim($plain_body) . self::signature();
+        $html = self::wrap_html($html_inner);
 
-        $headers = array(
-            'Content-Type: multipart/alternative; boundary="' . $boundary . '"',
-        );
+        add_action('phpmailer_init', array(__CLASS__, 'configure_mailer'), 10, 1);
+        $sent = wp_mail($to, self::subject_line($subject), $html);
+        remove_action('phpmailer_init', array(__CLASS__, 'configure_mailer'), 10, 1);
+        self::$alt_body = null;
 
-        $message  = "--{$boundary}\r\n";
-        $message .= "Content-Type: text/plain; charset=UTF-8\r\n\r\n";
-        $message .= $plain . "\r\n\r\n";
-        $message .= "--{$boundary}\r\n";
-        $message .= "Content-Type: text/html; charset=UTF-8\r\n\r\n";
-        $message .= $html . "\r\n\r\n";
-        $message .= "--{$boundary}--";
-
-        wp_mail($to, $subject, $message, $headers);
-        return true;
+        return $sent;
     }
 
     /**
@@ -80,7 +99,7 @@ class PA_Booking_Emails {
             . '<tr><td style="padding:28px 28px 8px;font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:#525252;">' . $name . '</td></tr>'
             . '<tr><td style="padding:8px 28px 28px;font-size:16px;line-height:1.6;color:#0f0f0f;">' . $inner . '</td></tr>'
             . '<tr><td style="padding:16px 28px;background:#fafaf9;border-top:1px solid #ececea;font-size:12px;color:#737373;line-height:1.5;">'
-            . esc_html(self::notify_email()) . ' · <a href="https://pamedia.art" style="color:#525252;">pamedia.art</a><br>© ' . $year . ' Pennsylvania Media Arts LLC'
+            . esc_html(self::notify_email()) . ' &middot; <a href="https://pamedia.art" style="color:#525252;">pamedia.art</a><br>&copy; ' . $year . ' Pennsylvania Media Arts LLC'
             . '</td></tr></table></td></tr></table></body></html>';
     }
 
@@ -101,7 +120,7 @@ class PA_Booking_Emails {
         $dates_label   = PA_Booking::format_dates_label($event_dates);
         $artist        = self::artist_name();
 
-        $subject = $artist . ' — We received your booking request';
+        $subject = $artist . ' - We received your booking request';
 
         $plain  = "Hi {$name},\n\n";
         $plain .= $awaiting_payment
@@ -162,7 +181,7 @@ class PA_Booking_Emails {
         }
         $deposit = number_format($deposit_cents / 100, 2);
 
-        $subject = $artist . ' — Deposit received for ' . $dates_label;
+        $subject = $artist . ' - Deposit received for ' . $dates_label;
 
         $plain  = "Hi {$name},\n\n";
         $plain .= "Your \${$deposit} deposit for {$service} on {$dates_label} is confirmed. Your date is reserved while we finalize details.\n\n";
@@ -211,8 +230,8 @@ class PA_Booking_Emails {
         $approved    = $status === 'approved';
 
         $subject = $approved
-            ? $artist . ' — Your date is confirmed'
-            : $artist . ' — Booking update';
+            ? $artist . ' - Your date is confirmed'
+            : $artist . ' - Booking update';
 
         if ($approved) {
             $plain = "Hi {$name},\n\nGreat news — your booking for {$service} on {$dates_label} is confirmed.\n\n"

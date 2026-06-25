@@ -109,9 +109,9 @@ class PA_Booking {
             'success_page'   => 0,
             'services'       => "Event Photography\nVideo Production\nLive Audio / PA\nDJ Services\nPhoto + Video Bundle",
             'min_lead_hours' => 48,
-            'policy_deposit' => 'Your deposit holds your date on the calendar and applies toward your final balance.',
-            'policy_cancel'  => 'If we cannot accommodate your request, your deposit is refunded. Cancellations within 14 days of your event may forfeit the deposit — we will confirm in writing.',
-            'policy_travel'  => 'Travel outside Central PA may include a mileage fee — we will quote before you pay the remaining balance.',
+            'policy_deposit' => 'Your deposit holds your date and applies toward your final balance.',
+            'policy_cancel'  => 'Refunded if we cannot accommodate your request. Cancellations within 14 days of your event may forfeit the deposit — confirmed in writing.',
+            'policy_travel'  => 'Central PA included. Travel beyond may include a mileage fee, quoted before final payment.',
             'about_paragraphs' => array(),
             'deposit_payments_enabled' => true,
             'paylink_url'            => PA_Booking_Payments::DEFAULT_PAYLINK,
@@ -137,6 +137,33 @@ class PA_Booking {
                 update_option(self::OPTION_SETTINGS, array_merge($defaults, $saved, array('phone' => '')));
             }
         }
+
+        // One-time refresh: replace legacy verbose policy copy saved in wp-admin.
+        $policy_migrations = array(
+            'policy_deposit' => array(
+                'Your deposit holds your date on the calendar and applies toward your final balance.',
+            ),
+            'policy_cancel'  => array(
+                'If we cannot accommodate your request, your deposit is refunded. Cancellations within 14 days of your event may forfeit the deposit — we will confirm in writing.',
+                'If we cannot accommodate your request, your deposit is refunded. Cancellations within 14 days of your event may forfeit the deposit - we will confirm in writing.',
+            ),
+            'policy_travel'  => array(
+                'Travel outside Central PA may include a mileage fee — we will quote before you pay the remaining balance.',
+                'Travel outside Central PA may include a mileage fee - we will quote before you pay the remaining balance.',
+            ),
+        );
+        $policy_dirty = false;
+        foreach ($policy_migrations as $key => $legacy_values) {
+            if (!empty($saved[$key]) && in_array($saved[$key], $legacy_values, true)) {
+                $merged[$key] = $defaults[$key];
+                $saved[$key] = $defaults[$key];
+                $policy_dirty = true;
+            }
+        }
+        if ($policy_dirty) {
+            update_option(self::OPTION_SETTINGS, array_merge($defaults, $saved));
+        }
+
         if (defined('PA_BOOKING_STRIPE_PK') && PA_BOOKING_STRIPE_PK) {
             $merged['stripe_pk'] = PA_BOOKING_STRIPE_PK;
         }
