@@ -40,7 +40,10 @@ class PA_Booking_Admin {
             'Email'         => get_post_meta($id, 'customer_email', true),
             'Phone'         => get_post_meta($id, 'customer_phone', true),
             'Guests'        => get_post_meta($id, 'guest_count', true),
-            'Deposit'       => '$' . number_format(((int) get_post_meta($id, 'deposit_cents', true)) / 100, 2),
+            'Deposit (due)' => '$' . number_format(((int) get_post_meta($id, 'deposit_cents', true)) / 100, 2),
+            'Payment'       => PA_Booking::booking_deposit_confirmed($id)
+                ? 'Deposit collected'
+                : ((get_post_meta($id, 'status', true) === 'pending_payment') ? 'Awaiting deposit' : 'No deposit recorded'),
             'Estimate'      => get_post_meta($id, 'estimate_cents', true) ? '$' . number_format(((int) get_post_meta($id, 'estimate_cents', true)) / 100, 2) : '',
             'Timeline'      => get_post_meta($id, 'timeline_notes', true),
             'Venue access'  => get_post_meta($id, 'venue_access', true),
@@ -131,6 +134,7 @@ class PA_Booking_Admin {
                 'services'      => sanitize_textarea_field(wp_unslash($_POST['services'] ?? '')),
                 'deposit_payments_enabled' => !empty($_POST['deposit_payments_enabled']),
                 'paylink_url'              => esc_url_raw(trim(wp_unslash($_POST['paylink_url'] ?? ''))),
+                'ga4_measurement_id'       => sanitize_text_field(wp_unslash($_POST['ga4_measurement_id'] ?? '')),
             );
             $tier_urls = array();
             for ($tier_days = 2; $tier_days <= 5; $tier_days++) {
@@ -192,10 +196,16 @@ class PA_Booking_Admin {
         if (isset($_GET['pa_booking_action'], $_GET['booking_id'], $_GET['_wpnonce']) && wp_verify_nonce(sanitize_text_field(wp_unslash($_GET['_wpnonce'])), 'pa_booking_status')) {
             $id = absint($_GET['booking_id']);
             $action = sanitize_text_field(wp_unslash($_GET['pa_booking_action']));
-            if ($id && in_array($action, array('approve', 'reject'), true)) {
-                $status = $action === 'approve' ? 'approved' : 'rejected';
-                update_post_meta($id, 'status', $status);
-                $this->notify_customer_status($id, $status);
+            if ($id && in_array($action, array('approve', 'reject', 'clear_deposit', 'confirm_deposit'), true)) {
+                if ($action === 'clear_deposit') {
+                    PA_Booking::clear_deposit_record($id);
+                } elseif ($action === 'confirm_deposit') {
+                    PA_Booking::admin_confirm_deposit($id);
+                } else {
+                    $status = $action === 'approve' ? 'approved' : 'rejected';
+                    update_post_meta($id, 'status', $status);
+                    $this->notify_customer_status($id, $status);
+                }
             }
             wp_safe_redirect(admin_url('admin.php?page=pa-booking'));
             exit;
@@ -246,6 +256,26 @@ class PA_Booking_Admin {
         fclose($out);
     }
 
+    /**
+     * GoDaddy Pay Link workflow — standalone links cannot redirect back to the site.
+     */
+    private static function render_paylink_sop_notice() {
+        if (PA_Booking_Payments::provider() !== 'paylink') {
+            return;
+        }
+        echo '<div class="notice notice-info inline pa-paylink-sop" style="padding:14px 18px;margin:1em 0;max-width:920px;">';
+        echo '<p style="margin:0 0 10px;"><strong>Pay Link deposit workflow</strong> (standalone GoDaddy links cannot redirect customers back)</p>';
+        echo '<ol style="margin:0 0 0 1.2em;line-height:1.55;">';
+        echo '<li>Customer submits booking → status <strong>awaiting deposit</strong> → GoDaddy checkout opens in a new tab.</li>';
+        echo '<li>You receive an email alert. Match <strong>name, email, and event date</strong> in GoDaddy Payments.</li>';
+        echo '<li>When the charge appears, click <strong>Deposit received in GoDaddy</strong> on that row.</li>';
+        echo '<li>Then click <strong>Approve</strong> to confirm the gig and hold the calendar date.</li>';
+        echo '<li>If no payment arrived, click <strong>Reject</strong> or <strong>Deposit not received</strong>.</li>';
+        echo '</ol>';
+        echo '<p style="margin:10px 0 0;" class="description"><strong>Deposits collected</strong> only increases after step 3. Opening checkout without paying never counts.</p>';
+        echo '</div>';
+    }
+
     public function render_dashboard() {
         $bookings = get_posts(
             array(
@@ -258,6 +288,7 @@ class PA_Booking_Admin {
         );
         settings_errors('pa_booking');
         $pending = PA_Booking::count_pending_approval();
+        $awaiting_pay = PA_Booking::count_pending_payment();
         $approved = count(
             get_posts(
                 array(
@@ -275,13 +306,16 @@ class PA_Booking_Admin {
         $export_url = wp_nonce_url(admin_url('admin.php?page=pa-booking&pa_export=csv'), 'pa_booking_export');
         echo '<div class="wrap pa-booking-admin"><h1>Booking Requests</h1>';
         echo '<div class="pa-dash-stats">';
-        echo '<div class="pa-stat"><span class="pa-stat-num">' . (int) $pending . '</span><span class="pa-stat-label">Awaiting approval</span></div>';
+        echo '<div class="pa-stat"><span class="pa-stat-num">' . (int) $pending . '</span><span class="pa-stat-label">Deposit paid — awaiting approval</span></div>';
+        echo '<div class="pa-stat"><span class="pa-stat-num">' . (int) $awaiting_pay . '</span><span class="pa-stat-label">Awaiting deposit</span></div>';
         echo '<div class="pa-stat"><span class="pa-stat-num">' . (int) $approved . '</span><span class="pa-stat-label">Confirmed gigs</span></div>';
-        echo '<div class="pa-stat"><span class="pa-stat-num">$' . esc_html(number_format($deposits / 100, 0)) . '</span><span class="pa-stat-label">Deposits collected</span></div>';
+        echo '<div class="pa-stat"><span class="pa-stat-num">$' . esc_html(number_format($deposits / 100, 0)) . '</span><span class="pa-stat-label">Deposits collected (verified)</span></div>';
         echo '</div>';
         echo '<p class="pa-dash-actions"><a class="button" href="' . esc_url(admin_url('admin.php?page=pa-booking-dates')) . '">Calendar &amp; block dates</a> ';
         echo '<a class="button" href="' . esc_url($export_url) . '">Export CSV</a></p>';
-        echo '<p>Deposit-paid requests appear as <strong>pending approval</strong>. Approve after you verify the gig — only then does the date grey out on the public calendar.</p>';
+        self::render_paylink_sop_notice();
+        echo '<p><strong>Deposits collected</strong> only includes bookings you verified in GoDaddy Payments (or Stripe). For Pay Link bookings, click <strong>Deposit received in GoDaddy</strong> after you see the charge.</p>';
+        echo '<p>Approve only after deposit is verified. Standalone GoDaddy Pay Links cannot redirect customers back — admin verification is required.</p>';
         if (!$bookings) {
             echo '<p>No requests yet.</p></div>';
             return;
@@ -290,7 +324,14 @@ class PA_Booking_Admin {
         foreach ($bookings as $b) {
             $dates_label = esc_html(PA_Booking::format_dates_label(PA_Booking::get_booking_event_dates($b->ID)));
             $deposit_cents = (int) get_post_meta($b->ID, 'deposit_cents', true);
-            $deposit_display = $deposit_cents >= 50 ? '$' . number_format($deposit_cents / 100, 2) : '—';
+            $deposit_confirmed = PA_Booking::booking_deposit_confirmed($b->ID);
+            if ($deposit_cents >= 50) {
+                $deposit_display = $deposit_confirmed
+                    ? 'Collected: $' . number_format($deposit_cents / 100, 2)
+                    : 'Due: $' . number_format($deposit_cents / 100, 2) . ' (not paid)';
+            } else {
+                $deposit_display = '—';
+            }
             $time_window = esc_html(get_post_meta($b->ID, 'time_window', true));
             $service = esc_html(get_post_meta($b->ID, 'service', true));
             $event_type = esc_html(get_post_meta($b->ID, 'event_type', true));
@@ -304,10 +345,24 @@ class PA_Booking_Admin {
             echo '<td>' . $dates_label . '<br><small>Deposit: ' . esc_html($deposit_display) . '</small></td><td>' . ($time_window ?: '—') . '</td><td>' . $service . '</td>';
             echo '<td>' . $event_type . ($venue ? '<br><small>' . $venue . '</small>' : '') . '</td>';
             echo '<td>' . $name . '<br><a href="mailto:' . esc_attr($email) . '">' . $email . '</a><br>' . $phone . '</td>';
-            echo '<td><span class="pa-status pa-status-' . esc_attr($status) . '">' . $status . '</span></td>';
+            echo '<td><span class="pa-status pa-status-' . esc_attr($status) . '">' . $status . '</span>';
+            if ($deposit_confirmed) {
+                echo '<br><small class="pa-deposit-tag pa-deposit-tag--paid">Deposit verified</small>';
+            } elseif ($status === 'pending_payment') {
+                echo '<br><small class="pa-deposit-tag pa-deposit-tag--due">Awaiting deposit</small>';
+            } elseif ($deposit_cents >= 50) {
+                echo '<br><small class="pa-deposit-tag pa-deposit-tag--warn">Verify in GoDaddy</small>';
+            }
+            echo '</td>';
             echo '<td>';
-            if ($status === 'pending_approval') {
+            if ($status === 'pending_approval' && $deposit_confirmed) {
                 echo '<a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=pa-booking&pa_booking_action=approve&booking_id=' . $b->ID . '&_wpnonce=' . $nonce)) . '">Approve</a> ';
+                echo '<a class="button" href="' . esc_url(admin_url('admin.php?page=pa-booking&pa_booking_action=reject&booking_id=' . $b->ID . '&_wpnonce=' . $nonce)) . '">Reject</a>';
+            } elseif ($deposit_confirmed || $status === 'pending_approval') {
+                echo '<a class="button" href="' . esc_url(admin_url('admin.php?page=pa-booking&pa_booking_action=clear_deposit&booking_id=' . $b->ID . '&_wpnonce=' . $nonce)) . '">Deposit not received</a> ';
+                echo '<a class="button" href="' . esc_url(admin_url('admin.php?page=pa-booking&pa_booking_action=reject&booking_id=' . $b->ID . '&_wpnonce=' . $nonce)) . '">Reject</a>';
+            } elseif ($status === 'pending_payment') {
+                echo '<a class="button button-primary" href="' . esc_url(admin_url('admin.php?page=pa-booking&pa_booking_action=confirm_deposit&booking_id=' . $b->ID . '&_wpnonce=' . $nonce)) . '">Deposit received in GoDaddy</a> ';
                 echo '<a class="button" href="' . esc_url(admin_url('admin.php?page=pa-booking&pa_booking_action=reject&booking_id=' . $b->ID . '&_wpnonce=' . $nonce)) . '">Reject</a>';
             } else {
                 echo '—';
@@ -327,11 +382,11 @@ class PA_Booking_Admin {
             <h1>PA Booking Settings</h1>
             <?php if ($payment_provider === 'paylink') : ?>
             <div class="notice notice-success inline" style="padding:12px 16px;margin:1em 0;">
-                <p><strong>GoDaddy Pay Link active.</strong> Customers enter their details first, then pay the deposit on GoDaddy as the final step. If they return to your site after paying, they are sent to the confirmation page.</p>
+                <p><strong>GoDaddy Pay Link active.</strong> Customers submit their booking, then pay in GoDaddy’s checkout (opens in a new tab). <strong>Standalone Pay Links cannot redirect back to your site</strong> — when you see the payment in GoDaddy Payments, click <strong>Deposit received in GoDaddy</strong> on the booking request.</p>
             </div>
             <div class="notice notice-warning inline" style="padding:12px 16px;margin:1em 0;">
                 <p><strong>Prefill $<?php echo esc_html(number_format($s['deposit_cents'] / 100, 2)); ?> at checkout:</strong> GoDaddy → <strong>Payments → Online Pay Links</strong> → edit your link → turn <strong>off</strong> “Allow customer to set a price” → enter <strong>$<?php echo esc_html(number_format($s['deposit_cents'] / 100, 2)); ?></strong> as a fixed price → Save. GoDaddy does not let our site pass the amount in the URL — the price is set on the link itself.</p>
-                <p class="description">Optional: set the pay link thank-you / return URL to <code><?php echo esc_html(PA_Booking_Payments::deposit_return_url()); ?></code> so customers land on your confirmation page after payment.</p>
+                <p class="description">You do <strong>not</strong> need a custom thank-you URL on standalone Pay Links (GoDaddy does not support it). Match the client name, email, and date in GoDaddy Payments, then mark the request in <a href="<?php echo esc_url(admin_url('admin.php?page=pa-booking')); ?>">Booking Requests</a>.</p>
             </div>
             <?php elseif (!PA_Booking_Stripe::is_configured() && !PA_Booking_Payments::paylink_configured()) : ?>
             <div class="notice notice-info inline" style="padding:12px 16px;margin:1em 0;">
@@ -381,6 +436,8 @@ class PA_Booking_Admin {
                         );
                         ?><p class="description">After deposit payment. Add shortcode <code>[pa_booking_success]</code> to that page.</p></td></tr>
                     <tr><th>Services (one per line)</th><td><textarea name="services" rows="6" class="large-text"><?php echo esc_textarea($s['services']); ?></textarea></td></tr>
+                    <tr><th colspan="2"><h2 style="margin:1.5em 0 0;">Analytics</h2></th></tr>
+                    <tr><th>GA4 Measurement ID</th><td><input type="text" name="ga4_measurement_id" value="<?php echo esc_attr($s['ga4_measurement_id'] ?? ''); ?>" class="regular-text" placeholder="G-XXXXXXXXXX" pattern="G-[A-Z0-9]+"><p class="description">Optional. Enables Google Analytics 4 and booking funnel events (<code>book_cta_click</code>, <code>booking_start</code>, etc.). Create a web stream at <a href="https://analytics.google.com" target="_blank" rel="noopener">analytics.google.com</a>.</p></td></tr>
                     <tr><th colspan="2"><h2 style="margin:1.5em 0 0;">Client-facing policies</h2><p class="description">Shown on your booking page — edit to match how you work.</p></th></tr>
                     <tr><th>Deposit policy</th><td><textarea name="policy_deposit" rows="2" class="large-text"><?php echo esc_textarea($s['policy_deposit'] ?? ''); ?></textarea></td></tr>
                     <tr><th>Cancellation policy</th><td><textarea name="policy_cancel" rows="2" class="large-text"><?php echo esc_textarea($s['policy_cancel'] ?? ''); ?></textarea></td></tr>
@@ -543,12 +600,15 @@ class PA_Booking_Admin {
 /**
  * One-time setup: success page, homepage shortcode, defaults.
  */
-class PA_Booking_Setup {
+class PA_Booking_Page_Setup {
     public static function run() {
         self::ensure_success_page();
         self::ensure_book_page();
+        self::ensure_work_page();
+        self::ensure_about_page();
         PA_Booking_Legal_Pages::ensure_all();
-        self::ensure_home_shortcode();
+        PA_Booking_Landing_Pages::ensure_all();
+        self::remove_home_booking_shortcode();
         self::ensure_defaults();
         flush_rewrite_rules();
     }
@@ -606,6 +666,152 @@ class PA_Booking_Setup {
             PA_Booking_Legal_Pages::ensure_all();
             update_option('pa_booking_legal_pages_ready', 1);
         }
+
+        if (!get_option('pa_booking_home_shortcode_removed')) {
+            self::remove_home_booking_shortcode();
+        }
+
+        if (!get_option('pa_work_page_ready')) {
+            if (self::ensure_work_page()) {
+                update_option('pa_work_page_ready', 1, false);
+            }
+        }
+
+        if (!get_option('pa_landing_pages_ready')) {
+            update_option('pa_landing_pages_ready', 1, false);
+        }
+        PA_Booking_Landing_Pages::ensure_all();
+
+        if (!get_option('pa_about_page_ready')) {
+            if (self::ensure_about_page()) {
+                update_option('pa_about_page_ready', 1, false);
+            }
+        }
+    }
+
+    /**
+     * Dedicated portfolio page at /work/ — copies gallery blocks from the homepage.
+     *
+     * @return int Page ID, or 0 on failure.
+     */
+    public static function ensure_work_page() {
+        $existing = get_page_by_path('work');
+        if ($existing && $existing->post_status === 'publish') {
+            return (int) $existing->ID;
+        }
+
+        $content = '';
+        $front_id = (int) get_option('page_on_front');
+        if ($front_id) {
+            $raw = (string) get_post_field('post_content', $front_id);
+            if ($raw !== '' && preg_match_all('/<!-- wp:gallery\b.*?<!-- \/wp:gallery -->/s', $raw, $matches)) {
+                $content = implode("\n\n", $matches[0]);
+            }
+        }
+
+        if ($content === '') {
+            $content = '<!-- wp:paragraph --><p>Our portfolio — galleries from recent events across Pennsylvania.</p><!-- /wp:paragraph -->';
+        }
+
+        if ($existing) {
+            $page_id = wp_update_post(
+                array(
+                    'ID'           => $existing->ID,
+                    'post_status'  => 'publish',
+                    'post_content' => $content,
+                ),
+                true
+            );
+        } else {
+            $page_id = wp_insert_post(
+                array(
+                    'post_title'   => 'Work',
+                    'post_name'    => 'work',
+                    'post_status'  => 'publish',
+                    'post_type'    => 'page',
+                    'post_content' => $content,
+                ),
+                true
+            );
+        }
+
+        if (is_wp_error($page_id)) {
+            return 0;
+        }
+
+        return (int) $page_id;
+    }
+
+    /**
+     * Dedicated about page at /about/ — showcase content is built client-side in site.js.
+     *
+     * @return int Page ID, or 0 on failure.
+     */
+    public static function ensure_about_page() {
+        $existing = get_page_by_path('about');
+        $content = '<!-- wp:paragraph --><p>About Pennsylvania Media Arts — professional photography, video, and live production across Central Pennsylvania.</p><!-- /wp:paragraph -->';
+
+        if ($existing) {
+            if ($existing->post_status !== 'publish') {
+                wp_update_post(
+                    array(
+                        'ID'          => $existing->ID,
+                        'post_status' => 'publish',
+                    )
+                );
+            }
+            return (int) $existing->ID;
+        }
+
+        $page_id = wp_insert_post(
+            array(
+                'post_title'   => 'About',
+                'post_name'    => 'about',
+                'post_status'  => 'publish',
+                'post_type'    => 'page',
+                'post_content' => $content,
+            ),
+            true
+        );
+
+        return is_wp_error($page_id) ? 0 : (int) $page_id;
+    }
+
+    /**
+     * If /about/ 404s at origin (missing page or stale rules), serve the About page.
+     */
+    public static function rescue_about_404() {
+        if (!is_404()) {
+            return;
+        }
+        $uri = isset($_SERVER['REQUEST_URI']) ? sanitize_text_field(wp_unslash($_SERVER['REQUEST_URI'])) : '';
+        $path = trim((string) parse_url($uri, PHP_URL_PATH), '/');
+        if ($path !== 'about') {
+            return;
+        }
+        $page_id = self::ensure_about_page();
+        if (!$page_id) {
+            return;
+        }
+        $page = get_post($page_id);
+        if (!$page || $page->post_status !== 'publish') {
+            return;
+        }
+
+        global $wp_query, $post;
+        $post = $page;
+        setup_postdata($post);
+        $wp_query->post = $post;
+        $wp_query->posts = array($post);
+        $wp_query->post_count = 1;
+        $wp_query->queried_object = $page;
+        $wp_query->queried_object_id = (int) $page->ID;
+        $wp_query->is_page = true;
+        $wp_query->is_singular = true;
+        $wp_query->is_single = false;
+        $wp_query->is_404 = false;
+        status_header(200);
+        nocache_headers();
     }
 
     /**
@@ -671,24 +877,50 @@ class PA_Booking_Setup {
         update_option(PA_Booking::OPTION_SETTINGS, $settings);
     }
 
-    private static function ensure_home_shortcode() {
+    /**
+     * Website 2.0 Phase 9 — booking lives on /book/ only; strip legacy home embed.
+     *
+     * @return bool True when home content was updated.
+     */
+    public static function remove_home_booking_shortcode() {
+        if (get_option('pa_booking_home_shortcode_removed')) {
+            return false;
+        }
+
         $front_id = (int) get_option('page_on_front');
         if (!$front_id) {
-            return;
+            update_option('pa_booking_home_shortcode_removed', 1);
+            return false;
         }
 
         $post = get_post($front_id);
-        if (!$post || strpos($post->post_content, '[pa_booking]') !== false) {
-            return;
+        if (!$post || strpos($post->post_content, '[pa_booking]') === false) {
+            update_option('pa_booking_home_shortcode_removed', 1);
+            return false;
         }
 
-        $block = "<!-- wp:shortcode -->\n[pa_booking]\n<!-- /wp:shortcode -->\n\n";
+        $content = $post->post_content;
+        $patterns = array(
+            "/<!-- wp:shortcode -->\s*\[pa_booking\]\s*<!-- \/wp:shortcode -->\s*\n?/i",
+            "/\[pa_booking\]\s*\n?/i",
+        );
+        foreach ($patterns as $pattern) {
+            $content = preg_replace($pattern, '', $content, 1);
+        }
+
         wp_update_post(
             array(
                 'ID'           => $front_id,
-                'post_content' => $block . $post->post_content,
+                'post_content' => trim($content),
             )
         );
+        update_option('pa_booking_home_shortcode_removed', 1);
+
+        if (class_exists('PA_Booking_Cache')) {
+            PA_Booking_Cache::maybe_flush_after_deploy();
+        }
+
+        return true;
     }
 
     private static function ensure_defaults() {

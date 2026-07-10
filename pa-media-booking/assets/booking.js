@@ -1,8 +1,22 @@
 (function () {
   'use strict';
 
+  if (typeof PABooking === 'undefined') return;
+
+  var successRoot = document.getElementById('pa-booking-success');
+  if (successRoot) {
+    initSuccessPageReturn();
+    window.addEventListener('pageshow', initSuccessPageReturn);
+    return;
+  }
+
   var root = document.getElementById('pa-booking-app');
-  if (!root || typeof PABooking === 'undefined') return;
+  if (!root) return;
+
+  var PAY_CTA_LABEL = 'Reserve My Date';
+  var PAY_CTA_LOADING = 'Opening secure deposit\u2026';
+  var REQUEST_CTA_LABEL = 'Request my date';
+  var REQUEST_CTA_LOADING = 'Sending request\u2026';
 
   var state = {
     step: 0,
@@ -24,6 +38,7 @@
     venue: '',
     organization: '',
     serviceExpanded: false,
+    schedulePanelOverride: null,
     focusTarget: '',
     error: '',
     depositCompleted: false,
@@ -41,77 +56,200 @@
     calDirection: 0,
     loading: true,
     fieldErrors: {},
+    welcomeOpen: true,
   };
 
   var MAX_BOOKING_DAYS = 14;
   var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   var DOW = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  var STEPS = ['Schedule', 'Details', 'Pay'];
-  var STEPS_REQUEST = ['Schedule', 'Request'];
+  var STEPS = ['Service', 'Event', 'Review'];
+  var STEPS_REQUEST = ['Service', 'Event', 'Review'];
   var STEP_HINTS = [
     '',
-    'Enter your contact info and pay the deposit to hold your date.',
+    'Tell us about your event.',
+    '',
   ];
   var STEP_HINTS_REQUEST = [
     '',
-    'Enter your contact info so we can confirm your request.',
+    'Tell us about your event.',
+    '',
   ];
 
   var RECOMMENDED_SERVICE = 'Photo + Video Bundle';
 
+  function paGa4Event(name, params) {
+    if (window.PAGA4 && typeof window.PAGA4.event === 'function') {
+      window.PAGA4.event(name, params || {});
+    }
+  }
+
+  function getUtmAttributionNote() {
+    var parts = [];
+    ['utm_source', 'utm_medium', 'utm_campaign'].forEach(function (k) {
+      try {
+        var v = sessionStorage.getItem('pa_' + k);
+        if (v) {
+          parts.push(k.replace('utm_', '') + '=' + v);
+        }
+      } catch (e) { /* ignore */ }
+    });
+    return parts.length ? 'Attribution: ' + parts.join(', ') : '';
+  }
+
+  /** Presentation labels for API service names (only services in state.services are shown). */
+  var SERVICE_V4_LABELS = {
+    'Event Photography': 'Photography',
+    'Video Production': 'Videography',
+    'DJ Services': 'DJ',
+    'Live Audio / PA': 'Live Audio',
+    'Photo + Video Bundle': 'Multiple Services',
+  };
+
   function activeSteps() {
-    return state.stripeReady ? ['Schedule', 'Details & deposit'] : ['Schedule', 'Your details'];
+    return state.stripeReady ? STEPS : STEPS_REQUEST;
   }
 
   function activeStepHints() {
-    if (state.stripeReady) {
-      return STEP_HINTS;
+    return state.stripeReady ? STEP_HINTS : STEP_HINTS_REQUEST;
+  }
+
+  function getServiceDisplayLabel(apiName) {
+    return SERVICE_V4_LABELS[apiName] || apiName;
+  }
+
+  function isPhotoVideoService() {
+    return state.service === 'Event Photography' ||
+      state.service === 'Video Production' ||
+      state.service === 'Photo + Video Bundle';
+  }
+
+  function eventNotesPlaceholder() {
+    if (state.service === 'DJ Services') {
+      return 'Reception timeline, must-play songs, announcements\u2026';
     }
-    return STEP_HINTS_REQUEST;
+    if (state.service === 'Live Audio / PA') {
+      return 'Venue layout, power access, mic needs, performance type\u2026';
+    }
+    return 'Guest count, timeline, or special requests\u2026';
+  }
+
+  function isDesktopViewport() {
+    return typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(min-width: 900px)').matches;
+  }
+
+  function shouldShowStickySummary() {
+    return !state.welcomeOpen && isDesktopViewport();
+  }
+
+  function dismissWelcome() {
+    state.welcomeOpen = false;
+    state.focusTarget = 'step';
+    paGa4Event('booking_start', { entry: 'welcome_button' });
+    try {
+      sessionStorage.setItem('pa_welcome_dismissed', '1');
+    } catch (e) { /* ignore */ }
+    render();
   }
 
   function readDetailsFromForm() {
-    state.name = (document.getElementById('pa-name') || {}).value || '';
-    state.email = (document.getElementById('pa-email') || {}).value || '';
-    state.phone = (document.getElementById('pa-phone') || {}).value || '';
-    state.eventType = state.eventType || (document.querySelector('.pa-event-pill.is-selected') || {}).getAttribute('data-value') || '';
-    state.venue = (document.getElementById('pa-venue') || {}).value || '';
-    state.organization = (document.getElementById('pa-organization') || {}).value || '';
-    state.notes = (document.getElementById('pa-notes') || {}).value || '';
-    state.guestCount = (document.getElementById('pa-guest-count') || {}).value || '';
-    state.timelineNotes = (document.getElementById('pa-timeline-notes') || {}).value || '';
-    state.venueAccess = (document.getElementById('pa-venue-access') || {}).value || '';
-    state.deliverablesNotes = (document.getElementById('pa-deliverables-notes') || {}).value || '';
+    // Only the essential fields remain in the simplified flow. Read each only
+    // if present so a re-render never clobbers state with empty values.
+    var nameEl = document.getElementById('pa-name');
+    if (nameEl) state.name = nameEl.value || '';
+    var emailEl = document.getElementById('pa-email');
+    if (emailEl) state.email = emailEl.value || '';
+    var phoneEl = document.getElementById('pa-phone');
+    if (phoneEl) state.phone = phoneEl.value || '';
+    var notesEl = document.getElementById('pa-notes');
+    if (notesEl) state.notes = notesEl.value || '';
+    var extraEl = document.getElementById('pa-extra-notes');
+    if (extraEl) state.timelineNotes = extraEl.value || '';
+    var venueEl = document.getElementById('pa-venue');
+    if (venueEl) state.venue = venueEl.value || '';
     var termsEl = document.getElementById('pa-terms-agree');
     if (termsEl) {
       state.termsAccepted = termsEl.checked;
     }
   }
 
-  function validateDetailsForm() {
+  function validateContactForm() {
     readDetailsFromForm();
     if (state.name.trim().length < 2) {
-      return { field: 'pa-name', message: 'Enter your full name.' };
+      return { field: 'pa-name', message: 'Please enter your name.' };
     }
     if (!isValidEmail(state.email)) {
-      return { field: 'pa-email', message: 'Enter a valid email address.' };
+      return { field: 'pa-email', message: 'Please enter a valid email address.' };
     }
     if (state.phone.replace(/\D/g, '').length < 7) {
-      return { field: 'pa-phone', message: 'Enter a phone number we can reach you at.' };
-    }
-    if (!state.eventType) {
-      return { field: 'error', message: 'Select an event type.' };
-    }
-    if (state.eventType === 'Corporate' && state.organization.trim().length < 2) {
-      return { field: 'pa-organization', message: 'Enter your organization name.' };
+      return { field: 'pa-phone', message: 'Please enter your phone number.' };
     }
     if (state.venue.trim().length < 2) {
-      return { field: 'pa-venue', message: 'Enter the venue or city.' };
+      return { field: 'pa-venue', message: 'Please enter your event location.' };
+    }
+    return null;
+  }
+
+  function validateDetailsForm() {
+    var contactErr = validateContactForm();
+    if (contactErr) {
+      return contactErr;
     }
     if (state.stripeReady && !state.termsAccepted) {
       return { field: 'pa-terms-agree', message: 'Please agree to the booking policies to continue.' };
     }
     return null;
+  }
+
+  function validateSingleField(fieldId) {
+    readDetailsFromForm();
+    switch (fieldId) {
+      case 'pa-name':
+        if (state.name.trim().length < 2) return 'Please enter your name.';
+        break;
+      case 'pa-email':
+        if (!isValidEmail(state.email)) return 'Please enter a valid email address.';
+        break;
+      case 'pa-phone':
+        if (state.phone.replace(/\D/g, '').length < 7) return 'Please enter your phone number.';
+        break;
+      case 'pa-venue':
+        if (state.venue.trim().length < 2) return 'Please enter your event location.';
+        break;
+      default:
+        break;
+    }
+    return '';
+  }
+
+  function updateFieldErrorUI(wrap, fieldId, message) {
+    if (!wrap) return;
+    wrap.classList.toggle('has-error', !!message);
+    var input = document.getElementById(fieldId);
+    if (input) {
+      if (message) {
+        input.setAttribute('aria-invalid', 'true');
+        input.classList.add('pa-input-error');
+      } else {
+        input.removeAttribute('aria-invalid');
+        input.classList.remove('pa-input-error');
+      }
+    }
+    var errEl = document.getElementById(fieldId + '-error');
+    if (message) {
+      state.fieldErrors[fieldId] = message;
+      if (!errEl) {
+        errEl = document.createElement('p');
+        errEl.id = fieldId + '-error';
+        errEl.className = 'pa-field-error-msg';
+        wrap.appendChild(errEl);
+      }
+      errEl.textContent = message;
+    } else {
+      delete state.fieldErrors[fieldId];
+      if (errEl && errEl.parentNode) errEl.parentNode.removeChild(errEl);
+    }
   }
 
   function validatePaylinkReady() {
@@ -153,7 +291,10 @@
     if (!message) return;
     var stack = ensureToastStack();
     var toast = document.createElement('div');
-    toast.className = 'pa-toast' + (type === 'success' ? ' is-success' : '') + (type === 'error' ? ' is-error' : '');
+    toast.className = 'pa-toast' +
+      (type === 'success' ? ' is-success' : '') +
+      (type === 'error' ? ' is-error' : '') +
+      (type === 'info' ? ' is-info' : '');
     toast.setAttribute('role', 'status');
     toast.textContent = message;
     stack.appendChild(toast);
@@ -166,10 +307,12 @@
     state.fieldErrors = {};
   }
 
-  function setFieldError(fieldId, message) {
+  function setFieldError(fieldId, message, quiet) {
     state.fieldErrors[fieldId] = message;
-    state.focusTarget = fieldId;
-    showToast(message, 'error');
+    if (!quiet) {
+      state.focusTarget = fieldId;
+      showToast(message, 'error');
+    }
   }
 
   function saveLastBooking() {
@@ -180,8 +323,87 @@
         time: state.timeWindow,
         venue: state.venue,
         name: state.name,
+        email: state.email,
       }));
     } catch (e) { /* ignore */ }
+  }
+
+  /**
+   * After GoDaddy Pay Link, customers land on deposit_return_url (?pa_requested=1&deposit=done).
+   * Redirect to the signed success URL (or confirm via API) so deposit emails fire.
+   */
+  function initSuccessPageReturn() {
+    var params = new URLSearchParams(window.location.search);
+    if (!params.get('pa_requested')) {
+      return;
+    }
+    if (params.get('deposit') !== 'done') {
+      return;
+    }
+    paGa4Event('deposit_complete', { page_path: window.location.pathname });
+    if (params.get('pa_booking') && params.get('pa_token')) {
+      clearPaymentSession();
+      return;
+    }
+
+    function redirectToSignedSuccess(url) {
+      if (!url) return false;
+      try {
+        var signed = new URL(url, window.location.origin);
+        signed.searchParams.set('deposit', 'done');
+        url = signed.toString();
+      } catch (e) { /* use url as-is */ }
+      try {
+        sessionStorage.removeItem('pa_deposit_opened');
+        sessionStorage.removeItem('pa_checkout_success_url');
+        sessionStorage.removeItem('pa_pending_booking_id');
+      } catch (e) { /* ignore */ }
+      window.location.replace(url);
+      return true;
+    }
+
+    var storedSuccessUrl = '';
+    try {
+      storedSuccessUrl = sessionStorage.getItem('pa_checkout_success_url') || '';
+    } catch (e) { /* ignore */ }
+    if (redirectToSignedSuccess(storedSuccessUrl)) {
+      return;
+    }
+
+    var bookingId = 0;
+    var email = '';
+    try {
+      bookingId = parseInt(sessionStorage.getItem('pa_pending_booking_id') || '0', 10);
+      var raw = sessionStorage.getItem('pa_last_booking') || sessionStorage.getItem('pa_booking_draft');
+      if (raw) {
+        var parsed = JSON.parse(raw);
+        email = parsed && parsed.email ? String(parsed.email).trim() : '';
+      }
+    } catch (e) { /* ignore */ }
+
+    if (bookingId < 1 || !email) {
+      return;
+    }
+
+    fetch(PABooking.restUrl + 'confirm-deposit', {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-WP-Nonce': PABooking.nonce,
+      },
+      body: JSON.stringify({ booking_id: bookingId, email: email, deposit: 'done' }),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data && data.success_url && redirectToSignedSuccess(data.success_url)) {
+          return;
+        }
+        if (data && data.ok && (data.status === 'pending_approval' || data.already)) {
+          window.location.reload();
+        }
+      })
+      .catch(function () { /* server may still process on next visit */ });
   }
 
   function downloadIcsFile() {
@@ -216,7 +438,7 @@
 
   function buildSkeletonLoader() {
     var sk = document.createElement('div');
-    sk.className = 'pa-booking-skeleton';
+    sk.className = 'pa-booking-skeleton pa-booking-skeleton-v40';
     sk.setAttribute('role', 'status');
     sk.setAttribute('aria-live', 'polite');
     sk.setAttribute('aria-label', 'Loading availability');
@@ -238,65 +460,111 @@
     return sk;
   }
 
+  function buildEmptyState(message) {
+    var el = document.createElement('p');
+    el.className = 'pa-empty-state pa-empty-state-v40';
+    el.textContent = message;
+    return el;
+  }
+
+  function buildConfidencePanel() {
+    var panel = document.createElement('div');
+    panel.className = 'pa-confidence-panel';
+    panel.setAttribute('role', 'note');
+    panel.setAttribute('aria-label', 'Booking confidence');
+    [
+      'Live Availability',
+      'Secure Deposit',
+      'Proposal After Booking',
+      'Average Booking Time: 2 Minutes',
+    ].forEach(function (text) {
+      var item = document.createElement('span');
+      item.className = 'pa-confidence-item';
+      item.textContent = text;
+      panel.appendChild(item);
+    });
+    return panel;
+  }
+
+  function buildWelcomeScreen() {
+    var wrap = document.createElement('div');
+    wrap.className = 'pa-welcome pa-step';
+    wrap.id = 'pa-step-focus-welcome';
+    wrap.setAttribute('tabindex', '-1');
+
+    var inner = document.createElement('div');
+    inner.className = 'pa-welcome-inner';
+
+    var title = document.createElement('h2');
+    title.className = 'pa-welcome-title';
+    title.textContent = 'Let\u2019s Reserve Your Date';
+    inner.appendChild(title);
+
+    var lead = document.createElement('p');
+    lead.className = 'pa-welcome-lead';
+    lead.textContent = 'Tell us a little about your event or project. It only takes a couple of minutes.';
+    inner.appendChild(lead);
+
+    var start = document.createElement('button');
+    start.type = 'button';
+    start.className = 'pa-submit pa-btn is-ready pa-welcome-start';
+    start.textContent = 'Start Booking';
+    start.addEventListener('click', dismissWelcome);
+    inner.appendChild(start);
+
+    inner.appendChild(buildConfidencePanel());
+    wrap.appendChild(inner);
+    return wrap;
+  }
+
+  function buildStickySummary() {
+    var panel = document.createElement('aside');
+    panel.className = 'pa-sticky-summary pa-sticky-summary-v40';
+    panel.setAttribute('aria-label', 'Booking summary');
+
+    var title = document.createElement('h3');
+    title.className = 'pa-sticky-summary-title';
+    title.textContent = 'Your booking';
+    panel.appendChild(title);
+
+    var list = document.createElement('dl');
+    list.className = 'pa-sticky-summary-list';
+
+    function row(label, value) {
+      if (!value) return;
+      var dt = document.createElement('dt');
+      dt.textContent = label;
+      var dd = document.createElement('dd');
+      dd.textContent = value;
+      list.appendChild(dt);
+      list.appendChild(dd);
+    }
+
+    row('Service', state.service ? getServiceDisplayLabel(state.service) : '');
+    row('Date', state.selectedDates.length ? formatDatesSummary() : '');
+    row('Location', state.venue);
+    row('Time', state.timeWindow ? shortTimeWindow(state.timeWindow) : '');
+    if (state.eventType) {
+      row('Event type', state.eventType);
+    }
+    if (state.stripeReady && state.service && state.selectedDates.length) {
+      row('Deposit Today', formatMoney(getDepositTotal()));
+    }
+
+    if (!list.children.length) {
+      var empty = document.createElement('p');
+      empty.className = 'pa-sticky-summary-empty';
+      empty.textContent = 'Select a service to begin.';
+      panel.appendChild(empty);
+    } else {
+      panel.appendChild(list);
+    }
+
+    return panel;
+  }
+
   function buildLiveRecapBar() {
-    var bar = document.createElement('aside');
-    var ready = !!(state.service && state.selectedDates.length && state.timeWindow);
-    bar.className = 'pa-recap-bar pa-recap-bar--sticky' + (ready ? ' is-complete' : ' is-placeholder');
-    bar.setAttribute('aria-label', 'Your selections so far');
-
-    var kicker = document.createElement('span');
-    kicker.className = 'pa-recap-bar-kicker';
-    kicker.textContent = ready ? 'Your booking' : 'Selections';
-    bar.appendChild(kicker);
-
-    var dateEl = document.createElement('p');
-    dateEl.className = 'pa-recap-bar-date';
-    if (!state.service) {
-      dateEl.textContent = 'Choose a service to get started';
-    } else if (!state.selectedDates.length) {
-      dateEl.textContent = state.service + ' — pick a date';
-    } else if (!state.timeWindow) {
-      dateEl.textContent = formatDatesSummary();
-    } else {
-      dateEl.textContent = formatDatesSummary();
-    }
-    bar.appendChild(dateEl);
-
-    var meta = document.createElement('p');
-    meta.className = 'pa-recap-bar-meta';
-    if (ready) {
-      meta.textContent = state.service + ' · ' + shortTimeWindow(state.timeWindow);
-    } else if (state.service && state.selectedDates.length) {
-      meta.textContent = state.service + ' — choose a time window';
-    } else {
-      meta.textContent = 'Service, date, and time appear here as you go';
-    }
-    bar.appendChild(meta);
-
-    if (state.stripeReady && state.selectedDates.length) {
-      var dep = document.createElement('span');
-      dep.className = 'pa-recap-bar-deposit';
-      dep.textContent = formatMoney(getDepositTotal()) + ' deposit holds your date';
-      bar.appendChild(dep);
-    }
-    if (ready) {
-      var nextHint = document.createElement('p');
-      nextHint.className = 'pa-recap-bar-next';
-      nextHint.textContent = 'Ready — tap Continue for contact details';
-      bar.appendChild(nextHint);
-      var editRow = document.createElement('div');
-      editRow.className = 'pa-recap-bar-actions';
-      var editBtn = document.createElement('button');
-      editBtn.type = 'button';
-      editBtn.className = 'pa-recap-bar-edit';
-      editBtn.textContent = 'Edit selections';
-      editBtn.addEventListener('click', function () {
-        scrollToScheduleTarget('pa-section-service');
-      });
-      editRow.appendChild(editBtn);
-      bar.appendChild(editRow);
-    }
-    return bar;
+    return buildStickySummary();
   }
 
   function getPaylinkUrl() {
@@ -325,12 +593,7 @@
 
   function checkPaymentReturn(params) {
     params = params || new URLSearchParams(window.location.search);
-    var returned = params.get('deposit') === 'done';
-    var awaiting = false;
-    try {
-      awaiting = sessionStorage.getItem('pa_deposit_opened') === '1';
-    } catch (e) { /* ignore */ }
-    if (!returned && !awaiting) {
+    if (params.get('deposit') !== 'done') {
       return false;
     }
 
@@ -344,6 +607,11 @@
     clearPaymentSession();
 
     if (successUrl) {
+      try {
+        var signed = new URL(successUrl, window.location.origin);
+        signed.searchParams.set('deposit', 'done');
+        successUrl = signed.toString();
+      } catch (e) { /* use as-is */ }
       window.location.replace(successUrl);
       return true;
     }
@@ -372,6 +640,7 @@
           timelineNotes: state.timelineNotes,
           venueAccess: state.venueAccess,
           deliverablesNotes: state.deliverablesNotes,
+          welcomeOpen: state.welcomeOpen,
         })
       );
     } catch (e) { /* ignore */ }
@@ -415,6 +684,37 @@
     if (d.timelineNotes) state.timelineNotes = d.timelineNotes;
     if (d.venueAccess) state.venueAccess = d.venueAccess;
     if (d.deliverablesNotes) state.deliverablesNotes = d.deliverablesNotes;
+    if (d.welcomeOpen === false) state.welcomeOpen = false;
+  }
+
+  function applyBookingEntryParams(params) {
+    if (!params) {
+      return;
+    }
+    if (params.get('start') === '1' || params.get('service')) {
+      state.welcomeOpen = false;
+    }
+    if (params.get('start') === '1') {
+      paGa4Event('booking_start', { entry: 'url_param' });
+    }
+    if (/^\/book\/?$/i.test(window.location.pathname || '')) {
+      state.welcomeOpen = false;
+    }
+  }
+
+  function applyServiceFromUrl(params) {
+    if (!params) {
+      return;
+    }
+    var serviceParam = params.get('service');
+    if (!serviceParam || !state.services || !state.services.length) {
+      return;
+    }
+    if (state.services.indexOf(serviceParam) === -1) {
+      return;
+    }
+    state.service = serviceParam;
+    state.welcomeOpen = false;
   }
 
   function restoreDraft() {
@@ -433,8 +733,16 @@
     } catch (e) { /* ignore */ }
     state.depositOpened = sessionStorage.getItem('pa_deposit_opened') === '1';
     if (state.depositOpened && state.name) {
-      state.step = 1;
+      state.step = 2;
+      state.welcomeOpen = false;
+    } else if (state.service || state.name || state.selectedDates.length) {
+      state.welcomeOpen = false;
     }
+    try {
+      if (sessionStorage.getItem('pa_welcome_dismissed') === '1') {
+        state.welcomeOpen = false;
+      }
+    } catch (e) { /* ignore */ }
   }
 
   var monthCache = {};
@@ -456,19 +764,129 @@
 
   init();
   initStickyBar();
+  initBookingPageFocus();
+  initViewportGuard();
+
+  function ensureStepAnnouncer() {
+    var el = document.getElementById('pa-step-announcer');
+    if (el) return el;
+    el = document.createElement('div');
+    el.id = 'pa-step-announcer';
+    el.className = 'pa-sr-only';
+    el.setAttribute('aria-live', 'polite');
+    el.setAttribute('aria-atomic', 'true');
+    var host = root.parentNode || document.body;
+    host.insertBefore(el, root);
+    return el;
+  }
+
+  function announceStep() {
+    var steps = activeSteps();
+    var hints = activeStepHints();
+    var el = ensureStepAnnouncer();
+    var remaining = steps.length - state.step - 1;
+    var suffix = remaining > 0
+      ? remaining + ' step' + (remaining > 1 ? 's' : '') + ' remaining. '
+      : 'Final step. ';
+    el.textContent = suffix + 'Step ' + (state.step + 1) + ' of ' + steps.length + ': ' + steps[state.step] + '. ' + (hints[state.step] || '');
+  }
+
+  /**
+   * Keeps the booking shell sized to the visible viewport when the mobile
+   * keyboard opens — prevents page jump and clipped inputs.
+   */
+  function initViewportGuard() {
+    if (!window.visualViewport) return;
+    var bookRoot = document.querySelector('.pa-booking-root');
+
+    function syncViewport() {
+      if (!bookRoot || !document.body.classList.contains('pa-booking-page') || !document.body.classList.contains('is-booking-funnel')) {
+        document.documentElement.style.removeProperty('--pa-vv-height');
+        if (bookRoot) bookRoot.classList.remove('is-keyboard-open');
+        if (root) root.classList.remove('is-keyboard-open');
+        return;
+      }
+      var vv = window.visualViewport;
+      var keyboardOpen = vv.height < window.innerHeight * 0.82;
+      document.documentElement.style.setProperty('--pa-vv-height', Math.round(vv.height) + 'px');
+      bookRoot.classList.toggle('is-keyboard-open', keyboardOpen);
+      if (root) root.classList.toggle('is-keyboard-open', keyboardOpen);
+    }
+
+    window.visualViewport.addEventListener('resize', syncViewport);
+    window.visualViewport.addEventListener('scroll', syncViewport);
+    syncViewport();
+  }
+
+  function resetStepScroll() {
+    var scroll = root.querySelector('.pa-step-scroll');
+    if (scroll) {
+      scroll.scrollTop = 0;
+    }
+  }
+
+  function initBookingPageFocus() {
+    if (!document.body.classList.contains('pa-booking-page')) {
+      return;
+    }
+    if (document.body.classList.contains('is-booking-funnel')) {
+      return;
+    }
+    var target = document.getElementById('pa-book') || document.getElementById('pa-booking-app');
+    if (!target) {
+      return;
+    }
+    window.requestAnimationFrame(function () {
+      try {
+        target.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      } catch (e) {
+        target.scrollIntoView(true);
+      }
+    });
+  }
+
+  var draftSaveTimer = null;
+  function scheduleDraftSave() {
+    if (draftSaveTimer) {
+      window.clearTimeout(draftSaveTimer);
+    }
+    draftSaveTimer = window.setTimeout(function () {
+      draftSaveTimer = null;
+      saveDraft();
+    }, 280);
+  }
   window.addEventListener('pageshow', function () {
     if (checkPaymentReturn()) {
       return;
     }
   });
 
+  function isDedicatedBookingSurface() {
+    if (document.body.classList.contains('pa-booking-page')) {
+      return true;
+    }
+    var bookRoot = document.querySelector('.pa-booking-root');
+    if (!bookRoot || bookRoot.classList.contains('pa-booking-root--home-embed')) {
+      return false;
+    }
+    return bookRoot.classList.contains('pa-booking-root--wizard');
+  }
+
   function initStickyBar() {
     var sticky = document.querySelector('.pa-booking-sticky');
     var bookRoot = document.querySelector('.pa-booking-root');
     var app = document.getElementById('pa-booking-app');
     if (!sticky || !app) return;
+    if (bookRoot && bookRoot.classList.contains('pa-booking-root--home-embed')) {
+      sticky.hidden = true;
+      return;
+    }
 
     function syncSticky() {
+      if (bookRoot && bookRoot.classList.contains('is-single-screen')) {
+        sticky.hidden = true;
+        return;
+      }
       var inFunnel = app.contains(document.activeElement) || state.step > 0;
       var appRect = app.getBoundingClientRect();
       var appVisible = appRect.top < window.innerHeight * 0.85 && appRect.bottom > 80;
@@ -495,27 +913,86 @@
   function updateFunnelChrome() {
     var sticky = document.querySelector('.pa-booking-sticky');
     var bookRoot = document.querySelector('.pa-booking-root');
+    var dedicated = isDedicatedBookingSurface();
+    var inFunnel = dedicated && !state.loading;
     if (bookRoot) {
-      bookRoot.classList.toggle('is-funnel-active', state.step > 0 || !state.loading);
+      bookRoot.classList.toggle('is-funnel-active', inFunnel);
+      bookRoot.classList.toggle('is-single-screen', inFunnel);
     }
-    if (sticky && state.step > 0) {
-      sticky.hidden = true;
+    if (root) {
+      root.classList.toggle('is-single-screen', inFunnel);
+    }
+    if (document.body.classList.contains('pa-booking-page')) {
+      document.documentElement.classList.toggle('is-booking-funnel', inFunnel);
+      document.body.classList.toggle('is-booking-funnel', inFunnel);
+    } else {
+      document.documentElement.classList.remove('is-booking-funnel');
+      document.body.classList.remove('is-booking-funnel');
+    }
+    if (sticky) {
+      sticky.hidden = dedicated || state.step > 0 || state.welcomeOpen;
     }
   }
 
   if (window.location.hash === '#pa-booking-app' || window.location.hash === '#pa-book') {
-    setTimeout(scrollToPanel, 300);
+    setTimeout(function () {
+      if (!document.body.classList.contains('is-booking-funnel')) {
+        scrollToPanel();
+      }
+    }, 300);
   }
+
+  if (window.location.hash === '#pa-booking-policies') {
+    setTimeout(openBookingPoliciesDialog, 400);
+  }
+
+  document.addEventListener('click', function (e) {
+    var link = e.target && e.target.closest ? e.target.closest('a[href="#pa-booking-policies"]') : null;
+    if (!link || link.classList.contains('pa-terms-link')) {
+      return;
+    }
+    e.preventDefault();
+    openBookingPoliciesDialog();
+  });
 
   document.querySelectorAll('a[href="#pa-booking-app"]').forEach(function (link) {
     link.addEventListener('click', function () {
-      setTimeout(scrollToPanel, 80);
+      setTimeout(function () {
+        if (!document.body.classList.contains('is-booking-funnel')) {
+          scrollToPanel();
+        }
+      }, 80);
     });
   });
+
+  // Re-render the schedule when the viewport crosses the phone breakpoint so
+  // the layout swaps between the single-panel wizard (mobile) and the
+  // side-by-side overview (desktop) without a manual reload.
+  (function watchScheduleBreakpoint() {
+    var wasMobile = isMobileViewport();
+    var resizeTimer = null;
+    window.addEventListener('resize', function () {
+      if (resizeTimer) {
+        window.clearTimeout(resizeTimer);
+      }
+      resizeTimer = window.setTimeout(function () {
+        resizeTimer = null;
+        var nowMobile = isMobileViewport();
+        if (nowMobile !== wasMobile) {
+          wasMobile = nowMobile;
+          if (root && document.body.classList.contains('is-booking-funnel')) {
+            clearSchedulePanelOverride();
+            render();
+          }
+        }
+      }, 200);
+    }, { passive: true });
+  })();
 
   function init() {
     var params = new URLSearchParams(window.location.search);
     restoreDraft();
+    applyBookingEntryParams(params);
     if (params.get('checkout') === 'cancelled') {
       state.error = 'Payment wasn\u2019t completed \u2014 your date isn\u2019t held yet. Pick your date and try again when ready.';
       if (window.history.replaceState) {
@@ -529,6 +1006,7 @@
       return fetchMonth(state.month);
     }).then(function () {
       prefetchMonth(shiftMonthKey(state.month, 1));
+      applyServiceFromUrl(params);
       render();
     }).catch(function () {
       state.error = 'Could not load calendar. Refresh the page.';
@@ -537,9 +1015,19 @@
     });
   }
 
-  function refreshSession() {
-    return fetch(PABooking.restUrl + 'session', { credentials: 'same-origin' })
-      .then(function (r) { return r.json(); })
+  function refreshSession(strict) {
+    var url = PABooking.restUrl + 'session?_=' + String(Date.now());
+    return fetch(url, {
+      credentials: 'same-origin',
+      cache: 'no-store',
+      headers: { Accept: 'application/json' },
+    })
+      .then(function (r) {
+        if (!r.ok) {
+          throw new Error('Session refresh failed');
+        }
+        return r.json();
+      })
       .then(function (data) {
         if (data && data.nonce) {
           PABooking.nonce = data.nonce;
@@ -553,8 +1041,15 @@
         if (data && data.paylink_url) {
           state.paylinkUrl = data.paylink_url;
         }
+        if (strict && !PABooking.nonce) {
+          throw new Error('Session expired. Refresh and try again.');
+        }
       })
-      .catch(function () { /* availability fetch still sets payment flags */ });
+      .catch(function (err) {
+        if (strict) {
+          throw err;
+        }
+      });
   }
 
   function monthKey(d) {
@@ -630,27 +1125,38 @@
   var lastRenderedStep = -1;
   var stepDirection = '';
 
-  function appendStepStage(stepEl) {
+  function appendStepStage(stepEl, parent) {
+    parent = parent || root;
     var stage = document.createElement('div');
     stage.className = 'pa-step-stage';
     if (stepDirection === 'fwd') {
       stage.classList.add('pa-step-stage--fwd');
     } else if (stepDirection === 'back') {
       stage.classList.add('pa-step-stage--back');
+    } else if (stepDirection === 'init') {
+      stage.classList.add('pa-step-stage--init');
     } else if (stepDirection === 'static') {
       stage.classList.add('pa-step-stage--static');
     }
     stage.setAttribute('data-step', String(state.step));
     stage.appendChild(stepEl);
-    root.appendChild(stage);
+    parent.appendChild(stage);
     root.classList.add('pa-app-ready');
     runStepAnimations();
     return stage;
   }
 
   function render() {
+    // CRITICAL: preserve any in-progress contact input before we rebuild the
+    // DOM. Tapping a control (add-on, terms, etc.) triggers a full re-render;
+    // without this, the rebuilt inputs reset to stale state and the customer's
+    // typed name / email / phone get erased (the mobile data-loss bug).
+    if (document.getElementById('pa-name')) {
+      readDetailsFromForm();
+    }
     while (root.firstChild) root.removeChild(root.firstChild);
     root.setAttribute('aria-busy', state.loading ? 'true' : 'false');
+    root.classList.toggle('is-welcome', !!state.welcomeOpen);
 
     if (state.loading) {
       root.appendChild(buildSkeletonLoader());
@@ -659,22 +1165,27 @@
 
     updateFunnelChrome();
 
+    if (state.welcomeOpen) {
+      var welcome = buildWelcomeScreen();
+      root.appendChild(welcome);
+      if (state.focusTarget === 'step') {
+        welcome.focus({ preventScroll: true });
+        state.focusTarget = '';
+      }
+      return;
+    }
+
     var chrome = document.createElement('div');
     chrome.className = 'pa-booking-chrome';
-    if (state.step === 0) {
-      chrome.appendChild(buildFastBanner());
-    }
     chrome.appendChild(buildProgress());
-    if (state.step === 1) {
-      var hint = activeStepHints()[state.step];
-      if (hint) {
-        chrome.appendChild(buildStepIntro(hint));
-      }
+    var stepContext = buildStepContext();
+    if (stepContext) {
+      chrome.appendChild(stepContext);
     }
     root.appendChild(chrome);
 
     if (state.error) {
-      var err = appendEl('p', 'pa-error', state.error);
+      var err = appendEl('p', 'pa-error pa-error-v40', state.error);
       err.setAttribute('role', 'alert');
       err.setAttribute('aria-live', 'assertive');
       err.id = 'pa-booking-error';
@@ -695,11 +1206,30 @@
       stepDirection = state.step > lastRenderedStep ? 'fwd' : 'back';
     }
     lastRenderedStep = state.step;
+    if (stepDirection !== 'static') {
+      paGa4Event('booking_step', { step_index: state.step, step_name: activeSteps()[state.step] || '', direction: stepDirection });
+    }
+    root.setAttribute('data-dir', stepDirection);
+    setTimeout(function() { if (root) root.removeAttribute('data-dir'); }, 180);
 
     var focusId = 'pa-step-focus-' + state.step;
     var scrollTarget = state.focusTarget;
-    if (state.step === 0) appendStepStage(buildScheduleStep());
-    if (state.step === 1) appendStepStage(buildDetailsStep());
+
+    var layout = document.createElement('div');
+    layout.className = 'pa-wizard-layout';
+    var main = document.createElement('div');
+    main.className = 'pa-wizard-main';
+    layout.appendChild(main);
+
+    if (state.step === 0) appendStepStage(buildScheduleStep(), main);
+    if (state.step === 1) appendStepStage(buildDetailsStep(), main);
+    if (state.step === 2) appendStepStage(buildConfirmStep(), main);
+
+    if (shouldShowStickySummary()) {
+      layout.appendChild(buildStickySummary());
+    }
+
+    root.appendChild(layout);
 
     var focusEl = document.getElementById(focusId);
     if (state.focusTarget === 'step' && focusEl) {
@@ -720,22 +1250,22 @@
       }
     }
     if (scrollTarget === 'pa-section-date' || scrollTarget === 'pa-section-time') {
-      var secEl = document.getElementById(scrollTarget);
-      if (secEl && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        requestAnimationFrame(function () {
-          secEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        });
-      }
+      /* Single-screen wizard: panel swap only — never scroll the page. */
     }
     state.focusTarget = '';
 
-    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (!reduced && window.matchMedia('(max-width: 900px)').matches && state.step > 0) {
-      scrollToPanel();
+    if (stepDirection === 'fwd' || stepDirection === 'back' || stepDirection === 'init') {
+      announceStep();
+      requestAnimationFrame(resetStepScroll);
     }
+
+    /* No scrollToPanel — booking stays in one viewport. */
   }
 
   function scrollToPanel() {
+    if (document.body.classList.contains('is-booking-funnel')) {
+      return;
+    }
     var anchor = document.getElementById('pa-booking-app');
     if (!anchor) return;
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -754,7 +1284,8 @@
 
   function appendBookingAction(parent, btn, stickyOnMobile, footnote) {
     var wrap = document.createElement('div');
-    wrap.className = 'pa-booking-actions' + (stickyOnMobile ? ' pa-booking-actions--sticky' : '');
+    wrap.className = 'pa-booking-actions pa-booking-actions--primary' +
+      (stickyOnMobile ? ' pa-booking-actions--sticky' : '');
     wrap.appendChild(btn);
     if (footnote) {
       wrap.appendChild(footnote);
@@ -826,7 +1357,7 @@
     var list = document.createElement('ol');
     list.className = 'pa-whats-next-list';
     var steps = state.stripeReady
-      ? ['Pay deposit & submit', 'Personal confirmation within 1 business day', 'Pre-production call before your event']
+      ? ['Reserve your date', 'Personal confirmation within 1 business day', 'Pre-production call before your event']
       : ['Submit your request', 'Personal confirmation within 1 business day', 'Deposit & final details by email'];
     steps.forEach(function (text, i) {
       var li = document.createElement('li');
@@ -853,8 +1384,8 @@
     var el = document.createElement('div');
     el.className = 'pa-fast-banner';
     el.innerHTML =
-      '<span class="pa-fast-banner-lead">Takes about 2 minutes</span>' +
-      '<span class="pa-fast-banner-pill">' + (state.stripeReady ? 'Date \u2192 Details \u2192 Deposit' : 'Date \u2192 Details') + '</span>' +
+      '<span class="pa-fast-banner-lead">Takes about 3 minutes</span>' +
+      '<span class="pa-fast-banner-pill">Service \u2192 Event \u2192 Reserve</span>' +
       (state.stripeReady ? '<span class="pa-fast-banner-pill">Secure checkout</span>' : '<span class="pa-fast-banner-pill">No payment now</span>');
     return el;
   }
@@ -883,7 +1414,7 @@
   function buildProgress() {
     var steps = activeSteps();
     var wrap = document.createElement('nav');
-    wrap.className = 'pa-stepper' + (steps.length === 2 ? ' pa-stepper-two' : '');
+    wrap.className = 'pa-stepper pa-stepper--minimal pa-stepper-v40' + (steps.length === 2 ? ' pa-stepper-two' : ' pa-stepper-three');
     wrap.setAttribute('aria-label', 'Step ' + (state.step + 1) + ' of ' + steps.length + ': ' + steps[state.step]);
 
     steps.forEach(function (label, i) {
@@ -894,6 +1425,9 @@
         item.addEventListener('click', function () {
           state.step = i;
           state.error = '';
+          if (i === 0) {
+            clearSchedulePanelOverride();
+          }
           state.focusTarget = 'step';
           render();
         });
@@ -903,6 +1437,9 @@
       item.className = 'pa-stepper-item' + (i === state.step ? ' is-active' : '') + (i < state.step ? ' is-done is-clickable' : '');
       if (i === state.step) {
         item.setAttribute('aria-current', 'step');
+      }
+      if (i < state.step) {
+        item.setAttribute('aria-label', 'Go back to ' + label);
       }
       var num = document.createElement('span');
       num.className = 'pa-stepper-num';
@@ -924,10 +1461,52 @@
     var fill = document.createElement('span');
     fill.className = 'pa-stepper-meter-fill';
     fill.style.width = String(((state.step + 1) / steps.length) * 100) + '%';
+    fill.setAttribute('data-progress', String(state.step + 1));
     meter.appendChild(fill);
     wrap.appendChild(meter);
 
     return wrap;
+  }
+
+  function buildStepContext() {
+    var hints = activeStepHints();
+
+    // Stepper already shows Service · Event · Review — avoid duplicate H2 titles.
+    var titleText = state.step === 1 ? (hints[1] || '') : '';
+    if (!titleText) {
+      return null;
+    }
+
+    var header = document.createElement('header');
+    header.className = 'pa-wizard-context pa-wizard-context-v40';
+
+    var title = document.createElement('h2');
+    title.className = 'pa-wizard-context-title';
+    title.id = 'pa-wizard-step-title';
+    title.textContent = titleText;
+    header.appendChild(title);
+    return header;
+  }
+
+  function buildStepBackToolbar(backLabel, ariaLabel, onBack) {
+    var toolbar = document.createElement('div');
+    toolbar.className = 'pa-step-toolbar pa-step-toolbar--back-only';
+    var back = document.createElement('button');
+    back.type = 'button';
+    back.className = 'pa-wizard-back';
+    back.setAttribute('aria-label', ariaLabel || ('Back to ' + backLabel));
+    var chevron = document.createElement('span');
+    chevron.className = 'pa-wizard-back-chevron';
+    chevron.setAttribute('aria-hidden', 'true');
+    chevron.textContent = '\u2039';
+    var label = document.createElement('span');
+    label.className = 'pa-wizard-back-label';
+    label.textContent = backLabel;
+    back.appendChild(chevron);
+    back.appendChild(label);
+    back.addEventListener('click', onBack);
+    toolbar.appendChild(back);
+    return toolbar;
   }
 
   function buildScheduleIntro() {
@@ -996,6 +1575,19 @@
     return 3;
   }
 
+  /** Which schedule sub-panel is visible in single-screen wizard mode. */
+  function getVisibleSchedulePanel() {
+    if (typeof state.schedulePanelOverride === 'number') {
+      return state.schedulePanelOverride;
+    }
+    var flow = getScheduleFlowIndex();
+    return flow >= 3 ? 2 : flow;
+  }
+
+  function clearSchedulePanelOverride() {
+    state.schedulePanelOverride = null;
+  }
+
   function scheduleFlowSteps() {
     return [
       {
@@ -1019,59 +1611,85 @@
     ];
   }
 
+  /** True on phone-width screens (matches the CSS single-screen breakpoint). */
+  function isMobileViewport() {
+    return typeof window !== 'undefined' &&
+      window.matchMedia &&
+      window.matchMedia('(max-width: 767px)').matches;
+  }
+
+  /**
+   * Decide whether the schedule step renders one sub-panel at a time
+   * (Service -> Date -> Time) instead of the side-by-side overview.
+   *
+   * WHY: Booking should feel like a single-screen wizard on every device —
+   * one focused step that fills the booking area, advanced with a Next button.
+   * The old side-by-side desktop layout left the Date/Time columns empty and
+   * disabled until a service was picked, which read as content "squashed" to
+   * the left. So we always use the single-panel flow now (phone, tablet, desktop).
+   */
+  function useSchedulePanels() {
+    return true;
+  }
+
   function appendScheduleFlowClasses(el, index) {
-    var flowIndex = getScheduleFlowIndex();
-    el.classList.remove('is-flow-done', 'is-flow-current', 'is-flow-upcoming');
-    if (index < flowIndex || (flowIndex === 3 && index < 3)) {
-      el.classList.add('is-flow-done');
-    } else if (index === flowIndex) {
+    el.classList.remove('is-flow-done', 'is-flow-current', 'is-flow-upcoming', 'is-flow-hidden', 'is-flow-visible');
+    if (!useSchedulePanels()) {
+      el.classList.add('is-flow-visible');
+      return;
+    }
+    var panel = getVisibleSchedulePanel();
+    if (index === panel) {
       el.classList.add('is-flow-current');
+    } else if (index < panel) {
+      el.classList.add('is-flow-done');
     } else {
       el.classList.add('is-flow-upcoming');
     }
   }
 
   function scrollToScheduleTarget(targetId) {
-    var target = document.getElementById(targetId);
-    if (!target) {
-      return;
+    var map = { 'pa-section-service': 0, 'pa-section-date': 1, 'pa-section-time': 2 };
+    if (map[targetId] !== undefined) {
+      state.schedulePanelOverride = map[targetId];
+      render();
     }
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      target.scrollIntoView({ block: 'nearest' });
-      return;
-    }
-    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   function buildServicePicker() {
     var section = document.createElement('section');
-    section.className = 'pa-booking-section-inner';
+    section.className = 'pa-booking-section-inner pa-schedule-col';
     section.setAttribute('aria-labelledby', 'pa-service-heading');
 
-    var head = document.createElement('h3');
-    head.id = 'pa-service-heading';
-    head.className = 'pa-section-title';
-    head.textContent = 'Package';
-    section.appendChild(head);
-
-    var pricingNote = document.createElement('p');
-    pricingNote.className = 'pa-section-hint pa-package-pricing-note';
-    pricingNote.textContent = 'Package pricing is customized to your event — you\u2019ll receive a written quote within one business day.';
-    section.appendChild(pricingNote);
+    var heading = document.createElement('h3');
+    heading.id = 'pa-service-heading';
+    heading.className = 'pa-schedule-col-title pa-section-title';
+    heading.textContent = 'What can we help you with?';
+    if (!useSchedulePanels()) {
+      section.appendChild(heading);
+    }
 
     if (state.service && !state.serviceExpanded) {
       var row = document.createElement('div');
-      row.className = 'pa-service-selected';
+      row.className = 'pa-service-selected pa-service-selected--compact';
       var name = document.createElement('strong');
       name.className = 'pa-selected-value';
-      name.textContent = state.service;
+      name.textContent = getServiceDisplayLabel(state.service);
       row.appendChild(name);
+      var pkgSelected = getServicePackage(state.service);
+      if (pkgSelected && pkgSelected.starting_price_cents > 0) {
+        var price = document.createElement('span');
+        price.className = 'pa-service-selected-price';
+        price.textContent = 'From ' + formatMoney(pkgSelected.starting_price_cents / 100);
+        row.appendChild(price);
+      }
       var change = document.createElement('button');
       change.type = 'button';
       change.className = 'pa-text-btn';
       change.textContent = 'Change';
       change.addEventListener('click', function () {
         state.serviceExpanded = true;
+        state.schedulePanelOverride = 0;
         render();
       });
       row.appendChild(change);
@@ -1083,12 +1701,15 @@
     list.className = 'pa-service-list pa-service-list--simple';
     list.setAttribute('role', 'radiogroup');
     list.setAttribute('aria-label', 'Services');
-    state.services.forEach(function (svc, i) {
+    state.services.forEach(function (svc) {
+      if (!SERVICE_V4_LABELS[svc]) {
+        return;
+      }
       var pkg = getServicePackage(svc);
       var btn = document.createElement('button');
       btn.type = 'button';
       var isRecommended = svc === RECOMMENDED_SERVICE;
-      btn.className = 'pa-service-option pa-service-package pa-service-package--simple pa-choice pa-stagger-item' +
+      btn.className = 'pa-service-option pa-service-package pa-service-package--simple pa-choice' +
         (state.service === svc ? ' is-selected' : '') +
         (isRecommended ? ' is-recommended' : '');
       btn.setAttribute('role', 'radio');
@@ -1106,7 +1727,7 @@
 
       var nameEl = document.createElement('span');
       nameEl.className = 'pa-service-option-name';
-      nameEl.textContent = svc;
+      nameEl.textContent = getServiceDisplayLabel(svc);
       body.appendChild(nameEl);
 
       var blurb = document.createElement('span');
@@ -1114,7 +1735,22 @@
       blurb.textContent = pkg.tagline || serviceBlurb(svc);
       body.appendChild(blurb);
 
+      if (pkg && pkg.starting_price_cents > 0) {
+        var priceEl = document.createElement('span');
+        priceEl.className = 'pa-service-option-price';
+        priceEl.textContent = 'From ' + formatMoney(pkg.starting_price_cents / 100);
+        body.appendChild(priceEl);
+      }
+
       btn.appendChild(body);
+
+      if (state.service === svc) {
+        var check = document.createElement('span');
+        check.className = 'pa-service-option-check';
+        check.setAttribute('aria-hidden', 'true');
+        check.textContent = '\u2713';
+        btn.appendChild(check);
+      }
 
       btn.addEventListener('click', function () {
         if (state.service === svc) return;
@@ -1122,7 +1758,7 @@
         state.serviceExpanded = false;
         state.selectedAddons = {};
         state.error = '';
-        state.focusTarget = 'pa-section-date';
+        clearSchedulePanelOverride();
         prefetchMonth(shiftMonthKey(state.month, 1));
         render();
       });
@@ -1132,118 +1768,301 @@
     return section;
   }
 
+  function goToSchedulePanel(panelIndex) {
+    state.schedulePanelOverride = panelIndex;
+    if (panelIndex === 0) {
+      state.serviceExpanded = false;
+    }
+    state.error = '';
+    render();
+  }
+
+  function buildWizardPanelNav(opts) {
+    opts = opts || {};
+    var bar = document.createElement('div');
+    bar.className = 'pa-wizard-panel-nav';
+
+    if (opts.showBack && typeof opts.onBack === 'function') {
+      var back = document.createElement('button');
+      back.type = 'button';
+      back.className = 'pa-wizard-back';
+      back.setAttribute('aria-label', 'Back to ' + (opts.backLabel || 'previous step'));
+      var chevron = document.createElement('span');
+      chevron.className = 'pa-wizard-back-chevron';
+      chevron.setAttribute('aria-hidden', 'true');
+      chevron.textContent = '\u2039';
+      var backLabel = document.createElement('span');
+      backLabel.className = 'pa-wizard-back-label';
+      backLabel.textContent = opts.backLabel || 'Back';
+      back.appendChild(chevron);
+      back.appendChild(backLabel);
+      back.addEventListener('click', opts.onBack);
+      bar.appendChild(back);
+    }
+
+    var title = document.createElement('h3');
+    title.className = 'pa-wizard-panel-title pa-section-title';
+    if (opts.titleId) {
+      title.id = opts.titleId;
+    }
+    title.textContent = opts.title || '';
+    bar.appendChild(title);
+
+    if (opts.hint) {
+      var hint = document.createElement('p');
+      hint.className = 'pa-panel-hint pa-wizard-panel-hint';
+      hint.textContent = opts.hint;
+      bar.appendChild(hint);
+    }
+
+    return bar;
+  }
+
+  function decorateSchedulePanelNav(section, panelIndex) {
+    if (getVisibleSchedulePanel() !== panelIndex) {
+      return;
+    }
+    var titles = ['What can we help you with?', 'When is your event?', 'Time'];
+    var backLabels = [null, 'Service', 'Date'];
+    var title = titles[panelIndex];
+    if (panelIndex === 1 && state.selectedDates.length > 1) {
+      title = 'Dates';
+    }
+    section.insertBefore(buildWizardPanelNav({
+      title: title,
+      titleId: panelIndex === 0 ? 'pa-service-heading' : '',
+      showBack: panelIndex > 0,
+      backLabel: backLabels[panelIndex],
+      hint: '',
+      onBack: panelIndex > 0 ? function () {
+        goToSchedulePanel(panelIndex - 1);
+      } : null,
+    }), section.firstChild);
+  }
+
+  function buildWizardSummaryBar() {
+    var row = document.createElement('div');
+    row.className = 'pa-wizard-summary-bar pa-wizard-summary-bar--compact';
+    row.setAttribute('aria-label', 'Your selections');
+
+    var text = document.createElement('p');
+    text.className = 'pa-wizard-summary';
+    var parts = [
+      state.service,
+      state.selectedDates.map(formatDisplayDate).join(', '),
+      state.timeWindow,
+    ].filter(Boolean);
+    text.textContent = parts.join(' \u00b7 ');
+    row.appendChild(text);
+
+    var edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'pa-wizard-summary-edit';
+    edit.textContent = 'Edit schedule';
+    edit.addEventListener('click', function () {
+      state.step = 0;
+      goToSchedulePanel(1);
+    });
+    row.appendChild(edit);
+
+    return row;
+  }
+
+  function buildSchedulePanelNext(label, panelIndex) {
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pa-submit pa-btn pa-schedule-panel-next';
+    btn.textContent = label;
+    btn.addEventListener('click', function () {
+      goToSchedulePanel(panelIndex);
+    });
+    return btn;
+  }
+
+  function buildPricingSummary() {
+    var panel = document.createElement('aside');
+    panel.className = 'pa-pricing-summary pa-pricing-summary--sticky';
+    panel.setAttribute('aria-label', 'Pricing summary');
+
+    var pkg = state.service ? getServicePackage(state.service) : null;
+    var head = document.createElement('div');
+    head.className = 'pa-pricing-summary-head';
+
+    var label = document.createElement('span');
+    label.className = 'pa-pricing-summary-label';
+    label.textContent = state.service ? getServiceDisplayLabel(state.service) : 'Select a service';
+    head.appendChild(label);
+
+    if (!state.service) {
+      panel.appendChild(head);
+      var placeholder = document.createElement('p');
+      placeholder.className = 'pa-pricing-summary-note pa-pricing-summary-note--placeholder';
+      placeholder.textContent = 'Pricing updates as you choose your coverage.';
+      panel.appendChild(placeholder);
+    } else {
+      if (pkg && pkg.starting_price_cents > 0) {
+        var from = document.createElement('span');
+        from.className = 'pa-pricing-summary-from';
+        from.textContent = 'From ' + formatMoney(pkg.starting_price_cents / 100);
+        head.appendChild(from);
+      }
+      panel.appendChild(head);
+    }
+
+    if (state.stripeReady && state.depositPerDay > 0 && state.service) {
+      var deposit = document.createElement('div');
+      deposit.className = 'pa-pricing-summary-deposit';
+      var depLabel = document.createElement('span');
+      depLabel.className = 'pa-pricing-summary-deposit-label';
+      depLabel.textContent = 'Deposit';
+      var depAmt = document.createElement('strong');
+      depAmt.className = 'pa-pricing-summary-deposit-amount';
+      depAmt.textContent = formatMoney(getDepositTotal());
+      deposit.appendChild(depLabel);
+      deposit.appendChild(depAmt);
+      panel.appendChild(deposit);
+
+      var note = document.createElement('p');
+      note.className = 'pa-pricing-summary-note';
+      note.textContent = getDayCount() > 1
+        ? formatMoney(state.depositPerDay) + ' per day \u00b7 Applied toward your final project balance.'
+        : 'Applied toward your final project balance.';
+      panel.appendChild(note);
+    }
+
+    return panel;
+  }
+
+  function buildScheduleContinueAction() {
+    var ready = canAdvanceFromSchedule();
+    var actions = document.createElement('div');
+    actions.className = 'pa-booking-actions pa-booking-actions--sticky pa-step-continue';
+
+    var btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'pa-submit pa-btn' + (ready ? ' is-ready' : '');
+    btn.disabled = !ready;
+    btn.setAttribute('aria-describedby', 'pa-schedule-continue-hint');
+    btn.textContent = 'Continue';
+    btn.addEventListener('click', function () {
+      if (!canAdvanceFromSchedule()) {
+        if (!state.service) {
+          showToast('Please choose a service.', 'error');
+        } else if (!state.selectedDates.length) {
+          showToast('Please select an event date.', 'error');
+        } else if (!state.timeWindow) {
+          showToast('Please select a time window.', 'error');
+        }
+        return;
+      }
+      state.step = 1;
+      state.error = '';
+      state.focusTarget = 'step';
+      render();
+    });
+    actions.appendChild(btn);
+
+    var hint = document.createElement('p');
+    hint.className = 'pa-continue-footnote';
+    hint.id = 'pa-schedule-continue-hint';
+    hint.textContent = ready
+      ? 'Next: event details.'
+      : 'Select service, date, and time to continue.';
+    actions.appendChild(hint);
+
+    return actions;
+  }
+
   function buildScheduleStep() {
     var wrap = document.createElement('div');
-    wrap.className = 'pa-step pa-step-schedule';
+    wrap.className = 'pa-step pa-step-schedule pa-schedule-v40';
     wrap.id = 'pa-step-focus-0';
 
+    var scroll = document.createElement('div');
+    scroll.className = 'pa-step-scroll';
+
     var sheet = document.createElement('div');
-    sheet.className = 'pa-booking-sheet';
-    sheet.appendChild(buildScheduleTrust());
-    sheet.appendChild(buildScheduleChecklist());
+    sheet.className = 'pa-booking-sheet pa-booking-sheet--wizard pa-schedule-grid-v25 pa-schedule-sheet-v25';
 
     var serviceSection = document.createElement('div');
     serviceSection.id = 'pa-section-service';
-    serviceSection.className = 'pa-booking-section pa-glass-section pa-glass-section--service';
+    serviceSection.className = 'pa-booking-section pa-glass-section pa-glass-section--service pa-schedule-col';
     appendScheduleFlowClasses(serviceSection, 0);
     serviceSection.appendChild(buildServicePicker());
+    if (useSchedulePanels()) {
+      decorateSchedulePanelNav(serviceSection, 0);
+    }
     sheet.appendChild(serviceSection);
 
     var dateSection = document.createElement('div');
     dateSection.id = 'pa-section-date';
-    dateSection.className = 'pa-booking-section pa-glass-section pa-glass-section--schedule' +
+    dateSection.className = 'pa-booking-section pa-glass-section pa-glass-section--schedule pa-schedule-col' +
       (state.service ? ' is-unlocked' : ' is-disabled');
     appendScheduleFlowClasses(dateSection, 1);
 
-    var dateHead = document.createElement('h3');
-    dateHead.className = 'pa-section-title';
-    dateHead.textContent = 'Date';
-    dateSection.appendChild(dateHead);
-
-    if (state.service) {
-      var dateHint = document.createElement('p');
-      dateHint.className = 'pa-panel-hint pa-date-hint';
-      dateHint.textContent = 'Tap an open date on the calendar. Multi-day events? Select each day you need.';
-      dateSection.appendChild(dateHint);
-    }
-
     if (!state.service) {
-      var locked = document.createElement('p');
-      locked.className = 'pa-panel-hint';
-      locked.textContent = 'Choose a service above first.';
-      dateSection.appendChild(locked);
+      dateSection.appendChild(buildEmptyState('Select a service to begin.'));
     } else {
       dateSection.appendChild(buildCalendar());
       dateSection.appendChild(buildCalLegend());
-      dateSection.appendChild(buildCalendarFooter());
-      if (state.stripeReady && state.selectedDates.length) {
-        dateSection.appendChild(buildDepositPreviewStrip());
-      }
       if (state.selectedDates.length) {
         dateSection.appendChild(buildSelectedDatesChips());
-        var timeSection = document.createElement('div');
-        timeSection.id = 'pa-section-time';
-        timeSection.className = 'pa-time-section pa-glass-section pa-glass-section--time';
-        appendScheduleFlowClasses(timeSection, 2);
-        var timeHead = document.createElement('h3');
-        timeHead.className = 'pa-section-title';
-        timeHead.textContent = 'Time';
-        timeSection.appendChild(timeHead);
-        var timeHint = document.createElement('p');
-        timeHint.className = 'pa-panel-hint pa-time-hint';
-        timeHint.textContent = 'Select the window that best matches your event schedule.';
-        timeSection.appendChild(timeHint);
-        timeSection.appendChild(buildTimeWindows());
-        dateSection.appendChild(timeSection);
+      }
+      if (state.selectedDates.length && useSchedulePanels() && getVisibleSchedulePanel() === 1) {
+        dateSection.appendChild(buildSchedulePanelNext('Continue', 2));
       }
     }
+    if (useSchedulePanels()) {
+      decorateSchedulePanelNav(dateSection, 1);
+    }
     sheet.appendChild(dateSection);
-    wrap.appendChild(sheet);
-    wrap.appendChild(buildLiveRecapBar());
 
-    var ready = canAdvanceFromSchedule();
-    var next = document.createElement('button');
-    next.type = 'button';
-    next.className = 'pa-submit pa-btn pa-schedule-continue' + (ready ? ' is-ready' : ' is-disabled');
-    next.textContent = ready ? 'Continue' : 'Complete the steps above';
-    next.disabled = !ready;
-    next.setAttribute('aria-disabled', ready ? 'false' : 'true');
-    next.addEventListener('click', function () {
-      if (!state.service) {
-        state.error = 'Select a service.';
-        state.focusTarget = 'error';
-        render();
-        return;
-      }
-      if (!state.selectedDates.length) {
-        state.error = 'Select at least one date.';
-        state.focusTarget = 'error';
-        render();
-        return;
-      }
-      if (!state.timeWindow) {
-        state.error = 'Select a time.';
-        state.focusTarget = 'error';
-        render();
-        return;
-      }
-      state.error = '';
-      state.focusTarget = 'step';
-      state.step = 1;
-      render();
-    });
-    appendBookingAction(wrap, next, true, buildContinueFootnote(ready));
+    var timeSection = document.createElement('div');
+    timeSection.id = 'pa-section-time';
+    timeSection.className = 'pa-time-section pa-glass-section pa-glass-section--time pa-schedule-col' +
+      (state.service && state.selectedDates.length ? ' is-unlocked' : ' is-disabled');
+    appendScheduleFlowClasses(timeSection, 2);
+
+    if (!state.service) {
+      timeSection.appendChild(buildEmptyState('Select a service to begin.'));
+    } else if (!state.selectedDates.length) {
+      timeSection.appendChild(buildEmptyState('Choose the day you\u2019d like us to reserve.'));
+    } else {
+      timeSection.appendChild(buildTimeWindows());
+    }
+    if (useSchedulePanels()) {
+      decorateSchedulePanelNav(timeSection, 2);
+    }
+    sheet.appendChild(timeSection);
+
+    scroll.appendChild(sheet);
+    wrap.appendChild(scroll);
+
+    var dock = document.createElement('div');
+    dock.className = 'pa-schedule-footer-dock';
+    dock.appendChild(buildPricingSummary());
+    var continueWrap = buildScheduleContinueAction();
+    continueWrap.classList.add('pa-schedule-footer-cta');
+    dock.appendChild(continueWrap);
+    wrap.appendChild(dock);
 
     return wrap;
   }
 
   function buildScheduleProgress() {
+    if (!useSchedulePanels()) {
+      var skip = document.createElement('div');
+      skip.className = 'pa-flow-progress pa-flow-progress--hidden';
+      skip.setAttribute('aria-hidden', 'true');
+      return skip;
+    }
     var flowIndex = getScheduleFlowIndex();
+    var panel = getVisibleSchedulePanel();
     var steps = scheduleFlowSteps();
     var allDone = flowIndex === 3;
 
     var nav = document.createElement('nav');
-    nav.className = 'pa-flow-progress';
+    nav.className = 'pa-flow-progress pa-flow-progress--sub';
     nav.setAttribute('aria-label', 'Schedule progress');
 
     var track = document.createElement('ol');
@@ -1251,7 +2070,7 @@
 
     steps.forEach(function (step, i) {
       var isDone = step.done;
-      var isActive = !allDone && i === flowIndex;
+      var isActive = i === panel;
       var isUpcoming = !isDone && !isActive;
 
       var item = document.createElement('li');
@@ -1259,8 +2078,8 @@
         (isDone ? ' is-done' : '') +
         (isActive ? ' is-active' : '') +
         (isUpcoming ? ' is-upcoming' : '') +
-        (allDone && i === 2 ? ' is-active is-complete' : '');
-      if (isActive || (allDone && i === 2)) {
+        (allDone && i === 2 ? ' is-complete' : '');
+      if (isActive) {
         item.setAttribute('aria-current', 'step');
       }
 
@@ -1279,28 +2098,17 @@
       label.className = 'pa-flow-progress-label';
       label.textContent = step.label;
 
-      var status = document.createElement('span');
-      status.className = 'pa-flow-progress-status';
-      if (isActive) {
-        status.textContent = 'Now';
-      } else if (isDone) {
-        status.textContent = 'Done';
-      } else {
-        status.textContent = 'Next';
-      }
-
       stepBtn.appendChild(icon);
       stepBtn.appendChild(label);
-      stepBtn.appendChild(status);
       item.appendChild(stepBtn);
       track.appendChild(item);
 
-      if (isDone || isActive || i <= flowIndex) {
-        stepBtn.addEventListener('click', function (targetId) {
+      if (isDone || i <= flowIndex) {
+        stepBtn.addEventListener('click', function (targetIndex) {
           return function () {
-            scrollToScheduleTarget(targetId);
+            goToSchedulePanel(targetIndex);
           };
-        }(step.target));
+        }(i));
       }
     });
 
@@ -1411,10 +2219,6 @@
     badge.className = 'pa-cal-availability-badge' + (openCount === 0 ? ' is-empty' : '');
     badge.textContent = openCount === 0 ? 'Fully booked' : (openCount === 1 ? '1 open date' : openCount + ' open dates');
     strip.appendChild(badge);
-    var note = document.createElement('span');
-    note.className = 'pa-cal-meta-note';
-    note.textContent = 'Live availability';
-    strip.appendChild(note);
     if (state.month > monthKey(new Date())) {
       var todayBtn = document.createElement('button');
       todayBtn.type = 'button';
@@ -1471,13 +2275,13 @@
     var wrap = document.createElement('div');
     wrap.className = 'pa-time-wrap';
     var grid = document.createElement('div');
-    grid.className = 'pa-time-grid';
+    grid.className = 'pa-time-grid pa-time-grid-v40';
     grid.setAttribute('role', 'radiogroup');
     grid.setAttribute('aria-label', 'Time windows');
     TIME_WINDOWS.forEach(function (tw, i) {
       var btn = document.createElement('button');
       btn.type = 'button';
-      btn.className = 'pa-time-card pa-choice pa-stagger-item' + (state.timeWindow === tw ? ' is-selected' : '');
+      btn.className = 'pa-time-card pa-choice' + (state.timeWindow === tw ? ' is-selected' : '');
       btn.setAttribute('role', 'radio');
       btn.setAttribute('aria-checked', state.timeWindow === tw ? 'true' : 'false');
       var parts = parseTimeWindow(tw);
@@ -1488,6 +2292,7 @@
       btn.addEventListener('click', function () {
         state.timeWindow = tw;
         state.error = '';
+        clearSchedulePanelOverride();
         render();
       });
       grid.appendChild(btn);
@@ -1498,7 +2303,7 @@
 
   function buildCalendar() {
     var wrap = document.createElement('div');
-    wrap.className = 'pa-cal pa-cal-premium pa-cal-pro';
+    wrap.className = 'pa-cal pa-cal-premium pa-cal-pro pa-cal-v40';
     wrap.setAttribute('data-month', state.month);
     var parts = state.month.split('-');
     var y = parseInt(parts[0], 10);
@@ -1576,7 +2381,6 @@
       grid.appendChild(blank);
     }
 
-    var animIndex = 0;
     for (var day = 1; day <= daysInMonth; day++) {
       var dateObj = new Date(y, m, day);
       var iso = state.month + '-' + String(day).padStart(2, '0');
@@ -1610,11 +2414,6 @@
       } else {
         btn.classList.add('is-available');
         btn.setAttribute('aria-label', label + ' — available');
-        if (animIndex < 6) {
-          btn.classList.add('pa-cal-day-animate');
-          btn.style.animationDelay = (animIndex * 0.02) + 's';
-          animIndex += 1;
-        }
         btn.addEventListener('click', (function (d) {
           return function () {
             toggleSelectedDate(d);
@@ -1707,12 +2506,130 @@
     return card;
   }
 
+  var policiesDialogEl = null;
+
+  /**
+   * Booking policies live in hidden page supplement; show them in an accessible dialog.
+   */
+  function ensureBookingPoliciesDialog() {
+    if (policiesDialogEl) {
+      return policiesDialogEl;
+    }
+
+    var dialog = document.createElement('dialog');
+    dialog.className = 'pa-policies-dialog';
+    dialog.id = 'pa-booking-policies-dialog';
+    dialog.setAttribute('aria-labelledby', 'pa-booking-policies-dialog-title');
+
+    var panel = document.createElement('div');
+    panel.className = 'pa-policies-dialog__panel';
+
+    var closeBtn = document.createElement('button');
+    closeBtn.type = 'button';
+    closeBtn.className = 'pa-policies-dialog__close';
+    closeBtn.setAttribute('aria-label', 'Close booking policies');
+    closeBtn.textContent = 'Close';
+
+    var title = document.createElement('h2');
+    title.id = 'pa-booking-policies-dialog-title';
+    title.className = 'pa-policies-dialog__title';
+    title.textContent = 'Booking policies';
+
+    var grid = document.createElement('div');
+    grid.className = 'pa-policies-dialog__grid';
+
+    var policies = (PABooking && PABooking.policies) ? PABooking.policies : {};
+    [
+      { key: 'deposit', label: 'Deposit' },
+      { key: 'cancel', label: 'Cancellation' },
+      { key: 'travel', label: 'Travel' },
+    ].forEach(function (item) {
+      var copy = policies[item.key];
+      if (!copy) {
+        return;
+      }
+      var card = document.createElement('div');
+      card.className = 'pa-policy-card';
+      var heading = document.createElement('h3');
+      heading.textContent = item.label;
+      var body = document.createElement('p');
+      body.textContent = copy;
+      card.appendChild(heading);
+      card.appendChild(body);
+      grid.appendChild(card);
+    });
+
+    if (!grid.childNodes.length) {
+      var fallback = document.createElement('p');
+      fallback.className = 'pa-policies-dialog__empty';
+      fallback.textContent = 'Policy details are confirmed in your booking email.';
+      grid.appendChild(fallback);
+    }
+
+    var legal = document.createElement('p');
+    legal.className = 'pa-policies-dialog__legal';
+    var privacyUrl = (PABooking && PABooking.legal && PABooking.legal.privacyUrl)
+      ? PABooking.legal.privacyUrl
+      : '/privacy-policy/';
+    var termsUrl = (PABooking && PABooking.legal && PABooking.legal.termsUrl)
+      ? PABooking.legal.termsUrl
+      : '/terms-of-service/';
+    var privacyA = document.createElement('a');
+    privacyA.href = privacyUrl;
+    privacyA.target = '_blank';
+    privacyA.rel = 'noopener noreferrer';
+    privacyA.textContent = 'Privacy Policy';
+    var termsA = document.createElement('a');
+    termsA.href = termsUrl;
+    termsA.target = '_blank';
+    termsA.rel = 'noopener noreferrer';
+    termsA.textContent = 'Terms of Service';
+    legal.appendChild(privacyA);
+    legal.appendChild(document.createTextNode(' · '));
+    legal.appendChild(termsA);
+
+    closeBtn.addEventListener('click', function () {
+      dialog.close();
+    });
+    dialog.addEventListener('click', function (e) {
+      if (e.target === dialog) {
+        dialog.close();
+      }
+    });
+
+    panel.appendChild(closeBtn);
+    panel.appendChild(title);
+    panel.appendChild(grid);
+    panel.appendChild(legal);
+    dialog.appendChild(panel);
+    document.body.appendChild(dialog);
+    policiesDialogEl = dialog;
+    return dialog;
+  }
+
+  function openBookingPoliciesDialog() {
+    var dialog = ensureBookingPoliciesDialog();
+    if (typeof dialog.showModal === 'function') {
+      try {
+        dialog.showModal();
+        return;
+      } catch (err) {
+        /* fall through for legacy browsers */
+      }
+    }
+    dialog.setAttribute('open', 'open');
+  }
+
+  function stopTermsLinkBubble(e) {
+    e.stopPropagation();
+  }
+
   function buildTermsAgreement() {
     if (!state.stripeReady) {
       return null;
     }
     var wrap = document.createElement('div');
-    wrap.className = 'pa-terms-agreement' + (state.fieldErrors['pa-terms-agree'] ? ' has-error' : '');
+    wrap.className = 'pa-terms-agreement pa-terms-agreement-v40' + (state.fieldErrors['pa-terms-agree'] ? ' has-error' : '');
 
     var label = document.createElement('label');
     label.className = 'pa-terms-agreement-label';
@@ -1727,7 +2644,10 @@
     cb.addEventListener('change', function () {
       state.termsAccepted = cb.checked;
       delete state.fieldErrors['pa-terms-agree'];
-      render();
+      wrap.classList.toggle('has-error', false);
+      cb.removeAttribute('aria-invalid');
+      var errEl = document.getElementById('pa-terms-agree-error');
+      if (errEl && errEl.parentNode) errEl.parentNode.removeChild(errEl);
     });
 
     var text = document.createElement('span');
@@ -1736,9 +2656,14 @@
     var policyLink = document.createElement('a');
     policyLink.href = '#pa-booking-policies';
     policyLink.className = 'pa-terms-link';
-    policyLink.textContent = 'deposit, cancellation, and travel policies';
+    policyLink.textContent = 'booking policies';
+    policyLink.addEventListener('click', function (e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openBookingPoliciesDialog();
+    });
     text.appendChild(policyLink);
-    text.appendChild(document.createTextNode(' and authorize the deposit payment. '));
+    text.appendChild(document.createTextNode(' and authorize my deposit. '));
     var privacy = (PABooking && PABooking.legal && PABooking.legal.privacyUrl) ? PABooking.legal.privacyUrl : '/privacy-policy/';
     var terms = (PABooking && PABooking.legal && PABooking.legal.termsUrl) ? PABooking.legal.termsUrl : '/terms-of-service/';
     var privacyLink = document.createElement('a');
@@ -1747,6 +2672,7 @@
     privacyLink.target = '_blank';
     privacyLink.rel = 'noopener noreferrer';
     privacyLink.textContent = 'Privacy';
+    privacyLink.addEventListener('click', stopTermsLinkBubble);
     text.appendChild(privacyLink);
     text.appendChild(document.createTextNode(' · '));
     var termsLink = document.createElement('a');
@@ -1755,6 +2681,7 @@
     termsLink.target = '_blank';
     termsLink.rel = 'noopener noreferrer';
     termsLink.textContent = 'Terms';
+    termsLink.addEventListener('click', stopTermsLinkBubble);
     text.appendChild(termsLink);
 
     label.appendChild(cb);
@@ -1840,6 +2767,11 @@
   }
 
   function buildBookingPayload() {
+    var notes = state.notes || '';
+    var utm = getUtmAttributionNote();
+    if (utm) {
+      notes = notes ? notes + '\n' + utm : utm;
+    }
     return {
       event_dates: state.selectedDates,
       service: state.service,
@@ -1850,7 +2782,7 @@
       time_window: state.timeWindow,
       venue: state.venue,
       organization: state.organization,
-      notes: state.notes,
+      notes: notes,
       guest_count: state.guestCount,
       terms_accepted: state.termsAccepted,
       addons: getSelectedAddonIds(),
@@ -1919,119 +2851,133 @@
 
   function buildDetailsStep() {
     var wrap = document.createElement('div');
-    wrap.className = 'pa-step' + (state.stripeReady ? ' pa-step-details-pay' : '');
+    wrap.className = 'pa-step pa-step-details';
     wrap.id = 'pa-step-focus-' + state.step;
 
-    wrap.appendChild(buildBookingRecap());
+    var scroll = document.createElement('div');
+    scroll.className = 'pa-step-scroll';
 
-    var toolbar = document.createElement('div');
-    toolbar.className = 'pa-step-toolbar';
-    var back = document.createElement('button');
-    back.type = 'button';
-    back.className = 'pa-back';
-    back.textContent = '\u2190 Edit schedule';
-    back.addEventListener('click', function () {
+    scroll.appendChild(buildStepBackToolbar('Schedule', 'Back to service and date', function () {
       state.step = 0;
-      state.error = '';
-      render();
-    });
-    toolbar.appendChild(back);
-    wrap.appendChild(toolbar);
-
-    wrap.appendChild(buildWhatHappensNext());
+      goToSchedulePanel(2);
+    }));
 
     var form = document.createElement('div');
-    form.className = 'pa-form pa-form-sheet pa-form-grouped';
-    form.setAttribute('aria-label', 'Contact details');
+    form.className = 'pa-form pa-form-sheet pa-form-sheet--grouped pa-form-wizard pa-form-sheet--flat pa-form-v40';
+    form.setAttribute('aria-label', 'Contact and event details');
 
-    form.appendChild(buildFormGroup(
-      'Contact',
-      'How we reach you with confirmation and your receipt.',
-      [
-        inputField('Full name', 'name', 'text', state.name, true, 'name', 'Jane Smith', 'Used on your booking confirmation.'),
-        inputField('Email', 'email', 'email', state.email, true, 'email', 'you@example.com', 'We send your receipt and next steps here.'),
-        inputField('Phone', 'phone', 'tel', state.phone, true, 'tel', '(717) 555-0100', 'For day-of coordination if needed.'),
-      ]
-    ));
+    var columns = document.createElement('div');
+    columns.className = 'pa-form-wizard-columns';
 
-    var eventFields = [
-      buildEventTypePills(),
-      inputField('Venue or city', 'venue', 'text', state.venue, true, 'address-level2', 'Harrisburg, PA or venue name', 'Where your event takes place.'),
-      inputField('Expected guests', 'guest-count', 'text', state.guestCount, false, 'off', 'e.g. 150', 'Helps us plan crew size and gear.'),
-    ];
-    var orgField = inputField('Organization', 'organization', 'text', state.organization, state.eventType === 'Corporate', 'organization', 'Company name', 'Required for corporate events.');
-    if (state.eventType !== 'Corporate') {
-      orgField.classList.add('is-hidden');
+    var colPrimary = document.createElement('div');
+    colPrimary.className = 'pa-form-wizard-col pa-form-wizard-col--primary';
+
+    var colSecondary = document.createElement('div');
+    colSecondary.className = 'pa-form-wizard-col pa-form-wizard-col--secondary';
+
+    var eventFields = document.createDocumentFragment();
+    if (isPhotoVideoService()) {
+      eventFields.appendChild(buildEventTypePills());
     }
-    eventFields.push(orgField);
-    form.appendChild(buildFormGroup(
+    var eventWrap = textareaField(
       'Event details',
-      'Tell us about your event so we can prepare the right crew and gear.',
-      eventFields
-    ));
-
-    var addonsSection = buildAddonsSection();
-    if (addonsSection) {
-      form.appendChild(addonsSection);
+      'notes',
+      state.notes,
+      eventNotesPlaceholder(),
+      'Tell us a little about your event.'
+    );
+    var eventTa = eventWrap.querySelector('textarea');
+    if (eventTa) {
+      eventTa.rows = 3;
+      eventTa.placeholder = eventNotesPlaceholder();
+      wireTextareaBlur(eventWrap, 'pa-notes');
     }
+    eventFields.appendChild(eventWrap);
+    var eventGroup = buildFormGroup('Event', '', [eventFields]);
+    eventGroup.classList.add('pa-form-group--wizard', 'pa-form-group--event');
+    colPrimary.appendChild(eventGroup);
 
-    form.appendChild(buildFormGroup(
-      'Production brief',
-      'Share timeline and access details — like a HoneyBook questionnaire.',
-      [
-        textareaField('Event timeline', 'timeline-notes', state.timelineNotes, 'Ceremony 4pm, reception 6pm, first dance 8pm…', 'Key moments and schedule.'),
-        textareaField('Venue access & load-in', 'venue-access', state.venueAccess, 'Loading dock, elevator, power locations…', 'Helps us plan gear and arrival time.'),
-        textareaField('Deliverables & creative direction', 'deliverables-notes', state.deliverablesNotes, 'Highlight reel length, must-have shots, audio needs…', 'What success looks like for you.'),
-      ]
-    ));
+    var locationGroup = buildFormGroup('Location', '', [
+      inputField('Event location', 'venue', 'text', state.venue, true, 'organization', 'Hilton Harrisburg', ''),
+    ]);
+    locationGroup.classList.add('pa-form-group--wizard', 'pa-form-group--location');
+    colPrimary.appendChild(locationGroup);
 
-    form.appendChild(buildFormGroup(
-      'Notes',
-      'Anything else we should know before your pre-production call.',
-      [textareaField('Special requests', 'notes', state.notes, 'Additional context not covered above…', 'Optional — up to 500 characters.')]
-    ));
+    var contactGroup = buildFormGroup('Contact', '', [
+      inputField('Full name', 'name', 'text', state.name, true, 'name', 'Jane Smith', ''),
+      inputField('Email', 'email', 'email', state.email, true, 'email', 'you@example.com', ''),
+      inputField('Phone', 'phone', 'tel', state.phone, true, 'tel', '(717) 555-0100', ''),
+    ]);
+    contactGroup.classList.add('pa-form-group--wizard', 'pa-form-group--contact');
+    colSecondary.appendChild(contactGroup);
 
-    wrap.appendChild(form);
-
-    var scheduleCard = buildPaymentScheduleCard();
-    if (scheduleCard) {
-      wrap.appendChild(scheduleCard);
+    var extraWrap = textareaField(
+      'Additional notes (optional)',
+      'extra-notes',
+      state.timelineNotes,
+      'Accessibility needs, parking, second shooter requests\u2026',
+      ''
+    );
+    var extraTa = extraWrap.querySelector('textarea');
+    if (extraTa) {
+      extraTa.rows = 2;
+      wireTextareaBlur(extraWrap, 'pa-extra-notes');
     }
+    var notesGroup = buildFormGroup('Additional notes', '', [extraWrap]);
+    notesGroup.classList.add('pa-form-group--wizard', 'pa-form-group--notes');
+    colSecondary.appendChild(notesGroup);
 
-    if (state.stripeReady) {
-      wrap.appendChild(buildTermsAgreement());
-      wrap.appendChild(buildCheckoutPanel(false, true));
-      wireDetailsPayButton(wrap);
-    } else {
-      var next = document.createElement('button');
-      next.type = 'button';
-      next.className = 'pa-submit pa-btn';
-      next.disabled = state.submitting;
-      next.textContent = state.submitting ? 'Sending request\u2026' : 'Submit request';
-      next.addEventListener('click', function () {
-        var validation = validateDetailsForm();
-        if (validation) {
-          if (validation.field === 'error') {
-            state.error = validation.message;
-            state.focusTarget = 'error';
-            showToast(validation.message, 'error');
-          } else {
-            clearFieldErrors();
-            setFieldError(validation.field, validation.message);
-          }
-          render();
-          return;
+    columns.appendChild(colPrimary);
+    columns.appendChild(colSecondary);
+    form.appendChild(columns);
+    scroll.appendChild(form);
+    wrap.appendChild(scroll);
+
+    var next = document.createElement('button');
+    next.type = 'button';
+    next.className = 'pa-submit pa-btn is-ready';
+    next.textContent = 'Continue to review';
+    next.addEventListener('click', function () {
+      var validation = validateContactForm();
+      if (validation) {
+        if (validation.field === 'error') {
+          state.error = validation.message;
+          state.focusTarget = 'error';
+          showToast(validation.message, 'error');
+        } else {
+          clearFieldErrors();
+          setFieldError(validation.field, validation.message, true);
         }
-        clearFieldErrors();
-        state.error = '';
-        submitBooking();
-      });
-      var footnote = document.createElement('p');
-      footnote.className = 'pa-continue-footnote';
-      footnote.textContent = 'No spam — just your booking confirmation and next steps.';
-      appendBookingAction(wrap, next, true, footnote);
-    }
+        render();
+        return;
+      }
+      clearFieldErrors();
+      state.error = '';
+      state.step = 2;
+      state.focusTarget = 'step';
+      render();
+    });
+    var footnote = document.createElement('p');
+    footnote.className = 'pa-continue-footnote';
+    footnote.textContent = 'Next: review your booking.';
+    appendBookingAction(wrap, next, true, footnote);
+
     return wrap;
+  }
+
+  function wireTextareaBlur(wrap, fieldId) {
+    var ta = wrap.querySelector('textarea');
+    if (!ta) return;
+    ta.addEventListener('input', function () {
+      scheduleDraftSave();
+      if (state.fieldErrors[fieldId]) {
+        delete state.fieldErrors[fieldId];
+        wrap.classList.remove('has-error');
+        ta.removeAttribute('aria-invalid');
+        var errEl = document.getElementById(fieldId + '-error');
+        if (errEl && errEl.parentNode) errEl.parentNode.removeChild(errEl);
+      }
+    });
   }
 
   function wireDetailsPayButton(wrap) {
@@ -2071,7 +3017,7 @@
 
   function buildEventTypePills() {
     var wrap = document.createElement('fieldset');
-    wrap.className = 'pa-event-wrap';
+    wrap.className = 'pa-event-wrap pa-event-wrap-v40';
     var legend = document.createElement('legend');
     legend.className = 'pa-field-label';
     legend.textContent = 'Event type';
@@ -2101,108 +3047,103 @@
   }
 
   function buildBookingRecap() {
+    readDetailsFromForm();
     var recap = document.createElement('aside');
-    recap.className = 'pa-booking-recap pa-booking-recap-premium pa-booking-recap-invoice';
+    recap.className = 'pa-booking-recap pa-review-summary pa-review-summary-v40';
     recap.setAttribute('aria-label', 'Booking summary');
 
-    var head = document.createElement('div');
-    head.className = 'pa-booking-recap-head';
-    var kicker = document.createElement('span');
-    kicker.className = 'pa-booking-recap-kicker';
-    kicker.textContent = 'Booking summary';
-    head.appendChild(kicker);
-    if (state.stripeReady && state.selectedDates.length) {
-      var badge = document.createElement('span');
-      badge.className = 'pa-booking-recap-badge';
-      badge.textContent = formatMoney(getDepositTotal()) + ' deposit';
-      head.appendChild(badge);
-    }
-    var edit = document.createElement('button');
-    edit.type = 'button';
-    edit.className = 'pa-recap-edit';
-    edit.textContent = 'Edit schedule';
-    edit.addEventListener('click', function () {
-      state.step = 0;
-      state.error = '';
-      render();
-    });
-    head.appendChild(edit);
-    recap.appendChild(head);
+    var title = document.createElement('h3');
+    title.className = 'pa-review-summary-title';
+    title.textContent = 'Booking summary';
+    recap.appendChild(title);
 
-    var lines = document.createElement('div');
-    lines.className = 'pa-recap-invoice-lines';
+    var list = document.createElement('div');
+    list.className = 'pa-review-summary-list';
 
-    function addLine(label, value, scrollTarget) {
+    function addRow(label, value, editStep, scrollTarget) {
       if (!value) return;
       var row = document.createElement('div');
-      row.className = 'pa-recap-invoice-line';
-      var labelEl = document.createElement('span');
-      labelEl.className = 'pa-recap-invoice-label';
-      labelEl.textContent = label;
-      var valueEl = document.createElement('span');
-      valueEl.className = 'pa-recap-invoice-value';
-      valueEl.textContent = value;
-      row.appendChild(labelEl);
-      row.appendChild(valueEl);
-      if (scrollTarget) {
-        var editLine = document.createElement('button');
-        editLine.type = 'button';
-        editLine.className = 'pa-recap-line-edit';
-        editLine.textContent = 'Edit';
-        editLine.setAttribute('aria-label', 'Edit ' + label.toLowerCase());
-        editLine.addEventListener('click', function (targetId) {
+      row.className = 'pa-review-summary-row';
+      var dt = document.createElement('dt');
+      dt.className = 'pa-review-summary-label';
+      dt.textContent = label;
+      var dd = document.createElement('dd');
+      dd.className = 'pa-review-summary-value';
+      dd.textContent = value;
+      row.appendChild(dt);
+      row.appendChild(dd);
+      if (typeof editStep === 'number') {
+        var editBtn = document.createElement('button');
+        editBtn.type = 'button';
+        editBtn.className = 'pa-review-summary-edit';
+        editBtn.textContent = 'Edit';
+        editBtn.setAttribute('aria-label', 'Edit ' + label.toLowerCase());
+        editBtn.addEventListener('click', function (step, targetId) {
           return function () {
-            state.step = 0;
+            state.step = step;
             state.error = '';
-            state.focusTarget = targetId === 'pa-section-service' ? '' : targetId;
+            if (step === 0) {
+              state.focusTarget = targetId === 'pa-section-service' ? '' : (targetId || '');
+            } else {
+              state.focusTarget = 'step';
+            }
             render();
-            requestAnimationFrame(function () {
-              scrollToScheduleTarget(targetId);
-            });
+            if (step === 0 && targetId) {
+              requestAnimationFrame(function () {
+                scrollToScheduleTarget(targetId);
+              });
+            }
           };
-        }(scrollTarget));
-        row.appendChild(editLine);
+        }(editStep, scrollTarget || ''));
+        row.appendChild(editBtn);
       }
-      lines.appendChild(row);
+      list.appendChild(row);
     }
 
-    addLine('Package', state.service, 'pa-section-service');
-    getAddonsForService().forEach(function (addon) {
-      if (state.selectedAddons[addon.id]) {
-        addLine('Add-on', addon.label, null);
-      }
-    });
-    addLine('Date', formatDatesSummary(), 'pa-section-date');
-    addLine('Time', state.timeWindow ? shortTimeWindow(state.timeWindow) : '', 'pa-section-time');
-
-    recap.appendChild(lines);
-
-    if (state.stripeReady && state.selectedDates.length) {
-      var quoteNote = document.createElement('p');
-      quoteNote.className = 'pa-recap-invoice-note pa-recap-quote-note';
-      quoteNote.textContent = 'Package total determined after review — deposit applies toward your final quote.';
-      recap.appendChild(quoteNote);
-
-      var totalRow = document.createElement('div');
-      totalRow.className = 'pa-recap-invoice-total';
-      var totalLabel = document.createElement('span');
-      totalLabel.className = 'pa-recap-invoice-total-label';
-      totalLabel.textContent = 'Deposit due today';
-      var totalValue = document.createElement('span');
-      totalValue.className = 'pa-recap-invoice-total-value';
-      totalValue.textContent = formatMoney(getDepositTotal());
-      totalRow.appendChild(totalLabel);
-      totalRow.appendChild(totalValue);
-      recap.appendChild(totalRow);
-      var totalNote = document.createElement('p');
-      totalNote.className = 'pa-recap-invoice-note';
-      totalNote.textContent = getDayCount() === 1
-        ? 'Holds your date — applied toward your custom package quote.'
-        : formatMoney(state.depositPerDay) + ' per day \u00d7 ' + getDayCount() + ' days. Applied toward your final quote.';
-      recap.appendChild(totalNote);
+    addRow('Service', state.service ? getServiceDisplayLabel(state.service) : '', 0, 'pa-section-service');
+    if (state.eventType) {
+      addRow('Event type', state.eventType, 1);
+    }
+    addRow(
+      state.selectedDates.length > 1 ? 'Dates' : 'Date',
+      formatDatesSummary(),
+      0,
+      'pa-section-date'
+    );
+    addRow('Location', state.venue, 1);
+    addRow('Time', state.timeWindow ? shortTimeWindow(state.timeWindow) : '', 0, 'pa-section-time');
+    if (state.stripeReady && state.depositPerDay > 0) {
+      var depRow = document.createElement('div');
+      depRow.className = 'pa-review-summary-row pa-review-summary-row--deposit';
+      var depDt = document.createElement('dt');
+      depDt.className = 'pa-review-summary-label';
+      depDt.textContent = 'Deposit Today';
+      var depDd = document.createElement('dd');
+      depDd.className = 'pa-review-summary-value pa-review-summary-deposit';
+      depDd.textContent = formatMoney(getDepositTotal());
+      depRow.appendChild(depDt);
+      depRow.appendChild(depDd);
+      list.appendChild(depRow);
     }
 
+    recap.appendChild(list);
     return recap;
+  }
+
+  function buildDepositTrust() {
+    var list = document.createElement('ul');
+    list.className = 'pa-deposit-trust-list';
+    [
+      'Your requested date is reserved once your deposit is received.',
+      'Your deposit is applied toward your final balance.',
+      'You\u2019ll receive a customized proposal and estimate after we review your booking.',
+    ].forEach(function (text) {
+      var item = document.createElement('li');
+      item.className = 'pa-deposit-trust-item';
+      item.textContent = text;
+      list.appendChild(item);
+    });
+    return list;
   }
 
   function buildSummaryBar() {
@@ -2220,33 +3161,177 @@
 
   function buildConfirmStep() {
     var wrap = document.createElement('div');
-    wrap.className = 'pa-step pa-step-pay';
+    wrap.className = 'pa-step pa-step-review pa-step-pay pa-step-review-final pa-step-review-v40';
     wrap.id = 'pa-step-focus-2';
 
-    var toolbar = document.createElement('div');
-    toolbar.className = 'pa-step-toolbar';
-    var back = document.createElement('button');
-    back.type = 'button';
-    back.className = 'pa-back';
-    back.textContent = '← Edit details';
-    back.addEventListener('click', function () { state.step = 1; state.error = ''; render(); });
-    toolbar.appendChild(back);
-    wrap.appendChild(toolbar);
+    var scroll = document.createElement('div');
+    scroll.className = 'pa-step-scroll pa-step-scroll--review';
+
+    scroll.appendChild(buildStepBackToolbar('Details', 'Back to event details', function () {
+      state.step = 1;
+      state.error = '';
+      state.focusTarget = 'step';
+      render();
+    }));
+
+    scroll.appendChild(buildBookingRecap());
+    scroll.appendChild(buildBalanceExplainer());
 
     if (state.stripeReady) {
-      wrap.appendChild(buildCheckoutPanel(true));
+      var checkout = document.createElement('div');
+      checkout.className = 'pa-review-checkout';
+      var terms = buildTermsAgreement();
+      if (terms) {
+        checkout.appendChild(terms);
+      }
+      scroll.appendChild(checkout);
+    }
+
+    wrap.appendChild(scroll);
+
+    if (state.stripeReady) {
+      var payErr = validatePaylinkReady();
+      var submit = buildPaySubmitButton(payErr, false, PAY_CTA_LABEL);
+      submit.classList.add('is-ready');
+      appendBookingAction(wrap, submit, true);
+      wireConfirmPayButton(wrap);
     } else {
-      wrap.appendChild(buildSummaryBar());
-      var submit = document.createElement('button');
-      submit.type = 'button';
-      submit.className = 'pa-submit pa-btn';
-      submit.textContent = 'Submit request';
-      submit.disabled = state.submitting;
-      submit.addEventListener('click', submitBooking);
-      appendBookingAction(wrap, submit);
+      var submitReq = document.createElement('button');
+      submitReq.type = 'button';
+      submitReq.className = 'pa-submit pa-btn is-ready';
+      submitReq.disabled = state.submitting;
+      submitReq.textContent = state.submitting ? REQUEST_CTA_LOADING : REQUEST_CTA_LABEL;
+      submitReq.addEventListener('click', function () {
+        var validation = validateContactForm();
+        if (validation) {
+          state.step = 1;
+          setFieldError(validation.field, validation.message);
+          render();
+          return;
+        }
+        clearFieldErrors();
+        state.error = '';
+        submitBooking();
+      });
+      appendBookingAction(wrap, submitReq, true);
     }
 
     return wrap;
+  }
+
+  function buildContactRecap() {
+    readDetailsFromForm();
+    var section = document.createElement('section');
+    section.className = 'pa-contact-recap pa-glass-section';
+    section.setAttribute('aria-label', 'Your event information');
+
+    var head = document.createElement('div');
+    head.className = 'pa-contact-recap-head';
+    var kicker = document.createElement('span');
+    kicker.className = 'pa-contact-recap-kicker';
+    kicker.textContent = 'Event information';
+    head.appendChild(kicker);
+    var edit = document.createElement('button');
+    edit.type = 'button';
+    edit.className = 'pa-recap-edit';
+    edit.textContent = 'Edit';
+    edit.addEventListener('click', function () {
+      state.step = 1;
+      state.error = '';
+      state.focusTarget = 'step';
+      render();
+    });
+    head.appendChild(edit);
+    section.appendChild(head);
+
+    var dl = document.createElement('dl');
+    dl.className = 'pa-contact-recap-lines';
+    function line(label, value) {
+      if (!value) return;
+      var dt = document.createElement('dt');
+      dt.textContent = label;
+      var dd = document.createElement('dd');
+      dd.textContent = value;
+      dl.appendChild(dt);
+      dl.appendChild(dd);
+    }
+    line('Name', state.name);
+    line('Email', state.email);
+    line('Phone', state.phone);
+    line('Location', state.venue);
+    line('Event details', state.notes);
+    if (state.timelineNotes) {
+      line('Additional notes', state.timelineNotes);
+    }
+    section.appendChild(dl);
+    return section;
+  }
+
+  function buildBalanceExplainer() {
+    if (!state.stripeReady) {
+      return document.createDocumentFragment();
+    }
+    var box = document.createElement('section');
+    box.className = 'pa-deposit-section pa-deposit-section--compact';
+    box.setAttribute('role', 'note');
+    box.setAttribute('aria-label', 'Deposit');
+
+    var explain = document.createElement('p');
+    explain.className = 'pa-deposit-section-lead';
+    explain.textContent = 'Your deposit reserves your requested date and will be applied toward your final balance.';
+    box.appendChild(explain);
+
+    var depositRow = document.createElement('div');
+    depositRow.className = 'pa-deposit-section-amount-row';
+    var amountLabel = document.createElement('span');
+    amountLabel.className = 'pa-deposit-section-amount-label';
+    amountLabel.textContent = 'Deposit Today';
+    var amountValue = document.createElement('strong');
+    amountValue.className = 'pa-deposit-section-amount';
+    amountValue.textContent = formatMoney(getDepositTotal());
+    depositRow.appendChild(amountLabel);
+    depositRow.appendChild(amountValue);
+    box.appendChild(depositRow);
+
+    return box;
+  }
+
+  function wireConfirmPayButton(wrap) {
+    var btn = wrap.querySelector('.pa-checkout-btn');
+    if (!btn) return;
+    var fresh = btn.cloneNode(true);
+    btn.parentNode.replaceChild(fresh, btn);
+    fresh.addEventListener('click', function () {
+      if (state.submitting) return;
+      var validation = validateDetailsForm();
+      if (validation) {
+        if (validation.field === 'pa-terms-agree' || validation.field.indexOf('pa-') === 0) {
+          if (validation.field !== 'pa-terms-agree') {
+            state.step = 1;
+          }
+          clearFieldErrors();
+          setFieldError(validation.field, validation.message);
+        } else {
+          state.error = validation.message;
+          state.focusTarget = 'error';
+          showToast(validation.message, 'error');
+        }
+        render();
+        return;
+      }
+      var payErr = validatePaylinkReady();
+      if (payErr) {
+        state.error = payErr;
+        state.focusTarget = 'error';
+        showToast(payErr, 'error');
+        render();
+        return;
+      }
+      clearFieldErrors();
+      state.error = '';
+      saveDraft();
+      submitBooking();
+    });
   }
 
   function appendCheckoutLine(dl, label, value) {
@@ -2271,11 +3356,56 @@
     return 'our payment partner';
   }
 
-  function buildCheckoutPanel(includeContact, compact) {
+  function buildCheckoutPanel(includeContact, compact, minimal) {
+    if (minimal) {
+      return buildInlineDepositBar();
+    }
     if (compact) {
       return buildSecureDepositPanel();
     }
     return buildFullCheckoutPanel(includeContact);
+  }
+
+  function buildInlineDepositBar() {
+    var panel = document.createElement('div');
+    panel.className = 'pa-deposit-inline';
+    panel.setAttribute('aria-label', 'Deposit payment');
+
+    var payErr = validatePaylinkReady();
+    var row = document.createElement('div');
+    row.className = 'pa-deposit-inline-row';
+
+    var copy = document.createElement('div');
+    copy.className = 'pa-deposit-inline-copy';
+    var label = document.createElement('span');
+    label.className = 'pa-deposit-inline-label';
+    label.textContent = 'Deposit today';
+    var amount = document.createElement('strong');
+    amount.className = 'pa-deposit-inline-amount';
+    amount.textContent = formatMoney(getDepositTotal());
+    copy.appendChild(label);
+    copy.appendChild(amount);
+    row.appendChild(copy);
+
+    var submit = buildPaySubmitButton(payErr, false);
+    submit.classList.add('pa-deposit-inline-btn');
+    row.appendChild(submit);
+    panel.appendChild(row);
+
+    if (payErr) {
+      var warn = document.createElement('p');
+      warn.className = 'pa-pay-warn';
+      warn.setAttribute('role', 'alert');
+      warn.textContent = payErr;
+      panel.appendChild(warn);
+    }
+
+    var fine = document.createElement('p');
+    fine.className = 'pa-deposit-inline-fine';
+    fine.textContent = 'Secure checkout via ' + checkoutProcessorName() + '.';
+    panel.appendChild(fine);
+
+    return panel;
   }
 
   function vaultLockSvg() {
@@ -2356,7 +3486,7 @@
     var redirect = document.createElement('p');
     redirect.className = 'pa-vault-redirect';
     redirect.textContent = state.paymentProvider === 'paylink'
-      ? 'You\u2019ll complete payment on GoDaddy\u2019s encrypted checkout page, then return here for confirmation.'
+      ? 'GoDaddy opens in a new tab. Complete payment there — we verify deposits in GoDaddy Payments and confirm by email within one business day.'
       : 'You\u2019ll complete payment on Stripe\u2019s secure checkout page, then return here for confirmation.';
     payzone.appendChild(redirect);
 
@@ -2516,17 +3646,17 @@
     return panel;
   }
 
-  function buildPaySubmitButton(payErr, vault) {
+  function buildPaySubmitButton(payErr, vault, labelOverride) {
     var submit = document.createElement('button');
     submit.type = 'button';
     submit.className = 'pa-submit pa-pay-btn pa-btn pa-checkout-btn' + (vault ? ' pa-vault-pay-btn' : '');
     submit.disabled = state.submitting || !!payErr;
     if (state.submitting) {
-      submit.textContent = 'Opening secure checkout\u2026';
-    } else if (vault) {
-      submit.textContent = 'Continue to secure payment \u2014 ' + formatMoney(getDepositTotal());
+      submit.textContent = PAY_CTA_LOADING;
+    } else if (labelOverride) {
+      submit.textContent = labelOverride;
     } else {
-      submit.textContent = 'Pay ' + formatMoney(getDepositTotal()) + ' deposit';
+      submit.textContent = PAY_CTA_LABEL;
     }
     submit.addEventListener('click', function () {
       if (state.paymentProvider === 'paylink') {
@@ -2655,11 +3785,7 @@
     submit.type = 'button';
     submit.className = 'pa-submit pa-pay-btn pa-btn';
     submit.disabled = state.submitting || !!payErr;
-    submit.textContent = state.submitting
-      ? 'Opening secure checkout\u2026'
-      : (state.paymentProvider === 'paylink'
-        ? 'Pay ' + formatMoney(getDepositTotal()) + ' now'
-        : 'Pay ' + formatMoney(getDepositTotal()));
+    submit.textContent = state.submitting ? PAY_CTA_LOADING : PAY_CTA_LABEL;
     submit.addEventListener('click', function () {
       if (state.paymentProvider === 'paylink') {
         var err = validatePaylinkReady();
@@ -2701,7 +3827,7 @@
 
   function buildDepositBar() {
     if (!state.stripeReady || state.depositPerDay <= 0) return null;
-    if (state.step !== 1 || state.submitting) return null;
+    if (state.step !== 2 || state.submitting) return null;
 
     var bar = document.createElement('div');
     bar.className = 'pa-deposit-bar pa-deposit-bar-sticky';
@@ -2739,72 +3865,146 @@
     });
   }
 
+  // POST the booking with a hard timeout so the button can never hang forever on
+  // "Opening secure checkout…". If the server stalls, we abort and show an error.
+  function postBookingRequest() {
+    var controller = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    var timer = setTimeout(function () {
+      if (controller) controller.abort();
+    }, 30000);
+    var opts = {
+      method: 'POST',
+      credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': PABooking.nonce },
+      body: JSON.stringify(buildBookingPayload()),
+    };
+    if (controller) opts.signal = controller.signal;
+    return fetch(PABooking.restUrl + 'request', opts).then(
+      function (r) { clearTimeout(timer); return r; },
+      function (e) { clearTimeout(timer); throw e; }
+    );
+  }
+
+  function completeCheckout(body) {
+    if (body.checkout_url) {
+      state.error = '';
+      saveLastBooking();
+      var checkoutUrl = body.checkout_url;
+      var successUrl = body.success_url || '';
+      var bookingId = body.booking_id || 0;
+
+      try {
+        if (bookingId) {
+          sessionStorage.setItem('pa_pending_booking_id', String(bookingId));
+        }
+        if (successUrl) {
+          sessionStorage.setItem('pa_checkout_success_url', successUrl);
+        }
+        if (checkoutUrl) {
+          sessionStorage.setItem('pa_paylink_checkout_url', checkoutUrl);
+        }
+      } catch (storageErr) { /* ignore */ }
+
+      state.submitting = false;
+
+      if (state.paymentProvider === 'paylink') {
+        var opened = false;
+        try {
+          var checkoutWin = window.open(checkoutUrl, '_blank', 'noopener,noreferrer');
+          opened = !!(checkoutWin && !checkoutWin.closed);
+        } catch (openErr) { /* ignore */ }
+
+        if (successUrl) {
+          if (!opened) {
+            try {
+              sessionStorage.setItem('pa_paylink_popup_blocked', '1');
+            } catch (blockedErr) { /* ignore */ }
+          }
+          window.location.assign(successUrl);
+          return;
+        }
+        if (opened) {
+          showToast('Checkout opened in a new tab. Complete your deposit there.', 'info');
+          render();
+          return;
+        }
+        window.location.assign(checkoutUrl);
+        return;
+      }
+
+      window.location.assign(checkoutUrl);
+      return;
+    }
+
+    if (body.success_url) {
+      saveLastBooking();
+      clearBookingSession();
+      window.location.assign(body.success_url);
+      return;
+    }
+
+    state.submitting = false;
+    renderSuccess();
+  }
+
   function submitBooking() {
     if (state.submitting) return;
     state.submitting = true;
     state.error = '';
     render();
 
-    fetch(PABooking.restUrl + 'request', {
-      method: 'POST',
-      credentials: 'same-origin',
-      headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': PABooking.nonce },
-      body: JSON.stringify(buildBookingPayload()),
-    })
-      .then(parseApiResponse)
-      .then(function (res) {
-        if (!res.ok) {
-          var msg = (res.body && res.body.message) || 'Request failed.';
-          if (/cookie check failed/i.test(msg)) {
-            return refreshSession().then(function () {
-              return fetch(PABooking.restUrl + 'request', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: { 'Content-Type': 'application/json', 'X-WP-Nonce': PABooking.nonce },
-                body: JSON.stringify(buildBookingPayload()),
-              }).then(parseApiResponse);
-            });
+    var safetyTimer = setTimeout(function () {
+      if (!state.submitting) {
+        return;
+      }
+      state.submitting = false;
+      state.error = 'Checkout is taking longer than expected. Refresh and try again — you have not been charged unless payment already opened in another tab.';
+      showToast(state.error, 'error');
+      render();
+    }, 32000);
+
+    function attemptRequest(cookieRetried) {
+      return postBookingRequest()
+        .then(parseApiResponse)
+        .then(function (res) {
+          if (!res.ok) {
+            var msg = (res.body && res.body.message) || 'Request failed.';
+            if (!cookieRetried && (/cookie check failed/i.test(msg) || /session expired/i.test(msg) || /invalid_nonce/i.test(String(res.body && res.body.code)))) {
+              return refreshSession(true).then(function () {
+                return attemptRequest(true);
+              });
+            }
+            throw new Error(msg);
           }
-          throw new Error(msg);
-        }
-        if (res.body.checkout_url) {
-          state.error = '';
-          saveLastBooking();
-          try {
-            sessionStorage.setItem('pa_deposit_opened', '1');
-            if (res.body.success_url) {
-              sessionStorage.setItem('pa_checkout_success_url', res.body.success_url);
-            }
-            if (res.body.booking_id) {
-              sessionStorage.setItem('pa_pending_booking_id', String(res.body.booking_id));
-            }
-            saveDraft();
-          } catch (e) { /* ignore */ }
-          window.location.href = res.body.checkout_url;
-          return;
-        }
-        if (res.body.success_url) {
-          saveLastBooking();
-          clearBookingSession();
-          window.location.href = res.body.success_url;
-          return;
-        }
-        state.submitting = false;
-        renderSuccess();
+          clearTimeout(safetyTimer);
+          paGa4Event('booking_submit', { service: state.service, days: getDayCount() });
+          completeCheckout(res.body);
+        });
+    }
+
+    refreshSession(true)
+      .then(function () {
+        return attemptRequest(false);
       })
       .catch(function (err) {
-        state.submitting = false;
+      clearTimeout(safetyTimer);
+      state.submitting = false;
+      if (err && err.name === 'AbortError') {
+        state.error = 'The checkout took too long to open. Check your connection and try again — you have not been charged.';
+      } else {
         state.error = err.message || 'Something went wrong.';
-        showToast(state.error, 'error');
-        render();
-      });
+      }
+      showToast(state.error, 'error');
+      render();
+    });
   }
 
   function renderSuccess() {
     saveLastBooking();
     while (root.firstChild) root.removeChild(root.firstChild);
+    root.classList.add('is-success-inline');
     var box = document.createElement('div');
-    box.className = 'pa-done pa-done-premium';
+    box.className = 'pa-done pa-done-v40';
 
     var icon = document.createElement('div');
     icon.className = 'pa-done-icon';
@@ -2814,52 +4014,47 @@
 
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-done-eyebrow';
-    eyebrow.textContent = 'Request submitted';
+    eyebrow.textContent = state.stripeReady ? 'Date reserved' : 'Request received';
     box.appendChild(eyebrow);
 
     var title = document.createElement('h3');
-    title.textContent = 'You\u2019re on our calendar queue';
+    title.className = 'pa-done-title';
+    title.textContent = state.stripeReady
+      ? 'You\u2019re on the calendar'
+      : 'We received your booking';
     box.appendChild(title);
 
     var lead = document.createElement('p');
     lead.className = 'pa-done-lead';
-    var svcPart = state.service ? state.service + ' on ' : '';
-    lead.textContent = 'We received your request for ' + svcPart + formatDatesSummary() + '. A personal confirmation arrives within one business day.';
+    var svcLabel = state.service ? getServiceDisplayLabel(state.service) + ' \u00b7 ' : '';
+    lead.textContent = state.stripeReady
+      ? svcLabel + formatDatesSummary() + '. Watch for a confirmation email within one business day.'
+      : svcLabel + formatDatesSummary() + '. We\u2019ll follow up within one business day.';
     box.appendChild(lead);
 
     var timeline = document.createElement('ol');
-    timeline.className = 'pa-done-timeline';
-    timeline.innerHTML =
-      '<li class="is-complete"><strong>Today</strong><span>Request submitted — dates noted</span></li>' +
-      '<li class="is-active"><strong>Within one business day</strong><span>Personal confirmation email with next steps</span></li>' +
-      '<li><strong>Before your event</strong><span>Pre-production call, contract, and final balance</span></li>';
+    timeline.className = 'pa-done-timeline pa-done-timeline-v40';
+    timeline.innerHTML = state.stripeReady
+      ? '<li class="is-complete"><strong>Today</strong><span>Deposit received — your date is reserved</span></li>'
+        + '<li class="is-active"><strong>Within one business day</strong><span>Personal confirmation with next steps</span></li>'
+        + '<li><strong>Before your event</strong><span>Pre-production call and final balance</span></li>'
+      : '<li class="is-complete"><strong>Today</strong><span>Booking request received</span></li>'
+        + '<li class="is-active"><strong>Within one business day</strong><span>Personal confirmation email</span></li>'
+        + '<li><strong>Before your event</strong><span>Pre-production call and final balance</span></li>';
     box.appendChild(timeline);
-
-    var trust = document.createElement('div');
-    trust.className = 'pa-done-trust';
-    trust.setAttribute('role', 'list');
-    trust.setAttribute('aria-label', 'What to expect');
-    ['No spam', 'Human review', 'PA-based crew'].forEach(function (text) {
-      var span = document.createElement('span');
-      span.setAttribute('role', 'listitem');
-      span.textContent = text;
-      trust.appendChild(span);
-    });
-    box.appendChild(trust);
 
     var actions = document.createElement('div');
     actions.className = 'pa-done-actions';
     var icsBtn = document.createElement('button');
     icsBtn.type = 'button';
-    icsBtn.className = 'pa-ics-btn pa-ics-btn--primary';
+    icsBtn.className = 'pa-submit pa-btn is-ready pa-ics-btn';
     icsBtn.textContent = 'Add to calendar';
     icsBtn.addEventListener('click', downloadIcsFile);
     actions.appendChild(icsBtn);
     box.appendChild(actions);
 
     root.appendChild(box);
-    showToast('Booking request sent', 'success');
-    scrollToPanel();
+    showToast(state.stripeReady ? 'Date reserved' : 'Booking request sent', 'success');
   }
 
   function buildFormGroup(title, hint, fields) {
@@ -2932,7 +4127,10 @@
     input.type = type;
     input.value = value || '';
     input.className = 'pa-input pa-text-input';
-    if (required) input.required = true;
+    if (required) {
+      input.required = true;
+      input.setAttribute('aria-required', 'true');
+    }
     if (autocomplete) input.setAttribute('autocomplete', autocomplete);
     if (type === 'tel') input.setAttribute('inputmode', 'tel');
     if (placeholder) input.placeholder = placeholder;
@@ -2943,13 +4141,21 @@
       input.setAttribute('aria-describedby', fieldId + '-help');
     }
     input.addEventListener('input', function () {
+      scheduleDraftSave();
       if (state.fieldErrors[fieldId]) {
         delete state.fieldErrors[fieldId];
         wrap.classList.remove('has-error');
         input.removeAttribute('aria-invalid');
+        input.classList.remove('pa-input-error');
         var errEl = document.getElementById(fieldId + '-error');
         if (errEl && errEl.parentNode) errEl.parentNode.removeChild(errEl);
       }
+    });
+    input.addEventListener('blur', function () {
+      if (!input.value.trim() && !required) return;
+      var msg = validateSingleField(fieldId);
+      updateFieldErrorUI(wrap, fieldId, msg);
+      wrap.classList.toggle('is-valid', !msg && input.value.trim().length > 0);
     });
     wrap.appendChild(lab);
     wrap.appendChild(input);
@@ -2984,6 +4190,7 @@
     ta.maxLength = 500;
     ta.value = value || '';
     if (placeholder) ta.placeholder = placeholder;
+    ta.addEventListener('input', scheduleDraftSave);
     if (help) {
       ta.setAttribute('aria-describedby', fieldId + '-help');
       var helpEl = document.createElement('p');
@@ -3022,9 +4229,6 @@
       state.selectedDates.push(iso);
       state.selectedDates.sort();
       state.error = '';
-      if (state.selectedDates.length === 1 && !state.timeWindow) {
-        state.focusTarget = 'pa-section-time';
-      }
     } else {
       state.selectedDates.splice(idx, 1);
     }

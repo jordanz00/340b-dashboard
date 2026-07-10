@@ -10,6 +10,8 @@ if (!defined('ABSPATH')) {
 require_once PA_BOOKING_PATH . 'includes/class-emails.php';
 require_once PA_BOOKING_PATH . 'includes/class-service-catalog.php';
 require_once PA_BOOKING_PATH . 'includes/class-legal-pages.php';
+require_once PA_BOOKING_PATH . 'includes/class-landing-pages.php';
+require_once PA_BOOKING_PATH . 'includes/class-seo.php';
 require_once PA_BOOKING_PATH . 'includes/class-admin.php';
 require_once PA_BOOKING_PATH . 'includes/class-frontend.php';
 require_once PA_BOOKING_PATH . 'includes/class-youtube.php';
@@ -58,9 +60,12 @@ class PA_Booking {
     private function __construct() {
         add_action('init', array($this, 'register_cpt'));
         add_action('init', array($this, 'register_page_rewrites'), 11);
-        add_action('init', array('PA_Booking_Setup', 'boot_public_pages'), 20);
-        add_action('template_redirect', array('PA_Booking_Setup', 'rescue_book_404'), 1);
-        add_action('admin_notices', array('PA_Booking_Setup', 'admin_notice'));
+        add_action('init', array('PA_Booking_Page_Setup', 'boot_public_pages'), 20);
+        add_action('template_redirect', array('PA_Booking_Page_Setup', 'rescue_book_404'), 1);
+        add_action('template_redirect', array('PA_Booking_Page_Setup', 'rescue_about_404'), 1);
+        add_action('admin_notices', array('PA_Booking_Page_Setup', 'admin_notice'));
+        PA_Booking_SEO::init();
+        PA_Booking_Landing_Pages::register_shortcode();
         new PA_Booking_Admin();
         new PA_Booking_Frontend();
         new PA_Booking_REST();
@@ -72,12 +77,13 @@ class PA_Booking {
     public function register_page_rewrites() {
         add_rewrite_rule('^book/?$', 'index.php?pagename=book', 'top');
         add_rewrite_rule('^booking-confirmed/?$', 'index.php?pagename=booking-confirmed', 'top');
+        add_rewrite_rule('^work/?$', 'index.php?pagename=work', 'top');
     }
 
     public static function on_activate() {
         $tmp = new self();
         $tmp->register_cpt();
-        PA_Booking_Setup::run();
+        PA_Booking_Page_Setup::run();
     }
 
     public function register_cpt() {
@@ -116,6 +122,7 @@ class PA_Booking {
             'deposit_payments_enabled' => true,
             'paylink_url'            => PA_Booking_Payments::DEFAULT_PAYLINK,
             'paylink_tier_urls'      => array(),
+            'ga4_measurement_id'     => '',
         );
         $saved = get_option(self::OPTION_SETTINGS, array());
         if (!is_array($saved)) {
@@ -191,9 +198,72 @@ class PA_Booking {
         }
 
         return array(
-            'For more than 15 years, Pennsylvania Media Arts has produced live events and creative work across Central Pennsylvania — from corporate gatherings and concerts to weddings and brand campaigns.',
-            'We unite photography, video, live sound, and design under one team — delivering work that looks polished, sounds professional, and leaves a lasting impression. Clear communication, reliable execution, and quality you can count on.',
-            'Nominated for Best Videography at the 2026 Central Pennsylvania Music Awards (CPMAs), hosted by the Central Pennsylvania Music Hall of Fame.',
+            '15+ years producing concerts, weddings, and brand stories across Central Pennsylvania.',
+            'One team for photography, video, live sound, and design — polished delivery, clear communication.',
+        );
+    }
+
+    /**
+     * Curated footer portfolio lines — concise labels for the site footer.
+     *
+     * @return array<int, array{title: string, detail: string, href: string}>
+     */
+    public static function footer_work_items() {
+        $work = PA_Booking_Frontend::work_url();
+        return array(
+            array(
+                'title'  => 'Olivia Elizabeth Basar',
+                'detail' => 'Tiny Desk Contest · video & audio',
+                'href'   => $work,
+            ),
+            array(
+                'title'  => 'Jenny Grace',
+                'detail' => 'Pottsville, PA · live video & photo',
+                'href'   => $work,
+            ),
+            array(
+                'title'  => 'Northern Gloom',
+                'detail' => 'Music video & photography',
+                'href'   => $work,
+            ),
+            array(
+                'title'  => 'Joy to the Burg',
+                'detail' => 'Greg Platzer · music video',
+                'href'   => $work,
+            ),
+            array(
+                'title'  => 'Versus Machine',
+                'detail' => 'Live video & photography',
+                'href'   => $work,
+            ),
+        );
+    }
+
+    /**
+     * CPMA recognition badge copy for the footer About panel.
+     *
+     * @return array{title: string, detail: string, href: string}
+     */
+    public static function footer_recognition() {
+        return array(
+            'title'  => '2026 CPMA · Best Videography Nominee',
+            'detail' => 'Central Pennsylvania Music Awards',
+            'href'   => 'https://cpmhof.com/2026-winners',
+        );
+    }
+
+    /**
+     * Short service labels for footer chips (maps to booking service names).
+     *
+     * @return array<string, string>
+     */
+    public static function footer_service_labels() {
+        return array(
+            'Event Photography'    => 'Photography',
+            'Video Production'     => 'Video',
+            'Live Audio / PA'      => 'Live Audio',
+            'DJ Services'          => 'DJ',
+            'Photo + Video Bundle' => 'Photo + Video',
         );
     }
 
@@ -388,11 +458,11 @@ class PA_Booking {
      * Count bookings awaiting artist approval.
      */
     public static function count_pending_approval() {
-        $q = new WP_Query(
+        $ids = get_posts(
             array(
                 'post_type'      => self::CPT,
                 'post_status'    => 'publish',
-                'posts_per_page' => 1,
+                'posts_per_page' => -1,
                 'fields'         => 'ids',
                 'meta_query'     => array(
                     array(
@@ -403,11 +473,17 @@ class PA_Booking {
                 ),
             )
         );
-        return (int) $q->found_posts;
+        $count = 0;
+        foreach ($ids as $id) {
+            if (self::booking_deposit_confirmed($id)) {
+                $count++;
+            }
+        }
+        return $count;
     }
 
     /**
-     * Sum deposit cents collected on paid bookings.
+     * Sum deposit cents actually collected (verified Pay Link or Stripe only).
      */
     public static function sum_deposits_collected() {
         $total = 0;
@@ -417,22 +493,138 @@ class PA_Booking {
                 'post_status'    => 'publish',
                 'posts_per_page' => -1,
                 'fields'         => 'ids',
-                'meta_query'     => array(
-                    array(
-                        'key'     => 'status',
-                        'value'   => array('pending_approval', 'approved'),
-                        'compare' => 'IN',
-                    ),
-                ),
             )
         );
         foreach ($posts as $id) {
+            if (!self::booking_deposit_confirmed($id)) {
+                continue;
+            }
             $cents = (int) get_post_meta($id, 'deposit_cents', true);
             if ($cents >= 50) {
                 $total += $cents;
             }
         }
         return $total;
+    }
+
+    /**
+     * Bookings submitted but deposit not verified yet.
+     */
+    public static function count_pending_payment() {
+        $q = new WP_Query(
+            array(
+                'post_type'      => self::CPT,
+                'post_status'    => 'publish',
+                'posts_per_page' => 1,
+                'fields'         => 'ids',
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'status',
+                        'value'   => 'pending_payment',
+                        'compare' => '=',
+                    ),
+                ),
+            )
+        );
+        return (int) $q->found_posts;
+    }
+
+    /**
+     * Admin: undo a false deposit report (no GoDaddy payment received).
+     */
+    public static function clear_deposit_record($booking_id) {
+        $booking_id = (int) $booking_id;
+        if ($booking_id < 1) {
+            return false;
+        }
+        delete_post_meta($booking_id, 'deposit_reported_at');
+        delete_post_meta($booking_id, 'deposit_paid_at');
+        $status = get_post_meta($booking_id, 'status', true);
+        if (in_array($status, array('pending_approval', 'approved'), true)) {
+            update_post_meta($booking_id, 'status', 'pending_payment');
+        }
+        return true;
+    }
+
+    /**
+     * One-time repair: pending_approval without a deposit timestamp → awaiting payment.
+     */
+    public static function repair_unverified_deposit_statuses() {
+        $repaired = 0;
+        $ids = get_posts(
+            array(
+                'post_type'      => self::CPT,
+                'post_status'    => 'publish',
+                'posts_per_page' => -1,
+                'fields'         => 'ids',
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'status',
+                        'value'   => 'pending_approval',
+                        'compare' => '=',
+                    ),
+                ),
+            )
+        );
+        foreach ($ids as $id) {
+            if (!self::booking_deposit_confirmed($id)) {
+                update_post_meta($id, 'status', 'pending_payment');
+                $repaired++;
+            }
+        }
+        return $repaired;
+    }
+
+    /**
+     * Reset Pay Link deposit flags that were set without verified GoDaddy payment (v4.1.2 bug).
+     * Does not touch Stripe deposit_paid_at or approved bookings.
+     */
+    public static function reset_unverified_paylink_deposits() {
+        $reset = 0;
+        $ids = get_posts(
+            array(
+                'post_type'      => self::CPT,
+                'post_status'    => 'publish',
+                'posts_per_page' => -1,
+                'fields'         => 'ids',
+                'meta_query'     => array(
+                    array(
+                        'key'     => 'deposit_reported_at',
+                        'compare' => 'EXISTS',
+                    ),
+                ),
+            )
+        );
+        foreach ($ids as $id) {
+            if (get_post_meta($id, 'payment_provider', true) !== 'paylink') {
+                continue;
+            }
+            $status = get_post_meta($id, 'status', true);
+            if (!in_array($status, array('pending_approval', 'pending_payment'), true)) {
+                continue;
+            }
+            delete_post_meta($id, 'deposit_reported_at');
+            update_post_meta($id, 'status', 'pending_payment');
+            $reset++;
+        }
+        return $reset;
+    }
+
+    /**
+     * Admin verified deposit in GoDaddy Payments (no webhook).
+     */
+    public static function admin_confirm_deposit($booking_id) {
+        $booking_id = (int) $booking_id;
+        if ($booking_id < 1) {
+            return false;
+        }
+        if (!self::booking_deposit_confirmed($booking_id)) {
+            update_post_meta($booking_id, 'deposit_reported_at', gmdate('c'));
+            PA_Booking_Emails::customer_deposit_received($booking_id);
+            PA_Booking_Emails::notify_admin_booking_summary($booking_id, 'verified');
+        }
+        update_post_meta($booking_id, 'status', 'pending_approval');
+        return true;
     }
 
     /**
@@ -444,43 +636,101 @@ class PA_Booking {
     }
 
     /**
+     * Whether a booking has a verified deposit on record (Pay Link or Stripe).
+     */
+    public static function booking_deposit_confirmed($booking_id) {
+        $booking_id = (int) $booking_id;
+        if ($booking_id < 1) {
+            return false;
+        }
+        if (get_post_meta($booking_id, 'deposit_reported_at', true)) {
+            return true;
+        }
+        if (get_post_meta($booking_id, 'deposit_paid_at', true)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * Mark GoDaddy Pay Link deposit as reported when client returns from checkout.
      *
-     * @return bool True if deposit was newly recorded.
+     * @return bool True only when deposit was newly recorded on this call.
      */
     public static function report_paylink_deposit($booking_id) {
         $booking_id = (int) $booking_id;
         if ($booking_id < 1) {
             return false;
         }
+        if (self::booking_deposit_confirmed($booking_id)) {
+            return false;
+        }
         $status = get_post_meta($booking_id, 'status', true);
         $provider = get_post_meta($booking_id, 'payment_provider', true);
-        if ($status === 'approved' || $status === 'pending_approval') {
-            return true;
-        }
         if ($provider !== 'paylink' || $status !== 'pending_payment') {
             return false;
         }
         update_post_meta($booking_id, 'status', 'pending_approval');
         update_post_meta($booking_id, 'deposit_reported_at', gmdate('c'));
         PA_Booking_Emails::customer_deposit_received($booking_id);
-        PA_Booking_REST::notify_admin_deposit_paid($booking_id);
+        PA_Booking_Emails::notify_admin_booking_summary($booking_id, 'verified');
         return true;
     }
 
     /**
      * Success page URL with signed booking reference.
+     *
+     * @param bool $deposit_confirmed Append deposit=done (post-checkout only).
      */
-    public static function booking_success_url($booking_id, $email) {
+    public static function booking_success_url($booking_id, $email, $deposit_confirmed = false) {
         $success_id = (int) (self::get_settings()['success_page'] ?? 0);
         $base = $success_id ? get_permalink($success_id) : home_url('/booking-confirmed/');
-        return add_query_arg(
-            array(
-                'pa_requested' => '1',
-                'pa_booking'   => (int) $booking_id,
-                'pa_token'     => self::booking_confirm_token($booking_id, $email),
-            ),
-            $base
+        $args = array(
+            'pa_requested' => '1',
+            'pa_booking'   => (int) $booking_id,
+            'pa_token'     => self::booking_confirm_token($booking_id, $email),
         );
+        if ($deposit_confirmed) {
+            $args['deposit'] = 'done';
+        }
+        return add_query_arg($args, $base);
+    }
+
+    /**
+     * One-time cleanup: reject obvious QA / test bookings and clear false deposit flags.
+     */
+    public static function cleanup_test_bookings() {
+        $cleaned = 0;
+        $ids = get_posts(
+            array(
+                'post_type'      => self::CPT,
+                'post_status'    => 'publish',
+                'posts_per_page' => -1,
+                'fields'         => 'ids',
+            )
+        );
+        foreach ($ids as $id) {
+            $email = strtolower((string) get_post_meta($id, 'customer_email', true));
+            $name = (string) get_post_meta($id, 'customer_name', true);
+            $notes = (string) get_post_meta($id, 'notes', true);
+            $is_test = false;
+            if (preg_match('/qa-verify|api-verify|test\+/i', $email)) {
+                $is_test = true;
+            }
+            if (stripos($name, 'QA Verify') !== false || stripos($name, 'API Verify') !== false) {
+                $is_test = true;
+            }
+            if (stripos($notes, 'Automated verification') !== false || stripos($notes, 'reject in admin') !== false) {
+                $is_test = true;
+            }
+            if (!$is_test) {
+                continue;
+            }
+            delete_post_meta($id, 'deposit_reported_at');
+            delete_post_meta($id, 'deposit_paid_at');
+            update_post_meta($id, 'status', 'rejected');
+            $cleaned++;
+        }
+        return $cleaned;
     }
 }

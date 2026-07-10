@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PA Media Booking
  * Description: Custom calendar booking for independent artists — availability, deposits, GoDaddy Pay Link / Stripe, admin approval.
- * Version: 2.38.3
+ * Version: 4.4.4
  * Author: Pennsylvania Media Arts LLC
  * Text Domain: pa-media-booking
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PA_BOOKING_VERSION', '2.38.3');
+define('PA_BOOKING_VERSION', '5.0.0');
 define('PA_BOOKING_PATH', plugin_dir_path(__FILE__));
 define('PA_BOOKING_URL', plugin_dir_url(__FILE__));
 
@@ -112,7 +112,7 @@ function pa_booking_boot() {
 
 add_action('plugins_loaded', 'pa_booking_boot');
 
-add_action('plugins_loaded', 'pa_booking_maybe_upgrade', 5);
+add_action('plugins_loaded', 'pa_booking_maybe_upgrade', 20);
 
 /**
  * One-time settings migration per release.
@@ -150,6 +150,19 @@ function pa_booking_maybe_upgrade() {
         }
     }
     if (version_compare($stored, '2.35.0', '<')) {
+        flush_rewrite_rules();
+    }
+    if (version_compare($stored, '4.1.3', '<')) {
+        require_once PA_BOOKING_PATH . 'includes/class-pa-booking.php';
+        PA_Booking::repair_unverified_deposit_statuses();
+        PA_Booking::reset_unverified_paylink_deposits();
+    }
+    if (version_compare($stored, '4.1.6', '<')) {
+        require_once PA_BOOKING_PATH . 'includes/class-pa-booking.php';
+        PA_Booking::cleanup_test_bookings();
+    }
+    if (version_compare($stored, '4.1.7', '<') && class_exists('PA_Booking_Page_Setup', false)) {
+        PA_Booking_Page_Setup::ensure_work_page();
         flush_rewrite_rules();
     }
     update_option('pa_booking_db_version', PA_BOOKING_VERSION);

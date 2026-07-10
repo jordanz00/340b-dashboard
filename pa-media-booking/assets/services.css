@@ -1,0 +1,283 @@
+/** Services page — concise grid */
+body.pa-services-page .pa2-services-legacy-hidden,
+body.pa-services-page #pa-services,
+body.pa-services-page .pa-services-showcase {
+  display: none !important;
+}
+
+body.pa-services-page .wp-block-post-title,
+body.pa-services-page main .entry-header {
+  display: none !important;
+}
+
+body.pa-services-page .entry-content,
+body.pa-services-page .wp-block-post-content {
+  max-width: none !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  gap: 0 !important;
+}
+
+body.pa-services-page .pa2-services-page {
+  color: var(--pa2-ink, #1d1d1f);
+  background: transparent;
+  padding-top: clamp(0.5rem, 2vw, 1rem);
+}
+
+body.pa-services-page .pa2-svc-hero,
+body.pa-services-page .pa2-svc-card,
+body.pa-services-page .pa2-svc-foot {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* —— Hero —— */
+body.pa-services-page .pa2-svc-hero {
+  padding: clamp(1.5rem, 4vw, 2.5rem) clamp(1.5rem, 4vw, 2rem) clamp(1.75rem, 3.5vw, 2.25rem);
+  text-align: center;
+  background: transparent;
+}
+
+body.pa-services-page .pa2-svc-hero__eyebrow {
+  margin: 0 0 0.75rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(29, 29, 31, 0.55);
+}
+
+body.pa-services-page .pa2-svc-hero__title {
+  margin: 0 auto 0.75rem;
+  max-width: 18ch;
+  font-size: clamp(1.85rem, 4.5vw, 2.65rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+body.pa-services-page .pa2-svc-hero__lead {
+  margin: 0 auto;
+  max-width: 40ch;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: rgba(29, 29, 31, 0.68);
+}
+
+/* —— Grid —— */
+body.pa-services-page .pa2-svc-grid-section {
+  padding: 0 clamp(1.5rem, 4vw, 2rem) clamp(2.5rem, 5vw, 3.5rem);
+  background: transparent;
+}
+
+body.pa-services-page .pa2-svc-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.85rem;
+  width: min(64rem, 100%);
+  margin: 0 auto;
+}
+
+body.pa-services-page .pa2-svc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.65rem;
+  padding: 1.35rem 1.35rem 1.25rem;
+  border: 1px solid var(--pa2-hairline, rgba(0, 0, 0, 0.08));
+  border-radius: 14px;
+  background: #fff;
+  color: inherit;
+  text-decoration: none !important;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
+}
+
+body.pa-services-page .pa2-svc-card:hover,
+body.pa-services-page .pa2-svc-card:focus-visible {
+  border-color: rgba(29, 29, 31, 0.16);
+  box-shadow: 0 8px 24px rgba(29, 29, 31, 0.07);
+  transform: translateY(-1px);
+}
+
+body.pa-services-page .pa2-svc-card.is-featured {
+  border-color: rgba(29, 29, 31, 0.14);
+}
+
+body.pa-services-page .pa2-svc-card__badge {
+  padding: 0.12rem 0.4rem;
+  border-radius: 999px;
+  background: var(--pa2-ink, #1d1d1f);
+  color: #fff;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  line-height: 1.2;
+  box-shadow: 0 4px 12px rgba(29, 29, 31, 0.18);
+}
+
+body.pa-services-page .pa2-svc-card__icon-wrap {
+  width: 100%;
+}
+
+body.pa-services-page .pa2-svc-card__icon {
+  flex-shrink: 0;
+  width: 4.875rem;
+  height: 4.875rem;
+  min-width: 4.875rem;
+  min-height: 4.875rem;
+  border-radius: 16px;
+  color: var(--pa2-ink, #1d1d1f);
+}
+
+body.pa-services-page .pa2-svc-card__title,
+body.pa-services-page .pa2-svc-card__tagline,
+body.pa-services-page .pa2-svc-card__action {
+  width: 100%;
+  text-decoration: none !important;
+}
+
+body.pa-services-page .pa2-svc-card__icon--photo {
+  color: #0071e3;
+}
+
+body.pa-services-page .pa2-svc-card__icon--video {
+  color: #5856d6;
+}
+
+body.pa-services-page .pa2-svc-card__icon--dj {
+  color: #c93400;
+}
+
+body.pa-services-page .pa2-svc-card__icon--audio {
+  color: #1a6b3c;
+}
+
+body.pa-services-page .pa2-svc-card__icon--bundle {
+  color: #1d1d1f;
+}
+
+body.pa-services-page .pa2-svc-card__title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+body.pa-services-page .pa2-svc-card__tagline {
+  margin: 0;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  color: rgba(29, 29, 31, 0.65);
+}
+
+body.pa-services-page .pa2-svc-card__action {
+  margin-top: 0.35rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--pa2-ink, #1d1d1f);
+}
+
+body.pa-services-page .pa2-svc-card__action::after {
+  content: ' \2192';
+}
+
+/* —— Footer —— */
+body.pa-services-page .pa2-svc-foot {
+  padding: clamp(2rem, 4vw, 2.75rem) clamp(1.5rem, 4vw, 2rem) clamp(2.5rem, 5vw, 3.5rem);
+  text-align: center;
+  background: #fff;
+  border-top: 1px solid var(--pa2-hairline, rgba(0, 0, 0, 0.08));
+}
+
+body.pa-services-page .pa2-svc-foot__proof {
+  margin: 0 0 1.25rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: rgba(29, 29, 31, 0.55);
+}
+
+body.pa-services-page .pa2-svc-foot__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.65rem;
+}
+
+body.pa-services-page .pa2-svc-foot__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 1.35rem;
+  border-radius: 999px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.18s ease, border-color 0.18s ease, transform 0.18s ease;
+}
+
+body.pa-services-page .pa2-svc-foot__btn--primary {
+  background: var(--pa2-ink, #1d1d1f) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 1px solid var(--pa2-ink, #1d1d1f) !important;
+}
+
+body.pa-services-page .pa2-svc-foot__btn--primary:hover,
+body.pa-services-page .pa2-svc-foot__btn--primary:focus-visible {
+  background: #2c2c2e !important;
+  transform: translateY(-1px);
+}
+
+body.pa-services-page .pa2-svc-foot__btn--ghost {
+  background: transparent !important;
+  color: var(--pa2-ink, #1d1d1f) !important;
+  border: 1px solid rgba(29, 29, 31, 0.16) !important;
+}
+
+body.pa-services-page .pa2-svc-foot__btn--ghost:hover,
+body.pa-services-page .pa2-svc-foot__btn--ghost:focus-visible {
+  border-color: rgba(29, 29, 31, 0.28) !important;
+}
+
+/* Beat theme link colors on CTAs */
+body.wp-theme-gutenify-photography.pa-services-page .entry-content a.pa2-svc-foot__btn--primary,
+body.pa-glass-site.pa-services-page .entry-content a.pa2-svc-foot__btn--primary,
+body.wp-theme-gutenify-photography.pa-services-page .wp-block-post-content a.pa2-svc-foot__btn--primary,
+body.pa-glass-site.pa-services-page .wp-block-post-content a.pa2-svc-foot__btn--primary {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  background-color: #1d1d1f !important;
+  text-decoration: none !important;
+}
+
+/* Scroll reveal handles service cards — no duplicate load animation. */
+
+@media (min-width: 640px) {
+  body.pa-services-page .pa2-svc-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  body.pa-services-page .pa2-svc-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.pa-services-page .pa2-svc-card:hover,
+  body.pa-services-page .pa2-svc-card:focus-visible,
+  body.pa-services-page .pa2-svc-foot__btn--primary:hover,
+  body.pa-services-page .pa2-svc-foot__btn--primary:focus-visible {
+    transform: none;
+  }
+}
