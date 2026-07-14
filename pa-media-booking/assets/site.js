@@ -18,8 +18,8 @@
   // (reading 'forEach')" crash that aborted bootstrap before the gallery
   // could render.
   var PORTFOLIO_INITIAL_VISIBLE = 12;
-  /** Home shows the full gallery; interior pages collapse with "View all". */
-  var PORTFOLIO_HOME_VISIBLE = 9999;
+  /** Home above-the-fold tiles; remaining load via IO / expand — avoid full-gallery network on first paint. */
+  var PORTFOLIO_HOME_VISIBLE = 8;
   var PORTFOLIO_EAGER_TILES = 4;
   var portfolioImageObserver = null;
   var PORTFOLIO_CATEGORIES = [
@@ -136,8 +136,10 @@
     document.addEventListener('click', function (e) {
       var t = e.target.closest(
         '.pa-nav-book a, .pa-nav-book-btn, .pa2-hero__btn--primary, .pa-services-book-btn, ' +
-        '.pa2-svc-card__btn--primary, .pa2-work-cta__btn, .pa-about-cta-btn, .pa-geo-landing__cta, ' +
-        '.pa2-services__cta, .pa-home-closing-btn-primary'
+        '.pa2-svc-card__btn--primary, .pa2-svc-card, .pa2-svc-foot__btn--primary, .pa2-work-cta__btn, .pa-about-cta-btn, .pa-geo-landing__cta, ' +
+        '.pa2-services__cta, .pa-home-closing-btn-primary, .pa2-cta__btn--primary, .pa-mobile-book-bar__btn, ' +
+        '.pa-start__book-cta, .pa-seo-hub__cta .pa2-hero__btn--primary, ' +
+        '.pa2-cinema__panel-book, .pa2-cinema__cta--primary'
       );
       if (!t) {
         return;
@@ -147,6 +149,23 @@
         return;
       }
       paGa4Event('book_cta_click', { link_url: href, page_path: window.location.pathname });
+    }, true);
+
+    document.addEventListener('click', function (e) {
+      var t = e.target.closest(
+        '.pa2-hero__btn--secondary, .pa2-cta__btn--secondary, .pa-geo-landing__cta-secondary, ' +
+        '.pa-footer-contact a[href*="/contact"]'
+      );
+      if (!t) {
+        return;
+      }
+      paGa4Event('quote_cta_click', { link_url: t.getAttribute('href') || '', page_path: window.location.pathname });
+    }, true);
+
+    document.addEventListener('submit', function (e) {
+      if (e.target && e.target.id === 'pa-inquire-form') {
+        paGa4Event('quote_form_start', { page_path: window.location.pathname });
+      }
     }, true);
   }
 
@@ -201,9 +220,7 @@
   applySiteLogo();
   initBrandLogos();
   watchBrandLogos();
-  removeContactNavLinks();
-  addNavBookLink();
-  addNavPortfolioLink();
+  ensureCanonicalHeaderNav();
   polishHeaderNav();
   rebuildSiteFooter();
   enhanceSocialLinks();
@@ -221,6 +238,8 @@
   initBookCtaAnalytics();
   captureUtmParams();
 
+  /* Mobile Book + Quote bar: assets/growth.js (marketing pages only). */
+
   if (document.body.classList.contains('home')) {
     relocateHomeShellFromHeader();
     var homeShellQueued = hasQueuedScript('home.js');
@@ -230,7 +249,7 @@
       buildHomeClosingBand();
     }
     removeVideoPortfolioGrid();
-    injectYoutubeFeature();
+    scheduleYoutubeFeature();
     schedulePortfolioShowcase();
     schedulePhotoPortfolioShowcase();
     hideDuplicateBookingColumn();
@@ -253,19 +272,44 @@
   } else if (isWorkPage()) {
     compactInteriorPageHeader();
     buildWorkPage();
+  } else if (isContactPage()) {
+    compactInteriorPageHeader();
+    polishContactPage();
+    polishMarketingHeaderNav();
+  } else if (document.body.classList.contains('pa-ad-landing-page') || document.body.classList.contains('pa-quote-thankyou-page')) {
+    compactInteriorPageHeader();
+    polishMarketingHeaderNav();
+  } else if (document.body.classList.contains('pa-seo-hub-page')) {
+    compactInteriorPageHeader();
+    polishMarketingHeaderNav();
+  } else if (document.body.classList.contains('pa-geo-landing-page')) {
+    compactInteriorPageHeader();
+    polishMarketingHeaderNav();
+  } else if (
+    document.body.classList.contains('pa-marketing-nav') &&
+    !document.body.classList.contains('home') &&
+    !document.body.classList.contains('pa-ad-landing-page') &&
+    !document.body.classList.contains('pa-quote-thankyou-page')
+  ) {
+    compactInteriorPageHeader();
   }
 
   initGalleryLightbox();
   if (window.PAAnimations && typeof window.PAAnimations.refresh === 'function') {
     window.PAAnimations.refresh();
   }
-  initMobileBookBar();
+  if (!hasQueuedScript('growth.js')) {
+    initMobileBookBar();
+  }
   initBookLinkPrefetch();
   window.PAForceRevealHomeClosing = forceRevealHomeClosing;
+  window.PAAbsorbYoutubeIntoPortfolio = absorbYoutubeIntoPortfolio;
+  window.PARevealYoutubeFeature = revealYoutubeFeature;
   window.PAForceRevealHomeExperience = forceRevealHomeExperience;
   window.PARelocateHomeShellFromHeader = relocateHomeShellFromHeader;
   window.PARelocateHomeChromeBelowHero = relocateHomeChromeAboveHero;
   window.PAFinalizeHomeExperience = finalizeHomeExperience;
+  window.PARepositionHomeSections = repositionHomeSections;
   window.PAPolishHomeHeader = polishHomeHeader;
   window.PACompactInteriorPageHeader = compactInteriorPageHeader;
   window.PAPolishMarketingHeaderNav = polishMarketingHeaderNav;
@@ -562,23 +606,77 @@
   }
 
   /**
-   * Remove Contact from header/footer nav — booking is the only pre-deposit path.
+   * @deprecated Contact stays in marketing nav; booking funnel uses /book/.
    */
   function removeContactNavLinks() {
-    document.querySelectorAll('.wp-block-navigation a.wp-block-navigation-item__content').forEach(function (a) {
-      var label = (a.textContent || '').replace(/\s+/g, ' ').trim();
-      if (!isContactNavLabel(label) && !isContactHref(a.href)) {
-        return;
-      }
-      var item = a.closest('.wp-block-navigation-item, li');
-      if (item && item.parentNode) {
-        item.parentNode.removeChild(item);
-      }
-    });
+    /* intentionally no-op — contact is part of canonical header nav */
+  }
+
+  function aboutPageUrl() {
+    return (window.PASite && PASite.aboutUrl) ? PASite.aboutUrl : '/about/';
+  }
+
+  function contactPageUrl() {
+    return (window.PASite && PASite.contactPageUrl) ? PASite.contactPageUrl : '/contact/';
+  }
+
+  function navHasLabel(nav, label) {
+    var target = (label || '').replace(/\s+/g, ' ').trim().toLowerCase();
+    return !!nav.querySelector('.wp-block-navigation-item__content') &&
+      Array.prototype.some.call(
+        nav.querySelectorAll('.wp-block-navigation-item__content'),
+        function (a) {
+          return (a.textContent || '').replace(/\s+/g, ' ').trim().toLowerCase() === target;
+        }
+      );
+  }
+
+  function insertNavItem(nav, li, beforeSelector) {
+    var anchor = beforeSelector ? nav.querySelector(beforeSelector) : null;
+    if (anchor && anchor.parentNode) {
+      anchor.parentNode.insertBefore(li, anchor);
+    } else {
+      nav.appendChild(li);
+    }
+  }
+
+  function createNavItem(href, label, extraClass) {
+    var li = document.createElement('li');
+    li.className = 'wp-block-navigation-item' + (extraClass ? ' ' + extraClass : '');
+    var a = document.createElement('a');
+    a.className = 'wp-block-navigation-item__content';
+    a.href = href;
+    var span = document.createElement('span');
+    span.className = 'wp-block-navigation-item__label';
+    span.textContent = label;
+    a.appendChild(span);
+    li.appendChild(a);
+    return li;
+  }
+
+  function addNavAboutLink() {
+    var nav = document.querySelector('header .wp-block-navigation ul');
+    if (!nav || nav.querySelector('.pa-nav-about') || navHasLabel(nav, 'About')) {
+      return;
+    }
+    insertNavItem(nav, createNavItem(aboutPageUrl(), 'About', 'pa-nav-about'), '.pa-nav-book');
+  }
+
+  /**
+   * Ensure header nav matches home: Home, Work, Services, About, Contact, Book.
+   */
+  function ensureCanonicalHeaderNav() {
+    if (document.body.classList.contains('pa-ad-landing-page') ||
+        document.body.classList.contains('pa-quote-thankyou-page')) {
+      return;
+    }
+    addNavBookLink();
+    addNavPortfolioLink();
+    addNavAboutLink();
   }
 
   function addNavBookLink() {
-    var nav = document.querySelector('.wp-block-navigation ul');
+    var nav = document.querySelector('header .wp-block-navigation ul');
     if (!nav || nav.querySelector('.pa-nav-book')) {
       return;
     }
@@ -686,6 +784,38 @@
   }
 
   /**
+   * Assign SEO alts when WP gallery images ship with empty alt (work page + portfolio).
+   *
+   * @param {ParentNode} [root]
+   */
+  function enhancePortfolioImageAlts(root) {
+    var hints = (window.PASite && PASite.portfolioGalleryAlts) ? PASite.portfolioGalleryAlts : [];
+    if (!hints.length) {
+      return;
+    }
+    var scope = root || document;
+    var imgs = scope.querySelectorAll(
+      '.pa-portfolio-grid img, .pa-photo-grid img, #pa-photo-portfolio img, #pa-work-gallery img'
+    );
+    var hintIndex = 0;
+    Array.prototype.forEach.call(imgs, function (img) {
+      if (!img || img.closest('.pa-brand-logo-wrap, .wp-block-site-logo')) {
+        return;
+      }
+      var alt = (img.getAttribute('alt') || '').trim();
+      if (alt !== '') {
+        return;
+      }
+      var next = hints[hintIndex % hints.length];
+      hintIndex += 1;
+      if (next) {
+        img.setAttribute('alt', next);
+      }
+    });
+  }
+  window.PAEnhancePortfolioImageAlts = enhancePortfolioImageAlts;
+
+  /**
    * Premium tile overlay: category, title, statement, view pill.
    *
    * @param {HTMLElement} figure
@@ -733,13 +863,13 @@
     }
   }
 
-  /** Collapse threshold — home shows all photos; /work/ uses expand. */
+  /** Collapse threshold — home shows a short window then "View all"; /work/ uses the same pattern. */
   function portfolioCollapseLimit() {
     return document.body.classList.contains('home') ? PORTFOLIO_HOME_VISIBLE : PORTFOLIO_INITIAL_VISIBLE;
   }
 
   /**
-   * "View all" for collapsed grids (work page). Home skips collapse so this is not shown there.
+   * "View all" for collapsed grids (home + work).
    *
    * @param {HTMLElement} grid
    * @param {number} tileCount
@@ -1108,7 +1238,7 @@
         return;
       }
       var host = iframe.closest(
-        '.wp-block-embed, .wp-block-embed__wrapper, #pa-youtube-feature, .pa-youtube-player'
+        '.wp-block-embed, .wp-block-embed__wrapper, #pa-youtube-feature, .pa-youtube-player, .pa-youtube-facade'
       );
       if (host) {
         var section = host.closest('#pa-youtube-feature') || host;
@@ -1574,6 +1704,7 @@
     refreshPortfolioExperience(showcase);
     requestAnimationFrame(function () {
       healPortfolioGridImages(showcase);
+      enhancePortfolioImageAlts(showcase);
     });
     return true;
   }
@@ -1698,6 +1829,7 @@
     refreshPortfolioExperience(showcase);
     requestAnimationFrame(function () {
       healPortfolioGridImages(showcase);
+      enhancePortfolioImageAlts(showcase);
     });
     return true;
   }
@@ -1852,19 +1984,92 @@
     el.classList.add('is-revealed', 'is-visible', 'is-animated');
   }
 
-  function revealPortfolioTile(tile) {
-    if (!tile || tile.classList.contains('is-visible')) {
+  function portfolioSectionIsReady(tile) {
+    if (!tile) {
+      return false;
+    }
+    var section = tile.closest(
+      '.pa2-portfolio, .pa-portfolio-showcase, #pa-photo-portfolio, .pa-reveal-section'
+    );
+    if (!section) {
+      return true;
+    }
+    /* Only fade tiles in once the section itself has entered the viewport. */
+    return section.classList.contains('is-inview');
+  }
+
+  function markPortfolioTileImageReady(img, tile) {
+    if (!img) {
       return;
     }
+    img.classList.add('is-pa-img-loaded');
+    if (!tile) {
+      tile = img.closest('.pa-portfolio-tile');
+    }
+    if (!tile) {
+      return;
+    }
+    tile.classList.remove('is-pa-img-pending');
+    tile.classList.add('is-pa-img-ready');
+    tile.dataset.paImgReady = '1';
+    revealPortfolioTile(tile);
+  }
+
+  function healReadyPortfolioImages(root) {
+    var scope = root && root.nodeType === 1 ? root : document;
+    scope.querySelectorAll('.pa-portfolio-tile img').forEach(function (img) {
+      var tile = img.closest('.pa-portfolio-tile');
+      if (!tile || tile.classList.contains('is-collapsed') || tile.classList.contains('is-filtered-out')) {
+        return;
+      }
+      if (tile.classList.contains('is-pa-img-ready') && tile.dataset.paImgReady === '1') {
+        revealPortfolioTile(tile);
+        return;
+      }
+      if ((img.complete && img.naturalWidth > 0) || img.classList.contains('is-pa-img-loaded')) {
+        markPortfolioTileImageReady(img, tile);
+      }
+    });
+  }
+  window.PAHealPortfolioImages = healReadyPortfolioImages;
+
+  function revealPortfolioTile(tile) {
+    if (!tile || tile.classList.contains('is-visible') || tile.classList.contains('is-collapsed') ||
+      tile.classList.contains('is-filtered-out')) {
+      return;
+    }
+    if (tile.dataset.paImgReady !== '1' && !tile.classList.contains('is-pa-img-ready')) {
+      tile.dataset.paPendingReveal = '1';
+      return;
+    }
+    if (!portfolioSectionIsReady(tile)) {
+      tile.dataset.paPendingReveal = '1';
+      return;
+    }
+    delete tile.dataset.paPendingReveal;
     if (motionReduced()) {
-      tile.classList.add('is-visible', 'is-revealed');
+      tile.classList.add('is-visible', 'is-revealed', 'is-animated');
       return;
     }
     void tile.offsetWidth;
     requestAnimationFrame(function () {
-      tile.classList.add('is-visible', 'is-revealed');
+      requestAnimationFrame(function () {
+        tile.classList.add('is-visible', 'is-revealed', 'is-animated');
+      });
     });
   }
+
+  function flushPendingPortfolioTileReveals(root) {
+    var scope = root && root.nodeType === 1 ? root : document;
+    healReadyPortfolioImages(scope);
+    scope.querySelectorAll(
+      '.pa-portfolio-tile.is-pa-img-ready:not(.is-visible):not(.is-collapsed):not(.is-filtered-out),' +
+      '.pa-portfolio-tile[data-pa-pending-reveal="1"]:not(.is-collapsed):not(.is-filtered-out)'
+    ).forEach(function (tile) {
+      revealPortfolioTile(tile);
+    });
+  }
+  window.PAFlushPortfolioTileReveals = flushPendingPortfolioTileReveals;
 
   function revealPortfolioTiles(tiles) {
     Array.prototype.forEach.call(tiles, function (tile) {
@@ -1887,6 +2092,7 @@
     if (window.PAAnimations && typeof window.PAAnimations.refresh === 'function') {
       window.PAAnimations.refresh(root);
     }
+    flushPendingPortfolioTileReveals(root);
   }
 
   function observePortfolioTiles(grid) {
@@ -1900,13 +2106,44 @@
     return '/book/';
   }
 
-  /** Canonical /book/ URL with funnel params (skip welcome, optional service preselect). */
+  /** Infer utm_source from page context for deposit-funnel attribution. */
+  function bookLinkUtmSource() {
+    var b = document.body;
+    if (!b) {
+      return 'site';
+    }
+    if (b.classList.contains('home')) {
+      return 'home';
+    }
+    if (b.classList.contains('pa-geo-landing-page')) {
+      return 'geo_landing';
+    }
+    if (b.classList.contains('pa-booking-page')) {
+      return 'book';
+    }
+    var path = (window.location && window.location.pathname) || '';
+    if (path.indexOf('/services') === 0) {
+      return 'services';
+    }
+    if (path.indexOf('/work') === 0) {
+      return 'work';
+    }
+    if (path.indexOf('/contact') === 0) {
+      return 'contact';
+    }
+    return 'site';
+  }
+
+  /** Canonical /book/ URL with funnel params (skip welcome, optional service preselect, UTM). */
   function bookLinkUrl(serviceApi) {
     var base = bookingUrl();
     var sep = base.indexOf('?') >= 0 ? '&' : '?';
     var url = base + sep + 'start=1';
     if (serviceApi) {
       url += '&service=' + encodeURIComponent(serviceApi);
+    }
+    if (url.indexOf('utm_source=') === -1) {
+      url += '&utm_source=' + encodeURIComponent(bookLinkUtmSource()) + '&utm_medium=cta';
     }
     return url;
   }
@@ -1959,7 +2196,7 @@
     var link = document.createElement('a');
     link.href = bookLinkUrl();
     link.className = 'pa-mobile-book-bar__btn';
-    link.textContent = 'Book now';
+    link.textContent = 'Hold your date';
     bar.appendChild(link);
     document.body.appendChild(bar);
   }
@@ -2057,10 +2294,12 @@
     el.classList.add('is-revealed', 'is-visible', 'is-animated');
     el.querySelectorAll(
       '.pa2-reviews__head, .pa2-reviews__stage, .pa2-reviews__foot, ' +
+      '.pa2-reviews__stars, .pa2-reviews__author-row, .pa2-reviews__author, ' +
+      '.pa2-reviews__quote, .pa2-reviews__meta, ' +
       '.pa2-cta__inner, .pa-home-closing-inner, .pa-scroll-reveal, ' +
       '.pa-footer-panel, .pa-footer-cta-strip, .pa-footer-social, .pa-legal-footer'
     ).forEach(function (child) {
-      child.classList.add('is-revealed', 'is-visible');
+      child.classList.add('is-revealed', 'is-visible', 'is-animated');
     });
   }
 
@@ -2071,11 +2310,24 @@
       '#pa2-reviews, #pa-home-closing, .pa-site-footer-pro, footer.wp-block-template-part'
     ).forEach(forceRevealElement);
     scope.querySelectorAll(
-      '.pa2-reviews__head, .pa2-reviews__stage, .pa2-reviews__foot, .pa2-cta__inner, ' +
+      '.pa2-reviews__head, .pa2-reviews__stage, .pa2-reviews__foot, ' +
+      '.pa2-reviews__stars, .pa2-reviews__author-row, .pa2-reviews__author, ' +
+      '.pa2-reviews__quote, .pa2-reviews__meta, .pa2-cta__inner, ' +
       '.pa-footer-glass__panel, .pa-footer-glass__hero, .pa-footer-glass__actions, .pa-footer-panel, .pa-footer-cta-strip, .pa-footer-social, .pa-legal-footer'
     ).forEach(function (el) {
-      el.classList.add('is-revealed', 'is-visible');
+      el.classList.add('is-revealed', 'is-visible', 'is-animated');
     });
+    scope.querySelectorAll(
+      '#pa-home-closing .pa2-cta__eyebrow, #pa-home-closing .pa2-cta__title, ' +
+      '#pa-home-closing .pa2-cta__lead, #pa-home-closing .pa2-cta__actions, ' +
+      '#pa-home-closing .pa2-cta__trust, #pa-home-closing .pa2-cta__trust-item, ' +
+      '.pa2-cta--enhanced .animate, .pa-footer-glass__panel, .pa-footer-glass__hero, ' +
+      '.pa-footer-glass__actions, .pa-footer-glass__link, .pa-footer-service-chip, ' +
+      '.pa-footer-work-row, .pa-footer-glass__badge'
+    ).forEach(function (el) {
+      el.classList.add('is-revealed', 'is-visible', 'is-animated');
+    });
+    revealFooterGlass(scope.querySelector('.pa-footer-glass'));
   }
 
   /** @deprecated Scroll reveal handles section entrance; refreshes observers only. */
@@ -2093,27 +2345,37 @@
   }
 
   /**
-   * Work / Services / About — same floating pill nav as home (chrome-above-hero look).
+   * Marketing pages — same floating pill nav as home (chrome-above-hero look).
+   * Runs whenever body.pa-marketing-nav is set (PHP or JS).
    */
   function polishMarketingHeaderNav() {
     if (
       document.body.classList.contains('home') ||
-      isBookingPage()
+      isBookingPage() ||
+      document.body.classList.contains('pa-ad-landing-page') ||
+      document.body.classList.contains('pa-quote-thankyou-page')
     ) {
       return false;
     }
+    /* Ensure Services/Contact/Work/About always get glass nav (PHP may miss class) */
     if (
-      !document.body.classList.contains('pa-work-page') &&
-      !document.body.classList.contains('pa-services-page') &&
-      !document.body.classList.contains('pa-about-page') &&
-      !isWorkPage() &&
-      !isServicesPage() &&
-      !isAboutPage()
+      isServicesPage() ||
+      isAboutPage() ||
+      isWorkPage() ||
+      isContactPage()
     ) {
+      document.body.classList.add(
+        'pa-marketing-nav',
+        'pa-interior-compact-nav',
+        'pa-home-header-pro',
+        'pa-premium-nav'
+      );
+    }
+    if (!document.body.classList.contains('pa-marketing-nav')) {
       return false;
     }
     applyMarketingHeaderNavClasses();
-    document.body.classList.add('pa-marketing-nav', 'pa-home-header-pro');
+    document.body.classList.add('pa-home-header-pro', 'pa-premium-nav');
     triggerPremiumHeaderNav();
     return true;
   }
@@ -2162,11 +2424,59 @@
       homeFinalizeTimer = null;
       relocateHomeShellFromHeader();
       relocateHomeChromeAboveHero();
+      repositionHomeSections();
       polishHomeHeader();
+      stripHomeMainPadding();
       triggerPremiumHeaderNav();
       refreshScrollReveal();
+      forceRevealHomeClosing();
       document.body.classList.add('pa-home-ready');
     }, 32);
+  }
+
+  /**
+   * Keep hero → services → portfolio order tight; legacy galleries must not sit between hero and services.
+   */
+  function repositionHomeSections() {
+    if (!document.body.classList.contains('home')) {
+      return;
+    }
+    var main = document.querySelector('main .entry-content, main .wp-block-post-content');
+    if (!main) {
+      return;
+    }
+
+    var hero = main.querySelector('.pa-glass-hero-wrap, .pa2-hero, .wp-block-cover.pa-home-hero');
+    var services = document.getElementById('pa2-services');
+    if (hero && services && services.parentNode === main && hero.nextElementSibling !== services) {
+      hero.insertAdjacentElement('afterend', services);
+    }
+
+    var portfolio = document.getElementById('pa-portfolio') ||
+      document.getElementById('pa-photo-portfolio') ||
+      document.querySelector('.pa2-portfolio, .pa-portfolio-showcase');
+    if (services && portfolio && portfolio.parentNode === main) {
+      var anchor = services;
+      while (anchor.parentNode && anchor.parentNode !== main) {
+        anchor = anchor.parentNode;
+      }
+      if (anchor.parentNode === main && portfolio !== services.nextElementSibling) {
+        services.insertAdjacentElement('afterend', portfolio);
+      }
+    }
+  }
+
+  /** Theme inline padding on main (80px) creates a dead band under the hero. */
+  function stripHomeMainPadding() {
+    if (!document.body.classList.contains('home')) {
+      return;
+    }
+    var main = document.querySelector('main.wp-block-group');
+    if (!main) {
+      return;
+    }
+    main.style.removeProperty('padding-top');
+    main.style.removeProperty('padding-bottom');
   }
 
   /**
@@ -2596,6 +2906,35 @@
     return /^\/work\/?$/.test(window.location.pathname || '');
   }
 
+  function isContactPage() {
+    if (document.body.classList.contains('pa-contact-page')) {
+      return true;
+    }
+    if (window.PASite && PASite.isContactPage) {
+      return true;
+    }
+    return /^\/contact\/?$/.test(window.location.pathname || '');
+  }
+
+  /**
+   * /contact/ — hide duplicate WP title; mark shell ready for scroll reveal.
+   */
+  function polishContactPage() {
+    if (!isContactPage()) {
+      return;
+    }
+    document.querySelectorAll('.wp-block-post-title, main .entry-header').forEach(function (node) {
+      node.classList.add('pa-contact-legacy-hidden');
+      node.setAttribute('aria-hidden', 'true');
+      node.hidden = true;
+    });
+    var shell = document.getElementById('pa-contact-book');
+    if (shell) {
+      shell.classList.add('is-ready', 'is-inview');
+      refreshScrollReveal(shell);
+    }
+  }
+
   /**
    * /work/ — hero + merged photo gallery and featured video (light portfolio page).
    */
@@ -2643,7 +2982,7 @@
     inner.className = 'pa2-work__inner';
     shell.appendChild(inner);
 
-    injectYoutubeFeature();
+    scheduleYoutubeFeature();
     schedulePhotoPortfolioShowcase();
     hideWorkPageLegacy(main, shell);
     removeWorkFeaturedBands();
@@ -2783,15 +3122,25 @@
     if (ids.length === 1) {
       return ids[0];
     }
+    var newest = ids[0];
     var prev = '';
+    var seen = '';
     try {
       prev = sessionStorage.getItem('pa_yt_last') || '';
+      seen = sessionStorage.getItem('pa_yt_seen') || '';
     } catch (e) { /* ignore */ }
     if (isBlockedYoutubeId(prev)) {
       prev = '';
       try {
         sessionStorage.removeItem('pa_yt_last');
       } catch (ePrev) { /* ignore */ }
+    }
+    if (!seen && newest && !isBlockedYoutubeId(newest)) {
+      try {
+        sessionStorage.setItem('pa_yt_seen', '1');
+        sessionStorage.setItem('pa_yt_last', newest);
+      } catch (eSeen) { /* ignore */ }
+      return newest;
     }
     var pool = ids.filter(function (id) {
       return id !== prev && !isBlockedYoutubeId(id);
@@ -2802,8 +3151,131 @@
     var pick = pool[Math.floor(Math.random() * pool.length)];
     try {
       sessionStorage.setItem('pa_yt_last', pick);
+      sessionStorage.setItem('pa_yt_seen', '1');
     } catch (e2) { /* ignore */ }
     return pick;
+  }
+
+  /**
+   * YouTube facade — poster + play button; iframe loads only on user intent.
+   * Keeps YouTube's ~500KB player off the critical path until tap.
+   *
+   * @param {HTMLElement} player
+   * @param {string} videoId
+   */
+  /** Ensure injected featured video is visible (scroll-reveal hides #pa-youtube-feature until .is-revealed). */
+  function revealYoutubeFeature(section) {
+    if (!section) {
+      return;
+    }
+    section.classList.add('pa-scroll-reveal');
+    if (window.PAAnimations && typeof window.PAAnimations.reveal === 'function') {
+      window.PAAnimations.reveal(section);
+    } else {
+      section.classList.add('is-revealed', 'is-visible', 'is-animated');
+    }
+    var featured = section.closest('.pa2-portfolio__featured');
+    if (featured) {
+      if (window.PAAnimations && typeof window.PAAnimations.reveal === 'function') {
+        window.PAAnimations.reveal(featured);
+      } else {
+        featured.classList.add('is-revealed', 'is-visible', 'is-animated');
+      }
+    }
+  }
+
+  /**
+   * Move a late-injected featured video into the home portfolio featured slot.
+   *
+   * @param {HTMLElement} video
+   * @return {boolean}
+   */
+  function absorbYoutubeIntoPortfolio(video) {
+    if (!video || !document.body.classList.contains('home')) {
+      return false;
+    }
+    if (video.closest('.pa2-portfolio__featured')) {
+      return true;
+    }
+    var showcase = document.getElementById('pa-portfolio') ||
+      document.getElementById('pa-photo-portfolio') ||
+      document.querySelector('.pa2-portfolio, .pa-portfolio-showcase');
+    if (!showcase) {
+      return false;
+    }
+    var grid = showcase.querySelector('.pa-portfolio-grid, .pa-photo-grid');
+    var featEl = showcase.querySelector('.pa2-portfolio__featured');
+    if (!featEl) {
+      featEl = document.createElement('div');
+      featEl.className = 'pa2-portfolio__featured';
+      showcase.insertBefore(featEl, grid || showcase.firstChild);
+    }
+    if (!featEl.contains(video)) {
+      featEl.appendChild(video);
+    }
+    revealYoutubeFeature(video);
+    refreshScrollReveal(showcase);
+    return true;
+  }
+
+  function mountYoutubeFacade(player, videoId) {
+    if (!player || !videoId || !YT_ID_RE.test(videoId)) {
+      return;
+    }
+    player.classList.add('pa-youtube-facade');
+    player.setAttribute('data-video-id', videoId);
+
+    var poster = document.createElement('img');
+    poster.className = 'pa-youtube-poster';
+    poster.loading = 'eager';
+    poster.decoding = 'async';
+    poster.alt = '';
+    poster.src = youtubeThumbUrl(videoId, 'maxresdefault');
+    poster.addEventListener('error', function onPosterErr() {
+      poster.removeEventListener('error', onPosterErr);
+      poster.src = youtubeThumbUrl(videoId, 'hqdefault');
+      poster.addEventListener('error', function onPosterErr2() {
+        poster.removeEventListener('error', onPosterErr2);
+        poster.src = youtubeThumbUrl(videoId, 'mqdefault');
+      });
+    });
+
+    var playBtn = document.createElement('button');
+    playBtn.type = 'button';
+    playBtn.className = 'pa-youtube-play';
+    playBtn.setAttribute('aria-label', 'Play featured video');
+    var playIcon = document.createElement('span');
+    playIcon.className = 'pa-youtube-play-icon';
+    playIcon.setAttribute('aria-hidden', 'true');
+    playBtn.appendChild(playIcon);
+
+    player.appendChild(poster);
+    player.appendChild(playBtn);
+
+    function activateFeaturedPlayer() {
+      if (player.classList.contains('is-active')) {
+        return;
+      }
+      player.classList.add('is-active');
+      var iframe = document.createElement('iframe');
+      iframe.className = 'pa-youtube-iframe';
+      iframe.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId) +
+        '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+      iframe.title = 'Pennsylvania Media Arts featured video';
+      iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+      iframe.allowFullscreen = true;
+      iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+      if (poster.parentNode) {
+        poster.parentNode.removeChild(poster);
+      }
+      if (playBtn.parentNode) {
+        playBtn.parentNode.removeChild(playBtn);
+      }
+      player.appendChild(iframe);
+    }
+
+    playBtn.addEventListener('click', activateFeaturedPlayer);
+    poster.addEventListener('click', activateFeaturedPlayer);
   }
 
   function injectYoutubeFeature() {
@@ -2837,20 +3309,55 @@
 
     var player = document.createElement('div');
     player.className = 'pa-youtube-player';
-    var iframe = document.createElement('iframe');
-    iframe.className = 'pa-youtube-iframe';
-    iframe.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(videoId) +
-      '?rel=0&modestbranding=1&playsinline=1';
-    iframe.title = 'Pennsylvania Media Arts featured video';
-    iframe.loading = 'lazy';
-    iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
-    iframe.allowFullscreen = true;
-    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
-    player.appendChild(iframe);
+    mountYoutubeFacade(player, videoId);
     section.appendChild(player);
 
-    if (placeFeaturedVideoSection(section)) {
-      refreshScrollReveal(section);
+    var bookYt = (window.PASite && PASite.youtubeBookUrl) ? PASite.youtubeBookUrl : '';
+    if (!bookYt) {
+      bookYt = bookingUrl();
+      bookYt += (bookYt.indexOf('?') >= 0 ? '&' : '?') + 'start=1&utm_source=youtube&utm_medium=video';
+    }
+    if (bookYt) {
+      var ytCta = document.createElement('p');
+      ytCta.className = 'pa-youtube-book-cta';
+      var ytBook = document.createElement('a');
+      ytBook.href = bookYt;
+      ytBook.textContent = 'Book event photo or video online';
+      ytCta.appendChild(ytBook);
+      section.appendChild(ytCta);
+    }
+
+    if (!placeFeaturedVideoSection(section)) {
+      return;
+    }
+    absorbYoutubeIntoPortfolio(section);
+    revealYoutubeFeature(section);
+    refreshScrollReveal(section);
+    try {
+      document.dispatchEvent(new CustomEvent('pa-youtube-feature-ready', { detail: { section: section } }));
+    } catch (evtErr) { /* ignore */ }
+  }
+
+  /** Defer featured video mount until after first paint / idle. */
+  function scheduleYoutubeFeature() {
+    // Home cinema stage owns featured film — do not inject a second amateur "Featured" band.
+    if (document.body.classList.contains('home')) {
+      return;
+    }
+    if (document.getElementById('pa-youtube-feature')) {
+      return;
+    }
+    var run = function () {
+      if (document.getElementById('pa2-services') &&
+          document.getElementById('pa2-services').classList.contains('pa2-services--cinema')) {
+        return;
+      }
+      injectYoutubeFeature();
+    };
+    if (typeof window.requestIdleCallback === 'function') {
+      window.requestIdleCallback(run, { timeout: 600 });
+    } else {
+      window.setTimeout(run, 80);
     }
   }
 
@@ -2896,7 +3403,8 @@
 
     if (footer.querySelector('.pa-site-footer-pro')) {
       var existing = footer.querySelector('.pa-site-footer-pro');
-      if (existing && existing.classList.contains('pa-footer-glass')) {
+      if (existing && existing.classList.contains('pa-footer-glass--light')) {
+        revealFooterGlass(existing);
         return;
       }
       if (existing) {
@@ -2917,7 +3425,7 @@
     }
 
     var pro = document.createElement('div');
-    pro.className = 'pa-site-footer-pro pa-footer-glass';
+    pro.className = 'pa-site-footer-pro pa-footer-glass pa-footer-glass--light';
 
     if (!isBookingPage()) {
       pro.appendChild(buildFooterGlassHero());
@@ -2926,6 +3434,8 @@
 
     pro.appendChild(buildFooterActionBar());
     wrap.insertBefore(pro, columns);
+    revealFooterGlass(pro);
+    refreshScrollReveal(pro);
     refreshScrollReveal(pro);
   }
 
@@ -3133,9 +3643,25 @@
     return data;
   }
 
+  function revealFooterGlass(root) {
+    var scope = root || document.querySelector('.pa-footer-glass');
+    if (!scope) {
+      return;
+    }
+    scope.classList.add('is-inview', 'is-ready', 'is-revealed', 'is-visible', 'is-animated');
+    scope.querySelectorAll(
+      '.pa-footer-glass__hero, .pa-footer-glass__panel, .pa-footer-glass__actions, ' +
+      '.pa-footer-glass__eyebrow, .pa-footer-glass__lead, .pa-footer-glass__heading, ' +
+      '.pa-footer-glass__body, .pa-footer-glass__link, .pa-footer-service-chip, ' +
+      '.pa-footer-work-row, .pa-footer-glass__badge, .pa-footer-social, .pa-reveal-item, .animate'
+    ).forEach(function (el) {
+      el.classList.add('is-revealed', 'is-visible', 'is-animated');
+    });
+  }
+
   function buildFooterGlassHero() {
     var hero = document.createElement('div');
-    hero.className = 'pa-footer-glass__hero animate fade-up';
+    hero.className = 'pa-footer-glass__hero pa-reveal-item';
 
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-footer-glass__eyebrow';
@@ -3180,9 +3706,19 @@
     return base + sep + 'service=' + encodeURIComponent(serviceName);
   }
 
+  function footerServiceChipClass(name) {
+    var key = String(name || '').toLowerCase();
+    if (key.indexOf('photo') !== -1) return 'pa-footer-service-chip--photo';
+    if (key.indexOf('video') !== -1) return 'pa-footer-service-chip--video';
+    if (key.indexOf('dj') !== -1) return 'pa-footer-service-chip--dj';
+    if (key.indexOf('audio') !== -1 || key.indexOf('pa') !== -1) return 'pa-footer-service-chip--audio';
+    if (key.indexOf('bundle') !== -1 || key.indexOf('+') !== -1) return 'pa-footer-service-chip--bundle';
+    return 'pa-footer-service-chip--neutral';
+  }
+
   function buildFooterInfoGrid(data) {
     var grid = document.createElement('div');
-    grid.className = 'pa-footer-glass__grid stagger';
+    grid.className = 'pa-footer-glass__grid';
 
     grid.appendChild(buildFooterGlassPanel(
       'Services',
@@ -3193,7 +3729,7 @@
         data.services.slice(0, 6).forEach(function (name) {
           var li = document.createElement('li');
           var a = document.createElement('a');
-          a.className = 'pa-footer-service-chip';
+          a.className = 'pa-footer-service-chip ' + footerServiceChipClass(name);
           a.href = serviceBookingHref(name);
           a.textContent = getFooterServiceLabel(name);
           li.appendChild(a);
@@ -3207,28 +3743,6 @@
         body.appendChild(all);
       }
     ));
-
-    var geoLinks = (window.PASite && PASite.geoLandingLinks) || [];
-    if (geoLinks.length) {
-      grid.appendChild(buildFooterGlassPanel(
-        'Central PA',
-        'pa-footer-geo',
-        function (body) {
-          var list = document.createElement('ul');
-          list.className = 'pa-footer-geo-links';
-          geoLinks.forEach(function (item) {
-            var li = document.createElement('li');
-            var a = document.createElement('a');
-            a.className = 'pa-footer-glass__link';
-            a.href = item.url;
-            a.textContent = item.label;
-            li.appendChild(a);
-            list.appendChild(li);
-          });
-          body.appendChild(list);
-        }
-      ));
-    }
 
     grid.appendChild(buildFooterGlassPanel(
       'About',
@@ -3314,7 +3828,7 @@
 
   function buildFooterGlassPanel(title, id, fill) {
     var panel = document.createElement('section');
-    panel.className = 'pa-footer-glass__panel animate fade-up';
+    panel.className = 'pa-footer-glass__panel pa-reveal-item';
     if (id) {
       panel.id = id;
     }
@@ -3334,7 +3848,7 @@
 
   function buildFooterActionBar() {
     var bar = document.createElement('div');
-    bar.className = 'pa-footer-glass__actions animate fade-up';
+    bar.className = 'pa-footer-glass__actions pa-reveal-item';
 
     var socialSlot = document.createElement('div');
     socialSlot.className = 'pa-footer-glass__social-slot';
@@ -3398,6 +3912,11 @@
     location.textContent = (window.PASite && PASite.businessLocation) || 'New Cumberland, Pennsylvania';
     legal.appendChild(location);
 
+    var contact = buildFooterContactLine();
+    if (contact) {
+      legal.appendChild(contact);
+    }
+
     var links = document.createElement('p');
     links.className = 'pa-legal-links';
     var privacyHref = (window.PASite && PASite.privacyUrl) || '/privacy-policy/';
@@ -3420,6 +3939,41 @@
     parent.appendChild(a);
   }
 
+  /**
+   * Visible email / phone in footer for leads and local SEO NAP consistency.
+   */
+  function buildFooterContactLine() {
+    var email = (window.PASite && PASite.notifyEmail) || '';
+    var phone = (window.PASite && PASite.phone) || '';
+    var tel = (window.PASite && PASite.phoneTel) || '';
+    if (!email && !phone) {
+      return null;
+    }
+    var wrap = document.createElement('p');
+    wrap.className = 'pa-footer-contact';
+    if (email) {
+      var mail = document.createElement('a');
+      mail.href = 'mailto:' + email;
+      mail.textContent = email;
+      wrap.appendChild(mail);
+    }
+    if (phone && tel) {
+      if (email) {
+        wrap.appendChild(document.createTextNode(' · '));
+      }
+      var call = document.createElement('a');
+      call.href = tel;
+      call.textContent = phone;
+      wrap.appendChild(call);
+    }
+    wrap.appendChild(document.createTextNode(' · '));
+    var book = document.createElement('a');
+    book.href = bookLinkUrl();
+    book.textContent = 'Book online';
+    wrap.appendChild(book);
+    return wrap;
+  }
+
   function getFooterNavLinks() {
     var links = [];
     document.querySelectorAll('footer .wp-block-navigation a.wp-block-navigation-item__content').forEach(function (a) {
@@ -3437,6 +3991,9 @@
       { label: 'Home', href: homeUrl },
       { label: 'Work', href: workPageUrl() },
       { label: 'Services', href: homeUrl.replace(/\/?$/, '/') + 'services/' },
+      { label: 'About', href: aboutPageUrl() },
+      { label: 'Contact', href: contactPageUrl() },
+      { label: 'Book', href: (window.PASite && PASite.bookUrl) ? PASite.bookUrl + ((PASite.bookUrl.indexOf('?') >= 0) ? '&' : '?') + 'start=1' : homeUrl.replace(/\/?$/, '/') + 'book/?start=1' },
     ];
   }
 
@@ -3451,6 +4008,12 @@
       }
       if (target === '/work' || href.indexOf('/work') !== -1) {
         return current === '/work' || document.body.classList.contains('pa-work-page');
+      }
+      if (target === '/about' || href.indexOf('/about') !== -1) {
+        return current === '/about' || document.body.classList.contains('pa-about-page');
+      }
+      if (target === '/contact' || href.indexOf('/contact') !== -1) {
+        return current === '/contact' || document.body.classList.contains('pa-contact-page');
       }
       if (target === '/book' || href.indexOf('/book') !== -1) {
         return current === '/book' || document.body.classList.contains('pa-booking-page');
@@ -3582,18 +4145,18 @@
 
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-hero-eyebrow';
-    eyebrow.textContent = 'Multimedia production \u00b7 Central Pennsylvania';
+    eyebrow.textContent = 'Pennsylvania Media Arts \u00b7 Multimedia production';
     content.appendChild(eyebrow);
 
     var h1 = document.createElement('h1');
     h1.className = 'pa-hero-title';
-    h1.textContent = 'Photography, video & live production for Pennsylvania events.';
+    h1.textContent = 'Cinematic wedding films, professional event production, and creative media for Pennsylvania';
     content.appendChild(h1);
 
     var lead = document.createElement('p');
     lead.className = 'pa-hero-lead';
     lead.textContent =
-      'One team for sound, visuals, and design \u2014 capturing concerts, weddings, and brand stories across Central PA for over 15 years.';
+      'A premium production company for couples, businesses, and organizations \u2014 cinema, photography, live audio, and post under one team.';
     content.appendChild(lead);
 
     var actions = document.createElement('div');
@@ -3602,13 +4165,13 @@
     var primary = document.createElement('a');
     primary.className = 'pa-hero-btn pa-hero-btn-primary';
     primary.href = bookingUrl();
-    primary.textContent = 'Book your date';
+    primary.textContent = 'Check Availability';
     actions.appendChild(primary);
 
     var secondary = document.createElement('a');
     secondary.className = 'pa-hero-btn pa-hero-btn-secondary';
     secondary.href = '#pa-portfolio';
-    secondary.textContent = 'View our work';
+    secondary.textContent = 'View Portfolio';
     actions.appendChild(secondary);
 
     content.appendChild(actions);
@@ -4072,6 +4635,7 @@
    */
   function reorderHomeSections() {
     relocateHomeShellFromHeader();
+    stripHomeMainPadding();
     var main = document.querySelector('main .entry-content, main .wp-block-post-content');
     if (!main) {
       return;
@@ -4276,8 +4840,7 @@
     var lead = document.createElement('p');
     lead.className = 'pa-about-lead';
     lead.textContent =
-      '15+ years producing live events and creative media across Central Pennsylvania — ' +
-      'photography, video, and live sound under one roof, delivered by one team.';
+      'Photography, video, and live production for weddings, events, and brands across Central Pennsylvania.';
     hero.appendChild(lead);
 
     var meta = document.createElement('p');
@@ -4298,15 +4861,14 @@
     card.appendChild(eyebrow);
 
     var paras = [
-      'Jordan Zabady founded Pennsylvania Media Arts on a single principle: one team, one standard, no handoffs. ' +
-      'Every project — from a 500-person concert to a solo artist\'s press shoot — gets the same ' +
-      'disciplined attention from load-in to final deliverable.',
-      'With more than 15 years behind the board and behind the camera, Jordan brings a deep technical ' +
-      'foundation in live sound reinforcement, a precise eye for still photography, and a narrative ' +
-      'instinct for video that carries from the shoot floor into the edit suite.',
-      'Nominated for Best Videography at the 2026 Central Pennsylvania Music Awards — hosted by the ' +
-      'Central Pennsylvania Music Hall of Fame — Jordan and the PA Media Arts team serve artists, ' +
-      'venues, businesses, and creators who demand professional results and reliable execution.',
+      'Jordan Zabady is a multimedia producer with more than 15 years in live audio, video, ' +
+      'photography, music production, and post. His background spans commercial television, ' +
+      'animation, motion graphics, worship services, weddings, music videos, and concert production.',
+      'He works full time as a producer in digital communications at The Hospital and Healthsystem ' +
+      'Association of Pennsylvania (HAP). After his daughter was born, he founded Pennsylvania Media ' +
+      'Arts LLC to bring photography, video, and live production to clients across Central Pennsylvania.',
+      'Jordan is nominated for Best Videography at the 2026 Central Pennsylvania Music Awards. ' +
+      'Through PA Media Arts, he works with artists, venues, businesses, and couples throughout the region.',
     ];
 
     paras.forEach(function (text) {
@@ -4881,6 +5443,7 @@
     if (!url) {
       return '';
     }
+    url = rewriteHeavyImageUrl(url, targetWidth);
     var match = url.match(/^(.+?)(-(\d+)x(\d+))?(-scaled)?(\.(jpe?g|png|gif|webp))((\?|#).*)?$/i);
     if (!match) {
       return url;
@@ -4890,12 +5453,9 @@
     var suffix = match[8] || '';
     var origW = parseInt(match[3], 10) || 0;
     var origH = parseInt(match[4], 10) || 0;
+    var isScaledOrBare = !origW || !origH;
 
-    if (!origW || !origH) {
-      return url;
-    }
-
-    var widths = [480, 640, 768, 1024, 1536];
+    var widths = [480, 640, 683, 768, 1024, 1536];
     var pick = widths[0];
     for (var i = 0; i < widths.length; i++) {
       if (widths[i] >= targetWidth) {
@@ -4905,12 +5465,58 @@
       pick = widths[i];
     }
 
+    // Prefer JPEG derivatives for PNGs (much smaller for photos).
+    if (/\.png$/i.test(ext)) {
+      ext = '.jpg';
+    }
+
+    if (isScaledOrBare) {
+      // Portrait-first gallery default when WP size metadata is missing from the URL.
+      var heightGuess = Math.max(1, Math.round(pick * 1.5));
+      if (pick === 683) {
+        heightGuess = 1024;
+      } else if (pick === 768) {
+        heightGuess = 1152;
+      } else if (pick === 1024) {
+        heightGuess = 1536;
+      }
+      return base + '-' + pick + 'x' + heightGuess + ext + suffix;
+    }
+
     if (pick >= origW) {
-      return url;
+      return /\.png$/i.test(match[6]) ? base + (match[2] || '') + ext + suffix : url;
     }
 
     var height = Math.max(1, Math.round(origH * pick / origW));
     return base + '-' + pick + 'x' + height + ext + suffix;
+  }
+
+  /**
+   * Map known oversized bare uploads onto optimized JPEG derivatives (uploaded via bin/optimize-live-photos.py).
+   */
+  function rewriteHeavyImageUrl(url, targetWidth) {
+    if (!url || typeof url !== 'string') {
+      return url;
+    }
+    var target = targetWidth || getTargetTileWidth();
+    // 31 MB bare PNG used as a portfolio tile — never request the original.
+    if (/\/IMG_5847\.png(\?|#|$)/i.test(url)) {
+      if (target <= 700) {
+        return url.replace(/IMG_5847\.png/i, 'IMG_5847-683x1024.jpg');
+      }
+      if (target <= 900) {
+        return url.replace(/IMG_5847\.png/i, 'IMG_5847-768x1152.jpg');
+      }
+      return url.replace(/IMG_5847\.png/i, 'IMG_5847-1024x1536.jpg');
+    }
+    if (/\/BC3EB512-5789-4061-90E4-476ADBA6F177-753x1024\.png(\?|#|$)/i.test(url)) {
+      return url.replace(/BC3EB512-5789-4061-90E4-476ADBA6F177-753x1024\.png/i, 'BC3EB512-5789-4061-90E4-476ADBA6F177-683x1024.jpg');
+    }
+    // Heavy PNG intermediates → JPEG siblings created by the optimizer.
+    if (/\/(IMG_5960|A44D6A70-5E01-43FC-8EA8-C1D8430C6D55)-(\d+x\d+)\.png(\?|#|$)/i.test(url)) {
+      return url.replace(/\.png(\?|#|$)/i, '.jpg$1');
+    }
+    return url;
   }
 
   /**
@@ -4925,11 +5531,22 @@
       return '';
     }
     var target = targetWidth || getTargetTileWidth();
+    url = rewriteHeavyImageUrl(url, target);
     var dim = parseWpDimensions(url);
     if (!dim.w || !dim.h) {
+      var derivedBare = deriveWordPressThumbUrl(url, target);
+      if (derivedBare && derivedBare !== url && isAllowedImageUrl(derivedBare)) {
+        return derivedBare;
+      }
       return url;
     }
     if (dim.w <= Math.round(target * 1.35)) {
+      if (/\.png$/i.test(url)) {
+        var jpgTwin = url.replace(/\.png$/i, '.jpg');
+        if (jpgTwin !== url) {
+          return jpgTwin;
+        }
+      }
       return url;
     }
     var derived = deriveWordPressThumbUrl(url, target);
@@ -5160,11 +5777,7 @@
     }
 
     function markReady() {
-      img.classList.add('is-pa-img-loaded');
-      if (tile) {
-        tile.classList.remove('is-pa-img-pending');
-        tile.classList.add('is-pa-img-ready');
-      }
+      markPortfolioTileImageReady(img, tile);
     }
 
     function onImgError() {
@@ -5281,5 +5894,6 @@
     pickFromSrcset: pickFromSrcset,
     pickGridImageUrl: pickGridImageUrl,
     optimizeTile: optimizePortfolioTileImage,
+    rewriteHeavy: rewriteHeavyImageUrl,
   };
 })();

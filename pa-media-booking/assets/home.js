@@ -13,8 +13,12 @@
     if (serviceApi) {
       url += '&service=' + encodeURIComponent(serviceApi);
     }
+    if (url.indexOf('utm_source=') === -1) {
+      url += '&utm_source=home&utm_medium=cta';
+    }
     return url;
   }
+
   var servicesUrl = (window.PASite && PASite.homeUrl)
     ? PASite.homeUrl.replace(/\/?$/, '/') + 'services/'
     : '/services/';
@@ -25,10 +29,16 @@
     }
     section.classList.add('is-inview');
     section.querySelectorAll(
-      '.pa2-services__title, .pa2-services__lead'
+      '.pa2-services__eyebrow, .pa2-services__title, .pa2-services__lead'
     ).forEach(function (el) {
       el.classList.add('is-animated', 'is-revealed', 'is-visible');
     });
+  }
+
+  function homeBaseUrl() {
+    return (window.PASite && PASite.homeUrl)
+      ? PASite.homeUrl.replace(/\/?$/, '/')
+      : '/';
   }
 
   function refreshHomeScrollReveal(root) {
@@ -46,6 +56,9 @@
   buildHomeServices();
   whenPortfolioReady(buildHomePortfolio);
   whenClosingReady(buildHomeClosingStack);
+  document.addEventListener('pa-youtube-feature-ready', function () {
+    buildHomePortfolio();
+  });
 
   /**
    * Bottom-of-page sections: Reviews → Booking CTA.
@@ -86,11 +99,11 @@
     applyHomeHeroBackground(hero, resolveHomeHeroImage(bg));
 
     var eyebrowText = textFrom(hero, '.pa-hero-eyebrow, .pa2-hero__eyebrow') ||
-      'Multimedia production \u00b7 Central Pennsylvania';
+      'Pennsylvania Media Arts \u00b7 Multimedia production';
     var titleText = textFrom(hero, '.pa-hero-title, .pa2-hero__title, h1') ||
-      'Event photographer & videographer for Central PA';
+      'Cinematic wedding films, professional event production, and creative media for Pennsylvania';
     var leadText = textFrom(hero, '.pa-hero-lead, .pa2-hero__lead') ||
-      'Wedding and corporate event production in Harrisburg, York, and Lancaster \u2014 photography, video, DJ, and live sound. Book online with a secure deposit.';
+      'A premium production company for couples, businesses, and organizations \u2014 cinema, photography, premium live sound, and post under one team. Check availability and hold your date with a secure deposit.';
 
     hero.classList.add('pa2-hero');
     hero.setAttribute('data-pa2-hero', '1');
@@ -119,10 +132,11 @@
     inner.appendChild(lead);
 
     var row = el('div', 'pa2-hero__actions animate fade-up stagger');
-    var primary = el('a', 'pa2-hero__btn pa2-hero__btn--primary animate fade-up', 'Start Booking');
+    var primary = el('a', 'pa2-hero__btn pa2-hero__btn--primary animate fade-up', 'Check Availability');
     primary.href = bookLink();
-    var secondary = el('a', 'pa2-hero__btn pa2-hero__btn--secondary animate fade-up', 'View work');
-    secondary.href = '#pa-portfolio';
+    var workUrl = (window.PASite && PASite.workUrl) ? PASite.workUrl : '/work/';
+    var secondary = el('a', 'pa2-hero__btn pa2-hero__btn--secondary animate fade-up', 'View Portfolio');
+    secondary.href = workUrl;
     row.appendChild(primary);
     row.appendChild(secondary);
     inner.appendChild(row);
@@ -302,106 +316,283 @@
   }
 
   function buildHomeServices() {
+    var stale = document.getElementById('pa2-services');
+    if (stale && !stale.classList.contains('pa2-services--cinema')) {
+      if (stale.parentNode) stale.parentNode.removeChild(stale);
+    }
     if (document.getElementById('pa2-services')) return;
 
-    var catalog = [
-      { id: 'photo', label: 'Photography', api: 'Event Photography', tagline: 'Story-driven stills for weddings and live events.' },
-      { id: 'video', label: 'Videography', api: 'Video Production', tagline: 'Cinematic capture and in-house editing.' },
-      { id: 'dj', label: 'DJ', api: 'DJ Services', tagline: 'Music programming, MC, and dance-floor energy.' },
-      { id: 'audio', label: 'Live Audio', api: 'Live Audio / PA', tagline: 'Full PA and live sound from load-in to strike.' },
-      { id: 'bundle', label: 'Multiple Services', api: 'Photo + Video Bundle', tagline: 'Coordinated photo and video — one booking.', featured: true }
+    if (typeof window.PARelocateHomeShellFromHeader === 'function') {
+      window.PARelocateHomeShellFromHeader();
+    }
+    if (typeof window.PARelocateHomeChromeBelowHero === 'function') {
+      window.PARelocateHomeChromeBelowHero();
+    }
+
+    var base = homeBaseUrl();
+    var workUrl = (window.PASite && PASite.workUrl) ? PASite.workUrl : '/work/';
+    var weddingStill = pluginAsset('media/lane-weddings.jpg');
+    var eventsStill = pluginAsset('media/events-corporate-01.jpg');
+    var eventsStillAlt = pluginAsset('media/events-corporate-02.jpg');
+    // Media cards — Events uses corporate event stills; Weddings keeps wedding still.
+    var featureCards = [
+      {
+        id: 'weddings',
+        label: 'Weddings',
+        href: base + 'services/wedding-films-pennsylvania/',
+        bookApi: 'Photo + Video Bundle',
+        image: weddingStill,
+        focusFilm: 1
+      },
+      {
+        id: 'events',
+        label: 'Events',
+        href: base + 'services/live-event-production-pennsylvania/',
+        bookApi: 'Video Production',
+        image: eventsStill || eventsStillAlt,
+        focusFilm: 0
+      },
+      {
+        id: 'audio',
+        label: 'Premium sound',
+        href: base + 'services/audio-production-pennsylvania/',
+        bookApi: 'Live Audio / PA',
+        image: eventsStillAlt || '',
+        focusFilm: 2
+      }
     ];
-    var apiList = (window.PASite && PASite.services && PASite.services.length)
-      ? PASite.services
-      : catalog.map(function (s) { return s.api; });
-    var items = catalog.filter(function (s) { return apiList.indexOf(s.api) !== -1; });
-    if (!items.length) return;
 
     var section = document.createElement('section');
-    section.className = 'pa2-services pa2-services--dynamic pa-reveal-section section-reveal';
+    section.className = 'pa2-services pa2-services--cinema pa2-services--cinema-glass pa-reveal-section section-reveal';
     section.id = 'pa2-services';
-    section.setAttribute('data-pa-atmosphere', 'contrast');
+    section.setAttribute('data-pa-atmosphere', 'bright');
     section.setAttribute('aria-labelledby', 'pa2-services-title');
 
     var wrap = document.createElement('div');
-    wrap.className = 'pa2-services__inner';
+    wrap.className = 'pa2-services__inner pa2-cinema';
 
     var head = document.createElement('header');
-    head.className = 'pa2-services__head';
-
-    var title = document.createElement('h2');
-    title.className = 'pa2-services__title pa-reveal-item';
-    title.style.setProperty('--pa-reveal-i', '0');
-    title.style.setProperty('--anim-i', '0');
+    head.className = 'pa2-cinema__head';
+    head.appendChild(el('p', 'pa2-cinema__eyebrow', 'Selected work'));
+    var title = el('h2', 'pa2-cinema__title', 'Recent films and photography.');
     title.id = 'pa2-services-title';
-    title.textContent = 'Services';
     head.appendChild(title);
-
-    var lead = document.createElement('p');
-    lead.className = 'pa2-services__lead pa-reveal-item';
-    lead.style.setProperty('--pa-reveal-i', '1');
-    lead.style.setProperty('--anim-i', '1');
-    lead.textContent = 'Photography, video, DJ, and live production for Pennsylvania events.';
-    head.appendChild(lead);
+    head.appendChild(el('p', 'pa2-cinema__lead',
+      'Recent films and stills from Pennsylvania productions.'));
     wrap.appendChild(head);
 
-    var grid = document.createElement('div');
-    grid.className = 'pa2-services__grid pa2-services__grid--rows';
-    grid.setAttribute('role', 'list');
-    items.forEach(function (svc, i) {
-      var card = document.createElement('a');
-      card.className = 'pa2-services__card pa2-services__card--' + svc.id +
-        (svc.featured ? ' is-featured' : '');
-      card.href = bookLink(svc.api);
-      card.setAttribute('role', 'listitem');
-      card.style.setProperty('--pa2-svc-i', String(i));
-      card.style.setProperty('--pa-reveal-i', String(i + 2));
-      card.style.setProperty('--anim-i', String(i + 2));
-      card.classList.add('pa-reveal-item');
+    var stage = document.createElement('div');
+    stage.className = 'pa2-cinema__stage';
 
-      var inner = document.createElement('div');
-      inner.className = 'pa2-services__card-inner';
+    var player = document.createElement('div');
+    player.className = 'pa2-cinema__player';
+    player.id = 'pa2-cinema-player';
+    stage.appendChild(player);
 
-      var iconWrap = document.createElement('div');
-      iconWrap.className = 'pa2-services__icon-wrap';
-      if (svc.featured) {
-        var badge = document.createElement('span');
-        badge.className = 'pa2-services__badge';
-        badge.textContent = 'Most popular';
-        iconWrap.appendChild(badge);
+    var strip = document.createElement('div');
+    strip.className = 'pa2-cinema__strip';
+    strip.setAttribute('role', 'listbox');
+    strip.setAttribute('aria-label', 'Featured films');
+    stage.appendChild(strip);
+    wrap.appendChild(stage);
+
+    var lanePanels = document.createElement('div');
+    lanePanels.className = 'pa2-cinema__lane-panels';
+
+    var films = getFeaturedFilms();
+    var state = { filmId: films[0] ? films[0].id : '', playing: false };
+
+    function ytThumb(id, quality) {
+      quality = quality || 'maxresdefault';
+      return 'https://i.ytimg.com/vi/' + id + '/' + quality + '.jpg';
+    }
+
+    function filmPosterUrl(film) {
+      if (!film) return '';
+      if (film.poster) return film.poster;
+      if (film.type === 'youtube') return ytThumb(film.id);
+      return '';
+    }
+
+    function syncStripActive(id) {
+      Array.prototype.forEach.call(strip.querySelectorAll('.pa2-cinema__thumb'), function (btn) {
+        var on = btn.getAttribute('data-film-id') === id;
+        btn.classList.toggle('is-active', on);
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    }
+
+    function setPoster(film, titleText) {
+      if (!film) return;
+      state.filmId = film.id;
+      state.playing = false;
+      while (player.firstChild) player.removeChild(player.firstChild);
+      var posterBtn = document.createElement('button');
+      posterBtn.type = 'button';
+      posterBtn.className = 'pa2-cinema__poster';
+      posterBtn.setAttribute('aria-label', 'Play ' + (titleText || film.title || 'featured film'));
+      var posterImg = document.createElement('img');
+      posterImg.className = 'pa2-cinema__poster-img';
+      posterImg.alt = '';
+      posterImg.decoding = 'async';
+      posterImg.src = filmPosterUrl(film);
+      if (film.type === 'youtube') {
+        posterImg.onerror = function () {
+          if (posterImg.src.indexOf('maxresdefault') !== -1) {
+            posterImg.src = ytThumb(film.id, 'hqdefault');
+          }
+        };
       }
-      var ring = document.createElement('div');
-      ring.className = 'pa2-services__icon-ring pa2-services__icon-ring--' + svc.id;
-      ring.appendChild(createServiceIcon(svc.id));
-      iconWrap.appendChild(ring);
-      inner.appendChild(iconWrap);
+      posterBtn.appendChild(posterImg);
+      var playMark = document.createElement('span');
+      playMark.className = 'pa2-cinema__play';
+      playMark.setAttribute('aria-hidden', 'true');
+      posterBtn.appendChild(playMark);
+      var caption = el('div', 'pa2-cinema__caption', '');
+      caption.appendChild(el('span', 'pa2-cinema__caption-kicker', 'Play film'));
+      caption.appendChild(el('span', 'pa2-cinema__caption-title', titleText || film.title || 'Featured film'));
+      posterBtn.appendChild(caption);
+      posterBtn.addEventListener('click', function () { playFilm(film); });
+      player.appendChild(posterBtn);
+      syncStripActive(film.id);
+    }
+
+    function playFilm(film) {
+      if (!film) return;
+      state.playing = true;
+      state.filmId = film.id;
+      while (player.firstChild) player.removeChild(player.firstChild);
+      if (film.type === 'local' && film.src) {
+        var video = document.createElement('video');
+        video.className = 'pa2-cinema__video';
+        video.setAttribute('controls', '');
+        video.setAttribute('playsinline', '');
+        video.setAttribute('preload', 'metadata');
+        video.setAttribute('aria-label', film.title || 'Pennsylvania Media Arts featured film');
+        if (film.poster) video.setAttribute('poster', film.poster);
+        video.src = film.src;
+        player.appendChild(video);
+        var playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+          playPromise.catch(function () { /* user gesture already satisfied; controls remain */ });
+        }
+      } else {
+        var frame = document.createElement('iframe');
+        frame.className = 'pa2-cinema__iframe';
+        frame.title = 'Pennsylvania Media Arts featured film';
+        frame.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share';
+        frame.allowFullscreen = true;
+        frame.referrerPolicy = 'strict-origin-when-cross-origin';
+        frame.src = 'https://www.youtube-nocookie.com/embed/' + encodeURIComponent(film.id) +
+          '?autoplay=1&rel=0&modestbranding=1&playsinline=1';
+        player.appendChild(frame);
+      }
+      syncStripActive(film.id);
+    }
+
+    function buildStrip() {
+      while (strip.firstChild) strip.removeChild(strip.firstChild);
+      if (!films.length) {
+        strip.hidden = true;
+        return;
+      }
+      strip.hidden = false;
+      films.forEach(function (film, i) {
+        var thumb = document.createElement('button');
+        thumb.type = 'button';
+        thumb.className = 'pa2-cinema__thumb' + (i === 0 ? ' is-active' : '');
+        thumb.setAttribute('role', 'option');
+        thumb.setAttribute('data-film-id', film.id);
+        thumb.setAttribute('aria-label', 'Show film ' + (i + 1) + (film.title ? ': ' + film.title : ''));
+        thumb.setAttribute('aria-selected', i === 0 ? 'true' : 'false');
+        var img = document.createElement('img');
+        img.alt = '';
+        img.loading = i === 0 ? 'eager' : 'lazy';
+        img.decoding = 'async';
+        img.src = film.type === 'youtube' ? ytThumb(film.id, 'hqdefault') : (film.poster || filmPosterUrl(film));
+        thumb.appendChild(img);
+        thumb.addEventListener('click', function () {
+          setPoster(film, film.title || 'Selected film');
+        });
+        strip.appendChild(thumb);
+      });
+      setPoster(films[0], films[0].title || 'Selected film');
+    }
+
+    featureCards.forEach(function (card, i) {
+      var panel = document.createElement('article');
+      panel.className = 'pa2-cinema__panel' + (i === 0 ? ' is-active' : '');
+      panel.setAttribute('data-lane', card.id);
+
+      var media = document.createElement('div');
+      media.className = 'pa2-cinema__panel-media';
+      var focus = films[card.focusFilm] || films[0];
+      var bg = card.image || filmPosterUrl(focus);
+      if (bg) {
+        media.style.backgroundImage = 'url("' + bg.replace(/\\/g, '\\\\').replace(/"/g, '\\"') + '")';
+        var mediaImg = document.createElement('img');
+        mediaImg.src = bg;
+        mediaImg.alt = '';
+        mediaImg.setAttribute('aria-hidden', 'true');
+        mediaImg.loading = 'eager';
+        mediaImg.decoding = 'async';
+        if (i < 2 && 'fetchPriority' in mediaImg) {
+          mediaImg.fetchPriority = 'high';
+        }
+        function markMediaReady() {
+          media.classList.add('is-loaded');
+          mediaImg.classList.add('is-pa-img-loaded');
+          panel.classList.add('is-media-ready');
+        }
+        if (mediaImg.complete && mediaImg.naturalWidth > 0) {
+          markMediaReady();
+        } else {
+          mediaImg.addEventListener('load', markMediaReady, { once: true });
+          mediaImg.addEventListener('error', markMediaReady, { once: true });
+        }
+        media.appendChild(mediaImg);
+      } else {
+        media.classList.add('is-loaded');
+        panel.classList.add('is-media-ready');
+      }
+      panel.appendChild(media);
 
       var body = document.createElement('div');
-      body.className = 'pa2-services__card-body';
-      var h3 = document.createElement('h3');
-      h3.className = 'pa2-services__card-title';
-      h3.textContent = svc.label;
-      var tag = document.createElement('p');
-      tag.className = 'pa2-services__card-tagline';
-      tag.textContent = svc.tagline;
-      body.appendChild(h3);
-      body.appendChild(tag);
-      inner.appendChild(body);
-      card.appendChild(inner);
+      body.className = 'pa2-cinema__panel-body';
+      body.appendChild(el('h3', 'pa2-cinema__panel-title', card.label));
 
-      grid.appendChild(card);
+      var actions = document.createElement('div');
+      actions.className = 'pa2-cinema__panel-actions';
+      var explore = el('a', 'pa2-cinema__panel-link', 'Explore');
+      explore.href = card.href;
+      var book = el('a', 'pa2-cinema__panel-book', 'Check availability');
+      book.href = bookLink(card.bookApi);
+      actions.appendChild(explore);
+      actions.appendChild(book);
+      body.appendChild(actions);
+      panel.appendChild(body);
+
+      panel.addEventListener('click', function (ev) {
+        if (ev.target.closest('a')) return;
+        var focusFilm = films[card.focusFilm] || films[0];
+        if (focusFilm) setPoster(focusFilm, card.label);
+        Array.prototype.forEach.call(lanePanels.querySelectorAll('.pa2-cinema__panel'), function (p) {
+          p.classList.toggle('is-active', p === panel);
+        });
+      });
+
+      lanePanels.appendChild(panel);
     });
-    wrap.appendChild(grid);
+    wrap.appendChild(lanePanels);
 
     var foot = document.createElement('div');
-    foot.className = 'pa2-services__foot pa-reveal-item';
-    foot.style.setProperty('--pa-reveal-i', String(items.length + 2));
-    foot.style.setProperty('--anim-i', String(items.length + 2));
-    var explore = document.createElement('a');
-    explore.className = 'pa2-services__cta';
-    explore.href = servicesUrl;
-    explore.textContent = 'Explore all services';
-    foot.appendChild(explore);
+    foot.className = 'pa2-cinema__foot';
+    var viewWork = el('a', 'pa2-cinema__cta pa2-cinema__cta--ghost', 'Full portfolio');
+    viewWork.href = workUrl;
+    var bookPrimary = el('a', 'pa2-cinema__cta pa2-cinema__cta--primary', 'Check availability');
+    bookPrimary.href = bookLink();
+    foot.appendChild(viewWork);
+    foot.appendChild(bookPrimary);
     wrap.appendChild(foot);
 
     section.appendChild(wrap);
@@ -420,18 +611,119 @@
       return;
     }
 
+    buildStrip();
+    window.PAHomeCinema = true;
+    stripDuplicateFeaturedVideo();
+
+    /* Paint hidden first, then fade/slide in on the next frames. */
+    section.classList.add('is-ready');
     if (typeof window.PARelocateHomeShellFromHeader === 'function') {
       window.PARelocateHomeShellFromHeader();
     }
-
-    requestAnimationFrame(function () {
-      section.classList.add('is-ready');
-      revealServicesHead(section);
-    });
-    refreshHomeScrollReveal(section);
-    if (typeof window.PAFinalizeHomeExperience === 'function') {
-      window.PAFinalizeHomeExperience();
+    if (typeof window.PARepositionHomeSections === 'function') {
+      window.PARepositionHomeSections();
     }
+    requestAnimationFrame(function () {
+      requestAnimationFrame(function () {
+        section.classList.add('is-inview');
+        refreshHomeScrollReveal(section);
+        if (typeof window.PAFinalizeHomeExperience === 'function') {
+          window.PAFinalizeHomeExperience();
+        }
+      });
+    });
+    return;
+  }
+
+  function stripDuplicateFeaturedVideo() {
+    var dup = document.getElementById('pa-youtube-feature');
+    if (dup && dup.parentNode) {
+      dup.parentNode.removeChild(dup);
+    }
+  }
+
+  function pluginAsset(relPath) {
+    var base = (window.PASite && PASite.assetsBase) ? String(PASite.assetsBase) : '';
+    if (!base) {
+      var homeScript = document.querySelector('script[src*="/assets/home.js"]');
+      if (homeScript && homeScript.src) {
+        base = homeScript.src.replace(/assets\/home\.js(\?.*)?$/i, 'assets/');
+      }
+    }
+    if (!base) return '';
+    var ver = (window.PASite && PASite.assetVersion) ? String(PASite.assetVersion) : '';
+    var url = base.replace(/\/?$/, '/') + String(relPath || '').replace(/^\//, '');
+    return ver ? (url + (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + encodeURIComponent(ver)) : url;
+  }
+
+  function getHomeVideoIds() {
+    var ids = (window.PASite && PASite.youtubeVideos) ? PASite.youtubeVideos : [];
+    var blocked = (window.PASite && PASite.youtubeBlockedVideos) ? PASite.youtubeBlockedVideos : [];
+    var out = [];
+    if (!Array.isArray(ids)) return out;
+    ids.forEach(function (id) {
+      if (typeof id === 'string' && /^[A-Za-z0-9_-]{11}$/.test(id) &&
+          blocked.indexOf(id) === -1 && out.indexOf(id) === -1) {
+        out.push(id);
+      }
+    });
+    if (!out.length) {
+      out = ['10tkFTq_q9k', 'o_XqjsIw6wQ', 'md_W_73txMI', '-hqlCiFmr0U'];
+    }
+    return out;
+  }
+
+  /**
+   * Home cinema playlist: local reels first, then YouTube featured IDs.
+   *
+   * @returns {Array<{type:string,id:string,src?:string,poster?:string,title?:string}>}
+   */
+  function getFeaturedFilms() {
+    var films = [];
+    var seen = {};
+    var locals = (window.PASite && PASite.featuredLocalVideos) ? PASite.featuredLocalVideos : [];
+    if (Array.isArray(locals)) {
+      locals.forEach(function (item, i) {
+        if (!item || typeof item !== 'object') return;
+        var src = item.src ? String(item.src) : '';
+        if (!src) return;
+        var id = item.id ? String(item.id) : ('local-' + i);
+        if (seen[id]) return;
+        seen[id] = true;
+        films.push({
+          type: 'local',
+          id: id,
+          src: src,
+          poster: item.poster ? String(item.poster) : '',
+          title: item.title ? String(item.title) : 'Featured film'
+        });
+      });
+    }
+    getHomeVideoIds().forEach(function (ytId) {
+      if (seen[ytId]) return;
+      seen[ytId] = true;
+      films.push({
+        type: 'youtube',
+        id: ytId,
+        title: 'Selected film'
+      });
+    });
+    return films.slice(0, 4);
+  }
+
+  function getHomePhotoUrls() {
+    var urls = [];
+    var hero = window.PASite && PASite.homeHeroImage && PASite.homeHeroImage.url;
+    if (hero) urls.push(hero);
+    document.querySelectorAll(
+      '#pa-portfolio img, #pa-photo-portfolio img, .pa-portfolio-tile img, .wp-block-gallery img, .pa-photo-grid img'
+    ).forEach(function (img) {
+      var src = img.currentSrc || img.src;
+      if (src && urls.indexOf(src) === -1 && src.indexOf('data:') !== 0) {
+        urls.push(src);
+      }
+    });
+    return urls;
   }
 
   /**
@@ -472,15 +764,15 @@
     head.className = 'pa2-portfolio__head';
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa2-portfolio__eyebrow';
-    eyebrow.textContent = 'Photography';
+    eyebrow.textContent = 'Still photography';
     var title = document.createElement('h2');
     title.className = 'pa2-portfolio__title';
     title.id = 'pa2-portfolio-title';
-    title.textContent = 'Gallery';
+    title.textContent = 'Frame by frame';
     var lead = document.createElement('p');
     lead.className = 'pa2-portfolio__lead';
     lead.textContent =
-      'Recent events and sessions across Pennsylvania. Tap any image to view full size.';
+      'Selected stills from weddings, concerts, and brand work across Pennsylvania. Tap any image to open full size.';
     head.appendChild(eyebrow);
     head.appendChild(title);
     head.appendChild(lead);
@@ -494,12 +786,33 @@
   }
 
   function buildHomePortfolio() {
-    if (document.querySelector('.pa2-portfolio--enhanced')) return true;
-
     var showcase = document.getElementById('pa-photo-portfolio') ||
       document.getElementById('pa-portfolio') ||
       document.querySelector('.pa-portfolio-showcase');
     var video = document.getElementById('pa-youtube-feature');
+
+    if (document.querySelector('.pa2-portfolio--enhanced')) {
+      if (video && typeof window.PAAbsorbYoutubeIntoPortfolio === 'function') {
+        window.PAAbsorbYoutubeIntoPortfolio(video);
+      } else if (video && showcase && !showcase.contains(video)) {
+        var grid = showcase.querySelector('.pa-portfolio-grid, .pa-photo-grid');
+        var featEl = showcase.querySelector('.pa2-portfolio__featured');
+        if (!featEl) {
+          featEl = document.createElement('div');
+          featEl.className = 'pa2-portfolio__featured';
+          showcase.insertBefore(featEl, grid || showcase.firstChild);
+        }
+        featEl.appendChild(video);
+        if (typeof window.PARevealYoutubeFeature === 'function') {
+          window.PARevealYoutubeFeature(video);
+        }
+        refreshHomeScrollReveal(showcase);
+      } else if (video && typeof window.PARevealYoutubeFeature === 'function') {
+        window.PARevealYoutubeFeature(video);
+      }
+      return true;
+    }
+
     var fallbackLabel = document.getElementById('pa-portfolio-label');
     var fallbackGrid = document.querySelector('.pa-portfolio-fallback-gallery');
 
@@ -546,15 +859,15 @@
     head.className = 'pa2-portfolio__head';
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa2-portfolio__eyebrow';
-    eyebrow.textContent = 'Photography';
+    eyebrow.textContent = 'Still photography';
     var title = document.createElement('h2');
     title.className = 'pa2-portfolio__title';
     title.id = 'pa2-portfolio-title';
-    title.textContent = 'Gallery';
+    title.textContent = 'Frame by frame';
     var lead = document.createElement('p');
     lead.className = 'pa2-portfolio__lead';
     lead.textContent =
-      'Recent events and sessions across Pennsylvania. Tap any image to view full size.';
+      'Selected stills from weddings, concerts, and brand work across Pennsylvania. Tap any image to open full size.';
     head.appendChild(eyebrow);
     head.appendChild(title);
     head.appendChild(lead);
@@ -622,10 +935,29 @@
     return true;
   }
 
+  function revealHomeCtaContent(band) {
+    if (!band) {
+      return;
+    }
+    band.classList.add('is-inview', 'is-ready');
+    var inner = band.querySelector('.pa2-cta__inner');
+    if (!inner) {
+      return;
+    }
+    inner.classList.add('is-revealed', 'is-visible', 'is-animated', 'pa-reveal-item');
+    inner.querySelectorAll(
+      '.pa2-cta__eyebrow, .pa2-cta__title, .pa2-cta__lead, .pa2-cta__actions, ' +
+      '.pa2-cta__btn, .pa2-cta__trust, .pa2-cta__trust-item, .animate, .pa-reveal-item'
+    ).forEach(function (el) {
+      el.classList.add('is-animated', 'is-revealed', 'is-visible');
+    });
+  }
+
   function buildHomeBookingCta() {
     var band = document.getElementById('pa-home-closing');
     var existing = document.querySelector('.pa2-cta--enhanced');
     if (existing && existing.querySelector('.pa2-cta__btn--primary')) {
+      revealHomeCtaContent(existing);
       return true;
     }
 
@@ -645,8 +977,6 @@
 
     band.className = 'pa-home-closing pa2-cta pa2-cta--enhanced pa-reveal-section section-reveal';
     band.setAttribute('data-pa-atmosphere', 'calm');
-    band.setAttribute('data-parallax', '0.15');
-    band.classList.add('parallax');
     band.setAttribute('aria-labelledby', 'pa2-cta-title');
     while (band.firstChild) band.removeChild(band.firstChild);
 
@@ -657,58 +987,66 @@
     band.appendChild(parallaxBg);
 
     var inner = document.createElement('div');
-    inner.className = 'pa2-cta__inner';
+    inner.className = 'pa2-cta__inner pa-reveal-item';
+    inner.style.setProperty('--pa-reveal-i', '0');
+    inner.style.setProperty('--anim-i', '0');
 
     var eyebrow = document.createElement('p');
-    eyebrow.className = 'pa2-cta__eyebrow';
+    eyebrow.className = 'pa2-cta__eyebrow pa-reveal-item';
+    eyebrow.style.setProperty('--pa-reveal-i', '0');
     eyebrow.textContent = 'Pennsylvania Media Arts';
     inner.appendChild(eyebrow);
 
     var title = document.createElement('h2');
-    title.className = 'pa2-cta__title';
+    title.className = 'pa2-cta__title pa-reveal-item';
+    title.style.setProperty('--pa-reveal-i', '1');
     title.id = 'pa2-cta-title';
     title.textContent = 'Let\u2019s reserve your date';
     inner.appendChild(title);
 
     var lead = document.createElement('p');
-    lead.className = 'pa2-cta__lead';
+    lead.className = 'pa2-cta__lead pa-reveal-item';
+    lead.style.setProperty('--pa-reveal-i', '2');
     var depositUsd = (window.PASite && PASite.depositUsd) ? PASite.depositUsd : '150';
     lead.textContent = 'Most bookings take about two minutes — choose your service, pick a date, and secure your spot with a $' + depositUsd + ' deposit.';
     inner.appendChild(lead);
 
     var actions = document.createElement('div');
-    actions.className = 'pa2-cta__actions';
+    actions.className = 'pa2-cta__actions pa-reveal-item';
+    actions.style.setProperty('--pa-reveal-i', '3');
     var primary = document.createElement('a');
     primary.className = 'pa2-cta__btn pa2-cta__btn--primary';
     primary.href = bookLink();
-    primary.textContent = 'Book now';
+    primary.textContent = 'Hold your date';
+    var workUrl = (window.PASite && PASite.workUrl) ? PASite.workUrl : '/work/';
     var secondary = document.createElement('a');
     secondary.className = 'pa2-cta__btn pa2-cta__btn--secondary';
-    secondary.href = '#pa-portfolio';
-    secondary.textContent = 'View work';
+    secondary.href = workUrl;
+    secondary.textContent = 'View our work';
     actions.appendChild(primary);
     actions.appendChild(secondary);
     inner.appendChild(actions);
 
     var trust = document.createElement('ul');
-    trust.className = 'pa2-cta__trust';
+    trust.className = 'pa2-cta__trust pa-reveal-item';
+    trust.style.setProperty('--pa-reveal-i', '4');
     trust.setAttribute('aria-label', 'Booking reassurance');
     [
       'Live availability',
-      'Secure deposit',
+      'Deposit holds your date',
       'Proposal after booking',
-      '~2 min booking'
-    ].forEach(function (item) {
+      '~2 min to book'
+    ].forEach(function (item, i) {
       var li = document.createElement('li');
       li.className = 'pa2-cta__trust-item';
+      li.style.setProperty('--pa-reveal-i', String(5 + i));
       li.textContent = item;
       trust.appendChild(li);
     });
     inner.appendChild(trust);
 
     band.appendChild(inner);
-    band.classList.add('is-inview', 'is-ready');
-    inner.classList.add('is-revealed', 'is-visible', 'is-animated');
+    revealHomeCtaContent(band);
     requestAnimationFrame(function () { band.classList.add('is-ready'); });
     refreshHomeScrollReveal(band);
     return true;

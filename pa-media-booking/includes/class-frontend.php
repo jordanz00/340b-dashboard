@@ -11,6 +11,9 @@ class PA_Booking_Frontend {
     /** @var string ''|'header'|'footer' — set while rendering template parts */
     private static $template_part_slug = '';
 
+    /** @var bool */
+    private static $site_icon_emitted = false;
+
     public function __construct() {
         add_shortcode('pa_booking', array($this, 'render_booking'));
         add_shortcode('pa_booking_success', array($this, 'render_success'));
@@ -18,17 +21,42 @@ class PA_Booking_Frontend {
         add_filter('pre_render_block', array($this, 'note_template_part'), 5, 2);
         add_filter('render_block', array($this, 'filter_site_logo_block'), 12, 2);
         add_filter('render_block', array($this, 'filter_home_hero_cover'), 11, 2);
+        add_filter('render_block', array($this, 'filter_heavy_gallery_images'), 20, 2);
         add_action('wp_enqueue_scripts', array($this, 'maybe_assets'), 100);
         add_action('init', array($this, 'maybe_ensure_work_page'), 20);
-        add_action('wp_head', array($this, 'inject_logo_critical_css'), 4);
-        add_action('wp_head', array($this, 'inject_home_hero_preload'), 3);
-        add_action('wp_head', array($this, 'inject_site_icon'), 5);
+        add_action('wp_head', array($this, 'inject_viewport_meta_safe'), 0);
+        add_action('wp_head', array($this, 'inject_mobile_chrome_meta_safe'), 2);
+        add_action('wp_head', array($this, 'inject_logo_critical_css_safe'), 4);
+        add_action('wp_head', array($this, 'inject_home_hero_preload_safe'), 3);
+        add_action('wp_head', array($this, 'inject_site_icon_safe'), 5);
         add_action('wp_head', array($this, 'remove_wp_site_icon'), 0);
         add_filter('wp_resource_hints', array($this, 'resource_hints'), 10, 2);
         add_action('template_redirect', array($this, 'handle_success_query'));
-        add_action('template_redirect', array($this, 'redirect_contact_page'), 1);
         add_action('template_redirect', array($this, 'redirect_status_page'), 2);
         add_action('template_redirect', array($this, 'nocache_booking_page'), 3);
+    }
+
+    /**
+     * Safe wp_head wrappers — never truncate document if a head hook fatals.
+     */
+    public function inject_viewport_meta_safe() {
+        PA_Booking_Render_Safety::run_head(array($this, 'inject_viewport_meta'), 'viewport_meta');
+    }
+
+    public function inject_mobile_chrome_meta_safe() {
+        PA_Booking_Render_Safety::run_head(array($this, 'inject_mobile_chrome_meta'), 'mobile_chrome_meta');
+    }
+
+    public function inject_logo_critical_css_safe() {
+        PA_Booking_Render_Safety::run_head(array($this, 'inject_logo_critical_css'), 'logo_critical_css');
+    }
+
+    public function inject_home_hero_preload_safe() {
+        PA_Booking_Render_Safety::run_head(array($this, 'inject_home_hero_preload'), 'home_hero_preload');
+    }
+
+    public function inject_site_icon_safe() {
+        PA_Booking_Render_Safety::run_head(array($this, 'inject_site_icon'), 'site_icon');
     }
 
     /**
@@ -45,10 +73,11 @@ class PA_Booking_Frontend {
 
     /**
      * Speed up first paint of embedded media and payment scripts.
+     * YouTube hints only on pages that show the featured video facade.
      */
     public function resource_hints($hints, $relation_type) {
-        if ($relation_type === 'preconnect') {
-            $hints[] = 'https://www.youtube.com';
+        if ($relation_type === 'preconnect' && (is_front_page() || is_page('work'))) {
+            $hints[] = 'https://www.youtube-nocookie.com';
             $hints[] = 'https://i.ytimg.com';
         }
         if ($relation_type === 'dns-prefetch') {
@@ -66,6 +95,27 @@ class PA_Booking_Frontend {
     }
 
     /**
+     * Per-page Open Graph photos (Media Library assets already on pamedia.art).
+     *
+     * @param string $page_key home|services|work|about|contact|book|''
+     * @return string
+     */
+    public static function interior_og_image_url($page_key) {
+        $uploads = trailingslashit(content_url('uploads'));
+        $map = array(
+            'work'     => $uploads . '2025/04/crop-0-0-2560-1440-0-D5515840-199E-4336-830B-1654190C2600-scaled.jpg',
+            'about'    => $uploads . '2025/04/crop-0-0-2560-1440-0-D5515840-199E-4336-830B-1654190C2600-scaled.jpg',
+            'services' => self::home_hero_image()['url'],
+            'contact'  => self::home_hero_image()['url'],
+            'book'     => self::home_hero_image()['url'],
+        );
+        if (isset($map[$page_key])) {
+            return esc_url_raw($map[$page_key]);
+        }
+        return esc_url_raw(self::og_image_url());
+    }
+
+    /**
      * Homepage hero — Harrisburg drone skyline (Media Library wp-image-198).
      * Used only on the front page; interior pages keep compact nav without this photo.
      *
@@ -74,13 +124,24 @@ class PA_Booking_Frontend {
     public static function home_hero_image() {
         $base = trailingslashit(content_url('uploads/2025/12'));
         $name = 'DJI_0423-HDR';
+        // Keep width descriptors OUT of esc_url() — it otherwise encodes " 2560w" into a bad URL.
+        $variants = array(
+            array('file' => '-768x432.jpg', 'w' => 768),
+            array('file' => '-1024x576.jpg', 'w' => 1024),
+            array('file' => '-1536x864.jpg', 'w' => 1536),
+            array('file' => '-2048x1152.jpg', 'w' => 2048),
+            array('file' => '-scaled.jpg', 'w' => 2560),
+        );
         $srcset_parts = array();
-        foreach (array('-scaled.jpg 2560w', '-2048x1152.jpg 2048w', '-1536x864.jpg 1536w', '-1024x576.jpg 1024w', '-768x432.jpg 768w') as $suffix) {
-            $srcset_parts[] = esc_url($base . $name . $suffix);
+        foreach ($variants as $variant) {
+            $srcset_parts[] = esc_url($base . $name . $variant['file']) . ' ' . (int) $variant['w'] . 'w';
         }
 
         return array(
-            'url'      => esc_url_raw($base . $name . '-scaled.jpg'),
+            // Default to 1536w — sharp on desktop retina, ~2.5× lighter than -scaled on mobile LCP.
+            'url'      => esc_url_raw($base . $name . '-1536x864.jpg'),
+            'url_full' => esc_url_raw($base . $name . '-scaled.jpg'),
+            'url_mobile' => esc_url_raw($base . $name . '-1024x576.jpg'),
             'srcset'   => implode(', ', $srcset_parts),
             'position' => '50% 38%',
             'alt'      => 'Aerial drone photograph of the Harrisburg, Pennsylvania skyline at sunset',
@@ -95,7 +156,9 @@ class PA_Booking_Frontend {
             return;
         }
         $hero = self::home_hero_image();
-        echo '<link rel="preload" as="image" href="' . esc_url($hero['url']) . '"';
+        // Mobile-first href (1024w). Browser picks from imagesrcset via imagesizes.
+        $href = !empty($hero['url_mobile']) ? $hero['url_mobile'] : $hero['url'];
+        echo '<link rel="preload" as="image" href="' . esc_url($href) . '"';
         if (!empty($hero['srcset'])) {
             echo ' imagesrcset="' . esc_attr($hero['srcset']) . '" imagesizes="100vw"';
         }
@@ -141,6 +204,7 @@ class PA_Booking_Frontend {
         }
         if (is_page('book')) {
             $classes[] = 'pa-booking-page';
+            $classes[] = 'pa-premium-nav';
         }
         if (is_page('services')) {
             $classes[] = 'pa-services-page';
@@ -151,16 +215,47 @@ class PA_Booking_Frontend {
         if (is_page('about')) {
             $classes[] = 'pa-about-page';
         }
+        if (is_page('start')) {
+            $classes[] = 'pa-ad-landing-page';
+            $classes[] = 'pa-interior-compact-nav';
+            $classes[] = 'pa-marketing-nav';
+            $classes[] = 'pa-premium-nav';
+        }
+        if (is_page('service-areas')) {
+            $classes[] = 'pa-seo-hub-page';
+            $classes[] = 'pa-interior-compact-nav';
+            $classes[] = 'pa-marketing-nav';
+            $classes[] = 'pa-premium-nav';
+        }
+        if (is_page('quote-thank-you')) {
+            $classes[] = 'pa-quote-thankyou-page';
+            $classes[] = 'pa-interior-compact-nav';
+            $classes[] = 'pa-marketing-nav';
+            $classes[] = 'pa-premium-nav';
+        }
         if (is_singular('page')) {
             $post = get_queried_object();
             if ($post instanceof WP_Post && PA_Booking_Landing_Pages::is_landing_slug($post->post_name)) {
                 $classes[] = 'pa-geo-landing-page';
+                $classes[] = 'pa-interior-compact-nav';
                 $classes[] = 'pa-marketing-nav';
+                $classes[] = 'pa-home-header-pro';
+                $classes[] = 'pa-premium-nav';
             }
         }
-        if (is_page(array('work', 'services', 'about'))) {
+        if (is_page('service-areas')) {
+            $classes[] = 'pa-home-header-pro';
+        }
+        if (is_page(array('work', 'services', 'about', 'contact'))) {
             $classes[] = 'pa-interior-compact-nav';
             $classes[] = 'pa-marketing-nav';
+            $classes[] = 'pa-home-header-pro';
+            $classes[] = 'pa-premium-nav';
+        }
+        if (is_page('contact')) {
+            $classes[] = 'pa-contact-page';
+        }
+        if (is_front_page()) {
             $classes[] = 'pa-home-header-pro';
             $classes[] = 'pa-premium-nav';
         }
@@ -357,22 +452,36 @@ class PA_Booking_Frontend {
                 . 'html.pa-scroll-motion #pa2-reviews:not(.is-inview) .pa2-reviews__head,'
                 . 'html.pa-scroll-motion #pa2-reviews:not(.is-inview) .pa2-reviews__stage,'
                 . 'html.pa-scroll-motion .pa2-cta:not(.is-inview) .pa2-cta__inner'
-                . '{opacity:0;transform:translate3d(0,20px,0) scale(0.98)}'
+                . '{opacity:0;transform:translate3d(0,28px,0) scale(0.97)}'
                 . '</style>' . "\n";
         }
 
         if (is_front_page()) {
             $hero = self::home_hero_image();
-            $hero_url = esc_url($hero['url']);
+            $hero_mobile = esc_url(!empty($hero['url_mobile']) ? $hero['url_mobile'] : $hero['url']);
+            $hero_desktop = esc_url($hero['url']);
+            // Separate mobile/desktop backgrounds so we do not force the 2560w -scaled file on phones.
             echo '<style id="pa-home-hero-critical">'
                 . 'body.home .pa-home-hero.wp-block-cover.alignfull,'
                 . 'body.home .pa2-hero.pa-home-hero,'
                 . 'body.home .pa-glass-hero-wrap .pa-home-hero'
-                . '{background-image:url("' . $hero_url . '")!important;background-size:cover!important;'
-                . 'background-position:' . esc_attr($hero['position']) . '!important;background-repeat:no-repeat!important}'
+                . '{background-image:url("' . $hero_mobile . '")!important;background-size:cover!important;'
+                . 'background-position:' . esc_attr($hero['position']) . '!important;background-repeat:no-repeat!important;'
+                . 'min-height:clamp(18rem,50vh,34rem)!important}'
+                . '@media (min-width:769px){'
+                . 'body.home .pa-home-hero.wp-block-cover.alignfull,'
+                . 'body.home .pa2-hero.pa-home-hero,'
+                . 'body.home .pa-glass-hero-wrap .pa-home-hero'
+                . '{background-image:url("' . $hero_desktop . '")!important}}'
                 . 'body.home .pa-home-hero .wp-block-cover__image-background,'
                 . 'body.home .pa2-hero .wp-block-cover__image-background'
                 . '{object-position:' . esc_attr($hero['position']) . '!important}'
+                . '</style>' . "\n";
+            echo '<style id="pa-home-layout-critical">'
+                . 'body.home:not(.pa-has-photo-portfolio) .entry-content>.wp-block-gallery.alignfull{'
+                . 'position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;'
+                . 'opacity:0!important;pointer-events:none!important;margin:0!important;padding:0!important;clip:rect(0,0,0,0)!important}'
+                . 'body.home main.wp-block-group{padding-top:0!important;padding-bottom:clamp(1rem,3vw,2rem)!important}'
                 . '</style>' . "\n";
             echo '<style id="pa-home-chrome-logo-critical">'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-brand-lockup,'
@@ -380,13 +489,13 @@ class PA_Booking_Frontend {
                 . '{width:auto!important;max-width:100%!important;padding:0!important;background:transparent!important;box-shadow:none!important}'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo a,'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-brand-logo-wrap a'
-                . '{display:inline-block!important;width:auto!important;max-width:min(720px,96vw)!important;'
+                . '{display:inline-block!important;width:auto!important;max-width:min(520px,88vw)!important;'
                 . 'margin:0 auto!important;line-height:0!important;overflow:hidden!important;border-radius:16px!important}'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo img,'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.custom-logo,'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup'
-                . '{display:block!important;width:auto!important;max-width:min(720px,96vw)!important;'
-                . 'height:clamp(140px,22vw,320px)!important;max-height:none!important;box-shadow:none!important}'
+                . '{display:block!important;width:auto!important;max-width:min(520px,88vw)!important;'
+                . 'height:clamp(100px,18vw,260px)!important;max-height:none!important;box-shadow:none!important}'
                 . '</style>' . "\n";
         }
 
@@ -399,21 +508,62 @@ class PA_Booking_Frontend {
             . 'body.pa-glass-site header .pa-nav-floating-pills .wp-block-navigation-item__content,'
             . 'body.pa-glass-site header .pa-nav-dock .wp-block-navigation-item__content,'
             . 'body.pa-glass-site header .pa-site-nav-pill'
-            . '{border-radius:9999px!important;min-height:46px;padding:.625rem 1.35rem!important;'
-            . 'font-size:.8125rem!important;font-weight:600!important;letter-spacing:.02em!important;text-transform:none!important}'
+            . '{border-radius:9999px!important;min-height:48px;padding:.75rem 1.5rem!important;'
+            . 'font-size:1rem!important;font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important}'
             . 'body.pa-glass-site.home header .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content'
             . '{color:rgba(255,255,255,.96)!important;background:rgba(255,255,255,.14)!important;'
             . 'border:1.5px solid rgba(255,255,255,.38)!important}'
             . 'body.pa-glass-site.home header .is-current,body.pa-glass-site.home header .current-menu-item .wp-block-navigation-item__content'
-            . '{color:#1d1d1f!important;background:rgba(255,255,255,.97)!important;border-color:#fff!important}'
+            . '{color:#005bb5!important;background:rgba(0,113,227,.14)!important;border-color:rgba(0,113,227,.38)!important}'
             . 'body.pa-glass-site header .pa-nav-book .wp-block-navigation-item__content'
-            . '{color:#fff!important;background:#0071e3!important;border-radius:9999px!important}'
+            . '{color:#fff!important;background:linear-gradient(180deg,#0084ff,#0071e3)!important;border-radius:9999px!important}'
             . 'body.pa-glass-site.pa-marketing-nav:not(.home) header .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content'
             . '{color:#1d1d1f!important;background:rgba(255,255,255,.52)!important;'
             . 'border:1px solid rgba(255,255,255,.82)!important;border-radius:9999px!important}'
             . 'body.pa-glass-site.pa-marketing-nav:not(.home) header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content'
-            . '{color:#fff!important;background:rgba(29,29,31,.84)!important;border-radius:9999px!important}'
+            . '{color:#005bb5!important;background:rgba(0,113,227,.14)!important;border:1px solid rgba(0,113,227,.38)!important;border-radius:9999px!important}'
+            . 'body.pa-glass-site.pa-marketing-nav:not(.home) header .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content:hover'
+            . '{color:#1d1d1f!important;background:rgba(255,255,255,.72)!important;border-color:rgba(255,255,255,.94)!important}'
+            . 'body.pa-glass-site header .wp-block-navigation-item__label'
+            . '{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}'
             . '</style>' . "\n";
+
+        self::echo_site_icon_tags();
+    }
+
+    /**
+     * Block-theme viewport with safe-area support (replaces core tag).
+     */
+    public function inject_viewport_meta() {
+        if (is_admin()) {
+            return;
+        }
+        remove_action('wp_head', '_block_template_viewport_meta_tag', 0);
+        echo '<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">' . "\n";
+    }
+
+    /**
+     * iOS Safari chrome color — matches HAP blue primary CTA.
+     */
+    public function inject_mobile_chrome_meta() {
+        if (is_admin()) {
+            return;
+        }
+        echo '<meta name="theme-color" content="#0071e3">' . "\n";
+        echo '<meta name="apple-mobile-web-app-status-bar-style" content="default">' . "\n";
+    }
+
+    /**
+     * Favicon link tags shared by wp_head hooks.
+     */
+    public static function echo_site_icon_tags() {
+        if (self::$site_icon_emitted) {
+            return;
+        }
+        self::$site_icon_emitted = true;
+        $icon = esc_url(self::logo_icon_url());
+        echo '<link rel="icon" href="' . $icon . '" sizes="any">' . "\n";
+        echo '<link rel="apple-touch-icon" href="' . $icon . '">' . "\n";
     }
 
     /**
@@ -500,6 +650,39 @@ class PA_Booking_Frontend {
     }
 
     /**
+     * Rewrite oversized bare gallery uploads to compressed JPEG intermediates before first paint.
+     * Prevents browsers from starting a 30MB+ PNG download from raw block HTML.
+     *
+     * @param string $block_content Rendered block HTML.
+     * @param array  $block         Block payload.
+     * @return string
+     */
+    public function filter_heavy_gallery_images($block_content, $block) {
+        if (is_admin() || !is_string($block_content) || $block_content === '') {
+            return $block_content;
+        }
+        if (empty($block['blockName']) || !in_array($block['blockName'], array('core/image', 'core/gallery', 'core/cover'), true)) {
+            return $block_content;
+        }
+
+        $replacements = array(
+            // 31 MB bare PNG → grid JPEG (created by bin/optimize-live-photos.py).
+            '/wp-content/uploads/2025/12/IMG_5847.png' => '/wp-content/uploads/2025/12/IMG_5847-683x1024.jpg',
+            '/wp-content/uploads/2025/12/IMG_5960-683x1024.png' => '/wp-content/uploads/2025/12/IMG_5960-683x1024.jpg',
+            '/wp-content/uploads/2025/11/A44D6A70-5E01-43FC-8EA8-C1D8430C6D55-683x1024.png' => '/wp-content/uploads/2025/11/A44D6A70-5E01-43FC-8EA8-C1D8430C6D55-683x1024.jpg',
+            '/wp-content/uploads/2025/11/BC3EB512-5789-4061-90E4-476ADBA6F177-753x1024.png' => '/wp-content/uploads/2025/11/BC3EB512-5789-4061-90E4-476ADBA6F177-683x1024.jpg',
+        );
+
+        foreach ($replacements as $from => $to) {
+            if (strpos($block_content, $from) !== false) {
+                $block_content = str_replace($from, $to, $block_content);
+            }
+        }
+
+        return $block_content;
+    }
+
+    /**
      * Canonical URL for the online booking funnel (/book/ or home anchor).
      */
     /**
@@ -525,6 +708,28 @@ class PA_Booking_Frontend {
     }
 
     /**
+     * About page — /about/.
+     */
+    public static function about_url() {
+        $page = get_page_by_path('about');
+        if ($page && $page->post_status === 'publish') {
+            return get_permalink($page);
+        }
+        return home_url('/about/');
+    }
+
+    /**
+     * Contact page — /contact/ (distinct from book funnel contactUrl).
+     */
+    public static function contact_page_url() {
+        $page = get_page_by_path('contact');
+        if ($page && $page->post_status === 'publish') {
+            return get_permalink($page);
+        }
+        return home_url('/contact/');
+    }
+
+    /**
      * Replace WordPress custom site icon with the PA Media Arts logo.
      */
     public function remove_wp_site_icon() {
@@ -541,15 +746,14 @@ class PA_Booking_Frontend {
         if (is_admin()) {
             return;
         }
-        $icon = esc_url(self::logo_icon_url());
-        echo '<link rel="icon" href="' . $icon . '" sizes="any">' . "\n";
-        echo '<link rel="apple-touch-icon" href="' . $icon . '">' . "\n";
+        self::echo_site_icon_tags();
     }
 
     public function maybe_assets() {
         if (!is_admin()) {
             wp_enqueue_style('pa2-tokens', PA_BOOKING_URL . 'assets/pa2-tokens.css', array(), self::asset_version('assets/pa2-tokens.css'));
-            $site_css_deps = array('pa2-tokens');
+            wp_enqueue_style('pa2-components', PA_BOOKING_URL . 'assets/pa2-components.css', array('pa2-tokens'), self::asset_version('assets/pa2-components.css'));
+            $site_css_deps = array('pa2-tokens', 'pa2-components');
             $site_js_deps = array();
             if ($this->is_marketing_page()) {
                 wp_enqueue_style(
@@ -626,7 +830,11 @@ class PA_Booking_Frontend {
             }
             if (is_front_page()) {
                 wp_enqueue_style('pa-home', PA_BOOKING_URL . 'assets/home.css', array('pa-site-mobile', 'pa-service-icons'), self::asset_version('assets/home.css'));
+                wp_enqueue_style('pa-seo-hub', PA_BOOKING_URL . 'assets/seo-hub.css', array('pa-home'), self::asset_version('assets/seo-hub.css'));
                 wp_enqueue_script('pa-home', PA_BOOKING_URL . 'assets/home.js', array('pa-site', 'pa-google-reviews', 'pa-service-icons'), self::asset_version('assets/home.js'), true);
+            }
+            if (is_page('service-areas')) {
+                wp_enqueue_style('pa-seo-hub', PA_BOOKING_URL . 'assets/seo-hub.css', array('pa-site-mobile'), self::asset_version('assets/seo-hub.css'));
             }
             $glass_site_deps = array('pa-site-mobile');
             if (is_front_page()) {
@@ -639,6 +847,17 @@ class PA_Booking_Frontend {
             if (is_page('work')) {
                 $glass_site_deps[] = 'pa-work';
             }
+            if (is_page('contact')) {
+                wp_enqueue_style('pa-inquiry', PA_BOOKING_URL . 'assets/inquiry.css', array('pa-site-mobile'), self::asset_version('assets/inquiry.css'));
+                $glass_site_deps[] = 'pa-inquiry';
+            }
+            if (is_singular('page')) {
+                $geo_post = get_queried_object();
+                if ($geo_post instanceof WP_Post && PA_Booking_Landing_Pages::is_landing_slug($geo_post->post_name)) {
+                    wp_enqueue_style('pa-geo-landing', PA_BOOKING_URL . 'assets/geo-landing.css', array('pa-site-mobile'), self::asset_version('assets/geo-landing.css'));
+                    $glass_site_deps[] = 'pa-geo-landing';
+                }
+            }
             wp_enqueue_style('pa-glass-site', PA_BOOKING_URL . 'assets/glass-site.css', $glass_site_deps, self::asset_version('assets/glass-site.css'));
             wp_enqueue_style('pa-header-nav', PA_BOOKING_URL . 'assets/header-nav.css', array('pa-glass-site'), self::asset_version('assets/header-nav.css'));
             wp_enqueue_script('pa-header-nav', PA_BOOKING_URL . 'assets/header-nav.js', array('pa-site'), self::asset_version('assets/header-nav.js'), true);
@@ -649,16 +868,24 @@ class PA_Booking_Frontend {
                 'logoDarkUrl' => esc_url_raw(self::logo_dark_url()),
                 'logoWhiteUrl' => esc_url_raw(self::logo_white_url()),
                 'assetVersion' => PA_BOOKING_VERSION,
+                'assetsBase' => esc_url_raw(PA_BOOKING_URL . 'assets/'),
                 'siteName' => $s['artist_name'] ?? 'Pennsylvania Media Arts LLC',
                 'homeUrl'  => esc_url_raw(home_url('/')),
                 'bookUrl'  => esc_url_raw(self::book_url()),
                 'workUrl'  => esc_url_raw(self::work_url()),
+                'aboutUrl' => esc_url_raw(self::about_url()),
+                'contactPageUrl' => esc_url_raw(self::contact_page_url()),
                 'tagline'  => $s['tagline'] ?: 'Photography, video & live production · Pennsylvania.',
                 'aboutParagraphs' => PA_Booking::about_paragraphs($s),
                 'footerWork' => PA_Booking::footer_work_items(),
                 'footerRecognition' => PA_Booking::footer_recognition(),
                 'footerServiceLabels' => PA_Booking::footer_service_labels(),
                 'notifyEmail' => sanitize_email($s['notify_email'] ?? 'jordan@pamedia.art'),
+                'contactUrl' => esc_url_raw(add_query_arg('start', '1', self::book_url())),
+                'startUrl' => esc_url_raw(PA_Booking_Funnel::start_url()),
+                'serviceAreasUrl' => esc_url_raw(PA_Booking_SEO_Hub::hub_url()),
+                'phone' => sanitize_text_field($s['phone'] ?? ''),
+                'phoneTel' => self::phone_tel_href($s['phone'] ?? ''),
                 'paymentsEnabled' => PA_Booking::accepts_deposit_payments(),
                 'depositUsd' => number_format(($s['deposit_cents'] ?? 15000) / 100, 0),
                 'services' => $site_service_lines,
@@ -670,10 +897,36 @@ class PA_Booking_Frontend {
                 'isServicesPage' => is_page('services'),
                 'isWorkPage' => is_page('work'),
                 'isAboutPage' => is_page('about'),
+                'isContactPage' => is_page('contact'),
                 'geoLandingLinks' => PA_Booking_Landing_Pages::public_links(),
+                'geoLandingGroups' => PA_Booking_Landing_Pages::grouped_public_links(),
                 'youtubeChannelUrl' => 'https://www.youtube.com/@PAMediaArts',
-                'youtubeVideos' => PA_Booking_YouTube::featured_video_ids(),
+                'youtubeBookUrl'    => esc_url_raw(
+                    add_query_arg(
+                        array(
+                            'start'       => '1',
+                            'utm_source'  => 'youtube',
+                            'utm_medium'  => 'video',
+                        ),
+                        self::book_url()
+                    )
+                ),
+                'youtubeVideos' => (is_front_page() || is_page('work'))
+                    ? PA_Booking_YouTube::featured_video_ids()
+                    : array(),
                 'youtubeBlockedVideos' => PA_Booking_YouTube::blocked_video_ids(),
+                /* Local reels first in the home cinema strip (MP4 + poster in assets/media/). */
+                'featuredLocalVideos' => (is_front_page() || is_page('work'))
+                    ? array(
+                        array(
+                            'id'     => 'linkedin-reel',
+                            'src'    => PA_BOOKING_URL . 'assets/media/linkedin-reel.mp4',
+                            'poster' => PA_BOOKING_URL . 'assets/media/linkedin-reel-poster.jpg',
+                            'title'  => 'Corporate event film',
+                        ),
+                    )
+                    : array(),
+                'portfolioGalleryAlts' => PA_Booking_SEO_Maintenance::portfolio_gallery_alts(),
             );
             if (is_front_page()) {
                 $site_config['homeHeroImage'] = self::home_hero_image();
@@ -696,6 +949,9 @@ class PA_Booking_Frontend {
         wp_enqueue_style('pa-booking-pro', PA_BOOKING_URL . 'assets/booking-pro.css', array('pa-booking-saas'), self::asset_version('assets/booking-pro.css'));
         wp_enqueue_style('pa-booking-ive', PA_BOOKING_URL . 'assets/booking-ive.css', array('pa-booking-pro'), self::asset_version('assets/booking-ive.css'));
         wp_enqueue_script('pa-booking', PA_BOOKING_URL . 'assets/booking.js', array(), self::asset_version('assets/booking.js'), true);
+        wp_enqueue_style('pa-growth', PA_BOOKING_URL . 'assets/growth.css', array('pa-booking'), self::asset_version('assets/growth.css'));
+        wp_enqueue_script('pa-growth', PA_BOOKING_URL . 'assets/growth.js', array('pa-booking'), self::asset_version('assets/growth.js'), true);
+        wp_localize_script('pa-growth', 'PAGrowth', PA_Booking_Growth::public_signals());
         $service_lines = array_filter(array_map('trim', preg_split('/\r\n|\r|\n/', (string) ($s['services'] ?? ''))));
         wp_localize_script(
             'pa-booking',
@@ -728,7 +984,7 @@ class PA_Booking_Frontend {
 
     /** Marketing surfaces that load premium scroll animations. */
     private function is_marketing_page() {
-        return is_front_page() || is_page(array('services', 'work', 'about'));
+        return is_front_page() || is_page(array('services', 'work', 'about', 'contact', 'start', 'service-areas'));
     }
 
     private function should_load_booking_assets() {
@@ -769,15 +1025,21 @@ class PA_Booking_Frontend {
         exit;
     }
 
-    public function redirect_contact_page() {
-        if (is_admin() || wp_doing_ajax()) {
-            return;
+    /**
+     * tel: href from stored phone (digits only).
+     *
+     * @param string $phone
+     * @return string
+     */
+    public static function phone_tel_href($phone) {
+        $digits = preg_replace('/\D/', '', (string) $phone);
+        if (strlen($digits) === 10) {
+            return 'tel:+1' . $digits;
         }
-        if (!is_page('contact')) {
-            return;
+        if (strlen($digits) === 11 && $digits[0] === '1') {
+            return 'tel:+' . $digits;
         }
-        wp_safe_redirect(self::book_url(), 301);
-        exit;
+        return '';
     }
 
     public function render_booking() {
@@ -807,6 +1069,12 @@ class PA_Booking_Frontend {
                     5.0 · 4 Google reviews
                 </span>
             </div>
+            <?php
+            $help_email = sanitize_email($s['notify_email'] ?? 'jordan@pamedia.art');
+            if ($help_email) :
+                ?>
+            <p class="pa-booking-help-email">Questions before you book? Email <a href="mailto:<?php echo esc_attr($help_email); ?>"><?php echo esc_html($help_email); ?></a></p>
+            <?php endif; ?>
 
             <header class="pa-booking-hero" hidden aria-hidden="true">
                 <p class="pa-booking-eyebrow">Pennsylvania Media Arts · Online booking</p>

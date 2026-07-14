@@ -1,3 +1,13 @@
 .env.local
 .env.sftp
 .DS_Store
+
+# Never commit live deploy secrets
+mu-plugins/pa-booking-deploy-keys.php
+mu-plugins/pa-booking-stripe-keys.php
+mu-plugins/pa-booking-ga4-keys.php
+
+# Rust research tree (local only — never SFTP'd; see deploy-sftp.sh)
+middleout/target/
+
+.photo-optimize-stage/
