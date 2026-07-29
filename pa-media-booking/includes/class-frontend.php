@@ -331,6 +331,9 @@ class PA_Booking_Frontend {
         }
         if (is_page('book')) {
             $classes[] = 'pa-booking-page';
+            $classes[] = 'pa-booking-funnel-page';
+            $classes[] = 'is-booking-funnel';
+            $classes[] = 'pa-interior-compact-nav';
             $classes[] = 'pa-premium-nav';
         }
         if (is_page('services')) {
@@ -761,6 +764,37 @@ class PA_Booking_Frontend {
             . 'body.pa-glass-site header .wp-block-navigation-item__label'
             . '{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}'
             . '</style>' . "\n";
+
+        if (is_page('book')) {
+            echo '<style id="pa-booking-header-critical">'
+                . 'html.is-booking-funnel,body.pa-booking-page.is-booking-funnel{overflow-x:hidden!important}'
+                . 'body.pa-booking-page header.pa-site-header,'
+                . 'body.pa-booking-page header.wp-block-template-part.pa-site-header{'
+                . 'position:relative!important;margin:0!important;padding:0 clamp(0.65rem,2.5vw,1rem)!important;'
+                . 'background:transparent!important;border:none!important;box-shadow:none!important}'
+                . 'body.pa-booking-page header .wp-block-cover.alignfull,'
+                . 'body.pa-booking-page header .pa-glass-hero-wrap,'
+                . 'body.pa-booking-page header .pa-home-hero,'
+                . 'body.pa-booking-page header .pa-interior-header-clutter{'
+                . 'display:none!important;height:0!important;max-height:0!important;overflow:hidden!important;'
+                . 'margin:0!important;padding:0!important;visibility:hidden!important}'
+                . 'body.pa-booking-page header .alignfull.has-foreground-color:has(.wp-block-navigation){'
+                . 'background:transparent!important;border:none!important;box-shadow:none!important;'
+                . 'padding-top:0.35rem!important;padding-bottom:0.35rem!important}'
+                . 'body.pa-booking-page header .wp-block-site-logo img.pa-brand-logo-lockup,'
+                . 'body.pa-booking-page header img.custom-logo.pa-brand-logo-lockup{'
+                . 'width:auto!important;height:clamp(48px,9vw,72px)!important;max-height:72px!important;'
+                . 'max-width:min(42vw,220px)!important;object-fit:contain!important}'
+                . 'body.pa-booking-page main.wp-block-group,body.pa-booking-page .entry-content{'
+                . 'padding-top:0.25rem!important;padding-bottom:0.75rem!important}'
+                . 'body.pa-booking-page header [data-coblocks-animation]{'
+                . 'animation:none!important;opacity:1!important;transform:none!important}'
+                . 'body.pa-booking-page .pa-booking-trust-rail{display:flex!important}'
+                . '</style>' . "\n";
+            echo '<script id="pa-booking-funnel-boot">'
+                . 'document.documentElement.classList.add("is-booking-funnel");'
+                . '</script>' . "\n";
+        }
 
         self::echo_site_icon_tags();
     }

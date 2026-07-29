@@ -78,8 +78,16 @@
   var RECOMMENDED_SERVICE = 'Photo + Video Bundle';
 
   function paGa4Event(name, params) {
+    params = params || {};
     if (window.PAGA4 && typeof window.PAGA4.event === 'function') {
-      window.PAGA4.event(name, params || {});
+      window.PAGA4.event(name, params);
+    }
+    if (window.PATracking && typeof window.PATracking.conversion === 'function') {
+      if (name === 'booking_submit') {
+        window.PATracking.conversion('booking_submit', params);
+      } else if (name === 'deposit_complete') {
+        window.PATracking.conversion('deposit', params);
+      }
     }
   }
 
@@ -186,7 +194,7 @@
       return { field: 'pa-phone', message: 'Please enter your phone number.' };
     }
     if (state.venue.trim().length < 2) {
-      return { field: 'pa-venue', message: 'Please enter your event location.' };
+      return { field: 'pa-venue', message: 'Please enter the venue name.' };
     }
     return null;
   }
@@ -215,7 +223,7 @@
         if (state.phone.replace(/\D/g, '').length < 7) return 'Please enter your phone number.';
         break;
       case 'pa-venue':
-        if (state.venue.trim().length < 2) return 'Please enter your event location.';
+        if (state.venue.trim().length < 2) return 'Please enter the venue name.';
         break;
       default:
         break;
@@ -340,7 +348,13 @@
     if (params.get('deposit') !== 'done') {
       return;
     }
-    paGa4Event('deposit_complete', { page_path: window.location.pathname });
+    var depositUsd = (window.PAGA4 && window.PAGA4.depositUsd) || '150';
+    paGa4Event('deposit_complete', {
+      page_path: window.location.pathname,
+      value: parseFloat(depositUsd),
+      currency: 'USD',
+      engagement_type: 'deposit_return'
+    });
     if (params.get('pa_booking') && params.get('pa_token')) {
       clearPaymentSession();
       return;
@@ -473,10 +487,10 @@
     panel.setAttribute('role', 'note');
     panel.setAttribute('aria-label', 'Booking confidence');
     [
-      'Live Availability',
-      'Secure Deposit',
-      'Proposal After Booking',
-      'Average Booking Time: 2 Minutes',
+      'Deposit holds your date',
+      'Applied to final balance',
+      'Book in ~2 minutes',
+      'Secure checkout',
     ].forEach(function (text) {
       var item = document.createElement('span');
       item.className = 'pa-confidence-item';
@@ -497,18 +511,19 @@
 
     var title = document.createElement('h2');
     title.className = 'pa-welcome-title';
-    title.textContent = 'Let\u2019s Reserve Your Date';
+    title.textContent = 'Hold your date';
     inner.appendChild(title);
 
     var lead = document.createElement('p');
     lead.className = 'pa-welcome-lead';
-    lead.textContent = 'Tell us a little about your event or project. It only takes a couple of minutes.';
+    var depUsd = (window.PASite && PASite.depositUsd) ? PASite.depositUsd : '150';
+    lead.textContent = 'Choose your service and date, then pay a $' + depUsd + ' deposit to reserve your calendar spot. Takes about two minutes.';
     inner.appendChild(lead);
 
     var start = document.createElement('button');
     start.type = 'button';
     start.className = 'pa-submit pa-btn is-ready pa-welcome-start';
-    start.textContent = 'Start Booking';
+    start.textContent = 'Start booking';
     start.addEventListener('click', dismissWelcome);
     inner.appendChild(start);
 
@@ -675,7 +690,9 @@
     if (d.email) state.email = d.email;
     if (d.phone) state.phone = d.phone;
     if (d.eventType) state.eventType = d.eventType;
-    if (d.venue) state.venue = d.venue;
+    if (d.venue) {
+      state.venue = sanitizeVenueValue(d.venue);
+    }
     if (d.organization) state.organization = d.organization;
     if (d.notes) state.notes = d.notes;
     if (d.guestCount) state.guestCount = d.guestCount;
@@ -702,6 +719,16 @@
     }
   }
 
+  /** Collapse "+", "/", punctuation so "Photo  Video Bundle" still matches catalog. */
+  function normalizeServiceKey(value) {
+    return String(value || '')
+      .toLowerCase()
+      .replace(/\+/g, ' ')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function applyServiceFromUrl(params) {
     if (!params) {
       return;
@@ -710,10 +737,44 @@
     if (!serviceParam || !state.services || !state.services.length) {
       return;
     }
-    if (state.services.indexOf(serviceParam) === -1) {
+    try {
+      serviceParam = decodeURIComponent(serviceParam.replace(/\+/g, ' '));
+    } catch (e) { /* use raw */ }
+    serviceParam = String(serviceParam).trim();
+    var match = '';
+    var i;
+    var candidate;
+    var lower = serviceParam.toLowerCase();
+    var normalized = normalizeServiceKey(serviceParam);
+    for (i = 0; i < state.services.length; i += 1) {
+      candidate = String(state.services[i] || '');
+      if (candidate === serviceParam || candidate.toLowerCase() === lower) {
+        match = candidate;
+        break;
+      }
+    }
+    if (!match && normalized) {
+      for (i = 0; i < state.services.length; i += 1) {
+        candidate = String(state.services[i] || '');
+        if (normalizeServiceKey(candidate) === normalized) {
+          match = candidate;
+          break;
+        }
+      }
+    }
+    if (!match) {
+      for (i = 0; i < state.services.length; i += 1) {
+        candidate = String(state.services[i] || '');
+        if (candidate.toLowerCase().indexOf(lower) !== -1 || lower.indexOf(candidate.toLowerCase()) !== -1) {
+          match = candidate;
+          break;
+        }
+      }
+    }
+    if (!match) {
       return;
     }
-    state.service = serviceParam;
+    state.service = match;
     state.welcomeOpen = false;
   }
 
@@ -915,6 +976,7 @@
     var bookRoot = document.querySelector('.pa-booking-root');
     var dedicated = isDedicatedBookingSurface();
     var inFunnel = dedicated && !state.loading;
+    var funnelSurface = dedicated;
     if (bookRoot) {
       bookRoot.classList.toggle('is-funnel-active', inFunnel);
       bookRoot.classList.toggle('is-single-screen', inFunnel);
@@ -923,8 +985,8 @@
       root.classList.toggle('is-single-screen', inFunnel);
     }
     if (document.body.classList.contains('pa-booking-page')) {
-      document.documentElement.classList.toggle('is-booking-funnel', inFunnel);
-      document.body.classList.toggle('is-booking-funnel', inFunnel);
+      document.documentElement.classList.toggle('is-booking-funnel', funnelSurface);
+      document.body.classList.toggle('is-booking-funnel', funnelSurface);
     } else {
       document.documentElement.classList.remove('is-booking-funnel');
       document.body.classList.remove('is-booking-funnel');
@@ -2238,7 +2300,13 @@
   function buildCalendarFooter() {
     var foot = document.createElement('p');
     foot.className = 'pa-cal-timezone';
-    foot.textContent = 'All times are Eastern (Pennsylvania). Need help? Email ' + ((window.PASite && PASite.notifyEmail) || 'jordan@pamedia.art') + '.';
+    var email = (window.PASite && PASite.notifyEmail) || 'jordan@pamedia.art';
+    foot.appendChild(document.createTextNode('All times are Eastern (Pennsylvania). Questions? Email '));
+    var mail = document.createElement('a');
+    mail.href = 'mailto:' + email;
+    mail.textContent = email;
+    foot.appendChild(mail);
+    foot.appendChild(document.createTextNode('.'));
     return foot;
   }
 
@@ -2849,6 +2917,18 @@
     return section;
   }
 
+  /** Strip legacy sample venue copy (never show Hilton Harrisburg). */
+  function sanitizeVenueValue(value) {
+    var v = String(value || '').trim();
+    if (!v) {
+      return '';
+    }
+    if (/^hilton\s+harrisburg$/i.test(v)) {
+      return '';
+    }
+    return v;
+  }
+
   function buildDetailsStep() {
     var wrap = document.createElement('div');
     wrap.className = 'pa-step pa-step-details';
@@ -2863,28 +2943,56 @@
     }));
 
     var form = document.createElement('div');
-    form.className = 'pa-form pa-form-sheet pa-form-sheet--grouped pa-form-wizard pa-form-sheet--flat pa-form-v40';
+    form.className =
+      'pa-form pa-form-sheet pa-form-sheet--grouped pa-form-wizard pa-form-sheet--flat pa-form-v40 pa-details-form';
     form.setAttribute('aria-label', 'Contact and event details');
 
-    var columns = document.createElement('div');
-    columns.className = 'pa-form-wizard-columns';
+    /* Single clear stack: type → venue → contact → notes (no jumbled two-column). */
+    var stack = document.createElement('div');
+    stack.className = 'pa-form-wizard-columns pa-form-wizard-columns--stack';
 
-    var colPrimary = document.createElement('div');
-    colPrimary.className = 'pa-form-wizard-col pa-form-wizard-col--primary';
+    var col = document.createElement('div');
+    col.className = 'pa-form-wizard-col pa-form-wizard-col--primary';
 
-    var colSecondary = document.createElement('div');
-    colSecondary.className = 'pa-form-wizard-col pa-form-wizard-col--secondary';
+    state.venue = sanitizeVenueValue(state.venue);
 
-    var eventFields = document.createDocumentFragment();
     if (isPhotoVideoService()) {
-      eventFields.appendChild(buildEventTypePills());
+      var typeGroup = buildFormGroup('Event type', 'What kind of event is this?', [
+        buildEventTypePills({ hideLegend: true }),
+      ]);
+      typeGroup.classList.add('pa-form-group--wizard', 'pa-form-group--event-type');
+      col.appendChild(typeGroup);
     }
+
+    var venueGroup = buildFormGroup('Venue', '', [
+      inputField(
+        'Venue name',
+        'venue',
+        'text',
+        state.venue,
+        true,
+        'organization',
+        'Venue name',
+        ''
+      ),
+    ]);
+    venueGroup.classList.add('pa-form-group--wizard', 'pa-form-group--location');
+    col.appendChild(venueGroup);
+
+    var contactGroup = buildFormGroup('Contact', 'How we reach you about this booking.', [
+      inputField('Full name', 'name', 'text', state.name, true, 'name', 'Your full name', ''),
+      inputField('Email', 'email', 'email', state.email, true, 'email', 'you@example.com', ''),
+      inputField('Phone', 'phone', 'tel', state.phone, true, 'tel', '(717) 555-0100', ''),
+    ]);
+    contactGroup.classList.add('pa-form-group--wizard', 'pa-form-group--contact');
+    col.appendChild(contactGroup);
+
     var eventWrap = textareaField(
-      'Event details',
+      'About the event',
       'notes',
       state.notes,
       eventNotesPlaceholder(),
-      'Tell us a little about your event.'
+      ''
     );
     var eventTa = eventWrap.querySelector('textarea');
     if (eventTa) {
@@ -2892,30 +3000,11 @@
       eventTa.placeholder = eventNotesPlaceholder();
       wireTextareaBlur(eventWrap, 'pa-notes');
     }
-    eventFields.appendChild(eventWrap);
-    var eventGroup = buildFormGroup('Event', '', [eventFields]);
-    eventGroup.classList.add('pa-form-group--wizard', 'pa-form-group--event');
-    colPrimary.appendChild(eventGroup);
-
-    var locationGroup = buildFormGroup('Location', '', [
-      inputField('Event location', 'venue', 'text', state.venue, true, 'organization', 'Hilton Harrisburg', ''),
-    ]);
-    locationGroup.classList.add('pa-form-group--wizard', 'pa-form-group--location');
-    colPrimary.appendChild(locationGroup);
-
-    var contactGroup = buildFormGroup('Contact', '', [
-      inputField('Full name', 'name', 'text', state.name, true, 'name', 'Jane Smith', ''),
-      inputField('Email', 'email', 'email', state.email, true, 'email', 'you@example.com', ''),
-      inputField('Phone', 'phone', 'tel', state.phone, true, 'tel', '(717) 555-0100', ''),
-    ]);
-    contactGroup.classList.add('pa-form-group--wizard', 'pa-form-group--contact');
-    colSecondary.appendChild(contactGroup);
-
     var extraWrap = textareaField(
       'Additional notes (optional)',
       'extra-notes',
       state.timelineNotes,
-      'Accessibility needs, parking, second shooter requests\u2026',
+      'Accessibility, parking, second shooter…',
       ''
     );
     var extraTa = extraWrap.querySelector('textarea');
@@ -2923,13 +3012,15 @@
       extraTa.rows = 2;
       wireTextareaBlur(extraWrap, 'pa-extra-notes');
     }
-    var notesGroup = buildFormGroup('Additional notes', '', [extraWrap]);
-    notesGroup.classList.add('pa-form-group--wizard', 'pa-form-group--notes');
-    colSecondary.appendChild(notesGroup);
+    var detailsGroup = buildFormGroup('Details', 'Guest count, timeline, or anything we should know.', [
+      eventWrap,
+      extraWrap,
+    ]);
+    detailsGroup.classList.add('pa-form-group--wizard', 'pa-form-group--event-details');
+    col.appendChild(detailsGroup);
 
-    columns.appendChild(colPrimary);
-    columns.appendChild(colSecondary);
-    form.appendChild(columns);
+    stack.appendChild(col);
+    form.appendChild(stack);
     scroll.appendChild(form);
     wrap.appendChild(scroll);
 
@@ -3015,13 +3106,16 @@
     });
   }
 
-  function buildEventTypePills() {
+  function buildEventTypePills(opts) {
+    opts = opts || {};
     var wrap = document.createElement('fieldset');
     wrap.className = 'pa-event-wrap pa-event-wrap-v40';
-    var legend = document.createElement('legend');
-    legend.className = 'pa-field-label';
-    legend.textContent = 'Event type';
-    wrap.appendChild(legend);
+    if (!opts.hideLegend) {
+      var legend = document.createElement('legend');
+      legend.className = 'pa-field-label';
+      legend.textContent = 'Event type';
+      wrap.appendChild(legend);
+    }
     var grid = document.createElement('div');
     grid.className = 'pa-event-grid';
     grid.setAttribute('role', 'radiogroup');
@@ -3977,7 +4071,12 @@
             throw new Error(msg);
           }
           clearTimeout(safetyTimer);
-          paGa4Event('booking_submit', { service: state.service, days: getDayCount() });
+          paGa4Event('booking_submit', {
+            service: state.service,
+            days: getDayCount(),
+            value: parseFloat((window.PAGA4 && window.PAGA4.depositUsd) || '150'),
+            currency: 'USD'
+          });
           completeCheckout(res.body);
         });
     }
@@ -4134,6 +4233,11 @@
     if (autocomplete) input.setAttribute('autocomplete', autocomplete);
     if (type === 'tel') input.setAttribute('inputmode', 'tel');
     if (placeholder) input.placeholder = placeholder;
+    if (id === 'venue') {
+      input.value = sanitizeVenueValue(input.value);
+      input.placeholder = 'Venue name';
+      input.setAttribute('autocomplete', 'organization');
+    }
     if (state.fieldErrors[fieldId]) {
       input.setAttribute('aria-invalid', 'true');
       input.setAttribute('aria-describedby', fieldId + '-error' + (help ? ' ' + fieldId + '-help' : ''));

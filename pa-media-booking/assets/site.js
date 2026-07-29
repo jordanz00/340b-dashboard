@@ -268,7 +268,9 @@
     polishHomeHeader();
     finalizeHomeExperience();
   } else if (isBookingPage()) {
-    document.body.classList.add('pa-booking-page');
+    document.body.classList.add('pa-booking-page', 'is-booking-funnel');
+    document.documentElement.classList.add('is-booking-funnel');
+    compactInteriorPageHeader();
     polishBookingPage();
   } else if (isServicesPage()) {
     compactInteriorPageHeader();
@@ -2527,7 +2529,7 @@
    * use a compact sticky nav bar so content is not buried under a 600px header.
    */
   function compactInteriorPageHeader() {
-    if (document.body.classList.contains('home') || isBookingPage()) {
+    if (document.body.classList.contains('home')) {
       return false;
     }
     var header = document.querySelector('header.pa-site-header, header.wp-block-template-part');
@@ -2544,7 +2546,11 @@
     });
 
     document.body.classList.add('pa-interior-compact-nav');
-    polishMarketingHeaderNav();
+    if (isBookingPage()) {
+      triggerPremiumHeaderNav();
+    } else {
+      polishMarketingHeaderNav();
+    }
     return true;
   }
 

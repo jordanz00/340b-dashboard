@@ -927,6 +927,20 @@ body.pa-page-entering.pa-page-entered .pa-home-post-hero-chrome {
     filter 0.72s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+/* Booking funnel — no staggered main fade when arriving from homepage CTA */
+body.pa-booking-page.pa-page-entering main,
+body.pa-booking-page.pa-page-entering header {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+}
+
+body.pa-booking-page header .pa-nav-floating-pills,
+body.pa-booking-page header .pa-nav-dock {
+  animation: none !important;
+}
+
 /* —— iOS liquid glass: labels are text-only; specular lives on the pill link —— */
 body.pa-premium-nav .pa-nav-floating-pills .wp-block-navigation-item__content::after,
 body.pa-premium-nav .pa-nav-dock .wp-block-navigation-item__content::after,

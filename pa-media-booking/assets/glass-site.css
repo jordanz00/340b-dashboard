@@ -2265,6 +2265,45 @@ body.pa-glass-site.pa-services-page .pa2-svc-grid-section {
   background: transparent !important;
 }
 
+/* —— Booking funnel — compact header on first paint —— */
+body.pa-glass-site.pa-booking-page header.pa-site-header,
+body.pa-glass-site.pa-booking-page header.wp-block-template-part.pa-site-header {
+  position: relative !important;
+  overflow: visible !important;
+  margin: 0 !important;
+  padding: 0 clamp(0.65rem, 2.5vw, 1rem) !important;
+  width: auto !important;
+  max-width: none !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+body.pa-glass-site.pa-booking-page header .wp-block-cover.alignfull,
+body.pa-glass-site.pa-booking-page header .pa-glass-hero-wrap,
+body.pa-glass-site.pa-booking-page header .pa-interior-header-clutter {
+  display: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  visibility: hidden !important;
+}
+
+body.pa-glass-site.pa-booking-page header .alignfull.has-foreground-color:has(.wp-block-navigation) {
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding-top: 0.35rem !important;
+  padding-bottom: 0.35rem !important;
+}
+
 /* —— Booking funnel glass panels —— */
 body.pa-glass-site.pa-booking-page .pa-booking-root {
   margin: 0.65rem clamp(0.65rem, 2.5vw, 1rem) 1rem !important;
