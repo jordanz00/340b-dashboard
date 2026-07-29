@@ -238,10 +238,19 @@
   initBookCtaAnalytics();
   captureUtmParams();
 
+  (function hydrateSsrConversion() {
+    var el = document.querySelector('.pa-ssr-conversion');
+    if (el) {
+      el.classList.add('is-hydrated');
+    }
+  })();
+
   /* Mobile Book + Quote bar: assets/growth.js (marketing pages only). */
 
   if (document.body.classList.contains('home')) {
     relocateHomeShellFromHeader();
+    relocateHomeChromeAboveHero();
+    triggerPremiumHeaderNav();
     var homeShellQueued = hasQueuedScript('home.js');
     if (!homeShellQueued) {
       buildHomeHero();
@@ -285,6 +294,7 @@
   } else if (document.body.classList.contains('pa-geo-landing-page')) {
     compactInteriorPageHeader();
     polishMarketingHeaderNav();
+    polishGeoLandingPage();
   } else if (
     document.body.classList.contains('pa-marketing-nav') &&
     !document.body.classList.contains('home') &&
@@ -687,7 +697,7 @@
     a.href = bookingUrl();
     var label = document.createElement('span');
     label.className = 'wp-block-navigation-item__label';
-    label.textContent = 'Book';
+    label.textContent = 'Check Availability';
     a.appendChild(label);
     li.appendChild(a);
     nav.appendChild(li);
@@ -2196,13 +2206,46 @@
     var link = document.createElement('a');
     link.href = bookLinkUrl();
     link.className = 'pa-mobile-book-bar__btn';
-    link.textContent = 'Hold your date';
+    var depositUsd = (window.PASite && PASite.depositUsd) ? PASite.depositUsd : '150';
+    link.textContent = 'Check Availability';
+    link.setAttribute('aria-label', 'Check availability — $' + depositUsd + ' deposit holds your date');
     bar.appendChild(link);
     document.body.appendChild(bar);
+    /* Home: hide sticky bar while hero primary CTA is on-screen (no stacked duplicate). */
+    if (document.body.classList.contains('home') && typeof IntersectionObserver === 'function') {
+      var syncBar = function (heroInView) {
+        bar.hidden = !!heroInView;
+        bar.setAttribute('aria-hidden', heroInView ? 'true' : 'false');
+        document.body.classList.toggle('pa-mobile-book-bar-deferred', !!heroInView);
+      };
+      var observeHeroCta = function () {
+        var heroCta = document.querySelector('.pa2-hero__btn--primary, .pa-home-hero .pa2-hero__btn--primary');
+        if (!heroCta) {
+          syncBar(false);
+          return false;
+        }
+        var io = new IntersectionObserver(function (entries) {
+          var entry = entries[0];
+          syncBar(!!(entry && entry.isIntersecting));
+        }, { root: null, threshold: 0.35 });
+        io.observe(heroCta);
+        return true;
+      };
+      if (!observeHeroCta()) {
+        syncBar(true);
+        var tries = 0;
+        var wait = window.setInterval(function () {
+          tries += 1;
+          if (observeHeroCta() || tries > 40) {
+            window.clearInterval(wait);
+          }
+        }, 100);
+      }
+    }
   }
 
   /**
-   * Every "Book" CTA site-wide should open the same /book/ wizard.
+   * Every primary book CTA site-wide should open the same /book/?start=1 wizard.
    */
   function normalizeBookLinks() {
     var canonical = bookLinkUrl();
@@ -2930,9 +2973,29 @@
     });
     var shell = document.getElementById('pa-contact-book');
     if (shell) {
-      shell.classList.add('is-ready', 'is-inview');
+      shell.classList.add('pa-reveal-section', 'section-reveal', 'is-ready');
       refreshScrollReveal(shell);
     }
+  }
+
+  /**
+   * Geo hubs/spokes — tag primary bands for Apple-quiet scroll reveal.
+   */
+  function polishGeoLandingPage() {
+    if (!document.body.classList.contains('pa-geo-landing-page')) {
+      return;
+    }
+    var root = document.querySelector('.pa-geo-landing, main .entry-content, main .wp-block-post-content');
+    if (!root) {
+      return;
+    }
+    if (root.classList.contains('pa-geo-landing') || root.querySelector('.pa-geo-landing')) {
+      var landing = root.classList.contains('pa-geo-landing') ? root : root.querySelector('.pa-geo-landing');
+      if (landing) {
+        landing.classList.add('pa-reveal-section', 'section-reveal');
+      }
+    }
+    refreshScrollReveal(root);
   }
 
   /**
@@ -3078,6 +3141,22 @@
       el.classList.add('pa-footer-clutter-hidden');
     });
 
+    /* Theme footer nav / leftover menu rows — single dock owns links. */
+    document.querySelectorAll(
+      'footer .wp-block-navigation, footer .wp-block-pages-list, footer nav'
+    ).forEach(function (nav) {
+      if (nav.closest('.pa-site-footer-pro') || nav.classList.contains('pa-footer-compact-nav')) {
+        return;
+      }
+      if (nav.classList.contains('pa-site-bottom-nav')) {
+        nav.remove();
+        return;
+      }
+      nav.classList.add('pa-footer-clutter-hidden');
+      nav.setAttribute('aria-hidden', 'true');
+      nav.hidden = true;
+    });
+
     document.querySelectorAll('footer .wp-block-group').forEach(function (group) {
       if (group.classList.contains('pa-hide-theme-footer-logo') ||
           group.classList.contains('pa-footer-clutter-hidden') ||
@@ -3094,7 +3173,14 @@
 
     var legal = footer && footer.querySelector('.pa-legal-footer');
     if (legal) {
-      placeFooterBrandInLegal(footer, legal);
+      /* Compact footer: brand line is already in the pro hero — skip second logo. */
+      if (footer.querySelector('.pa-footer-glass--compact')) {
+        legal.querySelectorAll('.pa-footer-brand').forEach(function (brand) {
+          brand.remove();
+        });
+      } else {
+        placeFooterBrandInLegal(footer, legal);
+      }
     }
   }
 
@@ -3401,9 +3487,16 @@
       columns.hidden = true;
     });
 
+    applyFooterScape(footer);
+
     if (footer.querySelector('.pa-site-footer-pro')) {
       var existing = footer.querySelector('.pa-site-footer-pro');
-      if (existing && existing.classList.contains('pa-footer-glass--light')) {
+      /* Rebuild unless this is the current single-dock footer. */
+      if (
+        existing &&
+        existing.classList.contains('pa-footer-glass--compact') &&
+        existing.getAttribute('data-pa-footer') === 'dock-v3'
+      ) {
         revealFooterGlass(existing);
         return;
       }
@@ -3417,25 +3510,25 @@
       return;
     }
 
-    var data = extractFooterColumnData(columns);
-
     var wrap = footer.querySelector(':scope > .wp-block-group');
     if (!wrap) {
       return;
     }
 
     var pro = document.createElement('div');
-    pro.className = 'pa-site-footer-pro pa-footer-glass pa-footer-glass--light';
+    pro.className =
+      'pa-site-footer-pro pa-footer-glass pa-footer-glass--light pa-footer-glass--compact';
+    pro.setAttribute('data-pa-footer', 'dock-v3');
 
     if (!isBookingPage()) {
       pro.appendChild(buildFooterGlassHero());
-      pro.appendChild(buildFooterInfoGrid(data));
+      pro.appendChild(buildFooterDock());
+    } else {
+      pro.appendChild(buildFooterDock());
     }
 
-    pro.appendChild(buildFooterActionBar());
     wrap.insertBefore(pro, columns);
     revealFooterGlass(pro);
-    refreshScrollReveal(pro);
     refreshScrollReveal(pro);
   }
 
@@ -3469,6 +3562,13 @@
   /** Pin the footer logo directly above the legal entity name (LLC line). */
   function placeFooterBrandInLegal(footer, legal) {
     if (!footer || !legal) {
+      return;
+    }
+    /* Compact footer already leads with brand copy — no second logo tile. */
+    if (footer.querySelector('.pa-footer-glass--compact')) {
+      legal.querySelectorAll('.pa-footer-brand').forEach(function (el) {
+        el.remove();
+      });
       return;
     }
     var brand = footer.querySelector('.pa-footer-brand');
@@ -3643,6 +3743,16 @@
     return data;
   }
 
+  /**
+   * Enable Harrisburg aerial footer backdrop (styles in glass-site.css).
+   */
+  function applyFooterScape(footer) {
+    if (!footer) {
+      return;
+    }
+    footer.classList.add('pa-footer--scape');
+  }
+
   function revealFooterGlass(root) {
     var scope = root || document.querySelector('.pa-footer-glass');
     if (!scope) {
@@ -3650,10 +3760,11 @@
     }
     scope.classList.add('is-inview', 'is-ready', 'is-revealed', 'is-visible', 'is-animated');
     scope.querySelectorAll(
-      '.pa-footer-glass__hero, .pa-footer-glass__panel, .pa-footer-glass__actions, ' +
-      '.pa-footer-glass__eyebrow, .pa-footer-glass__lead, .pa-footer-glass__heading, ' +
-      '.pa-footer-glass__body, .pa-footer-glass__link, .pa-footer-service-chip, ' +
-      '.pa-footer-work-row, .pa-footer-glass__badge, .pa-footer-social, .pa-reveal-item, .animate'
+      '.pa-footer-glass__hero, .pa-footer-dock, .pa-footer-compact-nav, .pa-footer-glass__panel, ' +
+      '.pa-footer-glass__actions, .pa-footer-glass__eyebrow, .pa-footer-glass__lead, ' +
+      '.pa-footer-glass__heading, .pa-footer-glass__body, .pa-footer-glass__link, ' +
+      '.pa-footer-service-chip, .pa-footer-work-row, .pa-footer-glass__badge, ' +
+      '.pa-footer-social, .pa-reveal-item, .animate'
     ).forEach(function (el) {
       el.classList.add('is-revealed', 'is-visible', 'is-animated');
     });
@@ -3666,15 +3777,83 @@
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-footer-glass__eyebrow';
     eyebrow.textContent = (window.PASite && PASite.siteName) || 'Pennsylvania Media Arts';
+    /* Prefer trade name here; legal line below carries the LLC entity. */
+    if (/llc$/i.test(eyebrow.textContent.trim())) {
+      eyebrow.textContent = eyebrow.textContent.replace(/\s*llc\s*$/i, '').trim();
+    }
     hero.appendChild(eyebrow);
 
     var lead = document.createElement('p');
     lead.className = 'pa-footer-glass__lead';
     lead.textContent = (window.PASite && PASite.tagline) ||
-      'Photography, video & live production · Central Pennsylvania';
+      'Event photography, video, and live production across Pennsylvania.';
     hero.appendChild(lead);
 
     return hero;
+  }
+
+  /**
+   * Footer stack — two polished frosted rows:
+   * 1) Services / Work / Book
+   * 2) Social icons
+   * No duplicate Home/Services bottom bar.
+   */
+  function buildFooterDock() {
+    var stack = document.createElement('div');
+    stack.className = 'pa-footer-dock pa-reveal-item';
+
+    var navRow = document.createElement('div');
+    navRow.className = 'pa-footer-dock__row pa-footer-dock__row--nav';
+
+    var nav = document.createElement('nav');
+    nav.className = 'pa-footer-compact-nav';
+    nav.setAttribute('aria-label', 'Footer');
+
+    var list = document.createElement('ul');
+    list.className = 'pa-footer-compact-nav__list';
+
+    var homeUrl = ((window.PASite && PASite.homeUrl) || '/').replace(/\/?$/, '/');
+    var path = (window.location && window.location.pathname) || '';
+    var items = [
+      { label: 'Services', href: homeUrl + 'services/', match: '/services' },
+      { label: 'Work', href: workPageUrl(), match: '/work' },
+      { label: 'Check Availability', href: bookLinkUrl(), match: '/book', isBook: true },
+    ];
+
+    items.forEach(function (item) {
+      var li = document.createElement('li');
+      var a = document.createElement('a');
+      a.className = 'pa-footer-compact-nav__link pa-site-nav-pill';
+      a.href = item.href;
+      a.textContent = item.label;
+      if (item.isBook) {
+        a.className += ' pa-footer-compact-nav__link--book pa-nav-book-btn';
+      }
+      if (item.match && path.indexOf(item.match) !== -1) {
+        a.classList.add('is-current');
+        a.setAttribute('aria-current', 'page');
+      }
+      li.appendChild(a);
+      list.appendChild(li);
+    });
+
+    nav.appendChild(list);
+    navRow.appendChild(nav);
+    stack.appendChild(navRow);
+
+    var socialRow = document.createElement('div');
+    socialRow.className = 'pa-footer-dock__row pa-footer-dock__row--social';
+    var socialSlot = document.createElement('div');
+    socialSlot.className = 'pa-footer-glass__social-slot';
+    socialRow.appendChild(socialSlot);
+    stack.appendChild(socialRow);
+
+    return stack;
+  }
+
+  /** @deprecated use buildFooterDock — kept for cached scripts */
+  function buildFooterCompactNav() {
+    return buildFooterDock();
   }
 
   function getFooterServiceLabel(name) {
@@ -3716,114 +3895,9 @@
     return 'pa-footer-service-chip--neutral';
   }
 
+  /** @deprecated Selected-work / SKU grid removed — compact nav only (kept for cached scripts). */
   function buildFooterInfoGrid(data) {
-    var grid = document.createElement('div');
-    grid.className = 'pa-footer-glass__grid';
-
-    grid.appendChild(buildFooterGlassPanel(
-      'Services',
-      'pa-footer-services',
-      function (body) {
-        var list = document.createElement('ul');
-        list.className = 'pa-footer-service-chips';
-        data.services.slice(0, 6).forEach(function (name) {
-          var li = document.createElement('li');
-          var a = document.createElement('a');
-          a.className = 'pa-footer-service-chip ' + footerServiceChipClass(name);
-          a.href = serviceBookingHref(name);
-          a.textContent = getFooterServiceLabel(name);
-          li.appendChild(a);
-          list.appendChild(li);
-        });
-        body.appendChild(list);
-        var all = document.createElement('a');
-        all.className = 'pa-footer-glass__link';
-        all.href = ((window.PASite && PASite.homeUrl) || '/').replace(/\/?$/, '/') + 'services/';
-        all.textContent = 'All services';
-        body.appendChild(all);
-      }
-    ));
-
-    grid.appendChild(buildFooterGlassPanel(
-      'About',
-      'pa-footer-about',
-      function (body) {
-        var paragraphs = data.aboutParagraphs.slice(0, 2);
-        paragraphs.forEach(function (text) {
-          var p = document.createElement('p');
-          p.textContent = text;
-          body.appendChild(p);
-        });
-        var badge = getFooterRecognition();
-        var badgeEl = document.createElement('a');
-        badgeEl.className = 'pa-footer-glass__badge';
-        badgeEl.href = badge.href || '#';
-        if (badge.href && badge.href.indexOf('http') === 0) {
-          badgeEl.target = '_blank';
-          badgeEl.rel = 'noopener noreferrer';
-        }
-        var badgeTitle = document.createElement('span');
-        badgeTitle.className = 'pa-footer-glass__badge-title';
-        badgeTitle.textContent = badge.title || '';
-        badgeEl.appendChild(badgeTitle);
-        if (badge.detail) {
-          var badgeDetail = document.createElement('span');
-          badgeDetail.className = 'pa-footer-glass__badge-detail';
-          badgeDetail.textContent = badge.detail;
-          badgeEl.appendChild(badgeDetail);
-        }
-        body.appendChild(badgeEl);
-      }
-    ));
-
-    grid.appendChild(buildFooterGlassPanel(
-      'Selected work',
-      'pa-footer-work',
-      function (body) {
-        var list = document.createElement('ul');
-        list.className = 'pa-footer-work-compact';
-        var items = getFooterWorkItems();
-        if (!items.length) {
-          items = data.work.slice(0, 4).map(function (item) {
-            return {
-              title: (item.lines && item.lines[0]) || 'Project',
-              detail: (item.lines && item.lines.slice(1).join(' · ')) || '',
-              href: item.href || workPageUrl(),
-            };
-          });
-        }
-        items.forEach(function (item) {
-          var li = document.createElement('li');
-          var row = document.createElement('a');
-          row.className = 'pa-footer-work-row';
-          row.href = item.href || workPageUrl();
-          if (row.href.indexOf('http') === 0) {
-            row.target = '_blank';
-            row.rel = 'noopener noreferrer';
-          }
-          var title = document.createElement('span');
-          title.className = 'pa-footer-work-row__title';
-          title.textContent = item.title || '';
-          row.appendChild(title);
-          if (item.detail) {
-            var detail = document.createElement('span');
-            detail.className = 'pa-footer-work-row__detail';
-            detail.textContent = item.detail;
-            row.appendChild(detail);
-          }
-          li.appendChild(row);
-          list.appendChild(li);
-        });
-        body.appendChild(list);
-        var viewAll = document.createElement('a');
-        viewAll.className = 'pa-footer-glass__link';
-        viewAll.href = workPageUrl();
-        viewAll.textContent = 'View all work';
-        body.appendChild(viewAll);
-      }
-    ));
-
-    return grid;
+    return buildFooterCompactNav();
   }
 
   function buildFooterGlassPanel(title, id, fill) {
@@ -3847,27 +3921,13 @@
   }
 
   function buildFooterActionBar() {
-    var bar = document.createElement('div');
-    bar.className = 'pa-footer-glass__actions pa-reveal-item';
-
-    var socialSlot = document.createElement('div');
-    socialSlot.className = 'pa-footer-glass__social-slot';
-    bar.appendChild(socialSlot);
-
-    if (!isBookingPage()) {
-      var cta = document.createElement('a');
-      cta.className = 'pa-footer-book-cta wp-element-button';
-      cta.href = bookingUrl();
-      cta.textContent = 'Book now';
-      bar.appendChild(cta);
-    }
-
-    return bar;
+    /* Social now lives in buildFooterDock — keep empty slot helper for legacy callers. */
+    return buildFooterDock();
   }
 
-  /** @deprecated use buildFooterActionBar — kept for cached scripts */
+  /** @deprecated use buildFooterDock — kept for cached scripts */
   function buildFooterCtaStrip() {
-    return buildFooterActionBar();
+    return buildFooterDock();
   }
 
   /** @deprecated use buildFooterGlassPanel */
@@ -3889,6 +3949,16 @@
     if (existingLegal) {
       existingLegal.querySelectorAll('.pa-legal-email').forEach(function (el) {
         el.remove();
+      });
+      /* No phone in UI — strip any legacy tel: links from prior builds. */
+      existingLegal.querySelectorAll('a[href^="tel:"]').forEach(function (el) {
+        var parent = el.parentNode;
+        if (parent && parent.classList.contains('pa-footer-contact') &&
+            parent.querySelectorAll('a').length === 1) {
+          parent.remove();
+        } else {
+          el.remove();
+        }
       });
       placeFooterBrandInLegal(footer, existingLegal);
       return;
@@ -3940,37 +4010,19 @@
   }
 
   /**
-   * Visible email / phone in footer for leads and local SEO NAP consistency.
+   * Optional email in legal strip. No phone in UI (site-wide constraint).
    */
   function buildFooterContactLine() {
     var email = (window.PASite && PASite.notifyEmail) || '';
-    var phone = (window.PASite && PASite.phone) || '';
-    var tel = (window.PASite && PASite.phoneTel) || '';
-    if (!email && !phone) {
+    if (!email) {
       return null;
     }
     var wrap = document.createElement('p');
     wrap.className = 'pa-footer-contact';
-    if (email) {
-      var mail = document.createElement('a');
-      mail.href = 'mailto:' + email;
-      mail.textContent = email;
-      wrap.appendChild(mail);
-    }
-    if (phone && tel) {
-      if (email) {
-        wrap.appendChild(document.createTextNode(' · '));
-      }
-      var call = document.createElement('a');
-      call.href = tel;
-      call.textContent = phone;
-      wrap.appendChild(call);
-    }
-    wrap.appendChild(document.createTextNode(' · '));
-    var book = document.createElement('a');
-    book.href = bookLinkUrl();
-    book.textContent = 'Book online';
-    wrap.appendChild(book);
+    var mail = document.createElement('a');
+    mail.href = 'mailto:' + email;
+    mail.textContent = email;
+    wrap.appendChild(mail);
     return wrap;
   }
 
@@ -3993,7 +4045,7 @@
       { label: 'Services', href: homeUrl.replace(/\/?$/, '/') + 'services/' },
       { label: 'About', href: aboutPageUrl() },
       { label: 'Contact', href: contactPageUrl() },
-      { label: 'Book', href: (window.PASite && PASite.bookUrl) ? PASite.bookUrl + ((PASite.bookUrl.indexOf('?') >= 0) ? '&' : '?') + 'start=1' : homeUrl.replace(/\/?$/, '/') + 'book/?start=1' },
+      { label: 'Check Availability', href: (window.PASite && PASite.bookUrl) ? PASite.bookUrl + ((PASite.bookUrl.indexOf('?') >= 0) ? '&' : '?') + 'start=1' : homeUrl.replace(/\/?$/, '/') + 'book/?start=1' },
     ];
   }
 
@@ -4081,48 +4133,31 @@
     triggerPremiumHeaderNav();
   }
 
+  /**
+   * Hide theme footer menus and remove the legacy bottom Home/Services bar
+   * (duplicates the single dock: Services / Work / Book).
+   */
   function polishFooterNav() {
     var footer = document.querySelector('footer.wp-block-template-part');
-    if (!footer || footer.querySelector('.pa-site-bottom-nav')) {
+    if (!footer) {
       return;
     }
 
     document.querySelectorAll('footer .wp-block-navigation').forEach(function (nav) {
-      nav.classList.add('pa-footer-nav-legacy');
+      if (nav.closest('.pa-site-footer-pro')) {
+        return;
+      }
+      nav.classList.add('pa-footer-nav-legacy', 'pa-footer-clutter-hidden');
+      nav.setAttribute('aria-hidden', 'true');
       var parent = nav.closest('.wp-block-group');
       if (parent && parent.querySelector('.wp-block-navigation') && !parent.querySelector('.pa-site-footer-pro')) {
         parent.classList.add('pa-footer-clutter-hidden');
       }
     });
 
-    var links = getFooterNavLinks();
-    var nav = document.createElement('nav');
-    nav.className = 'pa-site-bottom-nav';
-    nav.setAttribute('aria-label', 'Site navigation');
-
-    var list = document.createElement('div');
-    list.className = 'pa-site-bottom-nav-links';
-
-    links.forEach(function (item) {
-      var a = document.createElement('a');
-      a.href = item.href;
-      a.className = 'pa-site-bottom-nav-link pa-site-nav-pill';
-      a.textContent = item.label;
-      if (isCurrentNavLink(item.href)) {
-        a.classList.add('is-current');
-        a.setAttribute('aria-current', 'page');
-      }
-      list.appendChild(a);
+    document.querySelectorAll('.pa-site-bottom-nav').forEach(function (nav) {
+      nav.remove();
     });
-
-    nav.appendChild(list);
-
-    var wrap = footer.querySelector(':scope > .wp-block-group');
-    if (wrap) {
-      wrap.appendChild(nav);
-    } else {
-      footer.appendChild(nav);
-    }
   }
 
   /**
@@ -4145,18 +4180,35 @@
 
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-hero-eyebrow';
-    eyebrow.textContent = 'Pennsylvania Media Arts \u00b7 Multimedia production';
+    eyebrow.textContent = 'Weddings \u00b7 Events \u00b7 Audio';
     content.appendChild(eyebrow);
 
     var h1 = document.createElement('h1');
     h1.className = 'pa-hero-title';
-    h1.textContent = 'Cinematic wedding films, professional event production, and creative media for Pennsylvania';
+    h1.setAttribute('aria-label', 'Photographer \u00b7 Videographer \u00b7 DJ \u00b7 Live Audio Production');
+    var roles = document.createElement('span');
+    roles.className = 'pa-hero-roles';
+    roles.setAttribute('aria-hidden', 'true');
+    ['Photographer', 'Videographer', 'DJ', 'Live Audio Production'].forEach(function (label, i, list) {
+      var role = document.createElement('span');
+      role.className = 'pa-hero-role';
+      role.textContent = label;
+      roles.appendChild(role);
+      if (i < list.length - 1) {
+        var sep = document.createElement('span');
+        sep.className = 'pa-hero-sep';
+        sep.setAttribute('aria-hidden', 'true');
+        sep.textContent = '\u00b7';
+        roles.appendChild(sep);
+      }
+    });
+    h1.appendChild(roles);
     content.appendChild(h1);
 
     var lead = document.createElement('p');
     lead.className = 'pa-hero-lead';
     lead.textContent =
-      'A premium production company for couples, businesses, and organizations \u2014 cinema, photography, live audio, and post under one team.';
+      'Cinema, photography, and premium sound \u2014 one team across Pennsylvania.';
     content.appendChild(lead);
 
     var actions = document.createElement('div');
@@ -4164,14 +4216,15 @@
 
     var primary = document.createElement('a');
     primary.className = 'pa-hero-btn pa-hero-btn-primary';
-    primary.href = bookingUrl();
+    primary.href = bookLinkUrl();
     primary.textContent = 'Check Availability';
+    primary.setAttribute('aria-label', 'Check availability — Pennsylvania Media Arts');
     actions.appendChild(primary);
 
     var secondary = document.createElement('a');
     secondary.className = 'pa-hero-btn pa-hero-btn-secondary';
     secondary.href = '#pa-portfolio';
-    secondary.textContent = 'View Portfolio';
+    secondary.textContent = 'View portfolio';
     actions.appendChild(secondary);
 
     content.appendChild(actions);
@@ -4761,7 +4814,6 @@
   function markSectionAnchors() {
     var map = {
       'pa-footer-services': 'pa-services',
-      'pa-footer-about': 'pa-about',
       'pa-footer-work': 'pa-work',
     };
     Object.keys(map).forEach(function (id) {
@@ -4829,18 +4881,18 @@
 
     var name = document.createElement('h1');
     name.className = 'pa-about-name';
-    name.textContent = 'About Pennsylvania Media Arts';
+    name.textContent = 'Complete multimedia production';
     hero.appendChild(name);
 
     var role = document.createElement('p');
     role.className = 'pa-about-role';
-    role.textContent = 'Founded by Jordan Zabady · Central PA event production';
+    role.textContent = 'Founded by Jordan Zabady · Weddings · Business · Events · Live audio';
     hero.appendChild(role);
 
     var lead = document.createElement('p');
     lead.className = 'pa-about-lead';
     lead.textContent =
-      'Photography, video, and live production for weddings, events, and brands across Central Pennsylvania.';
+      'PA Media combines cinematic production, professional audio, photography, and live event experience into one multimedia company for Central Pennsylvania.';
     hero.appendChild(lead);
 
     var meta = document.createElement('p');
@@ -4857,18 +4909,22 @@
 
     var eyebrow = document.createElement('p');
     eyebrow.className = 'pa-about-section-eyebrow';
-    eyebrow.textContent = 'The Work';
+    eyebrow.textContent = 'The company';
     card.appendChild(eyebrow);
 
     var paras = [
-      'Jordan Zabady is a multimedia producer with more than 15 years in live audio, video, ' +
-      'photography, music production, and post. His background spans commercial television, ' +
-      'animation, motion graphics, worship services, weddings, music videos, and concert production.',
-      'He works full time as a producer in digital communications at The Hospital and Healthsystem ' +
-      'Association of Pennsylvania (HAP). After his daughter was born, he founded Pennsylvania Media ' +
-      'Arts LLC to bring photography, video, and live production to clients across Central Pennsylvania.',
-      'Jordan is nominated for Best Videography at the 2026 Central Pennsylvania Music Awards. ' +
-      'Through PA Media Arts, he works with artists, venues, businesses, and couples throughout the region.',
+      'Jordan Zabady is a full-stack multimedia producer — photographer, videographer, animator, ' +
+      'and live-production specialist — with more than 15 years across weddings, concerts, worship, ' +
+      'commercial television, motion graphics, and high-pressure live audio workflows. Clients get ' +
+      'human direction on set and in post; AI accelerates parts of the pipeline without replacing craft.',
+      'That live-production background is why ceremony speech, keynotes, and stage shows stay ' +
+      'intelligible — and why photo, video, and audio can ship as one coordinated delivery instead of ' +
+      'three disconnected vendors. No venue endorsements implied — just years of show-day responsibility.',
+      'By day he works in digital communications at The Hospital and Healthsystem Association of ' +
+      'Pennsylvania (HAP) — employment, not a client endorsement. After his daughter was born, he ' +
+      'founded Pennsylvania Media Arts LLC to serve artists, venues, businesses, and couples across ' +
+      'the Harrisburg–York–Lancaster corridor. He is a 2026 Central Pennsylvania Music Awards nominee ' +
+      'for Best Videography.',
     ];
 
     paras.forEach(function (text) {
@@ -4901,7 +4957,7 @@
       {
         value: '3',
         label: 'Core Disciplines',
-        note: 'Audio · Photography · Video — one team',
+        note: 'Photo · Video · Live audio — one company',
       },
     ];
 
@@ -4954,20 +5010,20 @@
       {
         mark: '01',
         label: 'Live Audio',
-        title: 'Sound Engineering',
-        desc: 'FOH and monitor mixing, system design, digital consoles, wireless coordination, and full PA for concerts, venues, and public events.',
+        title: 'Show-day sound',
+        desc: 'Ceremony PA, keynotes, FOH/monitors, wireless coordination, and full systems for weddings, worship, conferences, and live music — speech that stays clear on the floor and on camera.',
       },
       {
         mark: '02',
         label: 'Photography',
-        title: 'Still Imaging',
-        desc: 'Event and concert coverage, artist promos, brand and portrait sessions — clean color and disciplined framing for web and print.',
+        title: 'Still imaging',
+        desc: 'Weddings, concerts, brand and portrait sessions — color and framing built for web, print, and social without a gear dump as the pitch.',
       },
       {
         mark: '03',
-        label: 'Video',
-        title: 'Production & Post',
-        desc: 'Live performance capture, multicam, music videos, reels, and in-house editing — one team from the shoot floor to final cut.',
+        label: 'Video & motion',
+        title: 'Production & post',
+        desc: 'Multicam films, music videos, commercial spots, reels, and in-house edit — with motion, 3D, and VFX when scoped. One producer from capture to delivery.',
       },
     ];
 
@@ -5013,19 +5069,19 @@
 
     var title = document.createElement('h2');
     title.className = 'pa-about-cta-title';
-    title.textContent = 'Work with Jordan';
+    title.textContent = 'Book complete production';
     cta.appendChild(title);
 
     var lead = document.createElement('p');
     lead.className = 'pa-about-cta-lead';
     lead.textContent =
-      'Book online — deposit secures your date, confirmed within one business day.';
+      'Check availability online — a $150 deposit holds your date, confirmed within one business day.';
     cta.appendChild(lead);
 
     var btn = document.createElement('a');
     btn.className = 'pa-about-cta-btn wp-element-button';
     btn.href = bookingUrl();
-    btn.textContent = 'Book your date';
+    btn.textContent = 'Check Availability';
     cta.appendChild(btn);
 
     return cta;

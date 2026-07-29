@@ -80,9 +80,15 @@
   }
 
   body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-title,
-  body.home.pa-glass-site .pa-home-hero .pa-hero-title {
+  body.home.pa-glass-site .pa-home-hero .pa-hero-title,
+  body.home.wp-theme-gutenify-photography .pa2-hero__title,
+  body.home.pa-glass-site .pa2-hero__title {
     max-width: 100%;
-    font-size: clamp(1.85rem, 8.5vw, 2.65rem) !important;
+    font-size: clamp(0.72rem, 3.55vw, 1.35rem) !important;
+    font-weight: 800 !important;
+    line-height: 1.15 !important;
+    letter-spacing: -0.04em !important;
+    white-space: nowrap !important;
   }
 
   body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-lead,
@@ -580,17 +586,18 @@
 
   body.wp-theme-gutenify-photography .pa-site-bottom-nav-links,
   body.pa-glass-site .pa-site-bottom-nav-links {
-    gap: 0.45rem;
+    gap: 0.5rem;
     max-width: 100%;
   }
 
   body.wp-theme-gutenify-photography .pa-site-bottom-nav-link,
   body.pa-glass-site .pa-site-bottom-nav-link {
     min-width: 0;
-    flex: 1 1 calc(50% - 0.35rem);
-    max-width: calc(50% - 0.2rem);
-    padding: 0.55rem 0.65rem;
-    font-size: 0.78rem;
+    flex: 0 1 auto;
+    max-width: none;
+    padding: 0.625rem 1.15rem !important;
+    font-size: 0.875rem !important;
+    min-height: 44px !important;
   }
 
   body.wp-theme-gutenify-photography .pa-legal-footer,
@@ -784,15 +791,15 @@
   body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo img.pa-brand-logo,
   body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo img.pa-brand-logo {
     width: auto !important;
-    height: clamp(126px, 33.75vw, 162px) !important;
-    max-width: min(46vw, 285px) !important;
-    max-height: 162px !important;
+    height: clamp(72px, 18vw, 96px) !important;
+    max-width: min(52vw, 180px) !important;
+    max-height: 96px !important;
     margin: 0 auto !important;
     display: block !important;
     object-fit: contain !important;
     object-position: center center !important;
-    border-radius: var(--pa-badge-tile-radius, 16px) !important;
-    box-shadow: var(--pa-badge-tile-shadow, 0 8px 26px rgba(0, 0, 0, 0.4)) !important;
+    border-radius: var(--pa-badge-tile-radius, 14px) !important;
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.16) !important;
   }
 
   body.wp-theme-gutenify-photography header.pa-site-header .wp-block-navigation__responsive-container-open,
@@ -833,30 +840,43 @@
     padding-right: max(1rem, env(safe-area-inset-right, 0px)) !important;
   }
 
-  /* Selected work / cinema — centered, full-bleed-safe on small screens */
-  body.home .pa2-services--cinema,
+  /* Selected work / cinema — clean shell, equal thumb row, 2×2 lanes */
+  body.home .pa2-services--cinema {
+    width: min(100%, calc(100% - 1.5rem)) !important;
+    max-width: 100%;
+    margin-top: 1.35rem !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    box-sizing: border-box;
+    border-radius: 22px !important;
+  }
+
   body.home .pa2-services--cinema .pa2-cinema {
     width: 100%;
     max-width: 100%;
     margin-left: auto;
     margin-right: auto;
     box-sizing: border-box;
+    border-radius: 0 !important;
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
   }
 
   body.home .pa2-cinema__head {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 0.25rem;
-    padding-right: 0.25rem;
+    text-align: left;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 0;
+    padding-right: 0;
   }
 
   body.home .pa2-cinema__title,
   body.home .pa2-cinema__lead,
   body.home .pa2-cinema__eyebrow {
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
+    margin-left: 0;
+    margin-right: 0;
+    text-align: left;
   }
 
   body.home .pa2-cinema__stage,
@@ -870,16 +890,35 @@
   }
 
   body.home .pa2-cinema__strip {
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 0.55rem;
+    display: flex;
+    flex-wrap: nowrap !important;
+    justify-content: stretch;
+    align-items: stretch;
+    gap: 0.4rem;
     width: 100%;
-    margin-left: auto;
-    margin-right: auto;
+    margin-left: 0;
+    margin-right: 0;
+    overflow-x: auto;
+  }
+
+  body.home .pa2-cinema__thumb {
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    width: auto !important;
+  }
+
+  body.home .pa2-cinema__thumb-label {
+    padding: 0.95rem 0.28rem 0.26rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.005em;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+    white-space: normal;
   }
 
   body.home .pa2-cinema__lane-panels {
-    grid-template-columns: 1fr !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.55rem;
   }
 
   body.home .pa2-cinema__panel {
@@ -887,12 +926,8 @@
     max-width: 100%;
   }
 
-  body.home .pa2-cinema__panel-media {
-    aspect-ratio: 16 / 10;
-  }
-
   body.home .pa2-cinema__foot {
-    justify-content: center;
+    justify-content: stretch;
     flex-wrap: wrap;
   }
 
@@ -1051,28 +1086,33 @@
   body.home.pa-home-header-pro header.pa-site-header img.custom-logo.pa-brand-logo-lockup-white,
   body.home.pa-home-header-pro header.pa-site-header img.pa-brand-logo-lockup,
   body.home.pa-home-header-pro header.pa-site-header img.pa-brand-logo-lockup-white {
-    width: clamp(200px, 72vw, 420px) !important;
-    max-width: min(420px, 92vw) !important;
+    width: clamp(320px, 88vw, 672px) !important;
+    max-width: min(672px, 94vw) !important;
     height: auto !important;
     max-height: none !important;
   }
 
-  body.home.pa-home-header-pro header.pa-site-header .pa-home-header-nav .pa-site-nav-pill,
-  body.home.pa-home-header-pro header.pa-site-header .pa-home-header-nav .wp-block-navigation-item__content,
-  body.pa-marketing-nav header.pa-site-header .pa-nav-floating-pills .wp-block-navigation-item__content,
-  body.pa-marketing-nav header.pa-site-header .pa-nav-dock .wp-block-navigation-item__content {
+  body.pa-marketing-nav:not(.home) header.pa-site-header .pa-nav-floating-pills .wp-block-navigation-item__content,
+  body.pa-marketing-nav:not(.home) header.pa-site-header .pa-nav-dock .wp-block-navigation-item__content {
     min-width: auto !important;
     min-height: 44px !important;
     padding: 0.625rem 1.15rem !important;
     font-size: 0.875rem !important;
-    border-radius: 9999px !important;
+    border-radius: 10px !important;
   }
+
+  /* Home chrome mobile nav — see home.css @782px (wrapped rows + Book on own line) */
 }
 
 /* ===================================================== MOBILE BOOK BAR (conversion) */
 @media (max-width: 899px) {
   body.pa-has-mobile-book-bar:not(.pa-booking-page):not(.is-booking-funnel) {
     padding-bottom: calc(4.75rem + env(safe-area-inset-bottom, 0px));
+  }
+
+  /* While hero CTA is visible, sticky bar is deferred — drop the reserved bottom pad. */
+  body.home.pa-has-mobile-book-bar.pa-mobile-book-bar-deferred:not(.pa-booking-page):not(.is-booking-funnel) {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
   }
 
   body.pa-has-mobile-book-bar:not(.pa-booking-page):not(.is-booking-funnel) .pa-mobile-book-bar {
@@ -1086,11 +1126,15 @@
     padding: 0.55rem max(0.85rem, env(safe-area-inset-right, 0px))
       calc(0.55rem + env(safe-area-inset-bottom, 0px))
       max(0.85rem, env(safe-area-inset-left, 0px));
-    background: rgba(245, 245, 247, 0.88);
-    backdrop-filter: blur(18px) saturate(180%);
-    -webkit-backdrop-filter: blur(18px) saturate(180%);
-    border-top: 1px solid rgba(255, 255, 255, 0.92);
-    box-shadow: 0 -8px 28px rgba(17, 17, 17, 0.08);
+    background: rgba(245, 245, 247, 0.94);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    border-top: 1px solid rgba(60, 60, 67, 0.14);
+    box-shadow: 0 -6px 20px rgba(17, 17, 17, 0.06);
+  }
+
+  body.pa-has-mobile-book-bar:not(.pa-booking-page):not(.is-booking-funnel) .pa-mobile-book-bar[hidden] {
+    display: none !important;
   }
 
   body.pa-has-mobile-book-bar:not(.pa-booking-page):not(.is-booking-funnel) .pa-mobile-book-bar__btn {
@@ -1098,16 +1142,16 @@
     align-items: center;
     justify-content: center;
     min-height: 48px;
-    width: min(100%, 22rem);
-    padding: 0.75rem 1.5rem;
-    border-radius: 999px;
+    width: min(100%, 24rem);
+    padding: 0.75rem 1.1rem;
+    border-radius: 10px;
     background: #0071e3;
     color: #fff !important;
-    font-size: 0.9375rem;
-    font-weight: 700;
-    letter-spacing: -0.01em;
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
     text-decoration: none;
-    box-shadow: 0 8px 24px rgba(0, 113, 227, 0.28);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.14);
   }
 
   body.pa-has-mobile-book-bar:not(.pa-booking-page):not(.is-booking-funnel) .pa-mobile-book-bar__btn:hover,

@@ -9,10 +9,10 @@ body.pa-premium-nav {
   --pa-nav-ease-out: cubic-bezier(0.4, 0, 0.2, 1);
   --pa-nav-duration: 0.52s;
   --pa-nav-duration-fast: 0.2s;
-  --pa-nav-lift: -6px;
-  --pa-nav-lift-book: -9px;
-  --pa-nav-scale: 1.05;
-  --pa-nav-scale-book: 1.07;
+  --pa-nav-lift: -3px;
+  --pa-nav-lift-book: -4px;
+  --pa-nav-scale: 1.02;
+  --pa-nav-scale-book: 1.03;
   --pa-nav-book-glow:
     0 0 0 1px rgba(0, 132, 255, 0.42),
     0 0 32px rgba(0, 113, 227, 0.58),
@@ -29,9 +29,9 @@ body.pa-premium-nav {
   --pa-liquid-glass-active-bg: rgba(0, 113, 227, 0.14);
   --pa-liquid-glass-active-border: rgba(0, 113, 227, 0.38);
   --pa-liquid-glass-active-ink: #005bb5;
-  --pa-nav-pill-min-height: 48px;
-  --pa-nav-pill-font-size: 1rem;
-  --pa-nav-pill-padding: 0.75rem 1.5rem;
+  --pa-nav-pill-min-height: 42px;
+  --pa-nav-pill-font-size: 0.875rem;
+  --pa-nav-pill-padding: 0.5rem 1.15rem;
 }
 
 @view-transition {
@@ -66,7 +66,7 @@ body.pa-glass-site header.wp-block-template-part .pa-nav-dock {
   flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  gap: 1rem !important;
+  gap: 0.5rem !important;
   width: auto;
   max-width: calc(100% - 1rem);
   margin: 0 auto;
@@ -180,12 +180,12 @@ body.pa-glass-site.home header .pa-nav-floating-pills .pa-nav-link--hover,
 body.pa-glass-site.home header .pa-nav-dock .pa-nav-link--hover {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  background: rgba(255, 255, 255, 0.26) !important;
-  border-color: rgba(255, 255, 255, 0.55) !important;
-  transform: translateY(-2px) scale(1.03);
+  background: rgba(255, 255, 255, 0.3) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+  transform: translateY(-1px) scale(1.02);
   box-shadow:
-    0 14px 36px rgba(0, 0, 0, 0.24),
-    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+    0 12px 30px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.4) !important;
 }
 
 body.pa-glass-site.home header .pa-nav-floating-pills .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content.is-current,
@@ -232,12 +232,12 @@ body.pa-glass-site:not(.home):not(.pa-booking-page) header .pa-nav-dock .wp-bloc
 body.pa-glass-site:not(.home):not(.pa-booking-page) header .pa-nav-link--hover {
   color: var(--pa2-ink, #1d1d1f) !important;
   -webkit-text-fill-color: var(--pa2-ink, #1d1d1f) !important;
-  background: var(--pa-liquid-glass-bg-hover, rgba(255, 255, 255, 0.78)) !important;
-  border-color: rgba(255, 255, 255, 0.94) !important;
-  transform: translateY(-2px) scale(1.02);
+  background: var(--pa-liquid-glass-bg-hover, rgba(255, 255, 255, 0.84)) !important;
+  border-color: rgba(255, 255, 255, 0.96) !important;
+  transform: translateY(-1px) scale(1.015);
   box-shadow:
-    0 14px 32px rgba(15, 23, 42, 0.1),
-    0 0 0 1px rgba(0, 113, 227, 0.08),
+    0 12px 28px rgba(15, 23, 42, 0.09),
+    0 0 0 1px rgba(0, 113, 227, 0.07),
     inset 0 1px 0 rgba(255, 255, 255, 1) !important;
 }
 
@@ -391,40 +391,32 @@ body.pa-premium-nav .pa-home-post-hero-chrome .pa-nav-dock.pa-nav-dock--revealed
   }
 }
 
-/* Nav in pre-hero chrome band — light surface pills (logo → nav → drone) */
+/* Home chrome nav — polished liquid-glass pills on white band (matches footer dock) */
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__content,
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-site-nav-pill {
   display: inline-flex !important;
   align-items: center !important;
   justify-content: center !important;
   box-sizing: border-box !important;
-  min-height: var(--pa-nav-pill-min-height, 48px) !important;
-  padding: var(--pa-nav-pill-padding, 0.75rem 1.5rem) !important;
+  min-height: var(--pa-nav-pill-min-height, 42px) !important;
+  padding: var(--pa-nav-pill-padding, 0.5rem 1.15rem) !important;
   border-radius: 9999px !important;
-  font-size: var(--pa-nav-pill-font-size, 1rem) !important;
+  font-size: var(--pa-nav-pill-font-size, 0.875rem) !important;
   font-weight: 600 !important;
   letter-spacing: 0.01em !important;
   text-transform: none !important;
   text-decoration: none !important;
   line-height: 1.2;
   cursor: pointer;
-  position: relative;
-  isolation: isolate;
-  -webkit-tap-highlight-color: transparent;
-  transition:
-    transform var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    background var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    border-color var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    box-shadow var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    filter var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
-    color var(--pa-nav-duration, 0.52s) ease,
-    -webkit-text-fill-color var(--pa-nav-duration, 0.52s) ease !important;
+  transform: none;
+  filter: none;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease !important;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .has-foreground-color,
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation {
-  color: rgba(29, 29, 31, 0.82) !important;
-  -webkit-text-fill-color: rgba(29, 29, 31, 0.82) !important;
+  color: #1d1d1f !important;
+  -webkit-text-fill-color: #1d1d1f !important;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-floating-pills,
@@ -442,13 +434,15 @@ body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content,
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-site-nav-pill:not(.pa-nav-book-btn):not(.is-current) {
   color: rgba(29, 29, 31, 0.9) !important;
   -webkit-text-fill-color: rgba(29, 29, 31, 0.9) !important;
-  background: var(--pa-liquid-glass-bg, rgba(255, 255, 255, 0.52)) !important;
+  background: var(--pa-liquid-glass-bg, rgba(255, 255, 255, 0.72)) !important;
   border: 1px solid var(--pa-liquid-glass-border, rgba(255, 255, 255, 0.82)) !important;
   backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
   -webkit-backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
@@ -460,30 +454,24 @@ body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-link--hover:not(.pa-nav-book-btn) {
   color: var(--pa2-ink, #1d1d1f) !important;
   -webkit-text-fill-color: var(--pa2-ink, #1d1d1f) !important;
-  background: var(--pa-liquid-glass-bg-hover, rgba(255, 255, 255, 0.72)) !important;
-  border-color: rgba(255, 255, 255, 0.94) !important;
-  transform: translateY(-2px) scale(1.03);
+  background: var(--pa-liquid-glass-bg-hover, rgba(255, 255, 255, 0.86)) !important;
+  border-color: rgba(255, 255, 255, 0.96) !important;
+  transform: translateY(-2px) scale(1.02);
   box-shadow:
-    0 16px 36px rgba(15, 23, 42, 0.11),
-    0 0 0 1px rgba(0, 113, 227, 0.06),
+    0 14px 32px rgba(15, 23, 42, 0.1),
+    0 0 0 1px rgba(0, 113, 227, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 1) !important;
   outline: none;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content:focus-visible {
-  box-shadow:
-    0 0 0 3px rgba(0, 113, 227, 0.28),
-    0 14px 34px rgba(17, 17, 17, 0.12),
-    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  outline: 2px solid rgba(0, 113, 227, 0.45);
+  outline-offset: 3px;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content:active,
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-link--pressed:not(.pa-nav-book-btn) {
   transform: translateY(0) scale(0.98) !important;
-  box-shadow:
-    0 4px 14px rgba(17, 17, 17, 0.08),
-    inset 0 1px 0 rgba(255, 255, 255, 0.92) !important;
-  transition-duration: 0.12s;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content.is-current,
@@ -492,11 +480,10 @@ body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .cur
   -webkit-text-fill-color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
   background: var(--pa-liquid-glass-active-bg, rgba(0, 113, 227, 0.14)) !important;
   border: 1px solid var(--pa-liquid-glass-active-border, rgba(0, 113, 227, 0.38)) !important;
-  backdrop-filter: blur(24px) saturate(165%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(165%) !important;
   box-shadow:
     0 10px 26px rgba(0, 113, 227, 0.14),
     inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+  font-weight: 600 !important;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content.is-current:hover,
@@ -507,55 +494,20 @@ body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .cur
   background: rgba(0, 113, 227, 0.2) !important;
   border-color: rgba(0, 113, 227, 0.45) !important;
   transform: translateY(-2px) scale(1.02);
-  box-shadow:
-    0 14px 32px rgba(0, 113, 227, 0.18),
-    inset 0 1px 0 rgba(255, 255, 255, 0.78) !important;
 }
 
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content,
 body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book-btn {
+  display: inline-flex !important;
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
-  background: linear-gradient(180deg, rgba(0, 132, 255, 0.94) 0%, rgba(0, 113, 227, 0.98) 100%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.48) !important;
-  backdrop-filter: blur(18px) saturate(200%) !important;
-  -webkit-backdrop-filter: blur(18px) saturate(200%) !important;
+  background: linear-gradient(180deg, #0084ff 0%, #0071e3 55%, #0066d6 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.38) !important;
   box-shadow:
-    0 12px 32px rgba(0, 113, 227, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.36) !important;
+    0 12px 32px rgba(0, 113, 227, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
   padding-left: 1.5rem !important;
   padding-right: 1.5rem !important;
-}
-
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content:hover,
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content:focus-visible,
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book-btn.pa-nav-book--hover {
-  background: linear-gradient(180deg, #0084ff 0%, #0077ed 100%) !important;
-  border-color: rgba(255, 255, 255, 0.45) !important;
-  transform: translateY(-3px) scale(1.04);
-  box-shadow:
-    0 18px 44px rgba(0, 113, 227, 0.48),
-    0 0 0 1px rgba(0, 113, 227, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
-  outline: none;
-}
-
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content:focus-visible,
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book-btn:focus-visible {
-  box-shadow:
-    0 0 0 3px rgba(0, 113, 227, 0.35),
-    0 18px 44px rgba(0, 113, 227, 0.48),
-    inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
-}
-
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content:active,
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book-btn.pa-nav-book--pressed {
-  transform: translateY(0) scale(0.98) !important;
-  background: linear-gradient(180deg, #0066d6 0%, #005ec7 100%) !important;
-  box-shadow:
-    0 6px 18px rgba(0, 113, 227, 0.34),
-    inset 0 1px 0 rgba(255, 255, 255, 0.2) !important;
-  transition-duration: 0.12s;
 }
 
 /* —— INTERIOR marketing pages: identical liquid-glass pills to home chrome band —— */
@@ -1134,10 +1086,13 @@ body.pa-glass-site.pa-marketing-nav:not(.home):not(.pa-booking-page) header
   }
 }
 
-/* —— Booking page header nav (same liquid glass system) —— */
+/* —— Booking page header nav (same liquid glass as marketing pages) —— */
 body.pa-glass-site.pa-booking-page header .pa-nav-floating-pills,
 body.pa-glass-site.pa-booking-page header .pa-nav-dock,
-body.pa-glass-site.pa-booking-page header .wp-block-navigation__container {
+body.pa-glass-site.pa-booking-page header .wp-block-navigation__container,
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-nav-floating-pills,
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-nav-dock,
+body.wp-theme-gutenify-photography.pa-booking-page header .wp-block-navigation__container {
   display: inline-flex !important;
   flex-wrap: wrap !important;
   align-items: center !important;
@@ -1148,23 +1103,44 @@ body.pa-glass-site.pa-booking-page header .wp-block-navigation__container {
   box-shadow: none !important;
 }
 
-body.pa-glass-site.pa-booking-page header .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content {
-  color: rgba(29, 29, 31, 0.9) !important;
-  -webkit-text-fill-color: rgba(29, 29, 31, 0.9) !important;
-  background: var(--pa-liquid-glass-bg, rgba(255, 255, 255, 0.52)) !important;
-  border: 1px solid var(--pa-liquid-glass-border, rgba(255, 255, 255, 0.82)) !important;
+body.pa-glass-site.pa-booking-page header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content:not(.pa-nav-book-btn),
+body.pa-glass-site.pa-booking-page header .pa-site-nav-pill:not(.pa-nav-book-btn),
+body.pa-glass-site.pa-booking-page header .wp-block-navigation-item:not(.pa-nav-book) > .wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography.pa-booking-page header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content:not(.pa-nav-book-btn),
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-site-nav-pill:not(.pa-nav-book-btn),
+body.wp-theme-gutenify-photography.pa-booking-page header .wp-block-navigation-item:not(.pa-nav-book) > .wp-block-navigation-item__content {
+  color: #1d1d1f !important;
+  -webkit-text-fill-color: #1d1d1f !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  background-image: none !important;
+  border: 1px solid rgba(29, 29, 31, 0.12) !important;
   backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
   -webkit-backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
-  box-shadow: var(--pa-liquid-glass-shadow) !important;
+  box-shadow:
+    0 8px 22px rgba(15, 23, 42, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+body.pa-glass-site.pa-booking-page header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content:not(.pa-nav-book-btn) .wp-block-navigation-item__label,
+body.pa-glass-site.pa-booking-page header .pa-site-nav-pill:not(.pa-nav-book-btn) .wp-block-navigation-item__label,
+body.wp-theme-gutenify-photography.pa-booking-page header.wp-block-template-part .wp-block-navigation a.wp-block-navigation-item__content:not(.pa-nav-book-btn) .wp-block-navigation-item__label,
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-site-nav-pill:not(.pa-nav-book-btn) .wp-block-navigation-item__label {
+  color: inherit !important;
+  -webkit-text-fill-color: inherit !important;
+  background: transparent !important;
 }
 
 body.pa-glass-site.pa-booking-page header .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content:hover,
 body.pa-glass-site.pa-booking-page header .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content:focus-visible,
-body.pa-glass-site.pa-booking-page header .pa-nav-link--hover:not(.pa-nav-book-btn) {
+body.pa-glass-site.pa-booking-page header .pa-site-nav-pill:not(.pa-nav-book-btn):hover,
+body.pa-glass-site.pa-booking-page header .pa-nav-link--hover:not(.pa-nav-book-btn),
+body.wp-theme-gutenify-photography.pa-booking-page header .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content:hover,
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-site-nav-pill:not(.pa-nav-book-btn):hover {
   color: var(--pa2-ink, #1d1d1f) !important;
   -webkit-text-fill-color: var(--pa2-ink, #1d1d1f) !important;
-  background: var(--pa-liquid-glass-bg-hover, rgba(255, 255, 255, 0.78)) !important;
-  border-color: rgba(255, 255, 255, 0.94) !important;
+  background: var(--pa-liquid-glass-bg-hover, rgba(255, 255, 255, 0.9)) !important;
+  background-image: none !important;
+  border-color: rgba(255, 255, 255, 0.96) !important;
   transform: translateY(-2px) scale(1.02);
   box-shadow:
     0 14px 32px rgba(15, 23, 42, 0.1),
@@ -1172,11 +1148,29 @@ body.pa-glass-site.pa-booking-page header .pa-nav-link--hover:not(.pa-nav-book-b
     inset 0 1px 0 rgba(255, 255, 255, 1) !important;
 }
 
-body.pa-glass-site.pa-booking-page header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content {
+body.pa-glass-site.pa-booking-page header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,
+body.pa-glass-site.pa-booking-page header .pa-site-nav-pill.is-current:not(.pa-nav-book-btn),
+body.wp-theme-gutenify-photography.pa-booking-page header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-site-nav-pill.is-current:not(.pa-nav-book-btn) {
   color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
   -webkit-text-fill-color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
   background: var(--pa-liquid-glass-active-bg, rgba(0, 113, 227, 0.14)) !important;
+  background-image: none !important;
   border-color: var(--pa-liquid-glass-active-border, rgba(0, 113, 227, 0.38)) !important;
+}
+
+body.pa-glass-site.pa-booking-page header .pa-nav-book .wp-block-navigation-item__content,
+body.pa-glass-site.pa-booking-page header .pa-nav-book-btn,
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-nav-book .wp-block-navigation-item__content,
+body.wp-theme-gutenify-photography.pa-booking-page header .pa-nav-book-btn {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(180deg, #0084ff 0%, #0071e3 55%, #0066d6 100%) !important;
+  background-color: #0071e3 !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.38) !important;
+  box-shadow:
+    0 12px 32px rgba(0, 113, 227, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
 }
 
 /* —— Labels are text-only — never pill backgrounds (fixes black text highlight) —— */
@@ -1279,4 +1273,103 @@ body.wp-theme-gutenify-photography.pa-marketing-nav:not(.home) header .wp-block-
   box-shadow: none !important;
   color: inherit !important;
   -webkit-text-fill-color: inherit !important;
+}
+
+/* —— Footer bottom nav: identical liquid-glass pills to header —— */
+/* Legacy — single footer dock owns nav; keep rules inert */
+body.pa-glass-site .pa-site-bottom-nav,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav {
+  display: none !important;
+  background: transparent !important;
+  border-top: 1px solid rgba(29, 29, 31, 0.08) !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.pa-glass-site .pa-site-bottom-nav-links,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav-links {
+  gap: 0.75rem !important;
+}
+
+body.pa-glass-site .pa-site-bottom-nav .pa-site-bottom-nav-link,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-bottom-nav-link,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  min-height: var(--pa-nav-pill-min-height, 48px) !important;
+  min-width: auto !important;
+  padding: var(--pa-nav-pill-padding, 0.75rem 1.5rem) !important;
+  border-radius: 9999px !important;
+  font-size: var(--pa-nav-pill-font-size, 1rem) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+  text-decoration: none !important;
+  line-height: 1.2;
+  color: rgba(29, 29, 31, 0.9) !important;
+  -webkit-text-fill-color: rgba(29, 29, 31, 0.9) !important;
+  background: var(--pa-liquid-glass-bg, rgba(255, 255, 255, 0.72)) !important;
+  border: 1px solid var(--pa-liquid-glass-border, rgba(255, 255, 255, 0.92)) !important;
+  backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
+  -webkit-backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
+  box-shadow: var(--pa-liquid-glass-shadow) !important;
+  transition:
+    transform var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    background var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    border-color var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    box-shadow var(--pa-nav-duration, 0.52s) var(--pa-nav-ease, cubic-bezier(0.22, 1, 0.36, 1)),
+    color var(--pa-nav-duration, 0.52s) ease,
+    -webkit-text-fill-color var(--pa-nav-duration, 0.52s) ease !important;
+}
+
+body.pa-glass-site .pa-site-bottom-nav .pa-site-bottom-nav-link:hover,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-bottom-nav-link:focus-visible,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill:hover,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill:focus-visible,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-bottom-nav-link:hover,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-bottom-nav-link:focus-visible,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill:hover,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill:focus-visible {
+  color: var(--pa2-ink, #1d1d1f) !important;
+  -webkit-text-fill-color: var(--pa2-ink, #1d1d1f) !important;
+  background: var(--pa-liquid-glass-bg-hover, rgba(255, 255, 255, 0.86)) !important;
+  border-color: rgba(255, 255, 255, 0.96) !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 14px 32px rgba(15, 23, 42, 0.1),
+    0 0 0 1px rgba(0, 113, 227, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  outline: none;
+}
+
+body.pa-glass-site .pa-site-bottom-nav .pa-site-bottom-nav-link.is-current,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill.is-current,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-bottom-nav-link.is-current,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill.is-current {
+  color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  -webkit-text-fill-color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  background: var(--pa-liquid-glass-active-bg, rgba(0, 113, 227, 0.14)) !important;
+  border-color: var(--pa-liquid-glass-active-border, rgba(0, 113, 227, 0.38)) !important;
+  box-shadow:
+    0 8px 22px rgba(0, 113, 227, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
+}
+
+body.pa-glass-site .pa-site-bottom-nav .pa-site-bottom-nav-link.is-current:hover,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-bottom-nav-link.is-current:focus-visible,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill.is-current:hover,
+body.pa-glass-site .pa-site-bottom-nav .pa-site-nav-pill.is-current:focus-visible,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-bottom-nav-link.is-current:hover,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-bottom-nav-link.is-current:focus-visible,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill.is-current:hover,
+body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill.is-current:focus-visible {
+  color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  -webkit-text-fill-color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  background: rgba(0, 113, 227, 0.2) !important;
+  border-color: rgba(0, 113, 227, 0.45) !important;
+  transform: translateY(-2px) scale(1.02);
 }

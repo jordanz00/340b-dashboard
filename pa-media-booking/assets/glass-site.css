@@ -3,30 +3,37 @@
  * PA Design System 2.0 + iOS 18–inspired frosted surfaces.
  */
 
+/* —— Marketing type scale nudge (~8–10% tighter; nav touch targets untouched) —— */
+body.pa-glass-site:not(.pa-booking-page) {
+  --pa2-text-display: clamp(1.95rem, 4.1vw, 2.75rem);
+  --pa2-text-h1: clamp(1.625rem, 3.2vw, 2.075rem);
+  --pa2-text-h2: clamp(1.275rem, 2.05vw, 1.625rem);
+  --pa2-text-h3: 1.05rem;
+  --pa2-text-body: 0.975rem;
+  --pa2-text-body-lg: 1.025rem;
+  --pa2-text-body-sm: 0.875rem;
+  --pa2-text-label: 0.9375rem;
+  --pa2-text-meta: 0.75rem;
+  --pa2-text-eyebrow: 0.7rem;
+}
+
 /* —— Global canvas & typography —— */
 body.pa-glass-site.pa-ios-ui {
-  --pa-ios-blur: blur(48px) saturate(200%);
-  --pa-ios-blur-light: blur(32px) saturate(190%);
-  --pa-ios-fill: rgba(255, 255, 255, 0.62);
-  --pa-ios-fill-raised: rgba(255, 255, 255, 0.74);
-  --pa-ios-stroke: rgba(255, 255, 255, 0.88);
-  --pa-ios-shadow: 0 20px 56px rgba(17, 17, 17, 0.11), inset 0 1px 0 rgba(255, 255, 255, 0.9);
-  --pa-ios-shadow-sm: 0 8px 28px rgba(17, 17, 17, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.88);
-
   font-family: var(--pa-ios-font, -apple-system, BlinkMacSystemFont, "SF Pro Text", system-ui, sans-serif) !important;
-  background:
-    radial-gradient(ellipse 120% 80% at 0% -15%, rgba(0, 113, 227, 0.09), transparent 52%),
-    radial-gradient(ellipse 100% 70% at 100% 0%, rgba(88, 86, 214, 0.07), transparent 48%),
-    radial-gradient(ellipse 90% 60% at 50% 100%, rgba(26, 107, 60, 0.05), transparent 50%),
-    #f5f5f7 !important;
-  background-attachment: fixed;
+  background: var(--pa2-canvas) !important;
+  background-image: radial-gradient(ellipse 90% 55% at 50% -8%, rgba(0, 113, 227, 0.04), transparent 58%) !important;
+  background-attachment: scroll;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  font-size: var(--pa2-text-body);
+  line-height: var(--pa2-leading-body);
+  color: var(--pa2-ink);
+  letter-spacing: var(--pa2-tracking-normal);
 }
 
 body.pa-glass-site.pa-ios-ui::before {
-  opacity: 0.22 !important;
+  opacity: 0.12 !important;
 }
 
 body.pa-glass-site.pa-ios-ui h1,
@@ -91,7 +98,7 @@ body.pa-glass-site.home.pa-home-header-pro .pa-home-header-shell {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 0.75rem !important;
+  gap: 0.5rem !important;
   margin: 0.45rem auto 0 !important;
   width: 100% !important;
   max-width: none !important;
@@ -105,7 +112,7 @@ body.pa-glass-site.home.pa-home-header-pro .pa-home-header-shell {
   overflow: visible !important;
 }
 
-/* Logo — 200% larger than prior home lockup (≈3× the 168px cap) */
+/* Logo — premier production scale (not billboard) */
 body.pa-glass-site.home.pa-home-shell-relocated header.pa-site-header .pa-brand-lockup,
 body.pa-glass-site.home.pa-home-shell-relocated header.pa-site-header .wp-block-group:has(> .wp-block-site-logo) {
   display: flex !important;
@@ -132,12 +139,12 @@ body.pa-glass-site.home.pa-home-shell-relocated header.pa-site-header img.pa-bra
 body.pa-glass-site.home.pa-home-shell-relocated header.pa-site-header img.pa-brand-logo-lockup-white,
 body.pa-glass-site.home.pa-home-shell-relocated header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
 body.pa-glass-site.home.pa-home-shell-relocated header.pa-site-header img.custom-logo.pa-brand-logo-lockup-white {
-  width: clamp(220px, 52vw, 504px) !important;
-  max-width: min(504px, 94vw) !important;
+  width: clamp(269px, 44.8vw, 384px) !important;
+  max-width: min(384px, 88vw) !important;
   height: auto !important;
-  border-radius: var(--pa-badge-tile-radius, 16px) !important;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.38) !important;
-  filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.28)) !important;
+  border-radius: var(--pa-badge-tile-radius, 14px) !important;
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.14) !important;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.1)) !important;
 }
 
 /* Nav rail — single frosted capsule, not a full-width white bar */
@@ -159,7 +166,7 @@ body.pa-glass-site.home.pa-home-header-pro header.wp-block-template-part .pa-hom
   flex-wrap: wrap !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 0.75rem !important;
+  gap: 0.5rem !important;
   width: auto !important;
   max-width: 100% !important;
   margin: 0 auto !important;
@@ -172,35 +179,24 @@ body.pa-glass-site.home.pa-home-header-pro header.wp-block-template-part .pa-hom
   box-shadow: none !important;
 }
 
-/* Legacy home pill rules — superseded by header-nav.css (.pa-nav-floating-pills) */
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .pa-site-nav-pill:not(.is-current),
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__content,
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.wp-block-template-part .pa-home-header-nav .pa-site-nav-pill:not(.is-current),
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.wp-block-template-part .pa-home-header-nav .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__content {
-  min-height: 46px !important;
+/* Home chrome: polished pill nav on white band (matches footer dock) */
+body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__content,
+body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-site-nav-pill {
+  min-height: var(--pa-nav-pill-min-height, 42px) !important;
   min-width: auto !important;
-  padding: 0.625rem 1.35rem !important;
-  font-size: 0.8125rem !important;
+  padding: var(--pa-nav-pill-padding, 0.5rem 1.15rem) !important;
+  font-size: var(--pa-nav-pill-font-size, 0.875rem) !important;
   font-weight: 600 !important;
-  letter-spacing: 0.02em !important;
+  letter-spacing: 0.01em !important;
   text-transform: none !important;
-}
-
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .pa-site-nav-pill:not(.is-current):hover,
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__content:hover,
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .pa-site-nav-pill:not(.is-current):focus-visible,
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__content:focus-visible {
-  transform: translateY(-2px) scale(1.02);
-}
-
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .pa-nav-book .wp-block-navigation-item__content,
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.pa-site-header .pa-home-header-nav .pa-nav-book .pa-site-nav-pill,
-body.pa-glass-site.home.pa-home-header-pro.pa-ios-ui header.wp-block-template-part .pa-home-header-nav .pa-nav-book .wp-block-navigation-item__content {
-  color: #fff !important;
-  -webkit-text-fill-color: #fff !important;
-  background: var(--pa-ios-blue, #0071e3) !important;
-  border-color: rgba(255, 255, 255, 0.35) !important;
-  box-shadow: 0 8px 24px rgba(0, 113, 227, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  border-radius: 9999px !important;
+  background: var(--pa-liquid-glass-bg, rgba(255, 255, 255, 0.72)) !important;
+  border: 1px solid var(--pa-liquid-glass-border, rgba(255, 255, 255, 0.82)) !important;
+  box-shadow: var(--pa-liquid-glass-shadow) !important;
+  backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
+  -webkit-backdrop-filter: var(--pa-liquid-glass-blur, blur(22px) saturate(190%)) !important;
+  color: rgba(29, 29, 31, 0.9) !important;
+  -webkit-text-fill-color: rgba(29, 29, 31, 0.9) !important;
 }
 
 body.pa-glass-site.home.pa-home-header-pro .alignfull.has-foreground-color:has(.wp-block-navigation),
@@ -239,7 +235,7 @@ body.pa-glass-site.home.pa-home-ready main .entry-content > .pa-glass-hero-wrap 
 body.pa-glass-site.home.pa-home-ready main .entry-content > .pa-glass-hero-wrap + *,
 body.pa-glass-site.home.pa-home-ready main .wp-block-post-content > .pa-glass-hero-wrap + *,
 body.pa-glass-site.home.pa-home-ready main .entry-content > section + section {
-  margin-top: clamp(0.5rem, 1.5vw, 1.25rem);
+  margin-top: clamp(0.5rem, 1.5vw, var(--pa2-section-gap-max, 1.25rem));
 }
 
 body.pa-glass-site.home.pa-home-ready #pa2-reviews + .pa-home-closing,
@@ -253,7 +249,9 @@ body.pa-glass-site.pa-interior-compact-nav:not(.home):not(.pa-booking-page) head
 body.pa-glass-site.pa-services-page:not(.pa-booking-page) header.pa-site-header,
 body.pa-glass-site.pa-services-page:not(.pa-booking-page) header.wp-block-template-part.pa-site-header,
 body.pa-glass-site.pa-work-page:not(.pa-booking-page) header.pa-site-header,
-body.pa-glass-site.pa-work-page:not(.pa-booking-page) header.wp-block-template-part.pa-site-header {
+body.pa-glass-site.pa-work-page:not(.pa-booking-page) header.wp-block-template-part.pa-site-header,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header.pa-site-header,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header.wp-block-template-part.pa-site-header {
   position: relative !important;
   overflow: visible !important;
   margin: 0 !important;
@@ -274,7 +272,9 @@ body.pa-glass-site.pa-interior-compact-nav:not(.home):not(.pa-booking-page) head
 body.pa-glass-site.pa-services-page:not(.pa-booking-page) header .pa-glass-hero-wrap,
 body.pa-glass-site.pa-services-page:not(.pa-booking-page) header .wp-block-cover,
 body.pa-glass-site.pa-work-page:not(.pa-booking-page) header .pa-glass-hero-wrap,
-body.pa-glass-site.pa-work-page:not(.pa-booking-page) header .wp-block-cover {
+body.pa-glass-site.pa-work-page:not(.pa-booking-page) header .wp-block-cover,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header .pa-glass-hero-wrap,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header .wp-block-cover {
   display: none !important;
   height: 0 !important;
   max-height: 0 !important;
@@ -295,7 +295,11 @@ body.pa-glass-site.pa-services-page:not(.pa-booking-page) header img.custom-logo
 body.pa-glass-site.pa-work-page:not(.pa-booking-page) header .wp-block-site-logo,
 body.pa-glass-site.pa-work-page:not(.pa-booking-page) header .pa-brand-lockup,
 body.pa-glass-site.pa-work-page:not(.pa-booking-page) header img.pa-brand-logo-lockup,
-body.pa-glass-site.pa-work-page:not(.pa-booking-page) header img.custom-logo.pa-brand-logo-lockup {
+body.pa-glass-site.pa-work-page:not(.pa-booking-page) header img.custom-logo.pa-brand-logo-lockup,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header .wp-block-site-logo,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header .pa-brand-lockup,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header img.pa-brand-logo-lockup,
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page) header img.custom-logo.pa-brand-logo-lockup {
   display: none !important;
 }
 
@@ -306,7 +310,9 @@ body.pa-glass-site.pa-services-page:not(.pa-booking-page):not(.pa-marketing-nav)
 body.pa-glass-site.pa-services-page:not(.pa-booking-page):not(.pa-marketing-nav) header.pa-site-header > .wp-block-group > .wp-block-group.alignfull.has-foreground-color:has(.wp-block-navigation),
 body.pa-glass-site.pa-services-page:not(.pa-booking-page):not(.pa-marketing-nav) header.wp-block-template-part.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
 body.pa-glass-site.pa-work-page:not(.pa-booking-page):not(.pa-marketing-nav) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
-body.pa-glass-site.pa-work-page:not(.pa-booking-page):not(.pa-marketing-nav) header.wp-block-template-part.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation) {
+body.pa-glass-site.pa-work-page:not(.pa-booking-page):not(.pa-marketing-nav) header.wp-block-template-part.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page):not(.pa-marketing-nav) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
+body.pa-glass-site.pa-contact-page:not(.pa-booking-page):not(.pa-marketing-nav) header.wp-block-template-part.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation) {
   position: sticky !important;
   top: max(0.65rem, env(safe-area-inset-top, 0px)) !important;
   z-index: 200 !important;
@@ -327,7 +333,12 @@ body.pa-glass-site.pa-work-page:not(.pa-booking-page):not(.pa-marketing-nav) hea
 body.pa-glass-site.pa-marketing-nav.pa-work-page:not(.pa-booking-page) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
 body.pa-glass-site.pa-marketing-nav.pa-work-page:not(.pa-booking-page) header.wp-block-template-part.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
 body.pa-glass-site.pa-marketing-nav.pa-services-page:not(.pa-booking-page) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
-body.pa-glass-site.pa-marketing-nav.pa-about-page:not(.pa-booking-page) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation) {
+body.pa-glass-site.pa-marketing-nav.pa-about-page:not(.pa-booking-page) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
+body.pa-glass-site.pa-marketing-nav.pa-contact-page:not(.pa-booking-page) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
+body.pa-glass-site.pa-marketing-nav.pa-contact-page:not(.pa-booking-page) header.wp-block-template-part.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
+body.pa-glass-site.pa-marketing-nav.pa-seo-hub-page:not(.pa-booking-page) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
+body.pa-glass-site.pa-marketing-nav.pa-geo-landing-page:not(.pa-booking-page) header.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation),
+body.pa-glass-site.pa-marketing-nav.pa-geo-landing-page:not(.pa-booking-page) header.wp-block-template-part.pa-site-header > .wp-block-group > .alignfull.has-foreground-color:has(.wp-block-navigation) {
   position: sticky !important;
   top: max(0.45rem, env(safe-area-inset-top, 0px)) !important;
   z-index: 200 !important;
@@ -350,8 +361,80 @@ body.pa-glass-site.pa-marketing-nav.pa-about-page:not(.pa-booking-page) header.p
 
 body.pa-glass-site.pa-services-page main .pa2-services-page,
 body.pa-glass-site.pa-work-page main .pa2-work-page,
-body.pa-glass-site.pa-about-page main .entry-content {
+body.pa-glass-site.pa-about-page main .entry-content,
+body.pa-glass-site.pa-contact-page main .pa-contact-book {
   scroll-margin-top: calc(5rem + env(safe-area-inset-top, 0px));
+}
+
+/* —— Contact page: glass panel + booking-blue CTAs —— */
+body.pa-glass-site.pa-contact-page .pa-contact-book__panel {
+  background: var(--pa-ios-fill-raised) !important;
+  backdrop-filter: var(--pa-ios-blur-light) !important;
+  -webkit-backdrop-filter: var(--pa-ios-blur-light) !important;
+  border: 1px solid var(--pa-ios-stroke) !important;
+  box-shadow: var(--pa-ios-shadow-sm) !important;
+}
+
+body.pa-glass-site.pa-contact-page .pa-contact-book__eyebrow {
+  background: var(--pa-ios-fill) !important;
+  backdrop-filter: var(--pa-ios-blur-light) !important;
+  -webkit-backdrop-filter: var(--pa-ios-blur-light) !important;
+  border: 1px solid var(--pa-ios-stroke) !important;
+  box-shadow: var(--pa-ios-shadow-sm) !important;
+}
+
+body.pa-glass-site.pa-contact-page .pa-contact-book__btn.pa2-cta__btn--primary {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(180deg, rgba(0, 132, 255, 0.98) 0%, rgba(0, 113, 227, 1) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow:
+    0 14px 36px rgba(0, 113, 227, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
+}
+
+body.pa-glass-site.pa-contact-page .pa-contact-book__btn.pa2-cta__btn--primary:hover,
+body.pa-glass-site.pa-contact-page .pa-contact-book__btn.pa2-cta__btn--primary:focus-visible {
+  background: linear-gradient(180deg, #0091ff 0%, #0077ed 100%) !important;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.pa-glass-site.pa-contact-page .pa-contact-book__btn.pa2-cta__btn--secondary {
+  background: var(--pa-ios-fill) !important;
+  backdrop-filter: var(--pa-ios-blur-light) !important;
+  -webkit-backdrop-filter: var(--pa-ios-blur-light) !important;
+  border: 1px solid var(--pa-ios-stroke) !important;
+  color: var(--pa2-ink) !important;
+  -webkit-text-fill-color: var(--pa2-ink) !important;
+  box-shadow: var(--pa-ios-shadow-sm) !important;
+}
+
+/* Interior light surfaces — never apply dark-hero button styles */
+body.pa-glass-site.pa-contact-page .pa2-hero__btn--secondary,
+body.pa-glass-site.pa-ad-landing-page .pa2-hero__btn--secondary,
+body.pa-glass-site.pa-quote-thankyou-page .pa2-hero__btn--secondary,
+body.pa-glass-site.pa-seo-hub-page .pa2-hero__btn--secondary,
+body.pa-glass-site.pa-geo-landing-page .pa2-hero__btn--secondary {
+  background: var(--pa-ios-fill) !important;
+  backdrop-filter: var(--pa-ios-blur-light) !important;
+  -webkit-backdrop-filter: var(--pa-ios-blur-light) !important;
+  border: 1px solid var(--pa-ios-stroke) !important;
+  color: var(--pa2-ink) !important;
+  -webkit-text-fill-color: var(--pa2-ink) !important;
+  box-shadow: var(--pa-ios-shadow-sm) !important;
+}
+
+body.pa-glass-site.pa-contact-page .pa2-hero__btn--primary,
+body.pa-glass-site.pa-ad-landing-page .pa2-hero__btn--primary,
+body.pa-glass-site.pa-quote-thankyou-page .pa2-hero__btn--primary,
+body.pa-glass-site.pa-seo-hub-page .pa2-hero__btn--primary,
+body.pa-glass-site.pa-geo-landing-page .pa2-hero__btn--primary {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(180deg, rgba(0, 132, 255, 0.98) 0%, rgba(0, 113, 227, 1) 100%) !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.42) !important;
+  box-shadow: 0 14px 36px rgba(0, 113, 227, 0.38), inset 0 1px 0 rgba(255, 255, 255, 0.38) !important;
 }
 
 /* —— Nav: frosted pills (legacy — skipped when .pa-premium-header-nav / floating pills active) —— */
@@ -360,11 +443,7 @@ body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-
 body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item__content:not(.is-current),
 body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__content,
 body.pa-glass-site.pa-ios-ui header.wp-block-template-part .alignfull.has-foreground-color:has(.wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills)) .wp-block-navigation .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__content,
-body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-site-nav-pill:not(.is-current),
-body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__label,
-body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__label,
-body.pa-glass-site.pa-ios-ui header.wp-block-template-part .alignfull.has-foreground-color:has(.wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills)) .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__label,
-body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item:not(.current-menu-item):not(.pa-nav-book) .wp-block-navigation-item__content .wp-block-navigation-item__label {
+body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-site-nav-pill:not(.is-current) {
   color: #1d1d1f !important;
   -webkit-text-fill-color: #1d1d1f !important;
   background: rgba(255, 255, 255, 0.82) !important;
@@ -373,10 +452,11 @@ body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-
   border: 1px solid rgba(29, 29, 31, 0.12) !important;
   border-radius: 999px !important;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 2px 10px rgba(17, 17, 17, 0.06) !important;
-  font-size: 0.72rem !important;
+  font-size: 1rem !important;
   font-weight: 600 !important;
-  letter-spacing: 0.06em !important;
-  text-transform: uppercase !important;
+  letter-spacing: 0.02em !important;
+  text-transform: none !important;
+  min-height: 48px !important;
   transition:
     background 0.2s var(--pa2-ease),
     transform 0.18s var(--pa2-ease),
@@ -403,22 +483,20 @@ body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-
 body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item.current-menu-item .wp-block-navigation-item__content,
 body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .current-menu-item .wp-block-navigation-item__content,
 body.pa-glass-site.pa-ios-ui header.wp-block-template-part .alignfull.has-foreground-color:has(.wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills)) .wp-block-navigation .current-menu-item .wp-block-navigation-item__content,
-body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item.current-menu-item .wp-block-navigation-item__label,
-body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .current-menu-item .wp-block-navigation-item__label,
-body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item.current-menu-item .wp-block-navigation-item__content .wp-block-navigation-item__label {
-  color: #ffffff !important;
-  -webkit-text-fill-color: #ffffff !important;
-  background: var(--pa2-ink, #1d1d1f) !important;
-  border-color: var(--pa2-ink, #1d1d1f) !important;
-  box-shadow: 0 6px 18px rgba(29, 29, 31, 0.22), inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .wp-block-navigation-item.current-menu-item .wp-block-navigation-item__content,
+body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .current-menu-item .wp-block-navigation-item__content {
+  color: #005bb5 !important;
+  -webkit-text-fill-color: #005bb5 !important;
+  background: rgba(0, 113, 227, 0.14) !important;
+  border-color: rgba(0, 113, 227, 0.38) !important;
+  box-shadow: 0 6px 18px rgba(0, 113, 227, 0.14), inset 0 1px 0 rgba(255, 255, 255, 0.72) !important;
 }
 
 /* Book nav — iOS system blue (legacy nav only) */
 body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-nav-book .wp-block-navigation-item__content,
 body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-nav-book .wp-block-navigation-item__content,
 body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-nav-book .pa-site-nav-pill,
-body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-nav-book .wp-block-navigation-item__label,
-body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-nav-book .wp-block-navigation-item__content .wp-block-navigation-item__label {
+body.pa-glass-site.pa-ios-ui header.wp-block-template-part .wp-block-navigation:not(.pa-premium-header-nav):not(.pa-nav-floating-pills):not(.pa-nav-dock) .pa-nav-book .wp-block-navigation-item__content {
   color: #ffffff !important;
   -webkit-text-fill-color: #ffffff !important;
   background: var(--pa-ios-blue, #0071e3) !important;
@@ -436,12 +514,9 @@ body.pa-glass-site.pa-ios-ui header.pa-site-header .wp-block-navigation:not(.pa-
   transform: translateY(-1px);
 }
 
+/* Legacy bottom Home/Services bar removed — single footer dock owns nav */
 body.pa-glass-site .pa-site-bottom-nav {
-  background: var(--pa-ios-fill) !important;
-  backdrop-filter: var(--pa-ios-blur) !important;
-  -webkit-backdrop-filter: var(--pa-ios-blur) !important;
-  border-top: 1px solid var(--pa-ios-stroke) !important;
-  box-shadow: 0 -12px 40px rgba(17, 17, 17, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.85) !important;
+  display: none !important;
 }
 
 /* —— Hero: floating glass shell + true viewport centering —— */
@@ -494,8 +569,8 @@ body.home.pa-glass-site.pa-ios-ui .pa2-hero__inner {
   flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  width: min(40rem, 100%) !important;
-  max-width: 40rem !important;
+  width: min(42rem, 100%) !important;
+  max-width: 42rem !important;
   margin-left: auto !important;
   margin-right: auto !important;
   text-align: center !important;
@@ -512,13 +587,17 @@ body.home.pa-glass-site.pa-ios-ui .pa2-hero__lead {
 }
 
 body.home.pa-glass-site.pa-ios-ui .pa2-hero__title {
-  max-width: min(20ch, 100%) !important;
-  text-wrap: balance;
+  max-width: min(44rem, 100%) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  white-space: normal !important;
 }
 
 body.home.pa-glass-site.pa-ios-ui .pa2-hero__lead {
   max-width: min(42ch, 100%) !important;
   text-wrap: pretty;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
 }
 
 body.home.pa-glass-site.pa-ios-ui .pa2-hero__actions {
@@ -552,27 +631,30 @@ body.pa-glass-site .pa2-hero__badge {
 }
 
 body.pa-glass-site .pa2-hero__btn {
-  border-radius: 999px !important;
-  min-height: 3.25rem !important;
+  border-radius: 10px !important;
+  min-height: 3rem !important;
   font-weight: 600 !important;
-  letter-spacing: -0.01em !important;
+  letter-spacing: 0.01em !important;
 }
 
 body.pa-glass-site .pa2-hero__btn--primary {
-  background: #fff !important;
-  color: var(--pa2-ink) !important;
-  -webkit-text-fill-color: var(--pa2-ink) !important;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.24), inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  background: #0071e3 !important;
+  background-color: #0071e3 !important;
+  background-image: none !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 1px solid #0071e3 !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
 }
 
 body.pa-glass-site .pa2-hero__btn--secondary {
-  background: rgba(255, 255, 255, 0.12) !important;
-  backdrop-filter: blur(20px) saturate(180%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.42) !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: 1px solid rgba(255, 255, 255, 0.55) !important;
   color: #fff !important;
   -webkit-text-fill-color: #fff !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  box-shadow: none !important;
 }
 
 body.pa-glass-site .pa2-hero__btn:active {
@@ -593,6 +675,50 @@ body.pa-glass-site .pa-home-closing {
   -webkit-backdrop-filter: none !important;
   border: none !important;
   box-shadow: none !important;
+}
+
+/* Cinema showcase — clean white shell (home.css owns layout; no nested pastel glass) */
+body.pa-glass-site.home .pa2-services--cinema,
+body.pa-glass-site .pa2-services.pa2-services--cinema {
+  width: min(1080px, calc(100% - clamp(1.25rem, 4vw, 2.5rem))) !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  border-radius: 16px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(60, 60, 67, 0.1) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: 0 2px 16px rgba(15, 23, 42, 0.05) !important;
+  color: #1d1d1f !important;
+  overflow: hidden !important;
+}
+
+body.pa-glass-site.home .pa2-services--cinema .pa2-cinema,
+body.pa-glass-site .pa2-services.pa2-services--cinema .pa2-cinema {
+  border-radius: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  box-shadow: none !important;
+}
+
+body.pa-glass-site.home .pa2-services--cinema a.pa2-cinema__cta--ghost,
+body.pa-glass-site.home .pa2-services--cinema a.pa2-cinema__panel-link {
+  color: #1d1d1f !important;
+  -webkit-text-fill-color: #1d1d1f !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(60, 60, 67, 0.22) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.pa-glass-site.home .pa2-services--cinema a.pa2-cinema__cta--primary,
+body.pa-glass-site.home .pa2-services--cinema a.pa2-cinema__panel-book {
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  background: #0071e3 !important;
+  border: 1px solid #0071e3 !important;
 }
 
 /* —— Frosted cards & surfaces —— */
@@ -641,14 +767,36 @@ body.pa-glass-site .pa-photo-grid .pa-portfolio-tile {
   -webkit-backdrop-filter: blur(12px) saturate(160%) !important;
 }
 
+body.pa-glass-site .pa2-services__card,
+body.pa-glass-site .pa2-svc-card,
+body.pa-glass-site .pa-glass-card,
+body.pa-glass-site .pa-geo-landing__offer,
+body.pa-glass-site .pa2-cinema__panel {
+  transition:
+    transform 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    border-color 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    background 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 220ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
 body.pa-glass-site .pa2-services__card:hover,
 body.pa-glass-site .pa2-services__card:focus-visible,
 body.pa-glass-site .pa2-svc-card:hover,
 body.pa-glass-site .pa2-svc-card:focus-visible,
-body.pa-glass-site .pa-glass-card:hover {
+body.pa-glass-site .pa-glass-card:hover,
+body.pa-glass-site .pa-geo-landing__offer:hover,
+body.pa-glass-site .pa-geo-landing__offer:focus-visible {
   transform: translateY(-3px);
   box-shadow: var(--pa-ios-shadow) !important;
   border-color: rgba(255, 255, 255, 0.95) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+}
+
+/* Cinema lanes styled in home.css — avoid frosted-card hover override */
+body.pa-glass-site .pa2-cinema__panel:hover,
+body.pa-glass-site .pa2-cinema__panel:focus-within {
+  background: transparent !important;
 }
 
 body.pa-glass-site .pa2-services__card:active,
@@ -660,6 +808,7 @@ body.pa-glass-site .pa2-services__title {
   letter-spacing: -0.035em !important;
 }
 
+body.pa-glass-site .pa2-services.is-ready .pa2-services__head .pa2-services__eyebrow,
 body.pa-glass-site .pa2-services.is-ready .pa2-services__head .pa2-services__title,
 body.pa-glass-site .pa2-services.is-ready .pa2-services__head .pa2-services__lead {
   opacity: 1 !important;
@@ -736,6 +885,30 @@ body.pa-glass-site .pa2-work-video.pa-youtube-feature {
   padding: clamp(1rem, 2.5vw, 1.25rem) !important;
 }
 
+/* Featured video facade — liquid glass play control */
+body.pa-glass-site .pa-youtube-facade .pa-youtube-play {
+  background: rgba(255, 255, 255, 0.28) !important;
+  backdrop-filter: blur(28px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(200%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.62) !important;
+  box-shadow:
+    var(--pa-ios-shadow-sm),
+    0 16px 48px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.55) !important;
+}
+
+body.pa-glass-site .pa-youtube-facade:hover .pa-youtube-play,
+body.pa-glass-site .pa-youtube-facade:focus-within .pa-youtube-play {
+  background: rgba(255, 255, 255, 0.38) !important;
+  border-color: rgba(255, 255, 255, 0.78) !important;
+}
+
+body.pa-glass-site .pa-youtube-player {
+  box-shadow:
+    inset 0 0 0 1px rgba(255, 255, 255, 0.12),
+    0 14px 40px rgba(17, 17, 17, 0.14) !important;
+}
+
 body.pa-glass-site .pa2-work-page.is-ready .pa2-work-hero__title,
 body.pa-glass-site .pa2-work-page.is-ready .pa2-work-hero__lead,
 body.pa-glass-site .pa2-work-page.is-inview .pa2-work-hero__title,
@@ -769,7 +942,7 @@ body.pa-glass-site .pa2-svc-card__icon {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
 }
 
-/* —— iOS pill buttons —— */
+/* —— Controlled CTA radius (not liquid-glass pills) —— */
 body.pa-glass-site .pa2-hero__btn,
 body.pa-glass-site .pa2-cta__btn,
 body.pa-glass-site .pa2-svc-card__btn,
@@ -777,9 +950,9 @@ body.pa-glass-site .pa2-svc-foot__btn,
 body.pa-glass-site .pa2-services__cta,
 body.pa-glass-site .pa-home-closing-btn-primary,
 body.pa-glass-site .pa-home-closing-btn-secondary {
-  border-radius: 999px !important;
+  border-radius: 10px !important;
   font-weight: 600 !important;
-  letter-spacing: -0.01em !important;
+  letter-spacing: 0.01em !important;
 }
 
 body.pa-glass-site .pa2-cta__btn--primary,
@@ -926,46 +1099,57 @@ body.pa-glass-site .pa-gallery-lightbox-thumb.is-active {
   }
 }
 
-/* —— Footer: iOS liquid glass (v2) —— */
-body.pa-glass-site .pa-footer-glass {
+/* —— Footer: light iOS liquid glass —— */
+body.pa-glass-site .pa-footer-glass--light {
+  --pa-footer-ink: #1d1d1f;
+  --pa-footer-muted: rgba(29, 29, 31, 0.62);
+  --pa-footer-hairline: rgba(29, 29, 31, 0.1);
   font-family: var(--pa-ios-font);
+  color: var(--pa-footer-ink);
 }
 
 body.pa-glass-site .pa-footer-glass__hero {
   text-align: center;
-  max-width: 36rem;
-  margin: 0 auto clamp(1.75rem, 4vw, 2.35rem);
+  max-width: 40rem;
+  margin: 0 auto clamp(1.5rem, 3.5vw, 2rem);
   padding: 0 0.25rem;
 }
 
 body.pa-glass-site .pa-footer-glass__eyebrow {
-  margin: 0 0 0.45rem !important;
+  margin: 0 0 0.4rem !important;
   font-size: 0.6875rem !important;
   font-weight: 700 !important;
-  letter-spacing: 0.14em !important;
+  letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
-  color: rgba(255, 255, 255, 0.52) !important;
+  color: rgba(29, 29, 31, 0.48) !important;
 }
 
 body.pa-glass-site .pa-footer-glass__lead {
   margin: 0 !important;
-  font-size: clamp(1.05rem, 2.4vw, 1.2rem) !important;
+  font-size: clamp(1rem, 2.2vw, 1.125rem) !important;
   font-weight: 500 !important;
-  line-height: 1.45 !important;
+  line-height: 1.5 !important;
   letter-spacing: -0.02em !important;
-  color: rgba(255, 255, 255, 0.92) !important;
+  color: rgba(29, 29, 31, 0.72) !important;
 }
 
 body.pa-glass-site .pa-footer-glass__grid {
   display: grid;
-  gap: clamp(0.85rem, 2.2vw, 1.15rem);
-  margin-bottom: clamp(1.35rem, 3vw, 1.85rem);
+  gap: clamp(0.85rem, 2vw, 1rem);
+  width: 100%;
+  max-width: 56rem;
+  margin: 0 auto clamp(1.25rem, 3vw, 1.65rem);
 }
 
 @media (min-width: 768px) {
   body.pa-glass-site .pa-footer-glass__grid {
-    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr) minmax(0, 1fr);
-    gap: clamp(0.75rem, 1.8vw, 1rem);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  body.pa-glass-site .pa-footer-glass__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: stretch;
   }
 }
@@ -973,50 +1157,68 @@ body.pa-glass-site .pa-footer-glass__grid {
 body.pa-glass-site .pa-footer-glass__panel {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  text-align: center;
   min-height: 100%;
-  padding: clamp(1.15rem, 2.8vw, 1.45rem) clamp(1.05rem, 2.5vw, 1.35rem) !important;
+  padding: clamp(1.1rem, 2.5vw, 1.35rem) !important;
   border-radius: var(--pa-ios-radius-lg, 20px) !important;
-  background: rgba(255, 255, 255, 0.07) !important;
-  backdrop-filter: blur(40px) saturate(195%) !important;
-  -webkit-backdrop-filter: blur(40px) saturate(195%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.13) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
   box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.16),
-    0 12px 32px rgba(0, 0, 0, 0.14) !important;
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    0 10px 28px rgba(17, 17, 17, 0.06) !important;
+  transition: transform 220ms ease, box-shadow 220ms ease, border-color 220ms ease;
+}
+
+body.pa-glass-site .pa-footer-glass__panel:hover {
+  transform: translateY(-2px);
+  border-color: rgba(29, 29, 31, 0.12) !important;
+  background: rgba(255, 255, 255, 0.82) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 1),
+    0 14px 36px rgba(17, 17, 17, 0.08) !important;
 }
 
 body.pa-glass-site .pa-footer-glass__heading {
-  margin: 0 0 0.85rem !important;
+  margin: 0 0 0.75rem !important;
   padding: 0 !important;
   border: none !important;
+  width: 100%;
+  text-align: center !important;
   font-size: 0.625rem !important;
   font-weight: 700 !important;
-  letter-spacing: 0.13em !important;
+  letter-spacing: 0.12em !important;
   text-transform: uppercase !important;
-  color: rgba(255, 255, 255, 0.55) !important;
+  color: rgba(29, 29, 31, 0.48) !important;
 }
 
 body.pa-glass-site .pa-footer-glass__body {
   flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  align-items: center;
+  text-align: center;
+  gap: 0.65rem;
+  width: 100%;
 }
 
 body.pa-glass-site .pa-footer-glass__body p {
   margin: 0 !important;
   font-size: 0.875rem !important;
   line-height: 1.55 !important;
-  color: rgba(255, 255, 255, 0.72) !important;
+  color: rgba(29, 29, 31, 0.68) !important;
 }
 
 body.pa-glass-site .pa-footer-glass__body p:first-child {
-  color: rgba(255, 255, 255, 0.86) !important;
+  color: rgba(29, 29, 31, 0.82) !important;
 }
 
 body.pa-glass-site .pa-footer-service-chips {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 0.45rem;
   margin: 0;
   padding: 0;
@@ -1027,56 +1229,89 @@ body.pa-glass-site .pa-footer-service-chip {
   display: inline-flex;
   align-items: center;
   min-height: 2rem;
-  padding: 0.35rem 0.75rem;
+  padding: 0.35rem 0.8rem;
   border-radius: 999px;
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: -0.01em;
-  color: rgba(255, 255, 255, 0.9) !important;
+  color: var(--pa-footer-ink) !important;
   text-decoration: none !important;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.18s ease;
+  background: rgba(29, 29, 31, 0.05);
+  border: 1px solid rgba(29, 29, 31, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.75);
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.18s ease, box-shadow 0.2s ease;
 }
 
-body.pa-glass-site .pa-footer-service-chip:hover {
-  background: rgba(255, 255, 255, 0.16);
-  border-color: rgba(255, 255, 255, 0.22);
-  color: #fff !important;
+body.pa-glass-site .pa-footer-service-chip--photo {
+  background: linear-gradient(155deg, rgba(0, 113, 227, 0.14), rgba(255, 255, 255, 0.7));
+  border-color: rgba(0, 113, 227, 0.18);
+  color: #005bb5 !important;
+}
+
+body.pa-glass-site .pa-footer-service-chip--video {
+  background: linear-gradient(155deg, rgba(88, 86, 214, 0.14), rgba(255, 255, 255, 0.7));
+  border-color: rgba(88, 86, 214, 0.18);
+  color: #4644b8 !important;
+}
+
+body.pa-glass-site .pa-footer-service-chip--dj {
+  background: linear-gradient(155deg, rgba(201, 52, 0, 0.12), rgba(255, 255, 255, 0.7));
+  border-color: rgba(201, 52, 0, 0.16);
+  color: #a32900 !important;
+}
+
+body.pa-glass-site .pa-footer-service-chip--audio {
+  background: linear-gradient(155deg, rgba(26, 107, 60, 0.14), rgba(255, 255, 255, 0.7));
+  border-color: rgba(26, 107, 60, 0.16);
+  color: #145a32 !important;
+}
+
+body.pa-glass-site .pa-footer-service-chip--bundle {
+  background: linear-gradient(155deg, rgba(29, 29, 31, 0.08), rgba(255, 255, 255, 0.7));
+  border-color: rgba(29, 29, 31, 0.12);
+}
+
+body.pa-glass-site .pa-footer-service-chip:hover,
+body.pa-glass-site .pa-footer-service-chip:focus-visible {
   transform: translateY(-1px);
+  box-shadow: 0 8px 18px rgba(17, 17, 17, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
 }
 
 body.pa-glass-site .pa-footer-glass__badge {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.15rem;
   margin-top: auto;
-  padding: 0.65rem 0.75rem;
+  width: 100%;
+  max-width: 18rem;
+  text-align: center;
+  padding: 0.7rem 0.8rem;
   border-radius: var(--pa-ios-radius-md, 14px);
   text-decoration: none !important;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.16) 0%, rgba(255, 255, 255, 0.06) 100%);
-  border: 1px solid rgba(212, 175, 55, 0.32);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1);
-  transition: border-color 0.2s ease, background 0.2s ease;
+  background: linear-gradient(155deg, rgba(255, 214, 102, 0.28), rgba(255, 255, 255, 0.82));
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.18s ease;
 }
 
-body.pa-glass-site .pa-footer-glass__badge:hover {
-  border-color: rgba(212, 175, 55, 0.48);
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.22) 0%, rgba(255, 255, 255, 0.08) 100%);
+body.pa-glass-site .pa-footer-glass__badge:hover,
+body.pa-glass-site .pa-footer-glass__badge:focus-visible {
+  border-color: rgba(212, 175, 55, 0.42);
+  transform: translateY(-1px);
 }
 
 body.pa-glass-site .pa-footer-glass__badge-title {
   font-size: 0.8125rem;
   font-weight: 700;
-  color: #f0d78c;
+  color: #7a5d00;
   line-height: 1.35;
 }
 
 body.pa-glass-site .pa-footer-glass__badge-detail {
   font-size: 0.75rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.62);
+  color: rgba(29, 29, 31, 0.58);
   line-height: 1.35;
 }
 
@@ -1086,49 +1321,139 @@ body.pa-glass-site .pa-footer-work-compact {
   list-style: none;
   display: flex;
   flex-direction: column;
-  gap: 0.15rem;
+  align-items: center;
+  gap: 0.35rem;
+  width: 100%;
 }
 
 body.pa-glass-site .pa-footer-work-row {
   display: flex;
   flex-direction: column;
-  gap: 0.08rem;
-  padding: 0.5rem 0.55rem;
-  margin: 0 -0.55rem;
-  border-radius: var(--pa-ios-radius-sm, 10px);
+  align-items: center;
+  gap: 0.15rem;
+  width: 100%;
+  max-width: 18rem;
+  padding: 0.55rem 0.7rem;
+  margin: 0;
+  border-radius: var(--pa-ios-radius-sm, 12px);
+  text-align: center;
   text-decoration: none !important;
   transition: background 0.18s ease;
 }
 
-body.pa-glass-site .pa-footer-work-row:hover {
-  background: rgba(255, 255, 255, 0.07);
+body.pa-glass-site .pa-footer-work-row:hover,
+body.pa-glass-site .pa-footer-work-row:focus-visible {
+  background: rgba(0, 113, 227, 0.06);
 }
 
 body.pa-glass-site .pa-footer-work-row__title {
-  font-size: 0.8125rem;
+  font-size: 0.875rem;
   font-weight: 600;
-  color: rgba(255, 255, 255, 0.92);
-  line-height: 1.35;
+  color: var(--pa-footer-ink) !important;
+  line-height: 1.4;
+  text-align: center;
 }
 
 body.pa-glass-site .pa-footer-work-row__detail {
-  font-size: 0.75rem;
+  font-size: 0.8125rem;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.52);
-  line-height: 1.35;
+  color: var(--pa-footer-muted) !important;
+  line-height: 1.4;
+  text-align: center;
+}
+
+@media (max-width: 782px) {
+  body.pa-glass-site #pa-work.pa-footer-glass__panel,
+  body.pa-glass-site #pa-footer-work.pa-footer-glass__panel,
+  body.pa-glass-site .pa-footer-glass__panel:has(.pa-footer-work-compact) {
+    padding: 1.35rem 1.15rem 1.5rem !important;
+  }
+
+  body.pa-glass-site #pa-work .pa-footer-glass__heading,
+  body.pa-glass-site #pa-footer-work .pa-footer-glass__heading,
+  body.pa-glass-site .pa-footer-glass__panel:has(.pa-footer-work-compact) .pa-footer-glass__heading {
+    margin-bottom: 1rem !important;
+  }
+
+  body.pa-glass-site #pa-work .pa-footer-glass__body,
+  body.pa-glass-site #pa-footer-work .pa-footer-glass__body,
+  body.pa-glass-site .pa-footer-glass__panel:has(.pa-footer-work-compact) .pa-footer-glass__body {
+    gap: 1.1rem;
+    align-items: stretch;
+  }
+
+  body.pa-glass-site .pa-footer-work-compact {
+    gap: 0.65rem !important;
+    align-items: stretch !important;
+  }
+
+  /* Keep mobile list breezy — fifth item lives on /work/ */
+  body.pa-glass-site .pa-footer-work-compact > li:nth-child(n + 5) {
+    display: none;
+  }
+
+  body.pa-glass-site .pa-footer-work-row {
+    align-items: flex-start !important;
+    text-align: left !important;
+    max-width: none !important;
+    gap: 0.3rem !important;
+    min-height: 48px;
+    padding: 1rem 1rem !important;
+    border-radius: 14px !important;
+    background: rgba(29, 29, 31, 0.03) !important;
+    border: 1px solid rgba(29, 29, 31, 0.06);
+    box-sizing: border-box;
+  }
+
+  body.pa-glass-site .pa-footer-work-row:hover,
+  body.pa-glass-site .pa-footer-work-row:focus-visible {
+    background: rgba(0, 113, 227, 0.07) !important;
+    border-color: rgba(0, 113, 227, 0.16);
+  }
+
+  body.pa-glass-site .pa-footer-work-row__title,
+  body.pa-glass-site .pa-footer-work-row__detail {
+    text-align: left !important;
+  }
+
+  body.pa-glass-site .pa-footer-work-row__title {
+    font-size: 0.9375rem !important;
+    line-height: 1.35 !important;
+    letter-spacing: -0.015em;
+  }
+
+  body.pa-glass-site .pa-footer-work-row__detail {
+    font-size: 0.8125rem !important;
+    line-height: 1.4 !important;
+  }
+
+  body.pa-glass-site #pa-work .pa-footer-glass__link,
+  body.pa-glass-site #pa-footer-work .pa-footer-glass__link,
+  body.pa-glass-site .pa-footer-glass__panel:has(.pa-footer-work-compact) .pa-footer-glass__link {
+    margin-top: 0.15rem;
+    padding: 0.35rem 0;
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+  }
 }
 
 body.pa-glass-site .pa-footer-glass__link {
   margin-top: auto;
+  align-self: center;
+  text-align: center;
   font-size: 0.8125rem;
   font-weight: 600;
-  color: var(--pa-ios-blue, #64b5ff) !important;
+  color: var(--pa-ios-blue, #0071e3) !important;
   text-decoration: none !important;
   letter-spacing: -0.01em;
 }
 
-body.pa-glass-site .pa-footer-glass__link:hover {
-  color: #8cc8ff !important;
+body.pa-glass-site .pa-footer-glass__link:hover,
+body.pa-glass-site .pa-footer-glass__link:focus-visible {
+  color: #005bb5 !important;
   text-decoration: underline !important;
   text-underline-offset: 3px;
 }
@@ -1137,16 +1462,25 @@ body.pa-glass-site .pa-footer-glass__actions {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: clamp(1rem, 2.5vw, 1.25rem);
-  padding: clamp(1.15rem, 3vw, 1.45rem) clamp(0.85rem, 2.5vw, 1.15rem) 0.25rem;
-  margin-top: 0.15rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  justify-content: center;
+  gap: clamp(0.85rem, 2vw, 1rem);
+  width: 100%;
+  max-width: 36rem;
+  margin: 0.15rem auto 0;
+  padding: clamp(1rem, 2.5vw, 1.25rem);
+  border-radius: var(--pa-ios-radius-lg, 20px);
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.82) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.92);
 }
 
 @media (min-width: 640px) {
   body.pa-glass-site .pa-footer-glass__actions {
     flex-direction: row;
-    justify-content: space-between;
+    flex-wrap: wrap;
+    justify-content: center;
     align-items: center;
   }
 }
@@ -1154,19 +1488,29 @@ body.pa-glass-site .pa-footer-glass__actions {
 body.pa-glass-site .pa-footer-glass__social-slot {
   display: flex;
   justify-content: center;
-  width: 100%;
+  width: auto;
 }
 
 @media (min-width: 640px) {
   body.pa-glass-site .pa-footer-glass__social-slot {
     width: auto;
-    justify-content: flex-start;
+    justify-content: center;
   }
 }
 
 body.pa-glass-site .pa-footer-glass__social-slot .pa-footer-social {
   margin: 0 !important;
-  padding: 0.55rem 0.95rem !important;
+  padding: 0 !important;
+}
+
+body.pa-glass-site .pa-footer-dock .wp-block-social-links {
+  display: flex !important;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
 body.pa-glass-site .pa-footer-glass__actions .pa-footer-book-cta {
@@ -1183,26 +1527,527 @@ body.pa-glass-site .pa-footer-glass__actions .pa-footer-book-cta {
   }
 }
 
-/* —— Footer: dark glass band —— */
-body.pa-glass-site .pa-site-footer-pro {
+/* —— Closing CTA → footer clearance (all marketing pages) —— */
+body.pa-glass-site main .pa2-cta--enhanced,
+body.pa-glass-site main .pa2-work-cta,
+body.pa-glass-site main .pa-home-closing,
+body.pa-glass-site main .pa-about-cta,
+body.pa-glass-site main .pa2-svc-foot,
+body.pa-glass-site main .pa-contact-book,
+body.pa-glass-site main .pa-geo-landing {
+  margin-bottom: var(--pa-space-section-footer, clamp(2.5rem, 6vw, 4rem));
+}
+
+/* Parallax transform on closing bands shifts content into the footer — bg only */
+body.pa-glass-site main .pa2-cta--enhanced,
+body.pa-glass-site main .pa2-work-cta {
+  transform: none !important;
+}
+
+body.pa-glass-site .pa-site-footer-pro.pa-footer-glass--light {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
   max-width: var(--pa-site-max, 72rem);
   margin: 0 auto !important;
-  padding: clamp(2.75rem, 6vw, 4rem) clamp(1.35rem, 4vw, 2.25rem) clamp(2rem, 4vw, 2.5rem) !important;
+  padding: clamp(2rem, 5vw, 3rem) clamp(1.25rem, 3.5vw, 2rem) clamp(1.25rem, 3vw, 1.75rem) !important;
   border-radius: var(--pa-ios-radius-xl, 28px) var(--pa-ios-radius-xl, 28px) 0 0 !important;
-  background: rgba(29, 29, 31, 0.78) !important;
-  backdrop-filter: blur(48px) saturate(190%) !important;
-  -webkit-backdrop-filter: blur(48px) saturate(190%) !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+  background: linear-gradient(180deg, rgba(245, 245, 247, 0.35) 0%, rgba(255, 255, 255, 0.15) 100%) !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border-top: 1px solid rgba(29, 29, 31, 0.08) !important;
+  box-shadow: none !important;
+}
+
+/* —— Compact pro footer: brand + link row + social — not a second homepage —— */
+body.pa-glass-site .pa-site-footer-pro.pa-footer-glass--compact {
+  padding: 0.95rem clamp(0.85rem, 2.5vw, 1.25rem) 0.55rem !important;
+  gap: 0.45rem;
+}
+
+body.pa-glass-site footer .pa-footer-clutter-hidden,
+body.pa-glass-site footer .wp-block-navigation.pa-footer-clutter-hidden {
+  display: none !important;
+}
+
+body.pa-glass-site .pa-footer-glass--compact .pa-footer-glass__hero {
+  margin: 0 auto 0.35rem !important;
+  max-width: 28rem;
+  text-align: center;
+}
+
+body.pa-glass-site .pa-footer-glass--compact .pa-footer-glass__eyebrow {
+  margin: 0 0 0.2rem !important;
+  font-size: 0.6875rem !important;
+  letter-spacing: 0.12em !important;
+  text-transform: uppercase !important;
+  font-weight: 700 !important;
+}
+
+body.pa-glass-site .pa-footer-glass--compact .pa-footer-glass__lead {
+  margin: 0 !important;
+  font-size: clamp(0.8125rem, 1.5vw, 0.9rem) !important;
+  line-height: 1.35 !important;
+  font-weight: 500 !important;
+  opacity: 0.88;
+}
+
+/* Two polished frosted rows: nav, then social */
+body.pa-glass-site .pa-footer-dock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.55rem;
+  width: 100%;
+  max-width: min(28rem, 100%);
+  margin: 0.2rem auto 0.4rem;
+  padding: 0;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.5rem 0.75rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.18) !important;
+  border: 1px solid rgba(255, 255, 255, 0.32) !important;
+  backdrop-filter: blur(22px) saturate(170%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(170%) !important;
   box-shadow:
-    0 -28px 72px rgba(17, 17, 17, 0.14),
-    inset 0 1px 0 rgba(255, 255, 255, 0.16) !important;
+    0 12px 32px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.28) !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row--nav {
+  padding: 0.45rem 0.55rem;
+}
+
+body.pa-glass-site .pa-footer-dock__row--social {
+  padding: 0.45rem 0.9rem;
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.38) !important;
+  box-shadow:
+    0 14px 36px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+
+body.pa-glass-site .pa-footer-compact-nav {
+  width: auto;
+  margin: 0;
+}
+
+body.pa-glass-site .pa-footer-dock .pa-footer-glass__social-slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  margin: 0;
+}
+
+body.pa-glass-site .pa-footer-dock .pa-footer-social {
+  margin: 0 !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+/* Footer social icons — iOS liquid glass discs */
+body.pa-glass-site .pa-footer-dock__row--social .wp-block-social-links {
+  gap: 0.55rem !important;
+  font-size: 1.125rem !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-social-link {
+  width: 46px !important;
+  height: 46px !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.78) 0%, rgba(255, 255, 255, 0.42) 48%, rgba(255, 255, 255, 0.28) 100%) !important;
+  background-color: rgba(255, 255, 255, 0.48) !important;
+  border: 1px solid rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(24px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.2),
+    0 0 0 0.5px rgba(255, 255, 255, 0.35),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.18) !important;
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.45s ease,
+    box-shadow 0.45s cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link a,
+body.pa-glass-site .pa-footer-dock__row--social .wp-block-social-link-anchor {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: 100% !important;
+  height: 100% !important;
+  padding: 0 !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link a,
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link svg,
+body.pa-glass-site .pa-footer-dock__row--social .wp-block-social-link-anchor,
+body.pa-glass-site .pa-footer-dock__row--social .wp-block-social-link-anchor svg,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-social-link a,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-social-link svg,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-link-anchor,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-link-anchor svg {
+  color: rgba(29, 29, 31, 0.9) !important;
+  fill: rgba(29, 29, 31, 0.9) !important;
+  -webkit-text-fill-color: rgba(29, 29, 31, 0.9) !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link svg {
+  width: 1.2em !important;
+  height: 1.2em !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:hover,
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:focus-within,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-social-link:hover,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-social-link:focus-within {
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.72) 55%, rgba(255, 255, 255, 0.55) 100%) !important;
+  background-color: rgba(255, 255, 255, 0.78) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  transform: translateY(-2px) scale(1.06);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.26),
+    0 0 0 1px rgba(0, 113, 227, 0.14),
+    inset 0 1.5px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:hover a,
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:hover svg,
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:focus-within a,
+body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:focus-within svg {
+  color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  fill: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  -webkit-text-fill-color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.pa-glass-site .pa-footer-dock__row--social .wp-social-link,
+  body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:hover,
+  body.pa-glass-site .pa-footer-dock__row--social .wp-social-link:focus-within {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
+/* Match header floating pills — same anatomy, hover lift, Book CTA */
+body.pa-glass-site .pa-footer-compact-nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+body.pa-glass-site .pa-footer-compact-nav__list > li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Footer on dark skyline — solid glass pills (same anatomy/hover as header, high contrast). */
+body.pa-glass-site .pa-footer-compact-nav__link {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-sizing: border-box !important;
+  min-height: var(--pa-nav-pill-min-height, 42px) !important;
+  min-width: auto !important;
+  padding: var(--pa-nav-pill-padding, 0.5rem 1.15rem) !important;
+  border-radius: 9999px !important;
+  font-family: inherit;
+  font-size: var(--pa-nav-pill-font-size, 0.875rem) !important;
+  font-weight: 600 !important;
+  letter-spacing: 0.01em !important;
+  text-transform: none !important;
+  text-decoration: none !important;
+  line-height: 1.2;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  color: rgba(29, 29, 31, 0.92) !important;
+  -webkit-text-fill-color: rgba(29, 29, 31, 0.92) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  border: 1px solid rgba(255, 255, 255, 0.98) !important;
+  backdrop-filter: blur(22px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(190%) !important;
+  box-shadow:
+    0 10px 28px rgba(0, 0, 0, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  transition:
+    transform 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    background 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    border-color 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.52s cubic-bezier(0.22, 1, 0.36, 1),
+    color 0.52s ease,
+    -webkit-text-fill-color 0.52s ease !important;
+}
+
+body.pa-glass-site .pa-footer-compact-nav__link:hover,
+body.pa-glass-site .pa-footer-compact-nav__link:focus-visible {
+  color: var(--pa2-ink, #1d1d1f) !important;
+  -webkit-text-fill-color: var(--pa2-ink, #1d1d1f) !important;
+  background: #ffffff !important;
+  border-color: #ffffff !important;
+  transform: translateY(-2px) scale(1.02);
+  box-shadow:
+    0 16px 36px rgba(0, 0, 0, 0.34),
+    0 0 0 1px rgba(0, 113, 227, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+  outline: none;
+}
+
+body.pa-glass-site .pa-footer-compact-nav__link.is-current {
+  color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  -webkit-text-fill-color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  background: #ffffff !important;
+  border-color: rgba(0, 113, 227, 0.45) !important;
+  box-shadow:
+    0 10px 28px rgba(0, 113, 227, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 1) !important;
+}
+
+body.pa-glass-site .pa-footer-compact-nav__link--book {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(180deg, #0084ff 0%, #0071e3 55%, #0066d6 100%) !important;
+  background-color: #0071e3 !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.38) !important;
+  box-shadow:
+    0 12px 32px rgba(0, 113, 227, 0.42),
+    inset 0 1px 0 rgba(255, 255, 255, 0.32) !important;
+  padding-left: 1.65rem !important;
+  padding-right: 1.65rem !important;
+}
+
+body.pa-glass-site .pa-footer-compact-nav__link--book:hover,
+body.pa-glass-site .pa-footer-compact-nav__link--book:focus-visible {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  background: linear-gradient(180deg, #0084ff 0%, #0077ed 100%) !important;
+  background-color: #0077ed !important;
+  border-color: rgba(255, 255, 255, 0.5) !important;
+  transform: translateY(-3px) scale(1.04);
+  box-shadow:
+    0 16px 40px rgba(0, 113, 227, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35) !important;
+}
+
+/* Legacy separate social tray — unused when dock-v3 is present */
+body.pa-glass-site .pa-footer-glass--compact .pa-footer-glass__actions:not(.pa-footer-dock) {
+  display: none !important;
+}
+
+body.pa-glass-site .pa-footer-glass--compact .pa-footer-dock .pa-footer-glass__social-slot .pa-footer-social {
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.pa-glass-site .pa-footer-glass--compact .pa-footer-glass__grid,
+body.pa-glass-site .pa-footer-glass--compact .pa-footer-glass__panel,
+body.pa-glass-site .pa-footer-glass--compact #pa-footer-work,
+body.pa-glass-site .pa-footer-glass--compact #pa-footer-services {
+  display: none !important;
+}
+
+/* Scape footer: solid light pills stay readable; Book stays blue CTA. */
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass--compact .pa-footer-compact-nav__link:not(.pa-footer-compact-nav__link--book) {
+  color: rgba(29, 29, 31, 0.92) !important;
+  -webkit-text-fill-color: rgba(29, 29, 31, 0.92) !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass--compact .pa-footer-compact-nav__link--book {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass--compact .pa-footer-dock {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass--compact .pa-footer-dock__row {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass--compact .pa-footer-dock__row--social {
+  background: rgba(255, 255, 255, 0.14) !important;
+  border-color: rgba(255, 255, 255, 0.4) !important;
+}
+
+body.pa-glass-site .pa-footer-glass--compact ~ .pa-legal-footer .pa-footer-brand,
+body.pa-glass-site footer .pa-legal-footer:has(+ *) .pa-footer-brand {
+  margin-bottom: 0.25rem !important;
+}
+
+body.pa-glass-site footer.pa-site-footer .pa-legal-footer .pa-footer-brand-logo {
+  height: clamp(32px, 5.5vw, 42px) !important;
+  max-width: min(140px, 42vw) !important;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22) !important;
 }
 
 body.pa-glass-site footer.wp-block-template-part,
 body.pa-glass-site footer.pa-site-footer {
-  margin-top: clamp(2.5rem, 6vw, 4.5rem) !important;
+  position: relative;
+  z-index: 5;
+  margin-top: clamp(2rem, 5vw, 3.5rem) !important;
   padding: 0 clamp(0.75rem, 3vw, 1.15rem) calc(0.5rem + env(safe-area-inset-bottom, 0px)) !important;
+  background: #f5f5f7 !important;
+  color: var(--pa-footer-ink, #1d1d1f) !important;
+}
+
+/* —— Footer scenic band (Harrisburg aerial) — content-driven height, not a tall hero —— */
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape {
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 0 !important;
+  margin-top: clamp(0.85rem, 2vw, 1.35rem) !important;
+  background-color: #0b1220 !important;
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(8, 14, 26, 0.55) 0%,
+      rgba(8, 14, 26, 0.68) 45%,
+      rgba(8, 14, 26, 0.82) 100%
+    ),
+    url(media/footer-harrisburg.jpg) !important;
+  /* Cover cropped mid-city so a short band still reads scenic, not empty sky */
+  background-size: cover !important;
+  background-position: 50% 55% !important;
+  background-repeat: no-repeat !important;
+  padding-top: 0.25rem !important;
+  padding-bottom: calc(0.25rem + env(safe-area-inset-bottom, 0px)) !important;
+}
+
+@supports (background-image: url("x.webp")) {
+  body.pa-glass-site footer.pa-site-footer.pa-footer--scape {
+    background-image:
+      linear-gradient(
+        180deg,
+        rgba(8, 14, 26, 0.55) 0%,
+        rgba(8, 14, 26, 0.68) 45%,
+        rgba(8, 14, 26, 0.82) 100%
+      ),
+      url(media/footer-harrisburg.webp) !important;
+  }
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-site-footer-pro.pa-footer-glass--light {
+  background: transparent !important;
+  border-top: none !important;
+  border-radius: 0 !important;
+  /* Legacy roomy padding — compact override below wins when both classes present */
+  padding-top: 1rem !important;
+  padding-bottom: 0.35rem !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-site-footer-pro.pa-footer-glass--compact {
+  padding: 0.7rem clamp(0.85rem, 2.5vw, 1.25rem) 0.3rem !important;
+  gap: 0.3rem;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass__eyebrow {
+  color: rgba(255, 255, 255, 0.72) !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass__lead {
+  color: rgba(255, 255, 255, 0.92) !important;
+  text-shadow: 0 1px 18px rgba(0, 0, 0, 0.28);
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass__panel,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-panel {
+  background: rgba(255, 255, 255, 0.86) !important;
+  border-color: rgba(255, 255, 255, 0.94) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.98),
+    0 14px 36px rgba(0, 0, 0, 0.22) !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-glass__actions:not(.pa-footer-dock) {
+  display: none !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer {
+  margin-top: 0.1rem !important;
+  padding: 0.4rem 0.65rem 0.45rem !important;
+  border-radius: 14px 14px 0 0;
+  background: rgba(8, 14, 26, 0.42) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.14) !important;
+  backdrop-filter: blur(16px) saturate(140%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(140%) !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer .pa-legal-entity,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer .pa-legal-location,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer .pa-footer-contact,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer .pa-legal-links {
+  margin: 0 0 0.15rem !important;
+  font-size: 0.72rem !important;
+  line-height: 1.35 !important;
+}
+
+/* Legacy bottom Home/Services strip — removed in favor of single footer dock */
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-site-bottom-nav {
+  display: none !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-entity,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-location,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer p,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer a,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-contact,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-contact a,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-links,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-links a {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer a:hover,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-footer a:focus-visible,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-contact a:hover,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-contact a:focus-visible,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-links a:hover,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-links a:focus-visible {
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+  opacity: 0.88;
 }
 
 body.pa-glass-site footer.wp-block-template-part > .wp-block-group,
@@ -1210,30 +2055,34 @@ body.pa-glass-site footer.pa-site-footer > .wp-block-group {
   width: 100%;
   max-width: var(--pa-site-max, 72rem);
   gap: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: inherit !important;
+  padding: 0 !important;
 }
 
 body.pa-glass-site .pa-footer-info {
-  gap: clamp(1.1rem, 2.8vw, 1.65rem) !important;
-  margin-bottom: clamp(2rem, 4.5vw, 2.75rem) !important;
+  gap: clamp(1rem, 2.5vw, 1.5rem) !important;
+  margin-bottom: clamp(1.5rem, 3.5vw, 2rem) !important;
 }
 
 body.pa-glass-site .pa-footer-panel {
-  padding: clamp(1.35rem, 3.2vw, 1.75rem) clamp(1.2rem, 2.8vw, 1.55rem) !important;
+  padding: clamp(1.15rem, 2.8vw, 1.45rem) !important;
   border-radius: var(--pa-ios-radius-lg, 20px) !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(32px) saturate(185%) !important;
-  -webkit-backdrop-filter: blur(32px) saturate(185%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.14),
-    0 10px 28px rgba(0, 0, 0, 0.16) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(28px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(28px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.88) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.95), 0 10px 28px rgba(17, 17, 17, 0.06) !important;
 }
 
 body.pa-glass-site .pa-footer-panel h3 {
   text-align: left !important;
-  margin: 0 0 1rem !important;
-  font-size: 0.6875rem !important;
+  margin: 0 0 0.75rem !important;
+  font-size: 0.625rem !important;
   letter-spacing: 0.12em !important;
+  color: rgba(29, 29, 31, 0.48) !important;
 }
 
 body.pa-glass-site .pa-footer-panel-body p,
@@ -1243,39 +2092,41 @@ body.pa-glass-site .pa-footer-work-list {
 }
 
 body.pa-glass-site .pa-footer-panel-body p {
-  font-size: 0.9375rem !important;
-  line-height: 1.62 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.55 !important;
+  color: rgba(29, 29, 31, 0.68) !important;
 }
 
 body.pa-glass-site .pa-footer-panel-body p + p {
-  margin-top: 0.85rem !important;
+  margin-top: 0.65rem !important;
 }
 
 body.pa-glass-site .pa-footer-service-list li {
-  padding: 0.45rem 0 !important;
+  padding: 0.35rem 0 !important;
+  color: rgba(29, 29, 31, 0.72) !important;
 }
 
 body.pa-glass-site .pa-footer-work-list li {
-  padding: 0.7rem 0 !important;
-  gap: 0.2rem !important;
+  padding: 0.55rem 0 !important;
+  gap: 0.15rem !important;
 }
 
 body.pa-glass-site .pa-footer-work-list .pa-footer-work-award {
   margin-bottom: 0.65rem !important;
-  padding: 0.85rem 1rem !important;
+  padding: 0.75rem 0.85rem !important;
   border-radius: var(--pa-ios-radius-md, 14px) !important;
-  backdrop-filter: blur(20px) saturate(160%) !important;
-  -webkit-backdrop-filter: blur(20px) saturate(160%) !important;
+  background: linear-gradient(155deg, rgba(255, 214, 102, 0.28), rgba(255, 255, 255, 0.82)) !important;
+  border: 1px solid rgba(212, 175, 55, 0.28) !important;
 }
 
 body.pa-glass-site .pa-footer-cta-strip {
-  padding: clamp(1.65rem, 4vw, 2.15rem) clamp(1.15rem, 3vw, 1.65rem) !important;
+  padding: clamp(1rem, 2.5vw, 1.25rem) !important;
   margin: 0.25rem 0 0 !important;
   border-radius: var(--pa-ios-radius-lg, 20px) !important;
-  background: rgba(255, 255, 255, 0.07) !important;
-  backdrop-filter: blur(24px) saturate(175%) !important;
-  -webkit-backdrop-filter: blur(24px) saturate(175%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.55) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.82) !important;
 }
 
 body.pa-glass-site .pa-footer-book-cta {
@@ -1283,7 +2134,9 @@ body.pa-glass-site .pa-footer-book-cta {
   min-height: 3rem !important;
   padding: 0.85rem 1.75rem !important;
   background: var(--pa-ios-blue, #0071e3) !important;
-  box-shadow: 0 10px 28px rgba(0, 113, 227, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  box-shadow: 0 10px 28px rgba(0, 113, 227, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
 }
 
 body.pa-glass-site .pa-footer-social {
@@ -1291,25 +2144,118 @@ body.pa-glass-site .pa-footer-social {
   justify-content: center !important;
   width: fit-content !important;
   max-width: 100% !important;
-  margin: clamp(1.5rem, 3.5vw, 2rem) auto clamp(1.25rem, 3vw, 1.65rem) !important;
-  padding: 0.75rem 1.35rem !important;
+  margin: 0 !important;
+  padding: 0.55rem 1rem !important;
   border-radius: 999px !important;
-  background: rgba(255, 255, 255, 0.08) !important;
-  backdrop-filter: blur(22px) saturate(170%) !important;
-  -webkit-backdrop-filter: blur(22px) saturate(170%) !important;
-  border: 1px solid rgba(255, 255, 255, 0.14) !important;
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.12) !important;
+  background: rgba(255, 255, 255, 0.72) !important;
+  backdrop-filter: blur(22px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(22px) saturate(180%) !important;
+  border: 1px solid rgba(29, 29, 31, 0.08) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
 }
 
 body.pa-glass-site .pa-legal-footer {
-  padding: clamp(1.5rem, 4vw, 2rem) clamp(1rem, 3vw, 1.5rem) clamp(1.35rem, 3vw, 1.85rem) !important;
-  margin-top: 0.35rem !important;
-  border-top: 1px solid rgba(255, 255, 255, 0.08) !important;
+  padding: clamp(1.25rem, 3vw, 1.65rem) clamp(1rem, 3vw, 1.5rem) clamp(1.15rem, 2.5vw, 1.5rem) !important;
+  margin-top: 0.5rem !important;
+  border-top: 1px solid rgba(29, 29, 31, 0.08) !important;
+  color: rgba(29, 29, 31, 0.62) !important;
 }
 
 body.pa-glass-site .pa-site-bottom-nav {
-  margin-top: 0.75rem !important;
-  padding-top: 1.35rem !important;
+  display: none !important;
+}
+
+/* Default light-footer social (non-dock contexts only) */
+body.pa-glass-site .pa-footer-glass--light .wp-block-social-links .wp-social-link {
+  background: rgba(29, 29, 31, 0.06) !important;
+  border: 1px solid rgba(29, 29, 31, 0.1) !important;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 4px 12px rgba(17, 17, 17, 0.06) !important;
+}
+
+body.pa-glass-site .pa-footer-glass--light .wp-block-social-links .wp-block-social-link-anchor,
+body.pa-glass-site .pa-footer-glass--light .wp-block-social-links .wp-block-social-link-anchor svg,
+body.pa-glass-site .pa-footer-glass--light .wp-block-social-links .wp-social-link a {
+  color: #1d1d1f !important;
+  fill: #1d1d1f !important;
+  -webkit-text-fill-color: #1d1d1f !important;
+}
+
+body.pa-glass-site .pa-footer-glass--light .wp-block-social-links .wp-social-link:hover {
+  background: rgba(0, 113, 227, 0.1) !important;
+  border-color: rgba(0, 113, 227, 0.2) !important;
+}
+
+/* Dock social discs win over light-footer defaults — true iOS liquid glass */
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link,
+body.pa-glass-site footer.pa-footer--scape .pa-footer-dock__row--social .wp-block-social-links .wp-social-link {
+  width: 46px !important;
+  height: 46px !important;
+  margin: 0 !important;
+  border-radius: 999px !important;
+  overflow: hidden !important;
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.82) 0%, rgba(255, 255, 255, 0.48) 48%, rgba(255, 255, 255, 0.32) 100%) !important;
+  background-color: rgba(255, 255, 255, 0.52) !important;
+  border: 1px solid rgba(255, 255, 255, 0.78) !important;
+  backdrop-filter: blur(24px) saturate(200%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(200%) !important;
+  box-shadow:
+    0 8px 22px rgba(0, 0, 0, 0.22),
+    0 0 0 0.5px rgba(255, 255, 255, 0.4),
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.98),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.2) !important;
+}
+
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link a,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link svg,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-block-social-link-anchor,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-block-social-link-anchor svg,
+body.pa-glass-site footer.pa-footer--scape .pa-footer-dock__row--social .wp-block-social-links .wp-social-link a,
+body.pa-glass-site footer.pa-footer--scape .pa-footer-dock__row--social .wp-block-social-links .wp-social-link svg {
+  color: rgba(29, 29, 31, 0.92) !important;
+  fill: rgba(29, 29, 31, 0.92) !important;
+  -webkit-text-fill-color: rgba(29, 29, 31, 0.92) !important;
+}
+
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:hover,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:focus-within,
+body.pa-glass-site footer.pa-footer--scape .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:hover,
+body.pa-glass-site footer.pa-footer--scape .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:focus-within {
+  background:
+    linear-gradient(165deg, rgba(255, 255, 255, 0.96) 0%, rgba(255, 255, 255, 0.76) 55%, rgba(255, 255, 255, 0.58) 100%) !important;
+  background-color: rgba(255, 255, 255, 0.82) !important;
+  border-color: rgba(255, 255, 255, 0.95) !important;
+  transform: translateY(-2px) scale(1.06);
+  box-shadow:
+    0 14px 30px rgba(0, 0, 0, 0.28),
+    0 0 0 1px rgba(0, 113, 227, 0.16),
+    inset 0 1.5px 0 rgba(255, 255, 255, 1),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.24) !important;
+}
+
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:hover a,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:hover svg,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:focus-within a,
+body.pa-glass-site .pa-footer-glass--light .pa-footer-dock__row--social .wp-block-social-links .wp-social-link:focus-within svg {
+  color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  fill: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+  -webkit-text-fill-color: var(--pa-liquid-glass-active-ink, #005bb5) !important;
+}
+
+body.pa-glass-site .pa-footer-glass--light a.pa-footer-book-cta,
+body.pa-glass-site .pa-footer-glass--light a.pa-footer-book-cta.wp-element-button {
+  background: var(--pa-ios-blue, #0071e3) !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
+  border: 1px solid rgba(255, 255, 255, 0.28) !important;
+  box-shadow: 0 10px 28px rgba(0, 113, 227, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+}
+
+body.pa-glass-site .pa-footer-glass--light a.pa-footer-book-cta:hover,
+body.pa-glass-site .pa-footer-glass--light a.pa-footer-book-cta:focus-visible {
+  background: #005bb5 !important;
+  color: #fff !important;
+  -webkit-text-fill-color: #fff !important;
 }
 
 /* —— Services page —— */
@@ -1404,8 +2350,10 @@ body.pa-glass-site .pa-gallery-lightbox-nav:focus-visible {
 
   body.pa-glass-site .pa2-services__card,
   body.pa-glass-site .pa2-svc-card,
-  body.pa-glass-site .pa2-hero__btn {
+  body.pa-glass-site .pa2-hero__btn,
+  body.pa-glass-site .pa-footer-compact-nav__link {
     transition: none;
+    transform: none !important;
   }
 }
 
@@ -1435,6 +2383,60 @@ body.pa-glass-site .pa-gallery-lightbox-nav:focus-visible {
   overflow: visible;
   outline: 3px solid #0071e3;
   outline-offset: 2px;
+}
+
+/* Crawlable home CTAs — real <a> for bots; sr-only by default (no plain-text flash). */
+.pa-ssr-conversion {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+  pointer-events: none;
+}
+
+.pa-ssr-conversion__book {
+  font-weight: 700;
+  color: #1d1d1f;
+  text-decoration: underline;
+  text-underline-offset: 0.15em;
+}
+
+.pa-ssr-conversion__hubs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 0.85rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pa-ssr-conversion__hubs a {
+  color: #424245;
+  text-decoration: none;
+}
+
+.pa-ssr-conversion__hubs a:hover,
+.pa-ssr-conversion__hubs a:focus-visible {
+  color: #1d1d1f;
+  text-decoration: underline;
+}
+
+body.pa-chrome-ready .pa-ssr-conversion,
+html.js .pa-ssr-conversion.is-hydrated {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 
 #main-content:focus {
@@ -1473,7 +2475,14 @@ body.pa-glass-site .pa-video-lightbox-close {
   body.pa-glass-site header .pa-nav-dock .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content {
     background: rgba(255, 255, 255, 0.92) !important;
     color: #1d1d1f !important;
-    border: 1px solid rgba(0, 0, 0, 0.2) !important;
+    border: 1px solid rgba(0, 113, 227, 0.28) !important;
+  }
+
+  body.pa-glass-site header .pa-nav-floating-pills .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,
+  body.pa-glass-site header .pa-nav-dock .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content {
+    color: #004999 !important;
+    background: rgba(0, 113, 227, 0.2) !important;
+    border: 2px solid rgba(0, 113, 227, 0.5) !important;
   }
 
   body.pa-glass-site .pa2-work-hero__lead,
@@ -1483,63 +2492,55 @@ body.pa-glass-site .pa-video-lightbox-close {
   }
 }
 
-/* Geo landing pages (SEO) */
-.pa-geo-landing {
+/* Geo landing layout/styles: assets/geo-landing.css (enqueued on pa-geo-landing-page) */
+
+.pa-services-crawl-links {
   max-width: 48rem;
-  margin: 0 auto 3rem;
+  margin: 2rem auto 3rem;
   padding: 0 1rem;
 }
 
-.pa-geo-landing__eyebrow {
-  font-size: 0.8125rem;
+.pa-services-crawl-links h2 {
+  font-size: 1.125rem;
+  margin: 0 0 1rem;
+}
+
+.pa-services-crawl-links h3 {
+  font-size: 0.9375rem;
+  margin: 1rem 0 0.5rem;
+}
+
+.pa-services-crawl-links ul {
+  margin: 0 0 0.75rem;
+  padding-left: 1.1rem;
+}
+
+.pa-services-crawl-links a {
   font-weight: 600;
+}
+
+.pa2-svc-geo__group {
+  margin-bottom: 1.25rem;
+}
+
+.pa2-svc-geo__group-title {
+  margin: 0 0 0.5rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: #6e6e73;
-  margin: 0 0 0.5rem;
+  color: rgba(29, 29, 31, 0.55);
 }
 
-.pa-geo-landing__title {
-  font-size: clamp(1.75rem, 4vw, 2.25rem);
-  line-height: 1.15;
-  margin: 0 0 0.75rem;
-  color: #1d1d1f;
+.pa2-svc-geo__hub {
+  margin: 1rem 0 0;
+  font-size: 0.9375rem;
 }
 
-.pa-geo-landing__lead {
-  font-size: 1.125rem;
-  line-height: 1.5;
-  color: #424245;
-  margin: 0 0 1.5rem;
-}
-
-.pa-geo-landing__body p {
-  line-height: 1.6;
-  margin: 0 0 1rem;
-  color: #1d1d1f;
-}
-
-.pa-geo-landing__faq {
-  margin: 2rem 0;
-}
-
-.pa-geo-landing__faq h2 {
-  font-size: 1.25rem;
-  margin: 0 0 1rem;
-}
-
-.pa-geo-landing__faq-list dt {
+.pa2-svc-geo__hub a {
   font-weight: 600;
-  margin: 1rem 0 0.25rem;
-}
-
-.pa-geo-landing__faq-list dd {
-  margin: 0 0 0.5rem;
-  color: #424245;
-}
-
-.pa-geo-landing__cta-wrap {
-  margin: 2rem 0 0;
+  color: #0071e3;
+  text-decoration: none;
 }
 
 /* Services page — geo landing internal links (SEO) */
@@ -1580,5 +2581,79 @@ body.pa-glass-site .pa-video-lightbox-close {
   padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.35rem;
+}
+
+body.pa-glass-site .pa-footer-geo-links a {
+  display: block;
+  padding: 0.35rem 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.4;
+  color: rgba(29, 29, 31, 0.72) !important;
+  text-decoration: none !important;
+  border-bottom: 1px solid rgba(29, 29, 31, 0.06);
+  transition: color 0.18s ease, background 0.18s ease;
+}
+
+body.pa-glass-site .pa-footer-geo-links li:last-child a {
+  border-bottom: none;
+}
+
+body.pa-glass-site .pa-footer-geo-links a:hover,
+body.pa-glass-site .pa-footer-geo-links a:focus-visible {
+  color: var(--pa-ios-blue, #0071e3) !important;
+}
+
+/* —— Interactive liquid glass (marketing + booking chrome) —— */
+body.pa-glass-site .pa-footer-dock__row,
+body.pa-glass-site .pa-site-nav-pill,
+body.pa-glass-site .pa-footer-service-chip {
+  transition:
+    transform 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    background 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    border-color 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    box-shadow 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+    opacity 220ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+
+body.pa-glass-site .pa-footer-dock__row--nav a:hover,
+body.pa-glass-site .pa-footer-dock__row--nav a:focus-visible,
+body.pa-glass-site .pa-footer-service-chip:hover,
+body.pa-glass-site .pa-footer-service-chip:focus-visible {
+  transform: translateY(-1px);
+}
+
+body.pa-glass-site .pa-portfolio-tile:hover,
+body.pa-glass-site .pa-portfolio-tile:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.92) !important;
+  box-shadow: var(--pa-ios-shadow) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.pa-glass-site .pa2-services__card,
+  body.pa-glass-site .pa2-svc-card,
+  body.pa-glass-site .pa-glass-card,
+  body.pa-glass-site .pa-geo-landing__offer,
+  body.pa-glass-site .pa2-cinema__panel,
+  body.pa-glass-site .pa-footer-glass__panel,
+  body.pa-glass-site .pa-footer-dock__row,
+  body.pa-glass-site .pa-site-nav-pill,
+  body.pa-glass-site .pa-footer-service-chip,
+  body.pa-glass-site .pa-portfolio-tile {
+    transition: none !important;
+  }
+
+  body.pa-glass-site .pa2-services__card:hover,
+  body.pa-glass-site .pa2-svc-card:hover,
+  body.pa-glass-site .pa-glass-card:hover,
+  body.pa-glass-site .pa-geo-landing__offer:hover,
+  body.pa-glass-site .pa2-cinema__panel:hover,
+  body.pa-glass-site .pa-footer-glass__panel:hover,
+  body.pa-glass-site .pa-portfolio-tile:hover,
+  body.pa-glass-site .pa-footer-dock__row--nav a:hover,
+  body.pa-glass-site .pa-footer-service-chip:hover {
+    transform: none !important;
+  }
 }

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PA Media Booking
  * Description: Custom calendar booking for independent artists — availability, deposits, GoDaddy Pay Link / Stripe, admin approval.
- * Version: 4.4.4
+ * Version: 5.4.64
  * Author: Pennsylvania Media Arts LLC
  * Text Domain: pa-media-booking
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PA_BOOKING_VERSION', '5.0.0');
+define('PA_BOOKING_VERSION', '5.4.64');
 define('PA_BOOKING_PATH', plugin_dir_path(__FILE__));
 define('PA_BOOKING_URL', plugin_dir_url(__FILE__));
 
@@ -112,6 +112,46 @@ function pa_booking_boot() {
 
 add_action('plugins_loaded', 'pa_booking_boot');
 
+/**
+ * Retired geo landing URLs — redirect before theme boot (avoids stale WP page errors).
+ */
+function pa_booking_redirect_retired_landings() {
+    if (is_admin()) {
+        return;
+    }
+    $path = isset($_SERVER['REQUEST_URI'])
+        ? untrailingslashit((string) wp_parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH))
+        : '';
+    $retired = array(
+        '/services/wedding-photo-video-central-pa',
+        '/service-areas',
+    );
+    if (in_array($path, $retired, true)) {
+        wp_safe_redirect(home_url('/services/'), 301);
+        exit;
+    }
+}
+
+add_action('init', 'pa_booking_redirect_retired_landings', 0);
+
+/**
+ * Plugins screen → Booking Requests (not the broken growth orphan link).
+ *
+ * @param array<int, string> $links
+ * @return array<int, string>
+ */
+function pa_booking_plugin_action_links($links) {
+    if (current_user_can('manage_options')) {
+        array_unshift(
+            $links,
+            '<a href="' . esc_url(admin_url('admin.php?page=pa-booking')) . '">Booking Requests</a>'
+        );
+    }
+    return $links;
+}
+
+add_filter('plugin_action_links_' . plugin_basename(__FILE__), 'pa_booking_plugin_action_links');
+
 add_action('plugins_loaded', 'pa_booking_maybe_upgrade', 20);
 
 /**
@@ -164,6 +204,11 @@ function pa_booking_maybe_upgrade() {
     if (version_compare($stored, '4.1.7', '<') && class_exists('PA_Booking_Page_Setup', false)) {
         PA_Booking_Page_Setup::ensure_work_page();
         flush_rewrite_rules();
+    }
+    if (get_option('pa_youtube_cache_generation', '') !== 'v4') {
+        require_once PA_BOOKING_PATH . 'includes/class-youtube.php';
+        PA_Booking_YouTube::flush_cache();
+        update_option('pa_youtube_cache_generation', 'v4');
     }
     update_option('pa_booking_db_version', PA_BOOKING_VERSION);
 }

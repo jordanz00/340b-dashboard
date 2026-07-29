@@ -116,53 +116,180 @@ class PA_Booking_Frontend {
     }
 
     /**
-     * Homepage hero — Harrisburg drone skyline (Media Library wp-image-198).
-     * Used only on the front page; interior pages keep compact nav without this photo.
+     * Build one homepage hero still entry (plugin-local JPEG + 1280w srcset).
      *
-     * @return array{url:string,srcset:string,position:string,alt:string}
+     * @param string $id       Stable id for session anti-repeat.
+     * @param string $stem     Filename stem under assets/media (no extension).
+     * @param string $position CSS background-position.
+     * @param string $alt      Accessible alt text (factual description only).
+     * @return array{id:string,url:string,url_full:string,url_mobile:string,srcset:string,position:string,alt:string}|null
      */
-    public static function home_hero_image() {
-        $base = trailingslashit(content_url('uploads/2025/12'));
-        $name = 'DJI_0423-HDR';
-        // Keep width descriptors OUT of esc_url() — it otherwise encodes " 2560w" into a bad URL.
-        $variants = array(
-            array('file' => '-768x432.jpg', 'w' => 768),
-            array('file' => '-1024x576.jpg', 'w' => 1024),
-            array('file' => '-1536x864.jpg', 'w' => 1536),
-            array('file' => '-2048x1152.jpg', 'w' => 2048),
-            array('file' => '-scaled.jpg', 'w' => 2560),
-        );
-        $srcset_parts = array();
-        foreach ($variants as $variant) {
-            $srcset_parts[] = esc_url($base . $name . $variant['file']) . ' ' . (int) $variant['w'] . 'w';
+    public static function home_hero_still($id, $stem, $position, $alt) {
+        $rel = 'assets/media/' . $stem . '.jpg';
+        $rel_m = 'assets/media/' . $stem . '-1280.jpg';
+        if (!is_readable(PA_BOOKING_PATH . $rel)) {
+            return null;
         }
+        $base = trailingslashit(PA_BOOKING_URL . 'assets/media');
+        $ver = self::asset_version($rel);
+        $ver_m = is_readable(PA_BOOKING_PATH . $rel_m) ? self::asset_version($rel_m) : $ver;
+        $url = esc_url_raw($base . $stem . '.jpg?v=' . rawurlencode($ver));
+        $url_m = is_readable(PA_BOOKING_PATH . $rel_m)
+            ? esc_url_raw($base . $stem . '-1280.jpg?v=' . rawurlencode($ver_m))
+            : $url;
+        // Keep width descriptors OUT of esc_url() — it otherwise encodes " 2048w" into a bad URL.
+        $srcset_parts = array();
+        if ($url_m !== $url) {
+            $srcset_parts[] = esc_url($url_m) . ' 1280w';
+        }
+        $srcset_parts[] = esc_url($url) . ' 2048w';
 
         return array(
-            // Default to 1536w — sharp on desktop retina, ~2.5× lighter than -scaled on mobile LCP.
-            'url'      => esc_url_raw($base . $name . '-1536x864.jpg'),
-            'url_full' => esc_url_raw($base . $name . '-scaled.jpg'),
-            'url_mobile' => esc_url_raw($base . $name . '-1024x576.jpg'),
-            'srcset'   => implode(', ', $srcset_parts),
-            'position' => '50% 38%',
-            'alt'      => 'Aerial drone photograph of the Harrisburg, Pennsylvania skyline at sunset',
+            'id'         => $id,
+            'url'        => $url,
+            'url_full'   => $url,
+            'url_mobile' => $url_m,
+            'srcset'     => implode(', ', $srcset_parts),
+            'position'   => $position,
+            'alt'        => $alt,
         );
     }
 
     /**
-     * Preload the homepage hero image for faster LCP on pamedia.art front page only.
+     * Homepage hero pool — one randomized drone still per visit (LCP-friendly preload).
+     *
+     * Curated from LaCie Mavic Mini Harrisburg / April 8 / May 13 stills + cinema keyframe.
+     *
+     * @return array<int, array{id:string,url:string,url_full?:string,url_mobile?:string,srcset:string,position:string,alt:string}>
+     */
+    public static function home_hero_images() {
+        $defs = array(
+            array(
+                'harrisburg-sunset',
+                'hero-drone-harrisburg-sunset',
+                '50% 38%',
+                'Aerial drone photograph of the Harrisburg, Pennsylvania skyline at sunset',
+            ),
+            array(
+                'harrisburg-panorama',
+                'hero-drone-harrisburg-panorama',
+                '50% 40%',
+                'Aerial panorama of Harrisburg bridges and the Susquehanna River at golden hour',
+            ),
+            array(
+                'harrisburg-arches',
+                'hero-drone-harrisburg-arches',
+                '42% 48%',
+                'Aerial view along a stone-arch bridge toward the Harrisburg skyline at sunset',
+            ),
+            array(
+                'harrisburg-bridges',
+                'hero-drone-harrisburg-bridges',
+                '50% 42%',
+                'Aerial photograph of Harrisburg river bridges crossing the Susquehanna',
+            ),
+            array(
+                'harrisburg-river',
+                'hero-drone-harrisburg-river',
+                '50% 42%',
+                'Aerial drone photograph of the Susquehanna River and Harrisburg bridges on a clear day',
+            ),
+            array(
+                'susquehanna-boat',
+                'hero-drone-susquehanna-boat',
+                '50% 45%',
+                'Aerial drone photograph of the Susquehanna River toward Harrisburg with a boat and bridge',
+            ),
+            array(
+                'bridge',
+                'hero-drone-bridge',
+                '55% 45%',
+                'Aerial drone photograph of an arched Susquehanna River bridge at sunset',
+            ),
+            array(
+                'dual-span',
+                'hero-drone-dual-span',
+                '50% 42%',
+                'Aerial drone photograph of a dual-span bridge across open water in Pennsylvania',
+            ),
+            array(
+                'harrisburg-blue-hour',
+                'hero-drone-harrisburg-blue-hour',
+                '48% 40%',
+                'Aerial twilight photograph of Harrisburg bridges and city lights along the river',
+            ),
+            array(
+                'april-golden',
+                'hero-drone-april-golden',
+                '50% 40%',
+                'Aerial golden-hour view of Harrisburg bridges spanning the Susquehanna River',
+            ),
+            array(
+                'cinema-sunset',
+                'hero-drone-cinema-sunset',
+                '50% 45%',
+                'Cinematic aerial still of Susquehanna River bridges silhouetted at sunset',
+            ),
+            array(
+                'harrisburg-winter',
+                'hero-drone-harrisburg-winter',
+                '50% 38%',
+                'Aerial winter view of Harrisburg and Susquehanna River bridges in warm evening light',
+            ),
+        );
+
+        $pool = array();
+        foreach ($defs as $def) {
+            $entry = self::home_hero_still($def[0], $def[1], $def[2], $def[3]);
+            if ($entry) {
+                $pool[] = $entry;
+            }
+        }
+        return $pool;
+    }
+
+    /**
+     * Homepage hero — default still from the drone pool (SSR / fallback).
+     * Client rotates via homeHeroImages + early preload picker so caches do not freeze one shot.
+     *
+     * @return array{id?:string,url:string,srcset:string,position:string,alt:string}
+     */
+    public static function home_hero_image() {
+        $pool = self::home_hero_images();
+        return $pool[0];
+    }
+
+    /**
+     * Preload a randomly chosen homepage hero (per visit) for LCP.
      */
     public function inject_home_hero_preload() {
         if (is_admin() || !is_front_page()) {
             return;
         }
-        $hero = self::home_hero_image();
-        // Mobile-first href (1024w). Browser picks from imagesrcset via imagesizes.
-        $href = !empty($hero['url_mobile']) ? $hero['url_mobile'] : $hero['url'];
-        echo '<link rel="preload" as="image" href="' . esc_url($href) . '"';
-        if (!empty($hero['srcset'])) {
-            echo ' imagesrcset="' . esc_attr($hero['srcset']) . '" imagesizes="100vw"';
+        $pool = self::home_hero_images();
+        if (!$pool) {
+            return;
         }
-        echo ' fetchpriority="high">' . "\n";
+        $json = wp_json_encode(array_values($pool));
+        if (!$json) {
+            return;
+        }
+        echo '<script id="pa-home-hero-preload">(function(){try{'
+            . 'var pool=' . $json . ';'
+            . 'if(!pool||!pool.length)return;'
+            . 'var last="";'
+            . 'try{last=sessionStorage.getItem("paHomeHeroId")||"";}catch(e){}'
+            . 'var choices=pool;'
+            . 'if(pool.length>1&&last){var f=pool.filter(function(h){return h&&h.id!==last;});if(f.length)choices=f;}'
+            . 'var hero=choices[Math.floor(Math.random()*choices.length)];'
+            . 'try{sessionStorage.setItem("paHomeHeroId",hero.id||"");}catch(e){}'
+            . 'window.__PA_HOME_HERO__=hero;'
+            . 'var href=hero.url_mobile||hero.url;'
+            . 'var link=document.createElement("link");'
+            . 'link.rel="preload";link.as="image";link.href=href;link.fetchPriority="high";'
+            . 'if(hero.srcset){link.setAttribute("imagesrcset",hero.srcset);link.setAttribute("imagesizes","100vw");}'
+            . 'document.head.appendChild(link);'
+            . '}catch(e){}})();</script>' . "\n";
     }
 
     /**
@@ -258,6 +385,8 @@ class PA_Booking_Frontend {
         if (is_front_page()) {
             $classes[] = 'pa-home-header-pro';
             $classes[] = 'pa-premium-nav';
+            $classes[] = 'pa-home-chrome-above-hero';
+            $classes[] = 'pa-home-shell-relocated';
         }
         return $classes;
     }
@@ -435,8 +564,13 @@ class PA_Booking_Frontend {
 
         echo '<script id="pa-scroll-motion-boot">'
             . '(function(){var r=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;'
-            . 'document.documentElement.classList.add(r?"pa-scroll-static":"pa-scroll-motion");})();'
+            . 'document.documentElement.classList.add("pa-js",r?"pa-scroll-static":"pa-scroll-motion");})();'
             . '</script>' . "\n";
+        /* Soft canvas so theme unstyled text never flashes on a bare white page. */
+        echo '<style id="pa-paint-boot">'
+            . 'html.pa-js,html.pa-js body{background-color:#f5f5f7}'
+            . 'html.pa-js body.home{background-color:#0b0b0c}'
+            . '</style>' . "\n";
 
         if ($this->is_marketing_page()) {
             echo '<style id="pa-reveal-critical">'
@@ -467,7 +601,7 @@ class PA_Booking_Frontend {
                 . 'body.home .pa-glass-hero-wrap .pa-home-hero'
                 . '{background-image:url("' . $hero_mobile . '")!important;background-size:cover!important;'
                 . 'background-position:' . esc_attr($hero['position']) . '!important;background-repeat:no-repeat!important;'
-                . 'min-height:clamp(18rem,50vh,34rem)!important}'
+                . 'min-height:clamp(22rem,62vh,40rem)!important}'
                 . '@media (min-width:769px){'
                 . 'body.home .pa-home-hero.wp-block-cover.alignfull,'
                 . 'body.home .pa2-hero.pa-home-hero,'
@@ -477,25 +611,115 @@ class PA_Booking_Frontend {
                 . 'body.home .pa2-hero .wp-block-cover__image-background'
                 . '{object-position:' . esc_attr($hero['position']) . '!important}'
                 . '</style>' . "\n";
+            /* Clip raw theme blocks before site.js — stops plain-text FOUC (Booking/Services/About). */
             echo '<style id="pa-home-layout-critical">'
-                . 'body.home:not(.pa-has-photo-portfolio) .entry-content>.wp-block-gallery.alignfull{'
-                . 'position:absolute!important;width:1px!important;height:1px!important;overflow:hidden!important;'
-                . 'opacity:0!important;pointer-events:none!important;margin:0!important;padding:0!important;clip:rect(0,0,0,0)!important}'
                 . 'body.home main.wp-block-group{padding-top:0!important;padding-bottom:clamp(1rem,3vw,2rem)!important}'
+                /* FOUC guard — crawlable SSR nav + raw theme header stay in DOM but never flash as plain text */
+                . 'body.home .pa-ssr-conversion{position:absolute!important;width:1px!important;height:1px!important;'
+                . 'padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;'
+                . 'white-space:nowrap!important;border:0!important;pointer-events:none!important}'
+                . 'body.home.pa-home-chrome-above-hero:not(.pa-home-ready) header.wp-block-template-part:not(.pa-home-header-chrome-moved),'
+                . 'body.home.pa-home-chrome-above-hero:not(.pa-home-ready) header.pa-site-header:not(.pa-home-header-chrome-moved)'
+                . '{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;'
+                . 'overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;'
+                . 'pointer-events:none!important;visibility:hidden!important}'
+                . 'body.home main .entry-content>.wp-block-gallery,'
+                . 'body.home main .wp-block-post-content>.wp-block-gallery,'
+                . 'body.home main .entry-content>.wp-block-group.alignfull.has-background'
+                . ':not(.pa-glass-hero-wrap):not(.pa2-services):not(.pa2-portfolio):not(.pa2-cta)'
+                . ':not(.pa2-reviews):not(.pa-home-closing):not(:has(.pa-home-hero)):not(:has(.pa2-hero)),'
+                . 'body.home main .wp-block-post-content>.wp-block-group.alignfull.has-background'
+                . ':not(.pa-glass-hero-wrap):not(.pa2-services):not(.pa2-portfolio):not(.pa2-cta)'
+                . ':not(.pa2-reviews):not(.pa-home-closing):not(:has(.pa-home-hero)):not(:has(.pa2-hero)),'
+                . 'body.home main .entry-content>.wp-block-columns,'
+                . 'body.home main .wp-block-post-content>.wp-block-columns{'
+                . 'position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;'
+                . 'overflow:hidden!important;opacity:0!important;pointer-events:none!important;'
+                . 'margin:0!important;padding:0!important;clip:rect(0,0,0,0)!important;border:0!important}'
+                . 'body.pa-glass-site footer.wp-block-template-part:not(:has(.pa-site-footer-pro)) .wp-block-columns{'
+                . 'position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;'
+                . 'overflow:hidden!important;opacity:0!important;pointer-events:none!important;'
+                . 'margin:0!important;padding:0!important;clip:rect(0,0,0,0)!important}'
                 . '</style>' . "\n";
+            echo '<script id="pa-home-fouc-boot">'
+                . '(function(){try{'
+                . 'document.documentElement.classList.add("pa-js","pa-home-fouc-guard");'
+                . 'function hidePreChrome(){'
+                . 'var s=document.querySelector(".pa-ssr-conversion");'
+                . 'if(s){s.setAttribute("aria-hidden","true");}'
+                . 'var h=document.querySelector("header.wp-block-template-part:not(.pa-home-header-chrome-moved),header.pa-site-header:not(.pa-home-header-chrome-moved)");'
+                . 'if(h&&!document.body.classList.contains("pa-home-ready")){h.setAttribute("aria-hidden","true");}'
+                . '}'
+                . 'function hideLegacy(){var main=document.querySelector("main .entry-content,main .wp-block-post-content");'
+                . 'if(!main)return;var titles=["Services Offered","Recent Work","Booking","About"];'
+                . 'main.querySelectorAll("h1,h2,h3,h4,.wp-block-heading").forEach(function(h){'
+                . 'var t=(h.textContent||"").replace(/\\s+/g," ").trim();'
+                . 'if(titles.indexOf(t)===-1)return;'
+                . 'var b=h.closest(".wp-block-column,.wp-block-columns,.wp-block-group");'
+                . 'if(!b||b.querySelector(".pa-home-hero,.pa2-hero,.pa2-services,.pa2-portfolio"))return;'
+                . 'b.setAttribute("hidden","");b.setAttribute("aria-hidden","true");'
+                . 'b.classList.add("pa-theme-legacy-hidden");});}'
+                . 'if(document.body){hideLegacy();hidePreChrome();}else{document.addEventListener("DOMContentLoaded",function(){hideLegacy();hidePreChrome();});}'
+                . 'setTimeout(function(){if(document.body&&!document.body.classList.contains("pa-home-ready")){'
+                . 'document.body.classList.add("pa-home-ready");}},3500);'
+                . '}catch(e){}})();'
+                . '</script>' . "\n";
             echo '<style id="pa-home-chrome-logo-critical">'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome{padding-top:0!important;margin-top:0!important}'
+                . 'body.home.pa-home-chrome-above-hero main .entry-content,body.home.pa-home-chrome-above-hero main .wp-block-post-content{padding-top:0!important;margin-top:0!important}'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-brand-lockup,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-brand-lockup,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-site-logo'
                 . '{width:auto!important;max-width:100%!important;padding:0!important;background:transparent!important;box-shadow:none!important}'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo a,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-brand-logo-wrap a'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-brand-logo-wrap a,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-site-logo a,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-brand-logo-wrap a'
                 . '{display:inline-block!important;width:auto!important;max-width:min(520px,88vw)!important;'
-                . 'margin:0 auto!important;line-height:0!important;overflow:hidden!important;border-radius:16px!important}'
+                . 'margin:0 auto!important;line-height:0!important;overflow:hidden!important;border-radius:16px!important;box-shadow:none!important}'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo img,'
                 . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.custom-logo,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup'
-                . '{display:block!important;width:auto!important;max-width:min(520px,88vw)!important;'
-                . 'height:clamp(100px,18vw,260px)!important;max-height:none!important;box-shadow:none!important}'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-site-logo img,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header img.custom-logo,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header img.pa-brand-logo-lockup'
+                . '{display:block!important;width:clamp(269px,44.8vw,384px)!important;max-width:min(384px,88vw)!important;'
+                . 'height:auto!important;max-height:none!important;border-radius:16px!important;'
+                . 'box-shadow:0 8px 22px rgba(0,0,0,.14)!important;object-fit:contain!important}'
+                /* Home nav — pill buttons on first paint (header + post-hero chrome) */
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation__container,'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation__responsive-container-content,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation__container,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation__responsive-container-content'
+                . '{display:inline-flex!important;flex-wrap:wrap!important;align-items:center!important;'
+                . 'justify-content:center!important;gap:.75rem!important;padding:0!important;background:transparent!important;'
+                . 'border:none!important;box-shadow:none!important}'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-site-nav-pill,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-site-nav-pill'
+                . '{display:inline-flex!important;align-items:center!important;justify-content:center!important;'
+                . 'box-sizing:border-box!important;min-height:42px!important;padding:.5rem 1.15rem!important;'
+                . 'border-radius:9999px!important;font-size:.875rem!important;font-weight:600!important;'
+                . 'letter-spacing:.01em!important;text-transform:none!important;text-decoration:none!important;'
+                . 'color:#1d1d1f!important;-webkit-text-fill-color:#1d1d1f!important;'
+                . 'background:rgba(255,255,255,.72)!important;border:1px solid rgba(0,0,0,.1)!important;'
+                . 'box-shadow:0 8px 22px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,1)!important}'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .current-menu-item .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .current-menu-item .wp-block-navigation-item__content'
+                . '{color:#005bb5!important;-webkit-text-fill-color:#005bb5!important;'
+                . 'background:rgba(0,113,227,.14)!important;border:1px solid rgba(0,113,227,.38)!important}'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-nav-book .wp-block-navigation-item__content'
+                . '{color:#fff!important;-webkit-text-fill-color:#fff!important;'
+                . 'background:#0071e3!important;border:1px solid rgba(255,255,255,.38)!important;'
+                . 'box-shadow:0 12px 32px rgba(0,113,227,.42)!important;padding-left:1.5rem!important;padding-right:1.5rem!important}'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__label,'
+                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation-item__label'
+                . '{background:transparent!important;border:none!important;box-shadow:none!important;color:inherit!important}'
+                . '@media(max-width:782px){body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome{padding-top:env(safe-area-inset-top,0)!important}'
+                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book{flex:1 1 100%!important;width:100%!important;display:flex!important;justify-content:center!important;margin-top:.15rem!important}}'
                 . '</style>' . "\n";
         }
 
@@ -505,25 +729,35 @@ class PA_Booking_Frontend {
             . '{display:inline-flex!important;flex-wrap:wrap;align-items:center;justify-content:center;'
             . 'gap:1rem!important;padding:0!important;background:transparent!important;border:none!important;'
             . 'box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}'
-            . 'body.pa-glass-site header .pa-nav-floating-pills .wp-block-navigation-item__content,'
-            . 'body.pa-glass-site header .pa-nav-dock .wp-block-navigation-item__content,'
-            . 'body.pa-glass-site header .pa-site-nav-pill'
-            . '{border-radius:9999px!important;min-height:48px;padding:.75rem 1.5rem!important;'
-            . 'font-size:1rem!important;font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important}'
-            . 'body.pa-glass-site.home header .wp-block-navigation-item:not(.pa-nav-book) .wp-block-navigation-item__content'
-            . '{color:rgba(255,255,255,.96)!important;background:rgba(255,255,255,.14)!important;'
-            . 'border:1.5px solid rgba(255,255,255,.38)!important}'
-            . 'body.pa-glass-site.home header .is-current,body.pa-glass-site.home header .current-menu-item .wp-block-navigation-item__content'
-            . '{color:#005bb5!important;background:rgba(0,113,227,.14)!important;border-color:rgba(0,113,227,.38)!important}'
-            . 'body.pa-glass-site header .pa-nav-book .wp-block-navigation-item__content'
-            . '{color:#fff!important;background:linear-gradient(180deg,#0084ff,#0071e3)!important;border-radius:9999px!important}'
+            /* Interior pages keep compact pills; home chrome uses full rounded pills in pa-home-chrome-logo-critical + home.css */
+            . 'body.pa-glass-site.home header .pa-nav-floating-pills .wp-block-navigation-item__content,'
+            . 'body.pa-glass-site.home header .pa-nav-dock .wp-block-navigation-item__content,'
+            . 'body.pa-glass-site.home header .pa-site-nav-pill,'
+            . 'body.pa-glass-site.home .pa-home-post-hero-chrome .wp-block-navigation-item__content'
+            . '{border-radius:9999px!important;min-height:42px;padding:.5rem 1.15rem!important;'
+            . 'font-size:.875rem!important;font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important}'
+            . 'body.pa-glass-site.home .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content,'
+            . 'body.pa-glass-site.home header .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content'
+            . '{color:#1d1d1f!important;background:rgba(255,255,255,.72)!important;'
+            . 'border:1px solid rgba(0,0,0,.1)!important;border-radius:9999px!important}'
+            . 'body.pa-glass-site.home .pa-home-post-hero-chrome .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,'
+            . 'body.pa-glass-site.home header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content'
+            . '{color:#005bb5!important;background:rgba(0,113,227,.14)!important;border:1px solid rgba(0,113,227,.28)!important;border-radius:9999px!important}'
+            . 'body.pa-glass-site.home .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content,'
+            . 'body.pa-glass-site.home header .pa-nav-book .wp-block-navigation-item__content'
+            . '{color:#fff!important;background:#0071e3!important;border-radius:9999px!important;border:1px solid rgba(255,255,255,.38)!important}'
+            . 'body.pa-glass-site:not(.home) header .pa-nav-floating-pills .wp-block-navigation-item__content,'
+            . 'body.pa-glass-site:not(.home) header .pa-nav-dock .wp-block-navigation-item__content,'
+            . 'body.pa-glass-site:not(.home) header .pa-site-nav-pill'
+            . '{border-radius:10px!important;min-height:44px;padding:.65rem 1.25rem!important;'
+            . 'font-size:.9375rem!important;font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important}'
             . 'body.pa-glass-site.pa-marketing-nav:not(.home) header .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content'
-            . '{color:#1d1d1f!important;background:rgba(255,255,255,.52)!important;'
-            . 'border:1px solid rgba(255,255,255,.82)!important;border-radius:9999px!important}'
+            . '{color:#1d1d1f!important;background:rgba(255,255,255,.72)!important;'
+            . 'border:1px solid rgba(0,0,0,.1)!important;border-radius:10px!important}'
             . 'body.pa-glass-site.pa-marketing-nav:not(.home) header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content'
-            . '{color:#005bb5!important;background:rgba(0,113,227,.14)!important;border:1px solid rgba(0,113,227,.38)!important;border-radius:9999px!important}'
-            . 'body.pa-glass-site.pa-marketing-nav:not(.home) header .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content:hover'
-            . '{color:#1d1d1f!important;background:rgba(255,255,255,.72)!important;border-color:rgba(255,255,255,.94)!important}'
+            . '{color:#005bb5!important;background:rgba(0,113,227,.1)!important;border:1px solid rgba(0,113,227,.28)!important;border-radius:10px!important}'
+            . 'body.pa-glass-site:not(.home) header .pa-nav-book .wp-block-navigation-item__content'
+            . '{color:#fff!important;background:#0071e3!important;border-radius:10px!important;border:1px solid #0071e3!important}'
             . 'body.pa-glass-site header .wp-block-navigation-item__label'
             . '{background:transparent!important;border:none!important;box-shadow:none!important;padding:0!important}'
             . '</style>' . "\n";
@@ -922,7 +1156,21 @@ class PA_Booking_Frontend {
                             'id'     => 'linkedin-reel',
                             'src'    => PA_BOOKING_URL . 'assets/media/linkedin-reel.mp4',
                             'poster' => PA_BOOKING_URL . 'assets/media/linkedin-reel-poster.jpg',
-                            'title'  => 'Corporate event film',
+                            'title'  => 'Corporate Event',
+                        ),
+                        array(
+                            'id'        => 'community-engagement',
+                            'src'       => PA_BOOKING_URL . 'assets/media/community-engagement.mp4',
+                            'poster'    => PA_BOOKING_URL . 'assets/media/community-engagement-poster.jpg',
+                            'title'     => 'Community Engagement',
+                            'youtubeId' => 'vLgDQyhEkUY',
+                        ),
+                        array(
+                            'id'        => 'business-profile',
+                            'src'       => PA_BOOKING_URL . 'assets/media/business-profile.mp4',
+                            'poster'    => PA_BOOKING_URL . 'assets/media/business-profile-poster.jpg',
+                            'title'     => 'Business Profile',
+                            'youtubeId' => 'clhVBCiPmUQ',
                         ),
                     )
                     : array(),
@@ -930,6 +1178,7 @@ class PA_Booking_Frontend {
             );
             if (is_front_page()) {
                 $site_config['homeHeroImage'] = self::home_hero_image();
+                $site_config['homeHeroImages'] = self::home_hero_images();
             }
             wp_localize_script(
                 'pa-site',
@@ -984,7 +1233,20 @@ class PA_Booking_Frontend {
 
     /** Marketing surfaces that load premium scroll animations. */
     private function is_marketing_page() {
-        return is_front_page() || is_page(array('services', 'work', 'about', 'contact', 'start', 'service-areas'));
+        if (is_front_page() || is_page(array('services', 'work', 'about', 'contact', 'start', 'service-areas'))) {
+            return true;
+        }
+        if (is_singular('page')) {
+            $post = get_queried_object();
+            if (
+                $post instanceof WP_Post &&
+                class_exists('PA_Booking_Landing_Pages') &&
+                PA_Booking_Landing_Pages::is_landing_slug($post->post_name)
+            ) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function should_load_booking_assets() {
