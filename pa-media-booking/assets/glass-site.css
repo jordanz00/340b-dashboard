@@ -199,12 +199,13 @@ body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-sit
   -webkit-text-fill-color: rgba(29, 29, 31, 0.9) !important;
 }
 
-@media (max-width: 782px) {
+@media (max-width: 699px) {
   body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,
   body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill {
-    min-height: 36px !important;
-    padding: 0.35rem 0.7rem !important;
-    font-size: 0.75rem !important;
+    min-height: 44px !important;
+    padding: 0.45rem 0.7rem !important;
+    font-size: clamp(0.6875rem, 2.05vw, 0.9375rem) !important;
+    white-space: nowrap !important;
   }
 }
 

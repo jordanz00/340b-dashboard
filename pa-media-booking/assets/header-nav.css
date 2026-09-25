@@ -543,22 +543,23 @@ body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-
 @media (max-width: 782px) {
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome {
     top: 0 !important;
-    padding-top: calc(0.4rem + env(safe-area-inset-top, 0px)) !important;
-    padding-left: max(0.6rem, env(safe-area-inset-left, 0px)) !important;
-    padding-right: max(0.6rem, env(safe-area-inset-right, 0px)) !important;
-    padding-bottom: 0.35rem !important;
-    gap: 0.4rem !important;
+    padding-top: calc(0.65rem + env(safe-area-inset-top, 0px)) !important;
+    padding-left: max(0.75rem, env(safe-area-inset-left, 0px)) !important;
+    padding-right: max(0.75rem, env(safe-area-inset-right, 0px)) !important;
+    padding-bottom: 0.5rem !important;
+    gap: 0.65rem !important;
   }
 
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__container,
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-dock,
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-floating-pills,
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill-row {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    width: 100% !important;
+    display: inline-flex !important;
+    flex-wrap: nowrap !important;
+    grid-template-columns: none !important;
+    width: max-content !important;
     max-width: 100% !important;
-    gap: 0.3rem !important;
+    gap: 0.4rem !important;
     padding: 0 !important;
     background: transparent !important;
     border: 0 !important;
@@ -566,39 +567,90 @@ body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-
     box-shadow: none !important;
   }
 
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-book {
+    width: auto !important;
+    max-width: none !important;
+    flex: 0 0 auto !important;
+    grid-column: auto !important;
+  }
+
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill {
-    min-height: 36px !important;
-    padding: 0.35rem 0.7rem !important;
+    min-height: 44px !important;
+    padding: 0.45rem 0.7rem !important;
     border-radius: 9999px !important;
-    font-size: 0.75rem !important;
+    font-size: clamp(0.6875rem, 2.05vw, 0.9375rem) !important;
     white-space: nowrap !important;
   }
 
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo,
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup,
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup-white,
-  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay:not(.pa-booking-page):not(.is-booking-funnel) .pa-home-post-hero-chrome header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
-  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay:not(.pa-booking-page):not(.is-booking-funnel) .pa-home-post-hero-chrome header.pa-site-header img.pa-brand-logo-lockup {
-    max-height: 44px !important;
-    max-width: min(140px, 42vw) !important;
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo.pa-brand-logo-lockup,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo.pa-brand-logo-lockup-white {
+    max-height: clamp(132px, 28vw, 200px) !important;
+    max-width: min(720px, 86vw) !important;
     height: auto !important;
     width: auto !important;
-    border-radius: 8px !important;
+    border-radius: 18px !important;
     box-shadow: none !important;
-    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.35)) !important;
+    filter: drop-shadow(0 14px 22px rgba(0, 0, 0, 0.32)) !important;
     background: transparent !important;
   }
 
   body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-site-logo a,
-  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome a.custom-logo-link,
-  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay:not(.pa-booking-page):not(.is-booking-funnel) .pa-home-post-hero-chrome header a.custom-logo-link {
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome a.custom-logo-link {
+    max-width: min(760px, 92vw) !important;
     border-radius: 0 !important;
     overflow: visible !important;
     background: transparent !important;
     box-shadow: none !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
+  }
+}
+
+/* iPad portrait is ~744–834px and was falling into the phone header. Match the desktop lockup. */
+@media (min-width: 700px) and (max-width: 1100px) {
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome {
+    top: clamp(1.25rem, 4vw, 3.5rem) !important;
+    gap: 0.7rem !important;
+    padding: 0.35rem clamp(0.75rem, 2.5vw, 1.5rem) 0.5rem !important;
+  }
+
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup-white,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo.pa-brand-logo-lockup,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo.pa-brand-logo-lockup-white {
+    max-width: min(720px, 84vw) !important;
+    max-height: 200px !important;
+  }
+
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__container,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-dock,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-floating-pills,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill-row {
+    flex-wrap: nowrap !important;
+    gap: 0.55rem !important;
+    width: max-content !important;
+    max-width: 100% !important;
+  }
+
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill {
+    min-height: 44px !important;
+    padding: 0.55rem 1.2rem !important;
+    font-size: 0.9375rem !important;
+  }
+
+  html body.home.pa-home-chrome-overlay.pa-home-shell-relocated .pa-glass-hero-wrap .pa2-hero,
+  html body.home.pa-home-chrome-overlay .pa-glass-hero-wrap .pa2-hero,
+  html body.home.pa-home-chrome-overlay .pa2-hero {
+    padding-top: clamp(24rem, 50vw, 26rem) !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
 
@@ -614,13 +666,13 @@ body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav
   display: none !important;
 }
 
-/* Narrow screens: allow wrap so pills stay tappable */
+/* iPad and phone keep the desktop single row. */
 @media (max-width: 900px) {
   body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-floating-pills,
   body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-dock,
   body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__container,
   body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill-row {
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
   }
 }
 
@@ -1501,4 +1553,104 @@ body.wp-theme-gutenify-photography .pa-site-bottom-nav .pa-site-nav-pill.is-curr
   background: rgba(0, 113, 227, 0.2) !important;
   border-color: rgba(0, 113, 227, 0.45) !important;
   transform: translateY(-2px) scale(1.02);
+}
+
+/* Home header matches desktop on iPad and phone: large lockup, one pill row.
+   Covers both the current overlay class and the previous above-hero class. */
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__container,
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-floating-pills,
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-dock,
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill-row,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation__container,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-floating-pills,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-dock,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-site-nav-pill-row {
+  display: inline-flex !important;
+  flex-wrap: nowrap !important;
+  grid-template-columns: none !important;
+  align-items: center !important;
+  justify-content: center !important;
+  width: max-content !important;
+  max-width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item,
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-book,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book {
+  width: auto !important;
+  max-width: none !important;
+  flex: 0 0 auto !important;
+  grid-column: auto !important;
+}
+
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__content {
+  width: auto !important;
+  white-space: nowrap !important;
+}
+
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-site-logo a,
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome a.custom-logo-link,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo a,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome a.custom-logo-link {
+  max-width: min(760px, 92vw) !important;
+  overflow: visible !important;
+}
+
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo,
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup,
+body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup-white,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.custom-logo,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup,
+body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup-white {
+  width: auto !important;
+  height: auto !important;
+  max-width: min(720px, 84vw) !important;
+  max-height: clamp(132px, 28vw, 200px) !important;
+  border-radius: 18px !important;
+  object-fit: contain !important;
+}
+
+@media (min-width: 700px) {
+  body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo,
+  body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup,
+  body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup-white,
+  body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.custom-logo,
+  body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup,
+  body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup-white {
+    max-height: 200px !important;
+    max-width: min(720px, 84vw) !important;
+  }
+
+  body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,
+  body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__content {
+    min-height: 44px !important;
+    padding: 0.55rem 1.2rem !important;
+    font-size: 0.9375rem !important;
+  }
+}
+
+@media (max-width: 699px) {
+  html body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content,
+  html body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill:not(.pa-nav-book-btn):not(.is-current),
+  html body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,
+  html body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content,
+  html body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content,
+  html body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,
+  html body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content {
+    min-height: 36px !important;
+    padding: 0.3rem 0.34rem !important;
+    font-size: 0.625rem !important;
+    letter-spacing: 0 !important;
+  }
+
+  html body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__container,
+  html body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-floating-pills,
+  html body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation__container,
+  html body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-floating-pills {
+    gap: 0.18rem !important;
+  }
 }
