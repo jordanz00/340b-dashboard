@@ -388,7 +388,7 @@ class PA_Booking_Frontend {
         if (is_front_page()) {
             $classes[] = 'pa-home-header-pro';
             $classes[] = 'pa-premium-nav';
-            $classes[] = 'pa-home-chrome-above-hero';
+            $classes[] = 'pa-home-chrome-overlay';
             $classes[] = 'pa-home-shell-relocated';
         }
         return $classes;
@@ -434,12 +434,27 @@ class PA_Booking_Frontend {
     }
 
     public static function logo_dark_url() {
-        return add_query_arg('v', self::logo_cache_buster('pa-logo-dark.png'), PA_BOOKING_URL . 'assets/pa-logo-dark.png');
+        $rel = 'brand/pama-logo-dark-transparent.png';
+        if (!is_readable(PA_BOOKING_PATH . 'assets/' . $rel)) {
+            $rel = 'pa-logo-dark.png';
+        }
+        return add_query_arg('v', self::logo_cache_buster($rel), PA_BOOKING_URL . 'assets/' . $rel);
+    }
+
+    public static function logo_ink_url() {
+        $rel = 'brand/pama-logo-ink.png';
+        if (!is_readable(PA_BOOKING_PATH . 'assets/' . $rel)) {
+            $rel = 'brand/pama-logo-dark-transparent.png';
+        }
+        return add_query_arg('v', self::logo_cache_buster($rel), PA_BOOKING_URL . 'assets/' . $rel);
     }
 
     public static function logo_white_url() {
-        // Same as-is mark on dark footer surfaces (no transparency / recolor pass).
-        return add_query_arg('v', self::logo_cache_buster('pa-logo-white.png'), PA_BOOKING_URL . 'assets/pa-logo-white.png');
+        $rel = 'brand/pama-logo-white-transparent.png';
+        if (!is_readable(PA_BOOKING_PATH . 'assets/' . $rel)) {
+            $rel = 'pa-logo-white.png';
+        }
+        return add_query_arg('v', self::logo_cache_buster($rel), PA_BOOKING_URL . 'assets/' . $rel);
     }
 
     /**
@@ -544,9 +559,10 @@ class PA_Booking_Frontend {
 
         $dark = esc_js(self::logo_dark_url());
         $white = esc_js(self::logo_white_url());
+        $ink = esc_js(self::logo_ink_url());
         echo '<script id="pa-brand-logo-inline">'
             . '(function(){'
-            . 'var dark="' . $dark . '",white="' . $white . '";'
+            . 'var dark="' . $dark . '",white="' . $white . '",ink="' . $ink . '";'
             . 'function patch(scope,url,cls){if(!scope||!url)return;'
             . 'scope.querySelectorAll(".wp-block-site-logo img,img.custom-logo").forEach(function(img){'
             . 'img.src=url;img.removeAttribute("srcset");img.removeAttribute("sizes");'
@@ -554,7 +570,7 @@ class PA_Booking_Frontend {
             . 'function run(){'
             . 'var isHome=document.body.classList.contains("home");'
             . 'var h=document.querySelector("header.pa-site-header,header.wp-block-template-part,header");'
-            . 'if(h){patch(h,isHome?white:dark,isHome?"pa-brand-logo-lockup-white":"pa-brand-logo-lockup");}'
+            . 'if(h){patch(h,isHome?ink:dark,isHome?"pa-brand-logo-lockup":"pa-brand-logo-lockup");}'
             . 'document.querySelectorAll(".wp-block-navigation__responsive-container").forEach(function(o){patch(o,dark,"pa-brand-logo-lockup");});'
             . 'var f=document.querySelector("footer.pa-site-footer,footer.wp-block-template-part,footer");'
             . 'if(f){patch(f,white,"pa-brand-logo-lockup-white");}'
@@ -588,8 +604,12 @@ class PA_Booking_Frontend {
                 . 'html.pa-scroll-motion .pa2-portfolio:not(.is-inview) .pa-portfolio-tile,'
                 . 'html.pa-scroll-motion #pa2-reviews:not(.is-inview) .pa2-reviews__head,'
                 . 'html.pa-scroll-motion #pa2-reviews:not(.is-inview) .pa2-reviews__stage,'
+                . 'html.pa-scroll-motion #pa-featured-press:not(.is-inview) .pa-featured-press__shell,'
+                . 'html.pa-scroll-motion #pa-featured-press:not(.is-inview) .pa-featured-press__head,'
+                . 'html.pa-scroll-motion #pa-featured-press:not(.is-inview) .pa-featured-press__quote,'
+                . 'html.pa-scroll-motion #pa-featured-press:not(.is-inview) .pa-featured-press__foot,'
                 . 'html.pa-scroll-motion .pa2-cta:not(.is-inview) .pa2-cta__inner'
-                . '{opacity:0;transform:translate3d(0,28px,0) scale(0.97)}'
+                . '{opacity:0;transform:translate3d(0,14px,0)}'
                 . '</style>' . "\n";
         }
 
@@ -604,7 +624,7 @@ class PA_Booking_Frontend {
                 . 'body.home .pa-glass-hero-wrap .pa-home-hero'
                 . '{background-image:url("' . $hero_mobile . '")!important;background-size:cover!important;'
                 . 'background-position:' . esc_attr($hero['position']) . '!important;background-repeat:no-repeat!important;'
-                . 'min-height:clamp(22rem,62vh,40rem)!important}'
+                . 'min-height:clamp(28rem,92svh,56rem)!important}'
                 . '@media (min-width:769px){'
                 . 'body.home .pa-home-hero.wp-block-cover.alignfull,'
                 . 'body.home .pa2-hero.pa-home-hero,'
@@ -621,8 +641,8 @@ class PA_Booking_Frontend {
                 . 'body.home .pa-ssr-conversion{position:absolute!important;width:1px!important;height:1px!important;'
                 . 'padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;'
                 . 'white-space:nowrap!important;border:0!important;pointer-events:none!important}'
-                . 'body.home.pa-home-chrome-above-hero:not(.pa-home-ready) header.wp-block-template-part:not(.pa-home-header-chrome-moved),'
-                . 'body.home.pa-home-chrome-above-hero:not(.pa-home-ready) header.pa-site-header:not(.pa-home-header-chrome-moved)'
+                . 'body.home.pa-home-chrome-overlay:not(.pa-home-ready) header.wp-block-template-part:not(.pa-home-header-chrome-moved),'
+                . 'body.home.pa-home-chrome-overlay:not(.pa-home-ready) header.pa-site-header:not(.pa-home-header-chrome-moved)'
                 . '{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;'
                 . 'overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;'
                 . 'pointer-events:none!important;visibility:hidden!important}'
@@ -630,10 +650,10 @@ class PA_Booking_Frontend {
                 . 'body.home main .wp-block-post-content>.wp-block-gallery,'
                 . 'body.home main .entry-content>.wp-block-group.alignfull.has-background'
                 . ':not(.pa-glass-hero-wrap):not(.pa2-services):not(.pa2-portfolio):not(.pa2-cta)'
-                . ':not(.pa2-reviews):not(.pa-home-closing):not(:has(.pa-home-hero)):not(:has(.pa2-hero)),'
+                . ':not(.pa2-reviews):not(.pa-featured-press):not(.pa-home-closing):not(:has(.pa-home-hero)):not(:has(.pa2-hero)),'
                 . 'body.home main .wp-block-post-content>.wp-block-group.alignfull.has-background'
                 . ':not(.pa-glass-hero-wrap):not(.pa2-services):not(.pa2-portfolio):not(.pa2-cta)'
-                . ':not(.pa2-reviews):not(.pa-home-closing):not(:has(.pa-home-hero)):not(:has(.pa2-hero)),'
+                . ':not(.pa2-reviews):not(.pa-featured-press):not(.pa-home-closing):not(:has(.pa-home-hero)):not(:has(.pa2-hero)),'
                 . 'body.home main .entry-content>.wp-block-columns,'
                 . 'body.home main .wp-block-post-content>.wp-block-columns{'
                 . 'position:absolute!important;left:-9999px!important;width:1px!important;height:1px!important;'
@@ -668,61 +688,87 @@ class PA_Booking_Frontend {
                 . '}catch(e){}})();'
                 . '</script>' . "\n";
             echo '<style id="pa-home-chrome-logo-critical">'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome{padding-top:0!important;margin-top:0!important}'
-                . 'body.home.pa-home-chrome-above-hero main .entry-content,body.home.pa-home-chrome-above-hero main .wp-block-post-content{padding-top:0!important;margin-top:0!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-brand-lockup,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-brand-lockup,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-site-logo'
+                . 'body.home.pa-home-chrome-overlay .pa-glass-hero-wrap{padding:.55rem clamp(.75rem,2.2vw,1.35rem) 1.15rem!important;box-sizing:border-box!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-glass-hero-wrap>.wp-block-cover.pa-home-hero,'
+                . 'body.home.pa-home-chrome-overlay .pa-glass-hero-wrap>.pa2-hero{position:relative;z-index:1;'
+                . 'border-radius:28px!important;border:1px solid rgba(255,255,255,.88)!important;'
+                . 'box-shadow:0 22px 56px rgba(0,0,0,.32)!important;overflow:hidden!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome{padding-top:0!important;margin-top:0!important;z-index:40!important;position:absolute!important;left:0;right:0;top:110px!important}'
+                . 'body.home.pa-home-chrome-overlay main .entry-content,body.home.pa-home-chrome-overlay main .wp-block-post-content{padding-top:0!important;margin-top:0!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-brand-lockup,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-site-logo,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .pa-brand-lockup,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .wp-block-site-logo'
                 . '{width:auto!important;max-width:100%!important;padding:0!important;background:transparent!important;box-shadow:none!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo a,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-brand-logo-wrap a,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-site-logo a,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-brand-logo-wrap a'
-                . '{display:inline-block!important;width:auto!important;max-width:min(520px,88vw)!important;'
-                . 'margin:0 auto!important;line-height:0!important;overflow:hidden!important;border-radius:16px!important;box-shadow:none!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-site-logo img,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.custom-logo,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome img.pa-brand-logo-lockup,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-site-logo img,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header img.custom-logo,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header img.pa-brand-logo-lockup'
-                . '{display:block!important;width:clamp(269px,44.8vw,384px)!important;max-width:min(384px,88vw)!important;'
-                . 'height:auto!important;max-height:none!important;border-radius:16px!important;'
-                . 'box-shadow:0 8px 22px rgba(0,0,0,.14)!important;object-fit:contain!important}'
-                /* Home nav — pill buttons on first paint (header + post-hero chrome) */
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation__container,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation__responsive-container-content,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation__container,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation__responsive-container-content'
-                . '{display:inline-flex!important;flex-wrap:wrap!important;align-items:center!important;'
-                . 'justify-content:center!important;gap:.75rem!important;padding:0!important;background:transparent!important;'
-                . 'border:none!important;box-shadow:none!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__content,'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-site-nav-pill,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation-item__content,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-site-nav-pill'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-site-logo a,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-brand-logo-wrap a,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .wp-block-site-logo a,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .pa-brand-logo-wrap a'
+                . '{display:inline-block!important;width:auto!important;max-width:min(760px,92vw)!important;'
+                . 'margin:0!important;line-height:0!important;overflow:visible!important;'
+                . 'padding:0!important;border-radius:0!important;background:transparent!important;border:0!important;box-shadow:none!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-site-logo img,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .wp-block-site-logo img,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header img.custom-logo,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header img.pa-brand-logo-lockup'
+                . '{display:block!important;width:auto!important;max-width:min(720px,84vw)!important;'
+                . 'height:auto!important;max-height:200px!important;border:0!important;border-radius:18px!important;'
+                . 'box-shadow:none!important;object-fit:contain!important;background:transparent!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__container,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__responsive-container-content,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .wp-block-navigation__container,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .wp-block-navigation__responsive-container-content'
+                . '{display:inline-flex!important;flex-wrap:nowrap!important;align-items:center!important;'
+                . 'justify-content:center!important;gap:.55rem!important;padding:0!important;'
+                . 'background:transparent!important;border:0!important;border-radius:0!important;'
+                . 'box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .pa-site-nav-pill'
                 . '{display:inline-flex!important;align-items:center!important;justify-content:center!important;'
-                . 'box-sizing:border-box!important;min-height:42px!important;padding:.5rem 1.15rem!important;'
-                . 'border-radius:9999px!important;font-size:.875rem!important;font-weight:600!important;'
+                . 'box-sizing:border-box!important;min-height:44px!important;padding:.7rem 1.35rem!important;'
+                . 'border-radius:9999px!important;font-size:.9375rem!important;font-weight:650!important;'
                 . 'letter-spacing:.01em!important;text-transform:none!important;text-decoration:none!important;'
                 . 'color:#1d1d1f!important;-webkit-text-fill-color:#1d1d1f!important;'
-                . 'background:rgba(255,255,255,.72)!important;border:1px solid rgba(0,0,0,.1)!important;'
-                . 'box-shadow:0 8px 22px rgba(15,23,42,.08),inset 0 1px 0 rgba(255,255,255,1)!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .current-menu-item .wp-block-navigation-item__content,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .current-menu-item .wp-block-navigation-item__content'
-                . '{color:#005bb5!important;-webkit-text-fill-color:#005bb5!important;'
-                . 'background:rgba(0,113,227,.14)!important;border:1px solid rgba(0,113,227,.38)!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .pa-nav-book .wp-block-navigation-item__content'
+                . 'background:#fff!important;border:1px solid #fff!important;box-shadow:0 8px 18px rgba(0,0,0,.18)!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content'
+                . '{color:#1d1d1f!important;-webkit-text-fill-color:#1d1d1f!important;'
+                . 'background:#fff!important;border:1px solid #fff!important;border-radius:9999px!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .pa-nav-book .wp-block-navigation-item__content'
                 . '{color:#fff!important;-webkit-text-fill-color:#fff!important;'
-                . 'background:#0071e3!important;border:1px solid rgba(255,255,255,.38)!important;'
-                . 'box-shadow:0 12px 32px rgba(0,113,227,.42)!important;padding-left:1.5rem!important;padding-right:1.5rem!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__label,'
-                . 'body.home.pa-home-chrome-above-hero header.pa-site-header .wp-block-navigation-item__label'
+                . 'background:#0071e3!important;border:1px solid rgba(255,255,255,.5)!important;'
+                . 'box-shadow:0 10px 28px rgba(0,113,227,.4)!important;padding-left:1.35rem!important;padding-right:1.35rem!important;font-weight:700!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__label,'
+                . 'body.home.pa-home-chrome-overlay header.pa-site-header .wp-block-navigation-item__label'
                 . '{background:transparent!important;border:none!important;box-shadow:none!important;color:inherit!important}'
-                . '@media(max-width:782px){body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome{padding-top:env(safe-area-inset-top,0)!important}'
-                . 'body.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-nav-book{flex:1 1 100%!important;width:100%!important;display:flex!important;justify-content:center!important;margin-top:.15rem!important}}'
+                . '@media(max-width:782px){'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome{top:0!important;gap:.4rem!important;'
+                . 'padding:calc(.4rem + env(safe-area-inset-top,0px)) .6rem .35rem!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-site-logo a,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-brand-logo-wrap a'
+                . '{max-width:min(148px,44vw)!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-site-logo img,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup'
+                . '{max-width:min(140px,42vw)!important;max-height:44px!important;border-radius:8px!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation__container,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-floating-pills,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill-row'
+                . '{display:flex!important;flex-wrap:wrap!important;width:100%!important;max-width:100%!important;gap:.3rem!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill'
+                . '{min-height:36px!important;padding:.35rem .7rem!important;font-size:.75rem!important}'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item,'
+                . 'body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-nav-book{flex:0 0 auto!important;width:auto!important;margin:0!important}'
+                . 'body.home.pa-home-chrome-overlay .pa2-hero,body.home.pa-home-chrome-overlay .pa-glass-hero-wrap .pa2-hero,'
+                . 'html body.home.pa-home-chrome-overlay.pa-home-shell-relocated .pa-glass-hero-wrap .pa2-hero'
+                . '{padding-top:10.5rem!important;padding-bottom:1.75rem!important;align-items:flex-end!important;justify-content:flex-end!important}'
+                . '}'
                 . '</style>' . "\n";
         }
 
@@ -737,15 +783,15 @@ class PA_Booking_Frontend {
             . 'body.pa-glass-site.home header .pa-nav-dock .wp-block-navigation-item__content,'
             . 'body.pa-glass-site.home header .pa-site-nav-pill,'
             . 'body.pa-glass-site.home .pa-home-post-hero-chrome .wp-block-navigation-item__content'
-            . '{border-radius:9999px!important;min-height:42px;padding:.5rem 1.15rem!important;'
-            . 'font-size:.875rem!important;font-weight:600!important;letter-spacing:.01em!important;text-transform:none!important}'
+            . '{border-radius:9999px!important;min-height:44px;padding:.7rem 1.35rem!important;'
+            . 'font-size:.9375rem!important;font-weight:650!important;letter-spacing:.01em!important;text-transform:none!important}'
             . 'body.pa-glass-site.home .pa-home-post-hero-chrome .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content,'
             . 'body.pa-glass-site.home header .wp-block-navigation-item:not(.pa-nav-book):not(.current-menu-item) .wp-block-navigation-item__content'
-            . '{color:#1d1d1f!important;background:rgba(255,255,255,.72)!important;'
-            . 'border:1px solid rgba(0,0,0,.1)!important;border-radius:9999px!important}'
+            . '{color:#1d1d1f!important;background:#fff!important;'
+            . 'border:1px solid #fff!important;border-radius:9999px!important;box-shadow:0 8px 18px rgba(0,0,0,.18)!important}'
             . 'body.pa-glass-site.home .pa-home-post-hero-chrome .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content,'
             . 'body.pa-glass-site.home header .current-menu-item:not(.pa-nav-book) .wp-block-navigation-item__content'
-            . '{color:#005bb5!important;background:rgba(0,113,227,.14)!important;border:1px solid rgba(0,113,227,.28)!important;border-radius:9999px!important}'
+            . '{color:#1d1d1f!important;background:#fff!important;border:1px solid #fff!important;border-radius:9999px!important}'
             . 'body.pa-glass-site.home .pa-home-post-hero-chrome .pa-nav-book .wp-block-navigation-item__content,'
             . 'body.pa-glass-site.home header .pa-nav-book .wp-block-navigation-item__content'
             . '{color:#fff!important;background:#0071e3!important;border-radius:9999px!important;border:1px solid rgba(255,255,255,.38)!important}'
@@ -1079,7 +1125,10 @@ class PA_Booking_Frontend {
                 wp_enqueue_style('pa-google-reviews', PA_BOOKING_URL . 'assets/google-reviews.css', array('pa-site-mobile'), self::asset_version('assets/google-reviews.css'));
                 wp_enqueue_script('pa-google-reviews-data', PA_BOOKING_URL . 'assets/google-reviews-data.js', array(), self::asset_version('assets/google-reviews-data.js'), true);
                 wp_enqueue_script('pa-google-reviews', PA_BOOKING_URL . 'assets/google-reviews.js', array('pa-google-reviews-data'), self::asset_version('assets/google-reviews.js'), true);
+                wp_enqueue_style('pa-featured-press', PA_BOOKING_URL . 'assets/featured-press.css', array('pa-google-reviews'), self::asset_version('assets/featured-press.css'));
+                wp_enqueue_script('pa-featured-press', PA_BOOKING_URL . 'assets/featured-press.js', array(), self::asset_version('assets/featured-press.js'), true);
                 $site_script_deps[] = 'pa-google-reviews';
+                $site_script_deps[] = 'pa-featured-press';
             }
             wp_enqueue_script('pa-site', PA_BOOKING_URL . 'assets/site.js', array_merge($site_js_deps, $site_script_deps), self::asset_version('assets/site.js'), true);
             if (is_front_page() || is_page('services')) {
@@ -1097,9 +1146,9 @@ class PA_Booking_Frontend {
                 wp_enqueue_script('pa-work', PA_BOOKING_URL . 'assets/work.js', array('pa-site', 'pa-portfolio'), self::asset_version('assets/work.js'), true);
             }
             if (is_front_page()) {
-                wp_enqueue_style('pa-home', PA_BOOKING_URL . 'assets/home.css', array('pa-site-mobile', 'pa-service-icons'), self::asset_version('assets/home.css'));
+                wp_enqueue_style('pa-home', PA_BOOKING_URL . 'assets/home.css', array('pa-site-mobile', 'pa-service-icons', 'pa-featured-press'), self::asset_version('assets/home.css'));
                 wp_enqueue_style('pa-seo-hub', PA_BOOKING_URL . 'assets/seo-hub.css', array('pa-home'), self::asset_version('assets/seo-hub.css'));
-                wp_enqueue_script('pa-home', PA_BOOKING_URL . 'assets/home.js', array('pa-site', 'pa-google-reviews', 'pa-service-icons'), self::asset_version('assets/home.js'), true);
+                wp_enqueue_script('pa-home', PA_BOOKING_URL . 'assets/home.js', array('pa-site', 'pa-google-reviews', 'pa-featured-press', 'pa-service-icons'), self::asset_version('assets/home.js'), true);
             }
             if (is_page('service-areas')) {
                 wp_enqueue_style('pa-seo-hub', PA_BOOKING_URL . 'assets/seo-hub.css', array('pa-site-mobile'), self::asset_version('assets/seo-hub.css'));
@@ -1108,6 +1157,7 @@ class PA_Booking_Frontend {
             if (is_front_page()) {
                 $glass_site_deps[] = 'pa-home';
                 $glass_site_deps[] = 'pa-google-reviews';
+                $glass_site_deps[] = 'pa-featured-press';
             }
             if (is_page('services')) {
                 $glass_site_deps[] = 'pa-services';
@@ -1135,6 +1185,7 @@ class PA_Booking_Frontend {
                 'logoUrl'  => esc_url_raw(self::logo_url()),
                 'logoDarkUrl' => esc_url_raw(self::logo_dark_url()),
                 'logoWhiteUrl' => esc_url_raw(self::logo_white_url()),
+                'logoInkUrl' => esc_url_raw(self::logo_ink_url()),
                 'assetVersion' => PA_BOOKING_VERSION,
                 'assetsBase' => esc_url_raw(PA_BOOKING_URL . 'assets/'),
                 'siteName' => $s['artist_name'] ?? 'Pennsylvania Media Arts LLC',
@@ -1187,24 +1238,33 @@ class PA_Booking_Frontend {
                 'featuredLocalVideos' => (is_front_page() || is_page('work'))
                     ? array(
                         array(
-                            'id'     => 'linkedin-reel',
-                            'src'    => PA_BOOKING_URL . 'assets/media/linkedin-reel.mp4',
-                            'poster' => PA_BOOKING_URL . 'assets/media/linkedin-reel-poster.jpg',
-                            'title'  => 'Corporate Event',
+                            'id'           => 'linkedin-reel',
+                            'src'          => PA_BOOKING_URL . 'assets/media/linkedin-reel.mp4',
+                            'poster'       => PA_BOOKING_URL . 'assets/media/linkedin-reel-poster.jpg',
+                            'title'        => 'Corporate Event',
+                            'captions'     => PA_BOOKING_URL . 'assets/media/captions/linkedin-reel.en.vtt',
+                            'descriptions' => PA_BOOKING_URL . 'assets/media/captions/linkedin-reel.desc.vtt',
+                            'description'  => 'A panel of three people sits in white armchairs on a stage. The film then shows audience members seated at tables.',
                         ),
                         array(
-                            'id'        => 'community-engagement',
-                            'src'       => PA_BOOKING_URL . 'assets/media/community-engagement.mp4',
-                            'poster'    => PA_BOOKING_URL . 'assets/media/community-engagement-poster.jpg',
-                            'title'     => 'Community Engagement',
-                            'youtubeId' => 'vLgDQyhEkUY',
+                            'id'           => 'community-engagement',
+                            'src'          => PA_BOOKING_URL . 'assets/media/community-engagement.mp4',
+                            'poster'       => PA_BOOKING_URL . 'assets/media/community-engagement-poster.jpg',
+                            'title'        => 'Community Engagement',
+                            'youtubeId'    => 'vLgDQyhEkUY',
+                            'captions'     => PA_BOOKING_URL . 'assets/media/captions/community-engagement.en.vtt',
+                            'descriptions' => PA_BOOKING_URL . 'assets/media/captions/community-engagement.desc.vtt',
+                            'description'  => 'The film opens on the Endless Mountains Health Systems building, with on-screen text reading Caring for the Commonwealth. It then cuts to an interview with a man in a navy sweater inside the building.',
                         ),
                         array(
-                            'id'        => 'business-profile',
-                            'src'       => PA_BOOKING_URL . 'assets/media/business-profile.mp4',
-                            'poster'    => PA_BOOKING_URL . 'assets/media/business-profile-poster.jpg',
-                            'title'     => 'Business Profile',
-                            'youtubeId' => 'clhVBCiPmUQ',
+                            'id'           => 'business-profile',
+                            'src'          => PA_BOOKING_URL . 'assets/media/business-profile.mp4',
+                            'poster'       => PA_BOOKING_URL . 'assets/media/business-profile-poster.jpg',
+                            'title'        => 'Business Profile',
+                            'youtubeId'    => 'clhVBCiPmUQ',
+                            'captions'     => PA_BOOKING_URL . 'assets/media/captions/business-profile.en.vtt',
+                            'descriptions' => PA_BOOKING_URL . 'assets/media/captions/business-profile.desc.vtt',
+                            'description'  => 'The film shows a wall sign reading Sensory Sea Adventure and Rehabilitation Services, with on-screen text Caring for the Commonwealth. Later, a child in a gray shirt and blue glasses holds an adult\'s hand.',
                         ),
                     )
                     : array(),
@@ -1346,7 +1406,7 @@ class PA_Booking_Frontend {
         $tagline = esc_html($s['tagline'] ?? '');
         ob_start();
         ?>
-        <div id="pa-book" class="pa-booking-root pa-booking-v4 pa-booking-premium pa-booking-root--wizard alignwide" aria-label="Book <?php echo $artist; ?>">
+        <div id="pa-book" class="pa-booking-root pa-booking-v4 pa-booking-premium pa-booking-root--wizard alignwide" role="region" aria-label="Book <?php echo $artist; ?>">
             <div class="pa-booking-trust-rail" role="list" aria-label="Booking reassurance">
                 <span class="pa-credential-item" role="listitem">
                     <span class="pa-credential-icon" aria-hidden="true">✓</span>
@@ -1372,9 +1432,9 @@ class PA_Booking_Frontend {
             <p class="pa-booking-help-email">Questions before you book? Email <a href="mailto:<?php echo esc_attr($help_email); ?>"><?php echo esc_html($help_email); ?></a></p>
             <?php endif; ?>
 
-            <header class="pa-booking-hero" hidden aria-hidden="true">
+            <header class="pa-booking-hero">
                 <p class="pa-booking-eyebrow">Pennsylvania Media Arts · Online booking</p>
-                <h2 class="pa-booking-title">Reserve your production date</h2>
+                <h1 class="pa-booking-title">Reserve your production date</h1>
                 <p class="pa-booking-lead pa-booking-lead--hero">
                     <?php if ($tagline) : ?>
                         <?php echo $tagline; ?>
@@ -1519,7 +1579,7 @@ class PA_Booking_Frontend {
             <?php if ($paid) : ?>
                 <div class="pa-success-icon" aria-hidden="true">✓</div>
                 <p class="pa-success-eyebrow">Deposit confirmed</p>
-                <h2>You're on the calendar</h2>
+                <h1>You're on the calendar</h1>
                 <p class="pa-success-lead">Thank you — your date is held while we review the details. A personal confirmation from <?php echo $artist; ?> arrives within one business day.</p>
                 <ol class="pa-success-steps pa-success-timeline">
                     <li class="is-complete"><strong>Today</strong><span>Deposit received — your dates are reserved on our calendar</span></li>
@@ -1538,7 +1598,7 @@ class PA_Booking_Frontend {
             <?php elseif ($awaiting_paylink) : ?>
                 <div class="pa-success-icon" aria-hidden="true">→</div>
                 <p class="pa-success-eyebrow">One more step</p>
-                <h2>Complete your deposit</h2>
+                <h1>Complete your deposit</h1>
                 <p class="pa-success-lead">Your booking details are saved. Pay the deposit in GoDaddy’s secure checkout — we verify every payment in GoDaddy Payments and email you within one business day once your date is held.</p>
                 <div id="pa-paylink-popup-hint" class="pa-paylink-popup-hint" hidden>
                     <p>Your browser blocked the checkout window. Use the button below to open secure checkout.</p>
@@ -1550,14 +1610,14 @@ class PA_Booking_Frontend {
                 </ol>
                 <div class="pa-done-actions">
                     <?php if ($paylink_checkout) : ?>
-                    <a class="pa-booking-cta pa-booking-cta-primary wp-element-button" id="pa-paylink-checkout-btn" href="<?php echo esc_url($paylink_checkout); ?>" target="_blank" rel="noopener noreferrer">Open secure checkout</a>
+                    <a class="pa-booking-cta pa-booking-cta-primary wp-element-button" id="pa-paylink-checkout-btn" href="<?php echo esc_url($paylink_checkout); ?>" target="_blank" rel="noopener noreferrer">Open secure checkout<span class="pa-new-tab-hint"> (opens in a new tab)</span></a>
                     <?php endif; ?>
                     <a class="pa-booking-cta pa-booking-cta-secondary" href="<?php echo esc_url(home_url('/')); ?>">Back to site</a>
                 </div>
             <?php elseif ($requested) : ?>
                 <div class="pa-success-icon" aria-hidden="true">✓</div>
                 <p class="pa-success-eyebrow">Request submitted</p>
-                <h2>We received your booking</h2>
+                <h1>We received your booking</h1>
                 <p class="pa-success-lead">Thank you — we personally review every request. Expect a confirmation from <?php echo $artist; ?> within one business day.</p>
                 <ol class="pa-success-steps pa-success-timeline">
                     <li class="is-complete"><strong>Today</strong><span>Booking request received</span></li>
@@ -1574,11 +1634,11 @@ class PA_Booking_Frontend {
                     <a class="pa-booking-cta pa-booking-cta-secondary" href="<?php echo esc_url(home_url('/')); ?>">Back to site</a>
                 </div>
             <?php else : ?>
-                <h2>Processing your payment…</h2>
+                <h1>Processing your payment…</h1>
                 <p class="pa-success-lead">If you completed checkout, check your email for confirmation. Need help? Email <a href="mailto:<?php echo esc_attr($email); ?>"><?php echo $email; ?></a>.</p>
             <?php endif; ?>
             <p class="pa-success-contact"><a href="mailto:<?php echo esc_attr($email); ?>"><?php echo $email; ?></a></p>
-            <p class="pa-success-timezone-note" style="font-size:0.875rem;color:#737373;margin-top:1rem;">All times shown are Eastern Time (Pennsylvania).</p>
+            <p class="pa-success-timezone-note" style="font-size:0.875rem;color:#3a3a3c;margin-top:1rem;">All times shown are Eastern Time (Pennsylvania).</p>
         </div>
         <script>
         (function () {

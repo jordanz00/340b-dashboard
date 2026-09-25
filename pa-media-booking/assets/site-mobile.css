@@ -833,6 +833,8 @@
 
   body.home .pa2-portfolio,
   body.home .pa2-cta,
+  body.home .pa2-reviews,
+  body.home .pa-featured-press,
   body.pa-services-page .pa2-svc-hero,
   body.pa-services-page .pa2-svc-grid-section,
   body.pa-services-page .pa2-svc-foot {
@@ -890,27 +892,27 @@
   }
 
   body.home .pa2-cinema__strip {
-    display: flex;
-    flex-wrap: nowrap !important;
-    justify-content: stretch;
-    align-items: stretch;
-    gap: 0.4rem;
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.45rem;
     width: 100%;
     margin-left: 0;
     margin-right: 0;
-    overflow-x: auto;
+    overflow: visible;
   }
 
   body.home .pa2-cinema__thumb {
-    flex: 1 1 0 !important;
+    flex: none !important;
     min-width: 0 !important;
-    width: auto !important;
+    width: 100% !important;
+    min-height: 52px;
+    aspect-ratio: 16 / 9;
   }
 
   body.home .pa2-cinema__thumb-label {
-    padding: 0.95rem 0.28rem 0.26rem;
-    font-size: 0.55rem;
-    letter-spacing: 0.005em;
+    padding: 1.1rem 0.4rem 0.3rem;
+    font-size: 0.625rem;
+    letter-spacing: 0.01em;
     -webkit-line-clamp: 2;
     line-clamp: 2;
     white-space: normal;
@@ -1071,12 +1073,12 @@
   body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
   body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header.pa-site-header img.custom-logo.pa-brand-logo-lockup {
     width: auto !important;
-    height: clamp(126px, 33.75vw, 162px) !important;
-    max-width: min(46vw, 285px) !important;
-    max-height: 162px !important;
+    height: auto !important;
+    max-width: min(140px, 42vw) !important;
+    max-height: 44px !important;
     margin: 0 auto !important;
-    border-radius: var(--pa-badge-tile-radius, 16px) !important;
-    box-shadow: var(--pa-badge-tile-shadow, 0 8px 26px rgba(0, 0, 0, 0.4)) !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
     object-fit: contain !important;
   }
 
@@ -1085,11 +1087,17 @@
   body.home.pa-home-header-pro header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
   body.home.pa-home-header-pro header.pa-site-header img.custom-logo.pa-brand-logo-lockup-white,
   body.home.pa-home-header-pro header.pa-site-header img.pa-brand-logo-lockup,
-  body.home.pa-home-header-pro header.pa-site-header img.pa-brand-logo-lockup-white {
-    width: clamp(320px, 88vw, 672px) !important;
-    max-width: min(672px, 94vw) !important;
+  body.home.pa-home-header-pro header.pa-site-header img.pa-brand-logo-lockup-white,
+  body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.custom-logo,
+  body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup,
+  body.home.pa-home-chrome-overlay .pa-home-post-hero-chrome img.pa-brand-logo-lockup-white {
+    width: auto !important;
+    max-width: min(140px, 42vw) !important;
     height: auto !important;
-    max-height: none !important;
+    max-height: 44px !important;
+    border-radius: 8px !important;
+    border: 0 !important;
+    box-shadow: none !important;
   }
 
   body.pa-marketing-nav:not(.home) header.pa-site-header .pa-nav-floating-pills .wp-block-navigation-item__content,
@@ -1101,7 +1109,59 @@
     border-radius: 10px !important;
   }
 
-  /* Home chrome mobile nav — see home.css @782px (wrapped rows + Book on own line) */
+  /* Home chrome mobile nav — wrapped glass pills, 44px targets */
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .pa-site-nav-pill-row,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .wp-block-navigation__container,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .pa-nav-floating-pills,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .pa-nav-dock {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    grid-template-columns: none !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 0.3rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+  }
+
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .wp-block-navigation-item,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .pa-nav-book {
+    grid-column: auto !important;
+    width: auto !important;
+    max-width: none !important;
+    margin: 0 !important;
+    flex: 0 0 auto !important;
+  }
+
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .wp-block-navigation-item__content,
+  body.pa-glass-site.home.pa-home-header-pro.pa-home-chrome-overlay
+    .pa-home-post-hero-chrome
+    .pa-site-nav-pill {
+    width: auto !important;
+    justify-content: center !important;
+    min-height: 36px !important;
+    padding: 0.35rem 0.7rem !important;
+    font-size: 0.75rem !important;
+    border-radius: 9999px !important;
+  }
 }
 
 /* ===================================================== MOBILE BOOK BAR (conversion) */
@@ -1147,6 +1207,7 @@
     border-radius: 10px;
     background: #0071e3;
     color: #fff !important;
+    -webkit-text-fill-color: #fff !important;
     font-size: 0.875rem;
     font-weight: 600;
     letter-spacing: 0.01em;

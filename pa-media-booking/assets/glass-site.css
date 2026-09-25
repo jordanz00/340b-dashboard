@@ -180,8 +180,8 @@ body.pa-glass-site.home.pa-home-header-pro header.wp-block-template-part .pa-hom
 }
 
 /* Home chrome: polished pill nav on white band (matches footer dock) */
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .wp-block-navigation-item__content,
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-site-nav-pill {
+body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,
+body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill {
   min-height: var(--pa-nav-pill-min-height, 42px) !important;
   min-width: auto !important;
   padding: var(--pa-nav-pill-padding, 0.5rem 1.15rem) !important;
@@ -199,6 +199,15 @@ body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .pa-
   -webkit-text-fill-color: rgba(29, 29, 31, 0.9) !important;
 }
 
+@media (max-width: 782px) {
+  body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .wp-block-navigation-item__content,
+  body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .pa-site-nav-pill {
+    min-height: 36px !important;
+    padding: 0.35rem 0.7rem !important;
+    font-size: 0.75rem !important;
+  }
+}
+
 body.pa-glass-site.home.pa-home-header-pro .alignfull.has-foreground-color:has(.wp-block-navigation),
 body.pa-glass-site.home.pa-home-header-pro .wp-block-group.alignfull.has-foreground-color {
   background: transparent !important;
@@ -208,19 +217,19 @@ body.pa-glass-site.home.pa-home-header-pro .wp-block-group.alignfull.has-foregro
   box-shadow: none !important;
 }
 
-body.pa-glass-site.home.pa-home-chrome-above-hero.pa-home-header-pro .pa-home-post-hero-chrome .pa-home-header-shell,
-body.pa-glass-site.home.pa-home-chrome-above-hero .pa-home-post-hero-chrome .alignfull.has-foreground-color:has(.wp-block-navigation) {
+body.pa-glass-site.home.pa-home-chrome-overlay.pa-home-header-pro .pa-home-post-hero-chrome .pa-home-header-shell,
+body.pa-glass-site.home.pa-home-chrome-overlay .pa-home-post-hero-chrome .alignfull.has-foreground-color:has(.wp-block-navigation) {
   position: relative !important;
   top: auto !important;
   z-index: 1 !important;
   margin-top: 0 !important;
 }
 
-body.pa-glass-site.home.pa-home-chrome-above-hero.pa-home-shell-relocated main .pa-glass-hero-wrap {
+body.pa-glass-site.home.pa-home-chrome-overlay.pa-home-shell-relocated main .pa-glass-hero-wrap {
   margin-top: 0 !important;
 }
 
-body.pa-glass-site.home.pa-home-shell-relocated:not(.pa-home-chrome-above-hero) main .pa-glass-hero-wrap {
+body.pa-glass-site.home.pa-home-shell-relocated:not(.pa-home-chrome-overlay) main .pa-glass-hero-wrap {
   margin-top: calc(-1 * clamp(7.5rem, 20vw, 10.5rem)) !important;
   position: relative !important;
   z-index: 1 !important;
@@ -238,6 +247,13 @@ body.pa-glass-site.home.pa-home-ready main .entry-content > section + section {
   margin-top: clamp(0.5rem, 1.5vw, var(--pa2-section-gap-max, 1.25rem));
 }
 
+body.pa-glass-site.home.pa-home-ready #pa2-reviews + .pa-featured-press,
+body.pa-glass-site.home.pa-home-ready .pa2-reviews + .pa-featured-press {
+  margin-top: clamp(1rem, 2.5vw, 1.5rem) !important;
+}
+
+body.pa-glass-site.home.pa-home-ready #pa-featured-press + .pa-home-closing,
+body.pa-glass-site.home.pa-home-ready .pa-featured-press + .pa2-cta,
 body.pa-glass-site.home.pa-home-ready #pa2-reviews + .pa-home-closing,
 body.pa-glass-site.home.pa-home-ready .pa2-reviews + .pa2-cta {
   margin-top: clamp(1.25rem, 3vw, 1.75rem) !important;
@@ -351,8 +367,8 @@ body.pa-glass-site.pa-marketing-nav.pa-geo-landing-page:not(.pa-booking-page) he
   -webkit-backdrop-filter: none !important;
   border: none !important;
   box-shadow: none !important;
-  padding: clamp(0.85rem, 2.5vw, 1.35rem) clamp(1rem, 4vw, 2rem) !important;
-  padding-top: max(clamp(0.85rem, 2.5vw, 1.35rem), env(safe-area-inset-top, 0px)) !important;
+  padding: 0.55rem clamp(1rem, 4vw, 2rem) !important;
+  padding-top: max(0.55rem, env(safe-area-inset-top, 0px)) !important;
   color: var(--pa2-ink, #1d1d1f) !important;
   display: flex !important;
   justify-content: center !important;
@@ -364,6 +380,27 @@ body.pa-glass-site.pa-work-page main .pa2-work-page,
 body.pa-glass-site.pa-about-page main .entry-content,
 body.pa-glass-site.pa-contact-page main .pa-contact-book {
   scroll-margin-top: calc(5rem + env(safe-area-inset-top, 0px));
+}
+
+/* Collapse unused logo lockup on interior pages — it was leaving a dead gray band. */
+body.pa-glass-site.pa-marketing-nav:not(.home):not(.pa-booking-page) header .pa-brand-lockup,
+body.pa-glass-site.pa-marketing-nav:not(.home):not(.pa-booking-page) header .wp-block-group:has(> .wp-block-site-logo),
+body.pa-glass-site.pa-interior-compact-nav:not(.home):not(.pa-booking-page) header .pa-brand-lockup {
+  display: none !important;
+  height: 0 !important;
+  max-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+}
+
+body.pa-glass-site.pa-marketing-nav:not(.home):not(.pa-booking-page) header.pa-site-header > .wp-block-group,
+body.pa-glass-site.pa-marketing-nav:not(.home):not(.pa-booking-page) header.wp-block-template-part > .wp-block-group {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  margin: 0 !important;
 }
 
 /* —— Contact page: glass panel + booking-blue CTAs —— */
@@ -519,15 +556,15 @@ body.pa-glass-site .pa-site-bottom-nav {
   display: none !important;
 }
 
-/* —— Hero: floating glass shell + true viewport centering —— */
+/* —— Hero: full-bleed cinematic stage —— */
 body.home.pa-glass-site.pa-ios-ui .pa-glass-hero-wrap {
   position: relative !important;
-  left: 50% !important;
-  width: 100vw !important;
-  max-width: 100vw !important;
-  margin: 0.5rem 0 0 !important;
-  padding: 0 clamp(0.65rem, 2.5vw, 1rem) !important;
-  transform: translateX(-50%) !important;
+  left: auto !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  transform: none !important;
   box-sizing: border-box !important;
 }
 
@@ -535,10 +572,10 @@ body.home.pa-glass-site.pa-ios-ui .pa-glass-hero-wrap {
   body.pa-glass-site.home .pa2-hero,
   body.pa-glass-site.home .pa-glass-hero-wrap .pa2-hero {
     margin: 0 !important;
-    border-radius: var(--pa-ios-radius-xl, 28px) !important;
-    border: 1px solid rgba(255, 255, 255, 0.22) !important;
-    box-shadow: var(--pa-ios-shadow-lg, var(--pa-ios-shadow)) !important;
-    min-height: clamp(18rem, 50vh, 34rem) !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    min-height: clamp(28rem, 92svh, 56rem) !important;
     overflow: hidden !important;
     width: 100% !important;
     max-width: none !important;
@@ -671,6 +708,14 @@ body.pa-glass-site .pa2-work-hero,
 body.pa-glass-site .pa2-work-page,
 body.pa-glass-site .pa-home-closing {
   background: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+/* Featured press keeps its own pastel + liquid-glass shell (see featured-press.css) */
+body.pa-glass-site .pa-featured-press {
   backdrop-filter: none !important;
   -webkit-backdrop-filter: none !important;
   border: none !important;
@@ -993,7 +1038,7 @@ body.pa-glass-site .pa2-svc-card__btn--primary {
 
 /* —— Reviews carousel —— */
 body.pa-glass-site .pa2-reviews__nav,
-body.pa-glass-site .pa2-reviews__dot {
+body.pa-glass-site .pa2-reviews__pause {
   background: var(--pa-ios-fill) !important;
   backdrop-filter: var(--pa-ios-blur-light) !important;
   -webkit-backdrop-filter: var(--pa-ios-blur-light) !important;
@@ -1002,9 +1047,22 @@ body.pa-glass-site .pa2-reviews__dot {
   box-shadow: var(--pa-ios-shadow-sm) !important;
 }
 
+body.pa-glass-site .pa2-reviews__dot {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px !important;
+  min-height: 44px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
 body.pa-glass-site .pa2-reviews__dot.is-active {
-  background: var(--pa2-ink, #1d1d1f) !important;
-  border-color: var(--pa2-ink, #1d1d1f) !important;
+  background: transparent !important;
+  border-color: transparent !important;
 }
 
 /* —— Portfolio filters: iOS segmented control —— */
@@ -1096,6 +1154,8 @@ body.pa-glass-site .pa-gallery-lightbox-thumb.is-active {
 
   body.pa-glass-site.pa-has-mobile-book-bar .pa-mobile-book-bar__btn {
     box-shadow: 0 8px 24px rgba(0, 113, 227, 0.32), inset 0 1px 0 rgba(255, 255, 255, 0.22) !important;
+    color: #ffffff !important;
+    -webkit-text-fill-color: #ffffff !important;
   }
 }
 
@@ -2050,6 +2110,16 @@ body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-links a:focu
   opacity: 0.88;
 }
 
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-footer-contact a,
+body.pa-glass-site footer.pa-site-footer.pa-footer--scape .pa-legal-links a {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0.5rem 0.35rem;
+  line-height: 1.2 !important;
+}
+
 body.pa-glass-site footer.wp-block-template-part > .wp-block-group,
 body.pa-glass-site footer.pa-site-footer > .wp-block-group {
   width: 100%;
@@ -2420,8 +2490,20 @@ body.pa-glass-site .pa-gallery-lightbox-nav:focus-visible {
   width: auto;
   height: auto;
   overflow: visible;
-  outline: 3px solid #0071e3;
+  outline: 3px solid #004f99;
   outline-offset: 2px;
+}
+
+.pa-new-tab-hint {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
 }
 
 /* Crawlable home CTAs — real <a> for bots; sr-only by default (no plain-text flash). */

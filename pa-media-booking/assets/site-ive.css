@@ -11,7 +11,7 @@
 body.wp-theme-gutenify-photography,
 body.pa-glass-site {
   --iv-site-ink: #1d1d1f;
-  --iv-site-secondary: #6e6e73;
+  --iv-site-secondary: #3a3a3c;
   --iv-site-tertiary: #86868b;
   --iv-site-hairline: #d2d2d7;
   --iv-site-canvas: #f5f5f7;
@@ -20,7 +20,7 @@ body.pa-glass-site {
 
   /* Refine shared tokens toward the Apple palette */
   --pa-site-ink: #1d1d1f;
-  --pa-site-muted: #6e6e73;
+  --pa-site-muted: #3a3a3c;
   --pa-site-accent: #1d1d1f;
   --pa-site-radius: 20px;
 }
@@ -63,18 +63,25 @@ body.pa-glass-site h3 {
 
 /* ============================================================== HERO ===== */
 body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-eyebrow,
-body.home.pa-glass-site .pa-home-hero .pa-hero-eyebrow {
-  font-weight: 600 !important;
-  letter-spacing: 0.02em !important;
-  text-transform: none !important;
-  color: var(--iv-site-tertiary) !important;
+body.home.pa-glass-site .pa-home-hero .pa-hero-eyebrow,
+body.home.wp-theme-gutenify-photography .pa2-hero__eyebrow,
+body.home.pa-glass-site .pa2-hero__eyebrow {
+  font-weight: 700 !important;
+  letter-spacing: 0.14em !important;
+  text-transform: uppercase !important;
+  white-space: nowrap !important;
+  color: #fff !important;
 }
 
 body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-title,
-body.home.pa-glass-site .pa-home-hero .pa-hero-title {
-  font-weight: 700 !important;
-  letter-spacing: -0.03em !important;
-  line-height: 1.04 !important;
+body.home.pa-glass-site .pa-home-hero .pa-hero-title,
+body.home.wp-theme-gutenify-photography .pa2-hero__title,
+body.home.pa-glass-site .pa2-hero__title {
+  font-weight: 800 !important;
+  letter-spacing: -0.035em !important;
+  line-height: 1.15 !important;
+  white-space: nowrap !important;
+  color: #fff !important;
 }
 
 body.home.wp-theme-gutenify-photography .pa-home-hero .pa-hero-lead,
@@ -167,11 +174,15 @@ body.pa-glass-site header.pa-site-header .pa-site-nav-pill {
 }
 
 /* Continuous-corner radius on glass cards/surfaces */
-body.wp-theme-gutenify-photography .pa-services-card,
-body.pa-glass-site .pa-services-card,
 body.wp-theme-gutenify-photography .pa-services-book,
 body.pa-glass-site .pa-services-book {
   border-radius: var(--pa-site-radius) !important;
+}
+
+/* Service rows inside the offerings panel stay flat (stacked list) */
+body.wp-theme-gutenify-photography .pa-services-offerings .pa-services-card,
+body.pa-glass-site .pa-services-offerings .pa-services-card {
+  border-radius: 0 !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -182,32 +193,513 @@ body.pa-glass-site .pa-services-book {
   }
 }
 
-/* ============================================================ LOGO ===== */
-/* Official square mark — use as-is (no transparency / recolor processing). */
-body.wp-theme-gutenify-photography header .wp-block-site-logo img.pa-brand-logo-lockup,
-body.pa-glass-site header .wp-block-site-logo img.pa-brand-logo-lockup,
-body.wp-theme-gutenify-photography header img.custom-logo.pa-brand-logo-lockup,
-body.pa-glass-site header img.custom-logo.pa-brand-logo-lockup,
-body.wp-theme-gutenify-photography .wp-block-navigation__responsive-container img.pa-brand-logo-lockup,
-body.pa-glass-site .wp-block-navigation__responsive-container img.pa-brand-logo-lockup {
-  width: clamp(76px, 18vw, 96px) !important;
+/* Footer lockup — white variant, unchanged size */
+body.wp-theme-gutenify-photography footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+body.pa-glass-site footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+body.wp-theme-gutenify-photography footer img.custom-logo.pa-brand-logo-lockup-white,
+body.pa-glass-site footer img.custom-logo.pa-brand-logo-lockup-white {
+  width: min(200px, 64vw) !important;
   height: auto !important;
-  max-width: 96px !important;
+  max-width: min(200px, 64vw) !important;
   max-height: none !important;
   object-fit: contain !important;
   filter: none !important;
   border-radius: 0 !important;
 }
 
-body.wp-theme-gutenify-photography footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+/* ======================================================== PORTFOLIO ===== */
+body.pa-has-portfolio-showcase .pa-portfolio-showcase {
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-hint {
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  font-size: 0.78rem !important;
+  color: var(--iv-site-tertiary, #737373) !important;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-tile {
+  border-radius: var(--pa-site-radius, 16px) !important;
+  box-shadow: 0 10px 28px rgba(17, 17, 17, 0.1) !important;
+}
+
+body.pa-has-portfolio-showcase .pa-portfolio-filter.is-active {
+  background: var(--iv-site-ink, #111) !important;
+}
+
+/* ============================================ NEW PAMA BADGE (2026) ===== */
+/* Shared badge tile — header matches .pa-footer-brand-logo treatment.   */
+
+body.wp-theme-gutenify-photography,
+body.pa-glass-site {
+  --pa-badge-tile-radius: 16px;
+  --pa-badge-tile-shadow: 0 8px 26px rgba(0, 0, 0, 0.4);
+}
+
+/* The 2026 logo is a badge (~1.69:1), not a wide wordmark. Size it by     */
+/* HEIGHT site-wide so it stays tasteful in the header, footer, and the    */
+/* mobile nav drawer, with a clean rounded tile.                            */
+
+/* Header badge — high-specificity selectors so this beats the legacy
+   wide-wordmark sizing in site.css (which set width:95vw and overflowed
+   the header on mobile). Sized by HEIGHT and centered. */
+body.pa-glass-site header.pa-site-header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+body.pa-glass-site header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
+body.pa-glass-site header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+body.pa-glass-site header .wp-block-site-logo img.pa-brand-logo-lockup,
+body.pa-glass-site header img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header.pa-site-header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header .wp-block-site-logo img.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography header img.custom-logo.pa-brand-logo-lockup {
+  width: auto !important;
+  height: clamp(72px, 18vw, 320px) !important;
+  max-width: min(92vw, 680px) !important;
+  max-height: 320px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  display: block !important;
+  border-radius: var(--pa-badge-tile-radius) !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  filter: none !important;
+  box-shadow: var(--pa-badge-tile-shadow) !important;
+  overflow: hidden !important;
+}
+
+@media (max-width: 782px) {
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header.pa-site-header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo img.pa-brand-logo-lockup,
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header img.custom-logo.pa-brand-logo-lockup,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header.pa-site-header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header.pa-site-header img.custom-logo.pa-brand-logo-lockup,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo img.custom-logo.pa-brand-logo-lockup,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo img.pa-brand-logo-lockup,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header img.custom-logo.pa-brand-logo-lockup {
+    width: auto !important;
+    height: auto !important;
+    max-width: min(140px, 42vw) !important;
+    max-height: 44px !important;
+    margin: 0 auto !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo a,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header .wp-block-site-logo a,
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header a.custom-logo-link,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header a.custom-logo-link,
+  body.pa-glass-site:not(.pa-booking-page):not(.is-booking-funnel) header .pa-brand-logo-wrap a,
+  body.wp-theme-gutenify-photography:not(.pa-booking-page):not(.is-booking-funnel) header .pa-brand-logo-wrap a {
+    display: inline-block !important;
+    width: fit-content !important;
+    max-width: min(46vw, 285px) !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    line-height: 0 !important;
+    border-radius: var(--pa-badge-tile-radius) !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+  }
+}
+
+/* Rounded tile on the header logo link — matches .pa-footer-brand-link */
+body.pa-glass-site header .wp-block-site-logo a,
+body.wp-theme-gutenify-photography header .wp-block-site-logo a,
+body.pa-glass-site header a.custom-logo-link,
+body.wp-theme-gutenify-photography header a.custom-logo-link,
+body.pa-glass-site header .pa-brand-logo-wrap a,
+body.wp-theme-gutenify-photography header .pa-brand-logo-wrap a {
+  display: inline-block !important;
+  line-height: 0 !important;
+  border-radius: var(--pa-badge-tile-radius) !important;
+  overflow: hidden !important;
+  box-shadow: none !important;
+}
+
+/* Center the logo wrapper itself so the badge sits dead-center in the header */
+body.pa-glass-site header .wp-block-site-logo.pa-brand-logo-wrap,
+body.pa-glass-site header .wp-block-site-logo,
+body.wp-theme-gutenify-photography header .wp-block-site-logo.pa-brand-logo-wrap,
+body.wp-theme-gutenify-photography header .wp-block-site-logo {
+  margin-left: auto !important;
+  margin-right: auto !important;
+  text-align: center !important;
+}
+
+/* Footer badge — dark footer; the bright PA state reads cleanly */
 body.pa-glass-site footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
-body.wp-theme-gutenify-photography footer img.custom-logo.pa-brand-logo-lockup-white,
-body.pa-glass-site footer img.custom-logo.pa-brand-logo-lockup-white {
-  width: clamp(68px, 16vw, 84px) !important;
-  height: auto !important;
-  max-width: 84px !important;
-  max-height: none !important;
+body.pa-glass-site footer img.custom-logo.pa-brand-logo-lockup-white,
+body.wp-theme-gutenify-photography footer .wp-block-site-logo img.pa-brand-logo-lockup-white,
+body.wp-theme-gutenify-photography footer img.custom-logo.pa-brand-logo-lockup-white {
+  width: auto !important;
+  height: 68px !important;
+  max-width: 72vw !important;
+  max-height: 68px !important;
+  border-radius: 14px !important;
   object-fit: contain !important;
   filter: none !important;
-  border-radius: 0 !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.35) !important;
+}
+
+/* Mobile nav drawer badge */
+body.pa-glass-site .wp-block-navigation__responsive-container .wp-block-site-logo img.pa-brand-logo-lockup,
+body.pa-glass-site .wp-block-navigation__responsive-container img.custom-logo.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography .wp-block-navigation__responsive-container .wp-block-site-logo img.pa-brand-logo-lockup,
+body.wp-theme-gutenify-photography .wp-block-navigation__responsive-container img.custom-logo.pa-brand-logo-lockup {
+  width: auto !important;
+  height: clamp(128px, 32vw, 192px) !important;
+  max-width: 92vw !important;
+  border-radius: 16px !important;
+  object-fit: contain !important;
+}
+
+/* Custom footer brand badge (built by site.js → injectLegalFooter) */
+.pa-footer-brand {
+  display: flex !important;
+  justify-content: center !important;
+  margin: 0 0 1.5rem !important;
+}
+
+body.wp-theme-gutenify-photography .pa-legal-footer .pa-footer-brand,
+body.pa-glass-site .pa-legal-footer .pa-footer-brand {
+  margin: 0 0 0.85rem !important;
+  padding-top: 0.15rem;
+}
+
+.pa-footer-brand-link {
+  display: inline-block !important;
+  line-height: 0 !important;
+  border-radius: var(--pa-badge-tile-radius) !important;
+  overflow: hidden !important;
+}
+
+.pa-footer-brand-logo {
+  display: block !important;
+  width: auto !important;
+  height: clamp(64px, 11vw, 92px) !important;
+  max-width: min(280px, 80vw) !important;
+  border-radius: var(--pa-badge-tile-radius) !important;
+  object-fit: contain !important;
+  box-shadow: var(--pa-badge-tile-shadow) !important;
+}
+
+/* ================================================= VIDEO PORTFOLIO ====== */
+/* Professional film gallery built from the @PAMediaArts reel. Tiles are    */
+/* cinematic 16:9 thumbnails; tapping opens a full-screen player.           */
+
+body.pa-has-portfolio-showcase .pa-portfolio-showcase--video {
+  width: min(1180px, calc(100vw - 1.5rem)) !important;
+  max-width: 1180px !important;
+}
+
+body.pa-has-portfolio-showcase .pa-video-grid {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 16px !important;
+  width: 100% !important;
+}
+
+@media (max-width: 900px) {
+  body.pa-has-portfolio-showcase .pa-video-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 12px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  body.pa-has-portfolio-showcase .pa-video-grid {
+    grid-template-columns: 1fr !important;
+    gap: 14px !important;
+  }
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: var(--pa-site-radius, 16px);
+  background: #0b0d12;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  cursor: pointer;
+  box-shadow: 0 10px 28px rgba(17, 17, 17, 0.12);
+  opacity: 0;
+  transform: translate3d(0, var(--pa-reveal-offset), 0);
+  transition:
+    opacity var(--pa-reveal-duration) var(--pa-reveal-ease),
+    transform var(--pa-reveal-duration) var(--pa-reveal-ease),
+    box-shadow 0.22s ease;
+  transition-delay: calc(min(var(--pa-tile-i, 0), 11) * var(--pa-reveal-stagger));
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile.is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1);
+  transition: transform 0.65s var(--pa-reveal-ease);
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile:hover,
+body.pa-has-portfolio-showcase .pa-video-tile:focus-visible {
+  box-shadow: 0 18px 44px rgba(17, 17, 17, 0.22);
+  z-index: 1;
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile:hover .pa-video-tile-img,
+body.pa-has-portfolio-showcase .pa-video-tile:focus-visible .pa-video-tile-img {
+  transform: scale(1.05);
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 3px;
+}
+
+/* Play affordance — always visible so tiles read clearly as films */
+body.pa-has-portfolio-showcase .pa-video-tile-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 64px;
+  height: 64px;
+  transform: translate(-50%, -50%) scale(1);
+  border-radius: 999px;
+  background: rgba(12, 14, 18, 0.55);
+  border: 2px solid rgba(255, 255, 255, 0.92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.25s ease, background 0.25s ease;
+  pointer-events: none;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile:hover .pa-video-tile-play,
+body.pa-has-portfolio-showcase .pa-video-tile:focus-visible .pa-video-tile-play {
+  transform: translate(-50%, -50%) scale(1.08);
+  background: rgba(12, 14, 18, 0.72);
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile-play-icon {
+  width: 0;
+  height: 0;
+  margin-left: 4px;
+  border-style: solid;
+  border-width: 11px 0 11px 18px;
+  border-color: transparent transparent transparent #fff;
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 0.85rem 1rem;
+  background: linear-gradient(180deg, transparent 50%, rgba(8, 10, 14, 0.7) 100%);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+  pointer-events: none;
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile:hover .pa-video-tile-overlay,
+body.pa-has-portfolio-showcase .pa-video-tile:focus-visible .pa-video-tile-overlay {
+  opacity: 1;
+}
+
+body.pa-has-portfolio-showcase .pa-video-tile-view {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  color: #111 !important;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body.pa-has-portfolio-showcase .pa-video-tile {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  body.pa-has-portfolio-showcase .pa-video-tile-img,
+  body.pa-has-portfolio-showcase .pa-video-tile-play {
+    transition: none;
+  }
+}
+
+/* ---- Full-screen video lightbox ---------------------------------------- */
+.pa-video-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.pa-video-lightbox[hidden] {
+  display: none;
+}
+
+.pa-video-lightbox-backdrop {
+  position: absolute;
+  inset: 0;
+  border: 0;
+  margin: 0;
+  padding: 0;
+  background: rgba(6, 7, 10, 0.92);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  cursor: zoom-out;
+}
+
+.pa-video-lightbox-panel {
+  position: relative;
+  width: min(1100px, calc(100vw - 2.5rem));
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.pa-video-lightbox-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+  background: #000;
+}
+
+.pa-video-lightbox-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+
+.pa-video-lightbox-close {
+  position: absolute;
+  top: -3.1rem;
+  right: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.6rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s ease;
+}
+
+.pa-video-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+.pa-video-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 48px;
+  height: 48px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: rgba(20, 22, 28, 0.6);
+  color: #fff;
+  font-size: 1.8rem;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2;
+  transition: background 0.2s ease;
+}
+
+.pa-video-lightbox-nav:hover {
+  background: rgba(40, 44, 54, 0.85);
+}
+
+.pa-video-lightbox-prev {
+  left: -1.4rem;
+}
+
+.pa-video-lightbox-next {
+  right: -1.4rem;
+}
+
+.pa-video-lightbox-counter {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+body.pa-video-lightbox-open {
+  overflow: hidden;
+}
+
+@media (max-width: 680px) {
+  .pa-video-lightbox-nav {
+    width: 40px;
+    height: 40px;
+    font-size: 1.4rem;
+  }
+  .pa-video-lightbox-prev {
+    left: 0.35rem;
+  }
+  .pa-video-lightbox-next {
+    right: 0.35rem;
+  }
+  .pa-video-lightbox-close {
+    top: -2.9rem;
+  }
+}
+
+/* Footer “Book now” band — centered between top/bottom rules */
+body.wp-theme-gutenify-photography .pa-footer-cta-strip,
+body.pa-glass-site .pa-footer-cta-strip {
+  min-height: 4.75rem;
+}
+
+body.wp-theme-gutenify-photography .pa-footer-cta-strip .pa-footer-book-cta,
+body.pa-glass-site .pa-footer-cta-strip .pa-footer-book-cta {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+  text-align: center !important;
+  line-height: 1.2 !important;
 }

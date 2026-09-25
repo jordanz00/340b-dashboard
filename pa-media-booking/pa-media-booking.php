@@ -2,7 +2,7 @@
 /**
  * Plugin Name: PA Media Booking
  * Description: Custom calendar booking for independent artists — availability, deposits, GoDaddy Pay Link / Stripe, admin approval.
- * Version: 5.4.65
+ * Version: 5.5.14
  * Author: Pennsylvania Media Arts LLC
  * Text Domain: pa-media-booking
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('PA_BOOKING_VERSION', '5.4.65');
+define('PA_BOOKING_VERSION', '5.5.14');
 define('PA_BOOKING_PATH', plugin_dir_path(__FILE__));
 define('PA_BOOKING_URL', plugin_dir_url(__FILE__));
 
@@ -113,7 +113,7 @@ function pa_booking_boot() {
 add_action('plugins_loaded', 'pa_booking_boot');
 
 /**
- * Retired geo landing URLs — redirect before theme boot (avoids stale WP page errors).
+ * Retired / junk URLs — redirect before theme boot (avoids stale WP page 500s).
  */
 function pa_booking_redirect_retired_landings() {
     if (is_admin()) {
@@ -130,9 +130,41 @@ function pa_booking_redirect_retired_landings() {
         wp_safe_redirect(home_url('/services/'), 301);
         exit;
     }
+    if (preg_match('#^/(book|work|privacy-policy)-\d+$#', $path, $matches)) {
+        wp_safe_redirect(home_url('/' . $matches[1] . '/'), 301);
+        exit;
+    }
+    if (preg_match('#^/booking-status(-\d+)?$#', $path)) {
+        wp_safe_redirect(home_url('/book/'), 301);
+        exit;
+    }
+    if ($path === '/quote' || $path === '/quote-thank-you') {
+        wp_safe_redirect(add_query_arg('start', '1', home_url('/book/')), 301);
+        exit;
+    }
 }
 
 add_action('init', 'pa_booking_redirect_retired_landings', 0);
+
+/**
+ * Privacy and Terms hang inside the normal page query. Serve the
+ * published policy text before that query starts.
+ */
+function pa_booking_serve_legal_pages() {
+    if (is_admin()) {
+        return;
+    }
+    $path = isset($_SERVER['REQUEST_URI'])
+        ? untrailingslashit((string) wp_parse_url(wp_unslash($_SERVER['REQUEST_URI']), PHP_URL_PATH))
+        : '';
+    if ($path !== '/privacy-policy' && $path !== '/terms-of-service') {
+        return;
+    }
+    require_once PA_BOOKING_PATH . 'includes/class-legal-pages.php';
+    PA_Booking_Legal_Pages::serve_request($path);
+}
+
+add_action('init', 'pa_booking_serve_legal_pages', 0);
 
 /**
  * Plugins screen → Booking Requests (not the broken growth orphan link).
